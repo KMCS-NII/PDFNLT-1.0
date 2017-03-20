@@ -1,0 +1,913 @@
+Title	Low-cost, High-performance Translation Retrieval:	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital tailchar-colon above-line-space
+Title	Dumber is Better	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-space headchar-capital above-double-space above-line-space
+Author	Timothy Baldwin	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space headchar-capital
+B-Affiliation	Department of Computer Science	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+I-Affiliation	Tokyo Institute of Technology	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+Address	2-12-1 O-okayama, Meguro-ku, Tokyo 152-8552 JAPAN	page=0 xpos=1 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail
+Email	tim@cl.cs.titech.ac.jp	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest indented-line shorter-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=1 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	In this paper, we compare the rela-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	tive effects of segment order, segmen-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tation and segment contiguity on the	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	retrieval performance of a translation	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	memory system. We take a selec-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion of both bag-of-words and segment	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	order-sensitive string comparison meth-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ods, and run each over both character-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	and word-segmented data, in combina-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion with a range of local segment con-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tiguity models (in the form of N-grams).	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	Over two distinct datasets, we find that	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	indexing according to simple character	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	bigrams produces a retrieval accuracy	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	superior to any of the tested word N-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	gram models. Further, in their optimum	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	configuration, bag-of-words methods are	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	shown to be equivalent to segment order-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sensitive methods in terms of retrieval	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	accuracy, but much faster. We also pro-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	vide evidence that our findings are scal-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	able.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-largest hanged-line longer-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Translation memories (TMs) are a list of	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital above-line-space
+I-Body	translation records (source language strings	page=0 xpos=0 ypos=5 left-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	paired with a unique target language translation),	page=0 xpos=0 ypos=6 left-column full-justified aligned-line line-space headchar-lower tailchar-comma
+I-Body	which the TM system accesses in suggesting a	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	list of target language (L2) translation candi-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-line-space
+I-Body	dates for a given source language (L1) input (Tru-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line line-space headchar-lower tailchar-hiphen above-line-space
+I-Body	jillo, 1999; Planas, 1998). Translation retrieval	page=0 xpos=0 ypos=6 left-column full-justified aligned-line line-space year headchar-lower above-line-space
+I-Body	(TR) is a description of this process of selecting	page=0 xpos=0 ypos=6 left-column full-justified aligned-line line-space above-line-space
+I-Body	from the TM a set of translation records (TRecs)	page=0 xpos=0 ypos=7 left-column full-justified aligned-line line-space headchar-lower
+I-Body	of maximum L1 similarity to a given input. Typi-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cally in example-based machine translation, either	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	a single TRec is retrieved from the TM based on	page=0 xpos=0 ypos=7 left-column full-justified aligned-line itemization headchar-lower
+I-Body	a match with the overall L1 input, or the input	page=0 xpos=0 ypos=7 left-column full-justified aligned-line itemization headchar-lower
+I-Body	is partitioned into coherent segments, and indi-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vidual translations retrieved for each (Sato and	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower above-line-space
+I-Body	Nagao, 1990; Nirenburg et al., 1993); this is the	page=0 xpos=0 ypos=8 left-column full-justified aligned-line line-space year headchar-capital
+I-Body	first step toward generating a customised transla-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion for the input. With stand-alone TM systems,	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	on the other hand, the system selects an arbitrary	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	number of translation candidates falling within a	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	certain empirical corridor of similarity with the	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	overall input string, and simply outputs these for	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	manual manipulation by the user in fashioning the	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	final translation.	page=0 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	A key assumption surrounding the bulk of past	page=0 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	TR research has been that the greater the match	page=0 xpos=0 ypos=9 left-column full-justified hanged-line headchar-capital
+I-Body	stringency/linguistic awareness of the retrieval	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	mechanism, the greater the final retrieval accu-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	racy will become. Naturally, any appreciation in	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	retrieval complexity comes at a price in terms of	page=0 xpos=5 ypos=1 right-column full-justified column-top headchar-lower
+I-Body	computational overhead. We thus follow the lead	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	of Baldwin and Tanaka (2000) in asking the ques-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tion: what is the empirical effect on retrieval per-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance of different match approaches? Here,	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	retrieval performance is defined as the combina-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of retrieval speed and accuracy, with the ideal	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	method offering fast response times at high accu-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	racy.	page=0 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In this paper, we choose to focus on retrieval	page=0 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	performance within a Japanese–English TR con-	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	text. One key area of interest with Japanese	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	is the effect that segmentation has on retrieval	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	performance. As Japanese is a non-segmenting	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	language (does not explicitly delimit words or-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-line-space
+I-Body	thographically), we can take the brute-force ap-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line line-space headchar-lower tailchar-hiphen
+I-Body	proach in treating each string as a sequence of	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	characters (character-based indexing), or al-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ternatively call upon segmentation technology in	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	partitioning each string into words (word-based	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower above-line-space
+I-Body	indexing). Orthogonal to this is the question of	page=0 xpos=5 ypos=4 right-column full-justified aligned-line line-space headchar-lower
+I-Body	sensitivity to segment order. That is, should our	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	match mechanism treat each string as an unor-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ganised multiset of terms (the bag-of-words ap-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-line-space
+I-Body	proach), or attempt to find the match that best	page=0 xpos=5 ypos=5 right-column full-justified aligned-line line-space headchar-lower
+I-Body	preserves the original segment order in the in-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put (the segment order-sensitive approach)?	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	We tackle this issue by implementing a sample	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	of representative bag-of-words and segment order-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sensitive methods and testing the retrieval per-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance of each. As a third orthogonal param-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eter, we consider the effects of segment contigu-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity. That is, do matches over contiguous segments	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	provide closer overall translation correspondence	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	than matches over displaced segments? Segment	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	contiguity is either explicitly modelled within the	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	string match mechanism, or provided as an add-in	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	in the form of segment N-grams.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To preempt the major findings of this pa-	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	per, over a series of experiments we find that	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	character-based indexing is consistently superior	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	to word-based indexing. Furthermore, the bag-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	of-words methods we test are equivalent in re-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	trieval accuracy to the more expensive segment	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	order-sensitive methods, but superior in retrieval	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	speed. Finally, segment contiguity models provide	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	benefits in terms of both retrieval accuracy and	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	retrieval speed, particularly when coupled with	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	character-based indexing. We thus provide clear	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	evidence that high-performance TR is achievable	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	with naive methods, and moreso that such meth-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ods outperform more intricate, expensive meth-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ods. That is, the dumber the retrieval mechanism,	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	the better.	page=0 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Below, we review the orthogonal parameters of	page=0 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	segmentation, segment order and segment conti-	page=0 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	guity (§ 2). We then present a range of both bag-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+I-Body	of-words and segment order-sensitive string com-	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	parison methods (§ 3) and detail the evaluation	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower above-line-space
+I-Body	methodology (§ 4). Finally, we evaluate the dif-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line line-space headchar-lower tailchar-hiphen
+I-Body	ferent methods in a Japanese–English TR context	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	(§ 5), before concluding the paper (§ 6).	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	2 Basic Parameters	page=1 xpos=0 ypos=0 left-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this section, we review three parameter types	page=1 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	that we suggest impinge on TR performance,	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	namely segmentation, segment order, and segment	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	contiguity.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	2.1 Segmentation	page=1 xpos=0 ypos=1 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-line-space
+B-Body	Despite non-segmenting languages such as	page=1 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	Japanese not making use of segment delimiters,	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	it is possible to artificially partition off a given	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	string into constituent morphemes through the	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	process of segmentation. We will collectively	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	term the resultant segments as words for the	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	remainder of this paper.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Looking to past research on string compari-	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	son methods for TM systems, almost all sys-	page=1 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tems involving Japanese as the source lan-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage rely on segmentation (Nakamura, 1989;	page=1 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Sumita and Tsutsumi, 1991; Kitamura and Ya-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	mamoto, 1996; Tanaka, 1997), with Sato (1992)	page=1 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower above-line-space
+I-Body	and Sato and Kawase (1994) providing rare in-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line line-space year headchar-lower tailchar-hiphen
+I-Body	stances of character-based systems. This	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	is despite Fujii and Croft (1993) providing evi-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	dence from Japanese information retrieval that	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	character-based indexing performs comparably to	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	word-based indexing. In analogous research,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	Baldwin and Tanaka (2000) compared character-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	and word-based indexing within a Japanese–	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	English TR context and found character-based in-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	dexing to hold a slight empirical advantage.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The most obvious advantage of character-based	page=1 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	indexing over word-based indexing is that there	page=1 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	is no pre-processing overhead. Other arguments	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	for character-based indexing over word-based in-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dexing are that we: (a) avoid the need to com-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mit ourselves to a particular analysis type in the	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	case of ambiguity or unknown words; (b) avoid	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower above-line-space
+I-Body	the need for stemming/lemmatisation; and (c) to	page=1 xpos=0 ypos=6 left-column full-justified aligned-line line-space headchar-lower
+I-Body	a large extent get around problems related to the	page=1 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower
+E-Body	normalisation of lexical alternation.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Note that all methods described below are ap-	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	plicable to both word- and character-based index-	page=1 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ing. To avoid confusion between the two lexeme	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	types, we will collectively refer to the elements of	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	indexing as segments.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	2.2 Segment Order	page=1 xpos=0 ypos=7 left-column right-indent aligned-line line-blank-line line-double-space line-space numbered-heading2 above-line-space
+B-Body	Our expectation is that TRecs that preserve the	page=1 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	segment order observed in the input string will	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	provide closer-matching translations than TRecs	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	containing those same segments in a different or-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	der.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As far as we are aware, there is no TM sys-	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tem operating from Japanese that does not rely	page=1 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	on word/segment/character order to some degree.	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period above-line-space
+I-Body	Tanaka (1997) uses pivotal content words identi-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line line-space year headchar-capital tailchar-hiphen
+I-Body	fied by the user to search through the TM and	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	locate TRecs which contain those same content	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	words in the same order and preferably the same	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	segment distance apart. Nakamura (1989) simi-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	larly gives preference to TRecs in which the con-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tent words contained in the original input occur in	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	the same linear order, although there is the scope	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	to back off to TRecs which do not preserve the	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	original word order. Sumita and Tsutsumi (1991)	page=1 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+I-Body	take the opposite tack in iteratively filtering	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	out NPs and adverbs to leave only functional	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	words and matrix-level predicates, and find TRecs	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	which contain those same key words in the	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	same ordering, preferably with the same seg-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment types between them in the same num-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bers. Sato and Kawase (1994) employ a more lo-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	cal model of character order in modelling similar-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity according to N-grams fashioned from the orig-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	inal string.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	2.3 Segment contiguity	page=1 xpos=5 ypos=2 right-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-line-space
+B-Body	Given the input α <sub>1</sub> α 2 α 3 α 4 , we would expect that	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line longer-tail line-space headchar-capital
+I-Body	of α <sub>1</sub> β 1 α 2 β 2 α 3 β 3 α 4 and α 1 α 2 α 3 α 4 β 1 β 2 β 3 , the	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	latter would provide a translation more reflective	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	of the translation for the input. This intuition	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	is captured either by embedding some contiguity	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	weighting facility within the string match mecha-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nism (in the case of weighted sequential correspon-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-line-space
+I-Body	dence — see below), or providing an independent	page=1 xpos=5 ypos=3 right-column full-justified aligned-line line-space headchar-lower
+I-Body	model of segment contiguity in the form of seg-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ment N-grams.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The particular N-gram orders we test are simple	page=1 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	unigrams (1-grams), pure bigrams (2-grams), and	page=1 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower above-line-space
+I-Body	mixed unigrams/bigrams. These N-gram models	page=1 xpos=5 ypos=4 right-column full-justified aligned-line line-space headchar-lower
+I-Body	are implemented as a pre-processing stage, fol-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lowing segmentation (where applicable). All this	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	involves is mutating the original strings into N-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	grams of the desired order, while preserving the	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	original segment order and segmentation schema.	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	From the Japanese string 夏 · の · 雨 [natu·no·ame]	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-capital
+I-Body	“summer rain”, <sup>1</sup> for example, we would generate	page=1 xpos=5 ypos=5 right-column full-justified font-largest aligned-line
+I-Body	the following variants (common to both character-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-line-space
+I-Body	and word-based indexing):	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail line-space headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	1-gram: 夏 · の · 雨	page=1 xpos=5 ypos=5 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space
+B-Listitem	2-gram: 夏の · の雨	page=1 xpos=5 ypos=5 right-column left-indent right-indent font-largest aligned-line
+B-Listitem	Mixed 1/2-gram: 夏 · 夏の · の · の雨 · 雨	page=1 xpos=5 ypos=5 right-column centered left-indent right-indent font-largest aligned-line longer-tail headchar-capital above-double-space above-line-space
+B-SectionHeader	3 String Comparison Methods	page=1 xpos=5 ypos=6 right-column right-indent font-largest hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	As the starting point for evaluation of the	page=1 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	three parameter types targeted in this re-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	search, we take two bag-of-words (segment order-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-line-space
+I-Body	oblivious) and three segment order-sensitive meth-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line line-space headchar-lower tailchar-hiphen
+I-Body	ods, thereby modelling the effects of segment or-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	der (un)awareness. We then run each method over	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	both segmented and unsegmented data in combi-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nation with the various N-gram models proposed	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	above, to capture the full range of parameter set-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tings.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The particular bag-of-word approaches we tar-	page=1 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	get are the vector space model (Manning and	page=1 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower above-line-space
+I-Body	Schütze, 1999, p300) and “token intersection”.	page=1 xpos=5 ypos=8 right-column full-justified aligned-line line-space year headchar-capital tailchar-period
+I-Body	For segment order-sensitive approaches, we test	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	3-operation edit distance and similarity, and also	page=1 xpos=5 ypos=8 right-column full-justified aligned-line
+E-Body	“weighted sequential correspondence”.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	All methods are formulated to operate over an	page=1 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	arbitrary wt schemata, although in L1 string com-	page=1 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	parison throughout this paper, we assume that	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	any segment made up entirely of punctuation is	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	given a wt of 0, and any other segment a wt of 1.	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	1 Character boundaries (which double as word	page=1 xpos=5 ypos=9 right-column left-indent right-over font-largest indented-line line-double-space line-space numbered-heading1 above-line-space
+I-Footnote	boundaries in this case) indicated by “·”.	page=1 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail line-space headchar-lower tailchar-period page-bottom
+B-Body	All methods are subject to a threshold on	page=2 xpos=0 ypos=0 left-column left-indent page-top headchar-capital
+I-Body	translation utility, and in the case that the	page=2 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	threshold is not achieved, the null string is re-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	turned. The various thresholds are as follows:	page=2 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Table	Comparison method Threshold	page=2 xpos=0 ypos=0 left-column left-indent right-indent indented-line line-double-space line-space headchar-capital above-line-space
+I-Table	Vector space model 0.5	page=2 xpos=0 ypos=0 left-column left-indent right-indent shorter-tail line-space headchar-capital above-line-space
+I-Table	Token intersection 0.4	page=2 xpos=0 ypos=1 left-column left-indent right-indent line-space headchar-capital above-line-space
+I-Table	3-operation edit distance len(IN )	page=2 xpos=0 ypos=1 left-column left-indent right-indent hanged-line longer-tail line-space above-line-space
+I-Table	3-operation edit similarity 0.4	page=2 xpos=0 ypos=1 left-column left-indent right-indent shorter-tail line-space above-line-space
+E-Table	Weighted seq. correspondence 0.2	page=2 xpos=0 ypos=1 left-column left-indent right-indent hanged-line line-space headchar-capital above-double-space above-line-space
+I-Body	where IN is the input string, and len is the con-	page=2 xpos=0 ypos=1 left-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+E-Body	ventional segment length operator.	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Various optimisations were made to each string	page=2 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	comparison method to reduce retrieval time, of the	page=2 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	type described by Baldwin and Tanaka (2000).	page=2 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	While the details are beyond the scope of this pa-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	per, suffice to say that the segment order-sensitive	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	methods benefited from the greatest optimisation,	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and that little was done to accelerate the already	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	quick bag-of-words methods.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.1 Bag-of-Words Methods	page=2 xpos=0 ypos=3 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-BlockHeader	Vector Space Model	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail line-double-space line-space headchar-capital above-line-space
+B-Body	Within our implementation of the vector	page=2 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space headchar-capital above-line-space
+I-Body	space model (VSM), the segment content of each	page=2 xpos=0 ypos=3 left-column full-justified hanged-line line-space headchar-lower above-line-space
+I-Body	string is described as a vector, made up of a single	page=2 xpos=0 ypos=4 left-column full-justified aligned-line line-space headchar-lower
+I-Body	dimension for each segment type occurring within	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	S or T . The value of each vector component is	page=2 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-capital
+I-Body	given as the weighted frequency of that type ac-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cording to its wt value. The string similarity of S	page=2 xpos=0 ypos=4 left-column centered right-indent font-largest aligned-line headchar-lower
+I-Body	and T is then defined as the cosine of the angle	page=2 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	between vectors S  and T  , respectively, calculated	page=2 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	as:	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation		page=2 xpos=3 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	cos(  S, T  ) = S =  j <sup>s</sup>  j t j	page=2 xpos=0 ypos=5 left-column left-indent right-indent font-largest hanged-line longer-tail headchar-lower
+I-Equation	 · T 	page=2 xpos=2 ypos=5 left-column left-indent right-indent indented-line shorter-tail above-line-space
+I-Equation	| S||  T  |	page=2 xpos=1 ypos=5 left-column left-indent right-indent line-space
+I-Equation	j s <sup>2</sup> j j t 2 j	page=2 xpos=3 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail itemization headchar-lower above-blank-line above-double-space above-line-space
+B-BlockHeader	Token Intersection	page=2 xpos=0 ypos=6 left-column right-indent hanged-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Body	The token intersection of S and T is de-	page=2 xpos=0 ypos=6 left-column left-indent font-largest indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	fined as the cumulative intersecting frequency of	page=2 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	segment types appearing in each of the strings,	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	normalised according to the combined segment	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	lengths of S and T using Dice’s coefficient. For-	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	mally, this equates to:	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	2 ×  <sub>e∈S,T</sub> min  freq S (e), freq T (e) 	page=2 xpos=1 ypos=7 left-column left-indent right-indent font-largest indented-line longer-tail line-space numbered-heading1
+I-Equation	tint (S, T ) =	page=2 xpos=0 ypos=7 left-column left-indent right-indent hanged-line shorter-tail headchar-lower
+I-Equation	len(S) + len(T )	page=2 xpos=2 ypos=7 left-column left-indent right-indent indented-line longer-tail headchar-lower above-double-space above-line-space
+I-Body	where each e is a segment occurring in either S or	page=2 xpos=0 ypos=7 left-column left-over font-largest hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	T , freq <sub>S</sub> (e) is defined as the wt-based frequency of	page=2 xpos=0 ypos=8 left-column full-justified font-largest headchar-capital
+I-Body	segment type e occurring in string S, and len(S)	page=2 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	is the segment length of string S, that is the wt-	page=2 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	based count of segments contained in S (similarly	page=2 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	for T ).	page=2 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Segment Order-sensitive Methods	page=2 xpos=0 ypos=9 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-BlockHeader	3-op Edit Distance and Similarity	page=2 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail line-double-space line-space above-line-space
+B-Body	Essentially, the segment-based 3-operation	page=2 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	edit distance between strings S and T is the min-	page=2 xpos=0 ypos=9 left-column full-justified font-largest hanged-line headchar-lower tailchar-hiphen
+I-Body	imum number of primitive edit operations on sin-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gle segments required to transform S into T (and	page=2 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower column-bottom
+I-Body	vice versa). The three edit operations are seg-	page=2 xpos=5 ypos=0 right-column right-over column-top headchar-lower tailchar-hiphen
+I-Body	ment equality (segments s <sub>i</sub> and t j are identical),	page=2 xpos=5 ypos=0 right-column right-over font-largest aligned-line headchar-lower tailchar-comma
+I-Body	segment deletion (delete segment s <sub>i</sub> ) and segment	page=2 xpos=5 ypos=0 right-column right-over font-largest aligned-line headchar-lower
+I-Body	insertion (insert segment a into a given position	page=2 xpos=5 ypos=0 right-column right-over font-largest aligned-line headchar-lower
+I-Body	in string S). The cost associated with each opera-	page=2 xpos=5 ypos=0 right-column right-over font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	tion is determined by the wt values of the operand	page=2 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower
+I-Body	segments, with the exception of segment equality	page=2 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower
+E-Body	which is defined to have a fixed cost of 0.	page=2 xpos=5 ypos=1 right-column right-over aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Dynamic programming (DP) techniques are	page=2 xpos=5 ypos=1 right-column left-indent right-over indented-line longer-tail headchar-capital above-line-space
+I-Body	used to determine the minimum edit distance	page=2 xpos=5 ypos=1 right-column right-over hanged-line line-space headchar-lower
+I-Body	between a given string pair, following the clas-	page=2 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	sic 4-operation edit distance formulation of	page=2 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower
+I-Body	Wagner and Fisher (1974). <sup>2</sup> For 3-operation edit	page=2 xpos=5 ypos=1 right-column right-over font-largest aligned-line year headchar-capital
+I-Body	distance, the edit distance between strings S =	page=2 xpos=5 ypos=1 right-column right-over font-largest aligned-line headchar-lower
+I-Body	s 1 s 2 ...s <sub>m</sub> and T = t 1 t 2 ...t n is defined as	page=2 xpos=5 ypos=2 right-column right-over font-largest aligned-line itemization headchar-lower
+I-Body	D 3op (S, T ):	page=2 xpos=5 ypos=2 right-column right-indent font-largest aligned-line shorter-tail headchar-capital tailchar-colon above-double-space above-line-space
+B-Equation	 <sup>D</sup> 3op (S, T ) = d 3 (m, n) <sub>if</sub> i = 0 ∧ j = 0	page=2 xpos=5 ypos=2 right-column left-indent right-over font-largest indented-line longer-tail line-double-space line-space
+I-Equation	 (0, <sub>j</sub> − 1) + wt (t )  0	page=2 xpos=5 ypos=2 right-column left-indent right-indent font-largest aligned-line shorter-tail
+I-Equation	 d <sub>d</sub> 3 <sub>3</sub> (i   − 1, 0) + wt (s j i )	page=2 xpos=5 ypos=2 right-column left-indent right-indent font-largest aligned-line
+I-Equation	if i = 0 ∧ j  = 0	page=2 xpos=8 ypos=2 right-column left-indent right-over indented-line longer-tail headchar-lower
+I-Equation	<sup>d</sup> <sup>3</sup> <sup>(i,</sup> <sup>j)</sup> <sup>=</sup>    min d <sub>m</sub> d 3 3 (i (i, <sub>3</sub> (i, − j j) 1, − 1) j) + + wt wt (s (t j i ), ), <sup>if</sup> i  = otherwise 0 ∧ j =0	page=2 xpos=5 ypos=2 right-column right-over box hanged-line headchar-super above-line-space
+I-Equation	  <sub>d</sub> (i − 1, − if s <sub>i</sub> = s j	page=2 xpos=6 ypos=3 right-column left-indent right-over font-largest indented-line line-space
+I-Equation	m 3 (i, j) = ∞ <sup>3</sup> <sup>j</sup> 1) otherwise	page=2 xpos=5 ypos=3 right-column right-over font-largest hanged-line itemization headchar-lower above-blank-line above-double-space above-line-space
+B-Body	It is possible to normalise operation edit dis-	page=2 xpos=5 ypos=4 right-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tance D 3op into 3-operation edit similarity	page=2 xpos=5 ypos=4 right-column right-over font-largest hanged-line headchar-lower
+I-Body	S 3op by way of:	page=2 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail headchar-capital tailchar-colon above-double-space above-line-space
+B-Equation	D <sub>3op</sub> (S, T )	page=2 xpos=8 ypos=4 right-column left-indent right-indent font-larger indented-line longer-tail line-double-space line-space headchar-capital
+I-Equation	S <sub>3op</sub> (S, T ) = 1 −	page=2 xpos=6 ypos=4 right-column left-indent right-indent font-larger hanged-line shorter-tail headchar-capital
+I-Equation	len(S) + len(T )	page=2 xpos=7 ypos=4 right-column left-indent right-indent indented-line longer-tail headchar-lower above-blank-line above-double-space above-line-space
+B-BlockHeader	Weighted Sequential Correspondence	page=2 xpos=5 ypos=5 right-column right-over hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital above-line-space
+B-Body	Weighted sequential correspondence (originally	page=2 xpos=5 ypos=5 right-column left-indent right-over indented-line longer-tail line-space headchar-capital above-line-space
+I-Body	proposed in Baldwin and Tanaka (2000)) goes one	page=2 xpos=5 ypos=5 right-column right-over hanged-line line-space year headchar-lower
+I-Body	step further than edit distance in analysing not	page=2 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower
+I-Body	only segment sequentiality, but also the contiguity	page=2 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower
+E-Body	of matching segments.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Weighted sequential correspondence associates	page=2 xpos=5 ypos=6 right-column left-indent right-over indented-line longer-tail headchar-capital above-line-space
+I-Body	an incremental weight (orthogonal to our wt	page=2 xpos=5 ypos=6 right-column right-over hanged-line line-space headchar-lower above-line-space
+I-Body	weights) with each matching segment assessing the	page=2 xpos=5 ypos=6 right-column right-over aligned-line line-space headchar-lower above-line-space
+I-Body	contiguity of left-neighbouring segments, in the	page=2 xpos=5 ypos=6 right-column right-over aligned-line line-space headchar-lower above-line-space
+I-Body	manner described by Sato (1992) for character-	page=2 xpos=5 ypos=6 right-column right-over aligned-line line-space year headchar-lower tailchar-hiphen
+I-Body	based matching. Namely, the kth segment of	page=2 xpos=5 ypos=6 right-column right-over font-largest aligned-line headchar-lower
+I-Body	a matched substring is given the multiplicative	page=2 xpos=5 ypos=7 right-column right-over aligned-line itemization headchar-lower above-line-space
+I-Body	weight min(k, Max ), where Max is a positive in-	page=2 xpos=5 ypos=7 right-column right-over aligned-line line-space headchar-lower tailchar-hiphen above-line-space
+I-Body	teger. This weighting up of contiguous matches	page=2 xpos=5 ypos=7 right-column right-over aligned-line line-space headchar-lower
+I-Body	is facilitated through the DP algorithm given be-	page=2 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	low:	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	  <sub>0</sub>   <sup>S</sup> w (S, T ) = s(m, n) if i = 0 ∨ j = 0	page=2 xpos=5 ypos=8 right-column left-indent right-over font-largest indented-line longer-tail line-double-space line-space
+I-Equation	s(i, j) = max <sup>s(i</sup> <sub>s(i,</sub> <sup>−</sup> j 1, − 1), j), otherwise	page=2 xpos=5 ypos=8 right-column right-over font-largest hanged-line headchar-lower
+I-Equation	s(i − 1, j − 1) + m <sub>w</sub> (i, j)	page=2 xpos=6 ypos=8 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-lower above-line-space
+I-Equation	  <sub>cm(i,</sub> j) × wt (i) if s <sub>i</sub> = s j	page=2 xpos=6 ypos=8 right-column left-indent right-over font-largest hanged-line longer-tail line-space
+I-Equation	m w (i, j) = 0 otherwise	page=2 xpos=5 ypos=9 right-column right-over font-largest hanged-line itemization headchar-lower above-line-space
+I-Equation	  <sub>0</sub> if i = 0 ∨ j = 0 ∨ s <sub>i</sub>  = t j	page=2 xpos=6 ypos=9 right-column left-indent right-over font-largest indented-line line-space
+I-Equation	cm(i, j) = min(Max <sub>,</sub> cm(i − 1, j − 1) + 1) otherwise	page=2 xpos=5 ypos=9 right-column right-over font-largest hanged-line headchar-lower above-line-space
+B-Footnote	2 The fourth operator in 4-operation edit distance	page=2 xpos=5 ypos=9 right-column left-indent right-over font-largest indented-line longer-tail line-space numbered-heading1
+I-Footnote	is segment substitution.	page=2 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Body	The final similarity is determined as:	page=3 xpos=0 ypos=0 left-column left-indent right-indent page-top headchar-capital tailchar-colon above-double-space above-line-space
+B-Equation	2 × S <sub>w</sub> (S, T )	page=3 xpos=2 ypos=0 left-column left-indent right-indent font-larger indented-line shorter-tail line-double-space line-space numbered-heading1
+I-Equation	WSC (S, T ) =	page=3 xpos=0 ypos=0 left-column left-indent right-indent hanged-line shorter-tail headchar-capital
+I-Equation	len WSC (S) + len WSC (T )	page=3 xpos=2 ypos=0 left-column left-indent right-indent font-smallest indented-line longer-tail headchar-lower above-double-space above-line-space
+I-Body	where len <sub>WSC</sub> (S) is the weighted length of S, de-	page=3 xpos=0 ypos=0 left-column centered left-over font-largest hanged-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	fined as:	page=3 xpos=0 ypos=0 left-column right-indent shorter-tail headchar-lower tailchar-colon
+B-Equation	len WSC (S) =  m <sub>i=1</sub> wt (s i ) × min(Max , i)	page=3 xpos=0 ypos=1 left-column centered left-indent right-indent font-largest indented-line longer-tail headchar-lower above-blank-line above-double-space above-line-space
+B-SectionHeader	4 Evaluation Specifications	page=3 xpos=0 ypos=1 left-column right-indent font-largest hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	4.1 Details of the Dataset	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	As our main dataset, we used 3033 unique	page=3 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	Japanese–English TRecs extracted from construc-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tion machinery field reports for the purposes of	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	this research. Most TRecs comprise a single sen-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence, with an average Japanese character length	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	of 27.7 and English word length of 13.3. Impor-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tantly, our dataset constitutes a controlled lan-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage, that is, a given word will tend to be trans-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lated identically across all usages, and only a lim-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ited range of syntactic constructions are employed.	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	In secondary evaluation of retrieval performance	page=3 xpos=0 ypos=3 left-column left-indent indented-line headchar-capital
+I-Body	over differing data sizes, we extracted 61,236	page=3 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	Japanese–English TRecs from the JEIDA parallel	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	corpus (Isahara, 1998), which is made up of gov-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ernment white papers. The alignment granular-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity of this second corpus is much coarser than for	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the first corpus, with a single TRec often extend-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing over multiple sentences. The average Japanese	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	character length of each TRec is 76.3, and the av-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erage English word length is 35.7. The language	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	used in the JEIDA corpus is highly constrained,	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	although not as controlled as that in the first cor-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	pus.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The construction of TRecs from both corpora	page=3 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	was based on existing alignment data, and no fur-	page=3 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+E-Body	ther effort was made to subdivide partitions.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For Japanese word-based indexing, segmenta-	page=3 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tion was carried out primarily with ChaSen v2.0	page=3 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	(Matsumoto et al., 1999), and where specifically	page=3 xpos=0 ypos=6 left-column full-justified aligned-line year above-line-space
+I-Body	mentioned, JUMAN v3.5 (Kurohashi and Nagao,	page=3 xpos=0 ypos=6 left-column full-justified aligned-line line-space headchar-lower tailchar-comma
+E-Body	1998) and ALTJAWS <sup>3</sup> were also used.	page=3 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail year tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	4.2 Semi-stratified Cross Validation	page=3 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-line-space
+B-Body	Retrieval accuracy was determined by way of	page=3 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	10-fold semi-stratified cross validation over the	page=3 xpos=0 ypos=7 left-column full-justified aligned-line
+I-Body	dataset. As part of this, all Japanese strings of	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	length 5 characters or less were extracted from	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the dataset, and cross validation was performed	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	over the residue, including the shorter strings in	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	the training data (i.e. TM) on each iteration.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In N-fold stratified cross validation, the dataset	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	is divided into N equally-sized partitions of uni-	page=3 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	form class distribution. Evaluation is then carried	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	out N times, taking each partition as the held-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	out test data, and the remaining partitions as the	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	training data on each iteration; the overall accu-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	racy is averaged over the N data configurations.	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	As our dataset is not pre-classified according to a	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	discrete class description, we are not able to per-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	form true data stratification over the class distri-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bution. Instead, we carry out “semi-stratification”	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	over the L1 segment lengths of the TRecs.	page=3 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	3 http://www.kecl.ntt.co.jp/icl/mtg/resources/altjaws.html	page=3 xpos=0 ypos=9 left-column left-indent right-over font-largest indented-line longer-tail line-double-space line-space numbered-heading1 column-bottom
+B-SubsectionHeader	4.3 Evaluation of the Output	page=3 xpos=5 ypos=0 right-column right-indent column-top numbered-heading2 above-line-space
+B-Body	Evaluation of retrieval accuracy is carried out ac-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	cording to a modified version of the method pro-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	posed by Baldwin and Tanaka (2000). The first	page=3 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+I-Body	step in this process is to determine the set of “op-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	timal” translations by way of the same basic TR	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	procedure as described above, except that we use	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	the held-out translation for each input to search	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	through the L2 component of the TM. As for L1	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	TR, a threshold on translation utility is then ap-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	plied to ascertain whether the optimal translations	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	are similar enough to the model translation to be	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	of use, and in the case that this threshold is not	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	achieved, the empty string is returned as the sole	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	optimal translation.	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Next, we proceed to ascertain whether the ac-	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tual system output coincides with one of the opti-	page=3 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	mal translations, and rate the accuracy of each	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	method according to the proportion of optimal	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	outputs. If multiple outputs are produced, we se-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lect from among them randomly. This guaran-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tees a unique translation output and differs from	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the methodology of Baldwin and Tanaka (2000),	page=3 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	who judged the system output to be “correct” if	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the potentially multiple set of top-ranking outputs	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	contained an optimal translation, placing methods	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	with greater fan-out of outputs at an advantage.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	So as to filter out any bias towards a given string	page=3 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	comparison method in TR, we determine transla-	page=3 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tion optimality based on both 3-operation edit dis-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tance (operating over English word bigrams) and	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower above-line-space
+I-Body	also weighted sequential correspondence (operat-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line line-space headchar-lower tailchar-hiphen above-line-space
+I-Body	ing over English word unigrams). We then de-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line line-space headchar-lower tailchar-hiphen
+I-Body	rive the final translation accuracy as the average	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of the accuracies from the respective evaluation	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	sets. Here again, our approach differs from that	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of Baldwin and Tanaka (2000), who based deter-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	mination of translation optimality exclusively on	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	3-operation edit distance (operating over word un-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line tailchar-hiphen above-line-space
+I-Body	igrams), a method which we found to produce a	page=3 xpos=5 ypos=5 right-column full-justified aligned-line line-space headchar-lower
+I-Body	strong bias toward 3-operation edit distance in L1	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	TR.	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	In determining translation optimality, all punc-	page=3 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tuation and stop words were first filtered out of	page=3 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	each L2 (English) string, and all remaining seg-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments scored at a wt of 1. Stop words are defined	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	as those contained within the SMART (Salton,	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	1971) stop word list. <sup>4</sup>	page=3 xpos=5 ypos=6 right-column right-indent font-largest aligned-line shorter-tail year
+B-Body	Perhaps the main drawback of our approach	page=3 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	to evaluation is that we assume a unique model	page=3 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	translation for each input, where in fact, multiple	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	translations of equivalent quality could reasonably	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	be expected to exist. In our case, however, both	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	corpora represent relatively controlled languages	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	and language use is hence highly predictable. The	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	proposed evaluation methodology is thus justified.	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	5 Results and Supporting Evidence	page=3 xpos=5 ypos=8 right-column centered right-over font-largest aligned-line line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	5.1 Basic evaluation	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	In this section, we test our five string comparison	page=3 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	methods over the construction machinery corpus,	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	under both character- and word-based indexing,	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and with each of unigrams, bigrams and mixed	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	unigrams/bigrams. The retrieval accuracies and	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	times for the different string comparison meth-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ods are presented in Figs. 1 and 2, respectively.	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	4 ftp://ftp.cornell.cs.edu/pub/smart/english.stop	page=3 xpos=5 ypos=9 right-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space numbered-heading1 page-bottom
+Figure	__Figure 1__	page=4 xpos=0 ypos=-4 left-column left-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: Basic retrieval accuracies	page=4 xpos=0 ypos=0 left-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-Body	Here and in subsequent graphs, “VSM” refers to	page=4 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	the vector space model, “TINT” to token inter-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	section, “3opD” to 3-op edit distance, “3opS” to	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	3-op edit similarity, and “WSC” to weighted se-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line tailchar-hiphen
+I-Body	quential correspondence; the bag-of-words meth-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ods are labelled in italics and the segment order-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sensitive methods in bold. In Figs. 1 and 2, results	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	for the three N-gram models are presented sepa-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rately, within each of which, the data is sectioned	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	off into the different string comparison methods.	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Weighted sequential correspondence was tested	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	with a unigram model only, due to its inbuilt mod-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	elling of segment contiguity. Bars marked with an	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	asterisk indicate a statistically significant <sup>5</sup> gain	page=4 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	over the corresponding indexing paradigm (i.e.	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	character-based indexing vs. word-based indexing	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	for a given string comparison method and N-gram	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	order). Times in Fig. 2 are calibrated relative to	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	3-operation edit distance with word unigrams, and	page=4 xpos=0 ypos=3 left-column full-justified aligned-line
+E-Body	plotted against a logarithmic time axis.	page=4 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Results to come from these figures can be sum-	page=4 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	marised as follows:	page=4 xpos=0 ypos=4 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	• Character-based indexing is consistently su-	page=4 xpos=0 ypos=4 left-column left-indent font-largest indented-line longer-tail line-double-space line-space itemization tailchar-hiphen
+I-Listitem	perior to word-based indexing, particularly	page=4 xpos=0 ypos=5 left-column left-indent indented-line headchar-lower
+I-Listitem	when combined with bigrams or mixed uni-	page=4 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	grams/bigrams.	page=4 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	• In terms of raw translation accuracy, there is	page=4 xpos=0 ypos=5 left-column left-indent font-largest hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	very little to separate the best of the bag-of-	page=4 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	words methods from the best of the segment	page=4 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Listitem	order-sensitive methods.	page=4 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	• With character-based indexing, bigrams offer	page=4 xpos=0 ypos=6 left-column left-indent font-largest hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	tangible gains in translation accuracy at the	page=4 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower
+I-Listitem	same time as greatly accelerating the retrieval	page=4 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Listitem	process. With word-based indexing, mixed	page=4 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Listitem	unigrams/bigrams offer the best balance of	page=4 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Listitem	translation accuracy and computational cost.	page=4 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	• Weighted sequential correspondence is mod-	page=4 xpos=0 ypos=8 left-column left-indent font-largest hanged-line line-double-space line-space itemization tailchar-hiphen
+I-Listitem	erately successful in terms of accuracy, but	page=4 xpos=0 ypos=8 left-column left-indent indented-line headchar-lower
+I-Listitem	grossly expensive.	page=4 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Based on the above results, we judge bi-	page=4 xpos=0 ypos=8 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	grams to be the best segment contiguity model	page=4 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower
+I-Body	for character-based indexing, and mixed uni-	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	grams/bigrams to be the best segment contiguity	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	5 As determined by the paired t test (p < 0.05).	page=4 xpos=0 ypos=9 left-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space numbered-heading1 tailchar-period column-bottom
+Figure	__Figure 2__	page=4 xpos=5 ypos=-4 right-column left-indent right-over box column-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 2: Basic unit retrieval times	page=4 xpos=5 ypos=0 right-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+I-Body	model for word-based indexing, and for the re-	page=4 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	mainder of this paper, present only these two sets	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	of results.	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	While we have been able to confirm the find-	page=4 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ing of Baldwin and Tanaka (2000) that character-	page=4 xpos=5 ypos=1 right-column full-justified hanged-line year headchar-lower tailchar-hiphen
+I-Body	based indexing is superior to word-based indexing,	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we are no closer to determining why this should be	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	the case. In the following sections we look to shed	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	some light on this issue by considering each of: (i)	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the retrieval accuracy for other segmentation sys-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems, (ii) the effects of lexical normalisation, and	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower above-line-space
+I-Body	(iii) the scalability and reproducibility of the given	page=4 xpos=5 ypos=2 right-column full-justified aligned-line line-space
+I-Body	results over different datasets. Finally, we present	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	a brief qualitative explanation for the overall re-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+E-Body	sults.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	5.2 The effects of segmentation and	page=4 xpos=5 ypos=3 right-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-line-space
+I-SubsectionHeader	lexical normalisation	page=4 xpos=5 ypos=3 right-column left-indent right-indent indented-line shorter-tail line-space headchar-lower above-double-space above-line-space
+B-Body	Above, we observed that segmentation consis-	page=4 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tently brought about a degradation in translation	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	retrieval for the given dataset. Automated seg-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mentation inevitably leads to errors, which could	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	possibly impinge on the accuracy of word-based	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	indexing. Alternatively, the performance drop	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	could simply be caused somehow by our particular	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	choice of segmentation module, that is ChaSen.	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	First, we used JUMAN to segment the con-	page=4 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	struction machinery corpus, and evaluated the re-	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sultant dataset in the exact same manner as for	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the ChaSen output. Similarly, we ran a devel-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	opment version of ALTJAWS over the same cor-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pus to produce two datasets, the first simply seg-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mented and the second both segmented and lex-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ically normalised. By lexical normalisation, we	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	mean that each word is converted to its canonical	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	form. The main segment types that normalisation	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	has an effect on are verbs and adjectives (conju-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-line-space
+I-Body	gating words), and also loan-word nouns with an	page=4 xpos=5 ypos=7 right-column full-justified aligned-line line-space headchar-lower
+I-Body	optional long final vowel (e.g. monitā “monitor” ⇒	page=4 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	monita) and words with multiple inter-replaceable	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-line-space
+I-Body	kanji realisations (e.g. 充分 [zyūbuN] “sufficient”	page=4 xpos=5 ypos=8 right-column full-justified aligned-line line-space headchar-lower
+E-Body	⇒ 十分 ).	page=4 xpos=5 ypos=8 right-column right-indent font-largest aligned-line shorter-tail tailchar-period
+B-Body	The retrieval accuracies for JUMAN, and ALT-	page=4 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	JAWS with and without lexical normalisation	page=4 xpos=5 ypos=9 right-column full-justified hanged-line headchar-capital
+I-Body	are presented in Fig. 3, juxtaposed against	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	the retrieval accuracies for character-based in-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dexing (bigrams) and also ChaSen (mixed uni-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-line-space
+I-Body	grams/bigrams) from Section 5.1. Asterisked bars	page=4 xpos=5 ypos=9 right-column full-justified aligned-line line-space headchar-lower page-bottom
+Figure	__Figure 3__	page=5 xpos=0 ypos=-2 left-column left-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 3: Results using different segmentation	page=5 xpos=0 ypos=1 left-column full-justified line-blank-line line-double-space line-space string-figure headchar-capital above-line-space
+E-Caption	modules	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail line-space headchar-lower above-blank-line above-double-space above-line-space
+I-Body	indicate a statistically significant gain in accuracy	page=5 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+E-Body	over ChaSen.	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Looking first to the results for JUMAN, there is	page=5 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	a gain in accuracy over ChaSen for all string com-	page=5 xpos=0 ypos=2 left-column centered right-indent hanged-line itemization headchar-lower tailchar-hiphen
+I-Body	parison methods. With ALTJAWS, also, a con-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sistent gain in performance is evident with simple	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	segmentation, the degree of which is significantly	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	higher than for JUMAN. The addition of lexi-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cal normalisation enhances this effect marginally.	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Notice that character-based indexing (based on	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital above-line-space
+I-Body	character bigrams) holds a clear advantage over	page=5 xpos=0 ypos=3 left-column centered right-indent aligned-line line-space headchar-lower
+I-Body	the best of the word-based indexing results for all	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	string comparison methods.	page=5 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Based on the above, we can state that the choice	page=5 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	of segmentation system does have a modest im-	page=5 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	pact on retrieval accuracy, but that the effects of	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	lexical normalisation are highly localised. In the	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	following, we look to quantify the relationship be-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tween retrieval and segmentation accuracy.	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the next step of evaluation, we took a random	page=5 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	sample of 200 TRecs from the original dataset, and	page=5 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	ran each of ChaSen, JUMAN and ALTJAWS over	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the Japanese component of each. We then man-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ually evaluated the output in terms of segment	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	precision and recall, defined respectively as:	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-blank-line above-double-space above-line-space
+B-Equation	# correct segs in output	page=5 xpos=2 ypos=6 left-column left-indent right-indent indented-line longer-tail line-blank-line line-double-space line-space
+I-Equation	Segment precision =	page=5 xpos=0 ypos=6 left-column right-indent hanged-line shorter-tail headchar-capital
+I-Equation	Total # segs in output	page=5 xpos=2 ypos=6 left-column left-indent right-indent indented-line longer-tail headchar-capital above-line-space
+I-Equation	# correct segs in output	page=5 xpos=1 ypos=6 left-column left-indent right-indent hanged-line line-space
+I-Equation	Segment recall =	page=5 xpos=0 ypos=6 left-column left-indent right-indent hanged-line shorter-tail headchar-capital
+I-Equation	Total # segs in model data	page=5 xpos=1 ypos=7 left-column left-indent right-indent indented-line longer-tail headchar-capital above-blank-line above-double-space above-line-space
+B-Body	One slight complication in evaluating the out-	page=5 xpos=0 ypos=7 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	put of the three systems is that they adopt in-	page=5 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	congruent models of conjugation. We thus made	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	allowance for variation in the analysis of verb and	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	adjective complexes, and focused on the segmen-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tation of noun complexes.	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	A performance breakdown for ChaSen (CS),	page=5 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-comma above-line-space
+I-Body	JUMAN (JM) and ALTJAWS (AJ) is presented in	page=5 xpos=0 ypos=8 left-column full-justified hanged-line line-space headchar-capital
+I-Body	Tab. 1. ALTJAWS was found to outperform the	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	remaining two systems in terms of segment pre-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cision, while ChaSen and JUMAN performed at	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the exact same level of segment precision. Look-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing next to segment recall, ChaSen significantly	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	outperformed both ALTJAWS and JUMAN. The	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	source of almost all errors in recall, and roughly	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	half of errors in precision for both ChaSen and	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+Table	__Table 1__	page=5 xpos=5 ypos=-2 right-column centered right-over box column-top table-area above-double-space above-line-space
+B-Caption	Table 1: Segmentation performance	page=5 xpos=5 ypos=0 right-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-blank-line above-double-space above-line-space
+I-Body	JUMAN was katakana sequences such as gēto-	page=5 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	rokku-barubu “gate-lock valve”, transcribed from	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	English. ALTJAWS, on the other hand, was re-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	markably successful at segmenting katakana word	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	sequences, achieving a segment precision of 100%	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	and segment recall approaching 99%. This is	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	thought to have been the main cause for the dis-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	parity in retrieval accuracy for the three systems,	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	aggravated by the fact that most katakana se-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	quences were key technical terms.	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To gain an insight into consistency in the case	page=5 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	of error, we further calculated the total number	page=5 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	of segment types in the output, expecting to find	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	a core set of correctly-analysed segments, of rel-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	atively constant size across the different systems,	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	plus an unpredictable component of segment er-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rors, of variable size. The system generating the	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	fewest segment types can thus be said to be the	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	most consistent.	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Based on the segment type counts in Tab. 1,	page=5 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	ALTJAWS errs more consistently than the re-	page=5 xpos=5 ypos=3 right-column full-justified hanged-line headchar-capital tailchar-hiphen
+I-Body	maining two systems, and there is very little to	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	separate ChaSen and JUMAN. This is thought to	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	have had some impact on the inflated retrieval ac-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	curacy for ALTJAWS.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To summarise, there would seem to be a di-	page=5 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	rect correlation between segmentation accuracy	page=5 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	and retrieval performance, with segmentation ac-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	curacy on key terms (katakana sequences) having	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	a particularly keen effect on translation retrieval.	page=5 xpos=5 ypos=5 right-column full-justified aligned-line itemization headchar-lower tailchar-period
+I-Body	In this respect, ALTJAWS is superior to both	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	ChaSen and JUMAN for the target domain. Ad-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ditionally, complementing segmentation with lex-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ical normalisation would seem to produce meager	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	performance gains. Lastly, despite the slight gains	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	to word-based indexing with the different segmen-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tation systems, it is still significantly inferior to	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	character-based indexing.	page=5 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	5.3 Scalability of performance	page=5 xpos=5 ypos=6 right-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-line-space
+B-Body	All results to date have arisen from evaluation over	page=5 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	a single dataset of fixed size. In order to validate	page=5 xpos=5 ypos=7 right-column full-justified aligned-line itemization headchar-lower
+I-Body	the basic findings from above and observe how	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	increases in the data size affect retrieval perfor-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mance, we next ran the string comparison meth-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ods over differing-sized subsets of the JEIDA cor-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	pus.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We simulate TMs of differing size by randomly	page=5 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	splitting the JEIDA corpus into ten partitions,	page=5 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	and running the various methods first over par-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tition 1, then over the combined partitions 1 and	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	2, and so on until all ten partitions are combined	page=5 xpos=5 ypos=8 right-column full-justified aligned-line
+I-Body	together into the full corpus. We tested all string	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	comparison methods other than weighted sequen-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tial correspondence over the ten subsets of the	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	JEIDA corpus. Weighted sequential correspon-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	dence was excluded from evaluation due to its	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	overall sub-standard retrieval performance. The	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	translation accuracies for the different methods	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Figure	__Figure 4__	page=6 xpos=0 ypos=-4 left-column left-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 4: Retrieval accuracies over datasets of in-	page=6 xpos=0 ypos=0 left-column full-justified line-blank-line line-double-space line-space string-figure headchar-capital tailchar-hiphen above-line-space
+E-Caption	creasing size	page=6 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail line-space headchar-lower above-blank-line above-double-space above-line-space
+I-Body	over the ten datasets of varying size, are indicated	page=6 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	in Fig. 4, with each string comparison method	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	tested under character bigrams (“2-gram −seg”)	page=6 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	and mixed word unigrams/bigrams (“1/2-gram	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower above-line-space
+I-Body	+seg”) as above. The results for token intersec-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line line-space tailchar-hiphen
+I-Body	tion have been omitted from the graph due to their	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	being almost identical to those for VSM.	page=6 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	A striking feature of the graph is that it is right-	page=6 xpos=0 ypos=2 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	decreasing, which is essentially an artifact of the	page=6 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	inflated length of each TRec (see Section 4.1) and	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	resultant data sparseness. That is, for smaller	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	datasets, in the bulk of cases, no TRec in the TM	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	is similar enough to the input to warrant consid-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eration as a translation candidate (i.e. the trans-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-line-space
+I-Body	lation utility threshold is generally not achieved).	page=6 xpos=0 ypos=3 left-column full-justified aligned-line line-space headchar-lower tailchar-period
+I-Body	For larger datasets, on the other hand, we are hav-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ing to make more subtle choices as to the final	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	translation candidate.	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	One key trend in Fig. 4 is the superiority of	page=6 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	character- over word-based indexing for each of	page=6 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	the three string comparison methods, at a rela-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tively constant level as the TM size grows. Also	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	of interest is the finding that there is very little	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	to distinguish bag-of-words from segment order-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sensitive methods in terms of retrieval accuracy	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	in their respective best configurations.	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	As with the original dataset from above, 3-	page=6 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	operation edit similarity was the strongest per-	page=6 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	former just nosing out (character bigram-based)	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	VSM for line honours, with 3-operation edit dis-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	tance lagging well behind.	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Next, we turn to consider the mean unit re-	page=6 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	trieval times for each method, under the two in-	page=6 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	dexing paradigms. Times are presented in Fig. 5,	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	plotted once again on a logarithmic scale in order	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	to fit the full fan-out of retrieval times onto a single	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	graph. VSM and 3-operation edit distance were	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the most consistent performers, both maintaining	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	retrieval speeds in line with those for the original	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	dataset at around or under 1.0 (i.e. the same re-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	trieval time per input as 3-operation edit distance	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	run over word unigrams for the construction ma-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	chinery dataset). Most importantly, only minor	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	increases in retrieval speed were evident as the	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	TM size increased, which were then reversed for	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	the larger datasets. All three string comparison	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	methods displayed this convex shape, although	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the final running time for 3-operation edit simi-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	larity under character- and word-based indexing	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+Figure	__Figure 5__	page=6 xpos=5 ypos=-4 right-column left-indent right-over box column-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 5: Relative unit retrieval times over	page=6 xpos=5 ypos=0 right-column full-justified line-blank-line line-double-space line-space string-figure headchar-capital above-line-space
+E-Caption	datasets of increasing size	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail line-space headchar-lower above-blank-line above-double-space above-line-space
+I-Body	was, respectively, around 10 and 100 times slower	page=6 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	than that for VSM or 3-operation edit distance	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	over the same dataset.	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	To combine the findings for accuracy and speed,	page=6 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-comma
+I-Body	VSM under character-based indexing suggests it-	page=6 xpos=5 ypos=1 right-column full-justified hanged-line headchar-capital tailchar-hiphen
+I-Body	self as the pick of the different system configura-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions, combining both speed and consistent accu-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	racy. That is, it offers the best overall retrieval	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	performance.	page=6 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	5.4 Qualitative evaluation	page=6 xpos=5 ypos=2 right-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Above, we established that character-based index-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ing is superior to word-based indexing for distinct	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	datasets and a range of segmentation modules,	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	even when segmentation is coupled with lexical	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	normalisation. Additionally, we provided evidence	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	to the effect that bag-of-words methods offer supe-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rior translation retrieval performance to segment	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	order-sensitive methods. We are still no closer,	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	however, to determining why this should be the	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	case. Here, we seek to provide an explanation for	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	these intriguing results.	page=6 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	First comparing character- and word-based in-	page=6 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	dexing, we found that the disparity in retrieval	page=6 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	accuracy was largely related to the scoring of	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	katakana words, which are significantly longer in	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	character length than native Japanese words. For	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the construction machinery dataset as analysed	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	with ChaSen, for example, the average charac-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ter length of katakana words is 3.62, as com-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pared to 2.05 overall. Under word-based index-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing, all words are treated equally and character	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	length does not enter into calculations. Thus	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	a katakana word is treated identically to any	page=6 xpos=5 ypos=7 right-column full-justified aligned-line itemization headchar-lower
+I-Body	other word type. Under character-based index-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing, on the other hand, the longer the word, the	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	more segments it generates, and a single matching	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	katakana sequence thus tends to contribute more	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	heavily to the final score than other words. Ef-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fectively, therefore, katakana sequences receive a	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	higher score than kanji and other sequences, pro-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ducing a preference for TRecs which incorporate	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the same katakana sequences as the input. As	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	noted above, katakana sequences generally repre-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sent key technical terms, and such weighting thus	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	tends to be beneficial to retrieval accuracy.	page=6 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We next examine the reason for the high corre-	page=6 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	lation in retrieval accuracy between bag-of-words	page=6 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Body	and segment order-sensitive methods in their op-	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+I-Body	timum configurations (i.e. when coupled with	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower above-line-space
+I-Body	character bigrams). Essentially, the probabil-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line line-space headchar-lower tailchar-hiphen
+I-Body	ity of a given segment set permuting in differ-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ent string contexts diminishes as the number of	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	co-occurring segments decreases. That is, for a	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	given string pair, the greater the segment over-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lap between them (relative to the overall string	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower above-line-space
+I-Body	lengths), the lower the probability that those seg-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line line-space headchar-lower tailchar-hiphen
+I-Body	ments are going to occur in different orderings.	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This is particularly the case when local segment	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	contiguity is modelled within the segment de-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scription, as occurs for the character bigram and	page=7 xpos=0 ypos=1 left-column centered right-indent aligned-line headchar-lower
+I-Body	mixed word uni/bigram models. For high-scoring	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	matches, therefore, segment order sensitivity be-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	comes largely superfluous, and the slight edge	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	in retrieval accuracy for segment order-sensitive	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	methods tends to come for mid-scoring matches,	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	in the vicinity of the translation utility threshold.	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	6 Conclusion	page=7 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	This research has been concerned with the rela-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tive import of segmentation, segment order and	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	segment contiguity on translation retrieval per-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance. We simulated the effects of word or-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	der sensitivity vs. bag-of-words word order insen-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sitivity by implementing a total of five compar-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ison methods: two bag-of-words approaches and	page=7 xpos=0 ypos=3 left-column centered right-indent aligned-line headchar-lower
+I-Body	three word order-sensitive approaches. Each of	page=7 xpos=0 ypos=4 left-column centered right-indent aligned-line headchar-lower
+I-Body	these methods was then tested under character-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based and word-based indexing and in combina-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion with a range of N-gram models, and the rel-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ative performance of each such system configu-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ration evaluated. Character-based indexing was	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	found to be superior to word-based indexing, par-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ticularly when supplemented with a character bi-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	gram model.	page=7 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We went on to discover a strong correlation be-	page=7 xpos=0 ypos=5 left-column left-indent right-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tween retrieval accuracy and segmentation accu-	page=7 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	racy/consistency, and that lexical normalisation	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	produces marginal gains in retrieval performance.	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We further tested the effects of incremental in-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	creases in data on retrieval performance, and con-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	firmed our earlier finding that character-based in-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dexing is superior to word-based indexing. At the	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	same time, we discovered that in their best con-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	figurations, the retrieval accuracies of our bag-of-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	words and segment order sensitive string compar-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ison methods are roughly equivalent, but that the	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	computational overhead for bag-of-words methods	page=7 xpos=0 ypos=7 left-column centered right-indent aligned-line headchar-lower
+I-Body	to achieve that accuracy is considerably lower than	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	that for segment order sensitive methods.	page=7 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	T. Baldwin and H. Tanaka. 2000. The effects of	page=7 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital above-line-space
+I-Reference	word order and segmentation on translation re-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line line-space headchar-lower tailchar-hiphen above-line-space
+I-Reference	trieval performance. In Proc. of the 18th Inter-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line line-space headchar-lower tailchar-hiphen above-line-space
+I-Reference	national Conference on Computational Linguistics	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line line-space headchar-lower above-line-space
+I-Reference	(COLING 2000), pages 35–41.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail line-space year tailchar-period above-blank-line above-double-space above-line-space
+B-Reference	H. Fujii and W.B. Croft. 1993. A comparison of index-	page=7 xpos=0 ypos=8 left-column centered right-over font-smallest hanged-line longer-tail line-blank-line line-double-space line-space year headchar-capital tailchar-hiphen above-line-space
+I-Reference	ing techniques for Japanese text retrieval. In Proc.	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line line-space headchar-lower tailchar-period above-line-space
+I-Reference	of 16th International ACM-SIGIR Conference on	page=7 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line line-space headchar-lower above-line-space
+I-Reference	Research and Development in Information Retrieval	page=7 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line line-space headchar-capital above-line-space
+I-Reference	(SIGIR’93), pages 237–46.	page=7 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail line-space tailchar-period above-blank-line above-double-space above-line-space
+B-Reference	H. Isahara. 1998. JEIDA’s English–Japanese bilin-	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail line-blank-line line-double-space line-space year headchar-capital tailchar-hiphen above-line-space
+I-Reference	gual corpus project. In Proc. of the 1st Interna-	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line line-space headchar-lower tailchar-hiphen column-bottom
+I-Reference	tional Conference on Language Resources and Eval-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest column-top headchar-lower tailchar-hiphen above-line-space
+I-Reference	uation (LREC’98), pages 471–81.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	E. Kitamura and H. Yamamoto. 1996. Translation	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital above-line-space
+I-Reference	retrieval system using alignment data from parallel	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line line-space headchar-lower above-line-space
+I-Reference	texts. In Proc. of the 53rd Annual Meeting of the	page=7 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line line-space headchar-lower above-line-space
+I-Reference	IPSJ, volume 2, pages 385–6. (In Japanese).	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	S. Kurohashi and M. Nagao. 1998. Nihongo keitai-	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen above-line-space
+I-Reference	kaiseki sisutemu JUMAN [Japanese morphological	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line line-space headchar-lower above-line-space
+I-Reference	analysis system JUMAN] version 3.5. Technical re-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line line-space headchar-lower tailchar-hiphen above-line-space
+I-Reference	port, Kyoto University. (In Japanese).	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	C. Manning and H. Schütze. 1999. Foundations	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital above-line-space
+I-Reference	of Statistical Natural Language Processing. MIT	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line line-space headchar-lower above-line-space
+I-Reference	Press.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Y. Matsumoto, A. Kitauchi, T. Yamashita, and Y. Hi-	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen above-line-space
+I-Reference	rano. 1999. Japanese Morphological Analysis Sys-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line line-space year headchar-lower tailchar-hiphen above-line-space
+I-Reference	tem ChaSen Version 2.0 Manual. Technical Report	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line line-space headchar-lower above-line-space
+I-Reference	NAIST-IS-TR99009, NAIST.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	N. Nakamura. 1989. Translation support by retrieving	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital above-line-space
+I-Reference	bilingual texts. In Proc. of the 38th Annual Meeting	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line line-space headchar-lower above-line-space
+I-Reference	of the IPSJ, volume 1, pages 357–8. (In Japanese).	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line line-space headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	S. Nirenburg, C. Domashnev, and D.J. Grannes. 1993.	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line line-double-space line-space year headchar-capital tailchar-period above-line-space
+I-Reference	Two approaches to matching in example-based ma-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line line-space headchar-capital tailchar-hiphen above-line-space
+I-Reference	chine translation. In Proc. of the 5th International	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line line-space headchar-lower above-line-space
+I-Reference	Conference on Theoretical and Methodological Is-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line line-space headchar-capital tailchar-hiphen above-line-space
+I-Reference	sues in Machine Translation (TMI-93), pages 47–	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line line-space headchar-lower above-line-space
+I-Reference	57.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space tailchar-period above-double-space above-line-space
+B-Reference	E. Planas. 1998. A Case Study on Memory Based	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital above-line-space
+I-Reference	Machine Translation Tools. PhD Fellow Working	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line line-space headchar-capital above-line-space
+I-Reference	Paper, United Nations University.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	G. Salton. 1971. The SMART Retrieval System:	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-colon above-line-space
+I-Reference	Experiments in Automatic Document Processing.	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line line-space headchar-capital tailchar-period above-line-space
+I-Reference	Prentice-Hall.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	S. Sato and T. Kawase. 1994. A High-Speed Best	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital above-line-space
+I-Reference	Match Retrieval Method for Japanese Text. Techni-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line line-space headchar-capital tailchar-hiphen above-line-space
+I-Reference	cal Report IS-RR-94-9I, JAIST.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	S. Sato and M. Nagao. 1990. Toward memory-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen above-line-space
+I-Reference	based translation. In Proc. of the 13th International	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line line-space headchar-lower above-line-space
+I-Reference	Conference on Computational Linguistics (COL-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line line-space headchar-capital tailchar-hiphen above-line-space
+I-Reference	ING ’90), pages 247–52.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	S. Sato. 1992. CTM: An example-based transla-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen above-line-space
+I-Reference	tion aid system. In Proc. of the 14th International	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line line-space headchar-lower above-line-space
+I-Reference	Conference on Computational Linguistics (COL-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line line-space headchar-capital tailchar-hiphen above-line-space
+I-Reference	ING ’92), pages 1259–63.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	E. Sumita and Y. Tsutsumi. 1991. A practical method	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital above-line-space
+I-Reference	of retrieving similar examples for translation aid.	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line line-space headchar-lower tailchar-period above-line-space
+I-Reference	Transactions of the IEICE, J74-D-II(10):1437–47.	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line line-space headchar-capital tailchar-period above-line-space
+I-Reference	(In Japanese).	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space tailchar-period above-double-space above-line-space
+B-Reference	H. Tanaka. 1997. An efficient way of gauging similar-	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen above-line-space
+I-Reference	ity between long Japanese expressions. In Informa-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line line-space headchar-lower tailchar-hiphen above-line-space
+I-Reference	tion Processing Society of Japan SIG Notes, volume	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line line-space headchar-lower above-line-space
+I-Reference	97, no. 85, pages 69–74. (In Japanese).	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space tailchar-period above-double-space above-line-space
+B-Reference	A. Trujillo. 1999. Translation Engines: Techniques	page=7 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital above-line-space
+I-Reference	for Machine Translation. Springer Verlag.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest indented-line shorter-tail line-space headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	A. Wagner and M. Fisher. 1974. The string-to-	page=7 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen above-line-space
+I-Reference	string correction problem. Journal of the ACM,	page=7 xpos=5 ypos=9 right-column left-indent font-smallest indented-line line-space headchar-lower tailchar-comma above-line-space
+I-Reference	21(1):168–73.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space tailchar-period

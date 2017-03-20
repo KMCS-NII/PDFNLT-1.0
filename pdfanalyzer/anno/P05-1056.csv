@@ -1,0 +1,629 @@
+Title	Using Conditional Random Fields For Sentence Boundary Detection In	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital
+Title	Speech	page=0 xpos=4 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+Author	Yang Liu Andreas Stolcke Elizabeth Shriberg Mary Harper	page=0 xpos=1 ypos=0 single-column left-indent right-indent font-largest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	ICSI, Berkeley SRI and ICSI Purdue University	page=0 xpos=1 ypos=1 single-column left-indent right-indent font-largest headchar-capital above-line-space
+Email	yangl@icsi.berkeley.edu stolcke,ees@speech.sri.com harper@ecn.purdue.edu	page=0 xpos=0 ypos=1 single-column left-indent right-indent font-smallest hanged-line longer-tail line-space symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-blank-line above-double-space above-line-space
+B-Abstract	Sentence boundary detection in speech is	page=0 xpos=0 ypos=2 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Abstract	important for enriching speech recogni-	page=0 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion output, making it easier for humans to	page=0 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower
+I-Abstract	read and downstream modules to process.	page=0 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower tailchar-period
+I-Abstract	In previous work, we have developed hid-	page=0 xpos=0 ypos=3 left-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	den Markov model (HMM) and maximum	page=0 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower
+I-Listitem	entropy (Maxent) classifiers that integrate	page=0 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower
+I-Listitem	textual and prosodic knowledge sources	page=0 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower
+I-Listitem	for detecting sentence boundaries. In this	page=0 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower
+I-Listitem	paper, we evaluate the use of a condi-	page=0 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tional random field (CRF) for this task	page=0 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower
+I-Listitem	and relate results with this model to our	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Listitem	prior work. We evaluate across two cor-	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	pora (conversational telephone speech and	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Listitem	broadcast news speech) on both human	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Listitem	transcriptions and speech recognition out-	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	put. In general, our CRF model yields a	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Listitem	lower error rate than the HMM and Max-	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ent models on the NIST sentence bound-	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ary detection task in speech, although it	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Listitem	is interesting to note that the best results	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Listitem	are achieved by three-way voting among	page=0 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Listitem	the classifiers. This probably occurs be-	page=0 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	cause each model has different strengths	page=0 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Listitem	and weaknesses for modeling the knowl-	page=0 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	edge sources.	page=0 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=8 left-column right-indent font-largest hanged-line line-blank-line line-double-space line-space numbered-heading1 column-bottom
+B-Body	Sentence segmentation information is crucial and as-	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-capital tailchar-hiphen
+I-Body	sumed in most of the further processing steps that	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	one would want to apply to such output: tagging	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	and parsing, information extraction, summarization,	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	among others.	page=0 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	1.1 Sentence Segmentation Using HMM	page=0 xpos=5 ypos=3 right-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Most prior work on sentence segmentation (Shriberg	page=0 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	et al., 2000; Gotoh and Renals, 2000; Christensen	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	et al., 2001; Kim and Woodland, 2001; NIST-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	RT03F, 2003) have used an HMM approach, in	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-capital
+I-Body	which the word/tag sequences are modeled by N-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gram language models (LMs) (Stolcke and Shriberg,	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1996). Additional features (mostly related to speech	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year
+I-Body	prosody) are modeled as observation likelihoods at-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tached to the N-gram states of the HMM (Shriberg	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	et al., 2000). Figure 1 shows the graphical model	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower
+I-Body	representation of the variables involved in the HMM	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	for this task. Note that the words appear in both	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the states <sup>1</sup> and the observations, such that the	page=0 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	word stream constrains the possible hidden states	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	to matching words; the ambiguity in the task stems	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	entirely from the choice of events. This architec-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture differs from the one typically used for sequence	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	tagging (e.g., part-of-speech tagging), in which the	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	“hidden” states represent only the events or tags.	page=0 xpos=5 ypos=7 right-column full-justified aligned-line tailchar-period
+I-Body	Empirical investigations have shown that omitting	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	words in the states significantly degrades system	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	performance for sentence boundary detection (Liu,	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2004). The observation probabilities in the HMM,	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year tailchar-comma
+I-Body	implemented using a decision tree classifier, capture	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower column-bottom
+I-Body	Standard speech recognizers output an unstructured the probabilities of generating the prosodic features	page=0 xpos=0 ypos=8 single-column full-justified font-largest column-top headchar-capital
+I-Body	stream of words, in which the important structural	page=0 xpos=0 ypos=8 single-column right-indent aligned-line shorter-tail headchar-lower
+E-Body	features such as sentence boundaries are missing. <sup>1</sup> In this sense, the states are only partially “hidden”.	page=0 xpos=0 ypos=9 single-column right-indent font-larger aligned-line longer-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	451	page=0 xpos=4 ypos=9 single-column left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space numeric-only
+B-Footer	Proceedings of the 43rd Annual Meeting of the ACL, pages 451–458,	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail headchar-capital tailchar-comma
+I-Footer	Ann Arbor, June 2005.  2005 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail year headchar-capital page-bottom
+I-Body	P ( F i j E i ;W i ) . 2 An N-gram LM is used to calculate	page=1 xpos=0 ypos=0 left-column full-justified font-largest page-top headchar-capital
+I-Body	the transition probabilities:	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	P ( W i E i j W 1 E 1 : : : W i ? 1 E i ? 1 ) =	page=1 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line longer-tail line-space headchar-capital
+I-Equation	P ( W i j W 1 E 1 : : : W i ? 1 E i ? 1 ) 	page=1 xpos=1 ypos=0 left-column left-indent right-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	P ( E i j W 1 E 1 : : : W i ? 1 E i ? 1 E i )	page=1 xpos=1 ypos=1 left-column left-indent right-indent font-largest aligned-line headchar-capital above-double-space above-line-space
+B-Body	In the HMM, the forward-backward algorithm is	page=1 xpos=0 ypos=1 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	used to determine the event with the highest poste-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rior probability for each interword boundary:	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	E ^ i = arg max P ( E i j W; F ) (1)	page=1 xpos=1 ypos=2 left-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	E i	page=1 xpos=1 ypos=2 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	The HMM is a generative modeling approach since	page=1 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	it describes a stochastic process with hidden vari-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ables (sentence boundary) that produces the observ-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	able data. This HMM approach has two main draw-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	backs. First, standard training methods maximize	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the joint probability of observed and hidden events,	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	as opposed to the posterior probability of the correct	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	hidden variable assignment given the observations,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which would be a criterion more closely related to	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	classification performance. Second, the N-gram LM	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	underlying the HMM transition model makes it dif-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ficult to use features that are highly correlated (such	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	as words and POS labels) without greatly increas-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the number of model parameters, which in turn	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	would make robust estimation difficult. More details	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	about using textual information in the HMM system	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	are provided in Section 3.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	1.2 Sentence Segmentation Using Maxent	page=1 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	A maximum entropy (Maxent) posterior classifica-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tion method has been evaluated in an attempt to	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	overcome some of the shortcomings of the HMM	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	approach (Liu et al., 2004; Huang and Zweig, 2002).	page=1 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	For a boundary position i , the Maxent model takes	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	the exponential form:	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	P ( E i j T i ;F i ) = <sub>Z</sub>  ( T 1 i ; F i ) e P k  k g k ( E i ;T i ;F i ) (2)	page=1 xpos=0 ypos=7 left-column left-indent box indented-line longer-tail headchar-capital
+I-Body	where Z  ( T i ; F i ) is a normalization term and T i	page=1 xpos=0 ypos=8 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	represents textual information. The indicator func-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions g k ( E i ; T i ; F i ) correspond to features defined	page=1 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	over events, words, and prosody. The parameters in	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>2</sup> In the prosody model implementation, we ignore the word	page=1 xpos=0 ypos=9 left-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	identity in the conditions, only using the timing or word align-	page=1 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower tailchar-hiphen
+I-Footnote	ment information.	page=1 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	452	page=1 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 1__	page=1 xpos=5 ypos=0 right-column centered left-indent right-indent box column-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: A graphical model of HMM for the	page=1 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital
+I-Caption	sentence boundary detection problem. Only one	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Caption	word+event pair is depicted in each state, but in	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Caption	a model based on N-grams, the previous N ? 1	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Caption	tokens would condition the transition to the next	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Caption	state. O are observations consisting of words W and	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Caption	prosodic features F , and E are sentence boundary	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Caption	events.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Maxent Q are chosen to maximize the conditional like-	page=1 xpos=5 ypos=3 right-column full-justified font-largest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	lihood i P ( E i j T i ; F i ) over the training data, bet-	page=1 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ter matching the classification accuracy metric. The	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	Maxent framework provides a more principled way	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	to combine the largely correlated textual features, as	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	confirmed by the results of (Liu et al., 2004); how-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+E-Body	ever, it does not model the state sequence.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	A simple combination of the results from the	page=1 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	Maxent and HMM was found to improve upon the	page=1 xpos=5 ypos=5 right-column full-justified hanged-line headchar-capital
+I-Body	performance of either model alone (Liu et al., 2004)	page=1 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower
+I-Body	because of the complementary strengths and weak-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nesses of the two models. An HMM is a generative	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	model, yet it is able to model the sequence via the	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	forward-backward algorithm. Maxent is a discrimi-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	native model; however, it attempts to make decisions	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	locally, without using sequential information.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	A conditional random field (CRF) model (Laf-	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ferty et al., 2001) combines the benefits of the HMM	page=1 xpos=5 ypos=7 right-column full-justified hanged-line year headchar-lower
+I-Body	and Maxent approaches. Hence, in this paper we	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	will evaluate the performance of the CRF model and	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	relate the results to those using the HMM and Max-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ent approaches on the sentence boundary detection	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	task. The rest of the paper is organized as follows.	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Section 2 describes the CRF model and discusses	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	how it differs from the HMM and Maxent models.	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Section 3 describes the data and features used in the	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	models to be compared. Section 4 summarizes the	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	experimental results for the sentence boundary de-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tection task. Conclusions and future work appear in	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	Section 5.	page=1 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period page-bottom
+B-SectionHeader	2 CRF Model Description	page=2 xpos=0 ypos=0 left-column right-indent font-largest page-top numbered-heading1 above-double-space above-line-space
+B-Body	A CRF is a random field that is globally conditioned	page=2 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	on an observation sequence O . CRFs have been suc-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cessfully used for a variety of text processing tasks	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	(Lafferty et al., 2001; Sha and Pereira, 2003; McCal-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	lum and Li, 2003), but they have not been widely ap-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	plied to a speech-related task with both acoustic and	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	textual knowledge sources. The top graph in Figure	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	2 is a general CRF model. The states of the model	page=2 xpos=0 ypos=1 left-column full-justified aligned-line numbered-heading1
+I-Body	correspond to event labels E . The observations O	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	are composed of the textual features, as well as the	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	prosodic features. The most likely event sequence E ^	page=2 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	<sup>for</sup> <sup>the</sup> <sup>given</sup> <sup>input</sup> <sup>sequence</sup> P (observations)  G ( E;O ) O is	page=2 xpos=0 ypos=2 left-column right-indent box aligned-line shorter-tail headchar-super
+B-Equation	E ^ = arg max e k <sub>Z</sub>  k ( O k )	page=2 xpos=1 ypos=2 left-column left-indent right-indent box indented-line shorter-tail headchar-capital
+I-Equation	(3)	page=2 xpos=4 ypos=2 left-column left-indent indented-line longer-tail
+I-Equation	E	page=2 xpos=1 ypos=3 left-column left-indent right-indent font-largest hanged-line shorter-tail headchar-capital above-double-space above-line-space
+I-Body	where the functions G are potential functions over	page=2 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	the events and the observations, and Z  is the nor-	page=2 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	<sup>malization</sup> <sup>term:</sup> X P	page=2 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-super
+B-Equation	Z  ( O )= e k  k G k ( E;O ) (4)	page=2 xpos=1 ypos=4 left-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	E	page=2 xpos=2 ypos=4 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	Even though a CRF itself has no restriction on	page=2 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	the potential functions G k ( E; O ) , to simplify the	page=2 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	model (considering computational cost and the lim-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ited training set size), we use a first-order CRF in	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	this investigation, as at the bottom of Figure 2. In	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	this model, an observation O i (consisting of textual	page=2 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	features T i and prosodic features F i ) is associated	page=2 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	with a state E i .	page=2 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The model is trained to maximize the conditional	page=2 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	log-likelihood of a given training set. Similar to the	page=2 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	Maxent model, the conditional likelihood is closely	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	related to the individual event posteriors used for	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	classification, enabling this type of model to explic-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	itly optimize discrimination of correct from incor-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rect labels. The most likely sequence is found using	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	the Viterbi algorithm. <sup>3</sup>	page=2 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+B-Body	A CRF differs from an HMM with respect to its	page=2 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	training objective function (joint versus conditional	page=2 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	likelihood) and its handling of dependent word fea-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures. Traditional HMM training does not maxi-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mize the posterior probabilities of the correct la-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bels; whereas, the CRF directly estimates posterior	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>3</sup> The forward-backward algorithm would most likely be bet-	page=2 xpos=0 ypos=9 left-column left-indent indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	ter here, but it is not implemented in the software we used (Mc-	page=2 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower tailchar-hiphen
+I-Footnote	Callum, 2002).	page=2 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+Page	453	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 2__	page=2 xpos=5 ypos=-1 right-column centered left-indent right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 2: Graphical representations of a general	page=2 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space string-figure headchar-capital
+I-Caption	CRF and the first-order CRF used for the sentence	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Caption	boundary detection problem. E represent the state	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Caption	tags (i.e., sentence boundary or not). O are observa-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Caption	tions consisting of words W or derived textual fea-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Caption	tures T and prosodic features F .	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+I-Body	boundary label probabilities P ( E j O ) . The under-	page=2 xpos=5 ypos=3 right-column full-justified font-largest aligned-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	lying N-gram sequence model of an HMM does	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	not cope well with multiple representations (fea-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures) of the word sequence (e.g., words, POS), es-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pecially when the training set is small; however, the	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	CRF model supports simultaneous correlated fea-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tures, and therefore gives greater freedom for incor-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	porating a variety of knowledge sources. A CRF	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	differs from the Maxent method with respect to its	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	ability to model sequence information. The primary	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	advantage of the CRF over the Maxent approach is	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	that the model is optimized globally over the entire	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	sequence; whereas, the Maxent model makes a local	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	decision, as shown in Equation (2), without utilizing	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	any state dependency information.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We use the Mallet package (McCallum, 2002) to	page=2 xpos=5 ypos=6 right-column left-indent indented-line longer-tail year headchar-capital
+I-Body	implement the CRF model. To avoid overfitting, we	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	employ a Gaussian prior with a zero mean on the	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	parameters (Chen and Rosenfeld, 1999), similar to	page=2 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	what is used for training Maxent models (Liu et al.,	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	2004).	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Experimental Setup	page=2 xpos=5 ypos=7 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	3.1 Data and Task Description	page=2 xpos=5 ypos=8 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The sentence-like units in speech are different from	page=2 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	those in written text. In conversational speech,	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	these units can be well-formed sentences, phrases,	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	or even a single word. These units are called SUs	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	in the DARPA EARS program. SU boundaries, as	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	well as other structural metadata events, were an-	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	notated by LDC according to an annotation guide-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	line (Strassel, 2003). Both the transcription and the	page=3 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower
+I-Body	recorded speech were used by the annotators when	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	labeling the boundaries.	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The SU detection task is conducted on two cor-	page=3 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	pora: Broadcast News (BN) and Conversational	page=3 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	Telephone Speech (CTS). BN and CTS differ in	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	genre and speaking style. The average length of SUs	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	is longer in BN than in CTS, that is, 12.35 words	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	(standard deviation 8.42) in BN compared to 7.37	page=3 xpos=0 ypos=2 left-column full-justified aligned-line
+I-Body	words (standard deviation 8.72) in CTS. This dif-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ference is reflected in the frequency of SU bound-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	aries: about 14% of interword boundaries are SUs in	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	CTS compared to roughly 8% in BN. Training and	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	test data for the SU detection task are those used in	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the NIST Rich Transcription 2003 Fall evaluation.	page=3 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	We use both the development set and the evalua-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tion set as the test set in this paper in order to ob-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tain more meaningful results. For CTS, there are	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	about 40 hours of conversational data (around 480K	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	words) from the Switchboard corpus for training	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	and 6 hours (72 conversations) for testing. The BN	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	data has about 20 hours of Broadcast News shows	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	(about 178K words) in the training set and 3 hours	page=3 xpos=0 ypos=4 left-column full-justified aligned-line
+I-Body	(6 shows) in the test set. Note that the SU-annotated	page=3 xpos=0 ypos=5 left-column full-justified aligned-line
+I-Body	training data is only a subset of the data used for	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the speech recognition task because more effort is	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	required to annotate the boundaries.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	For testing, the system determines the locations	page=3 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	of sentence boundaries given the word sequence W	page=3 xpos=0 ypos=6 left-column right-indent hanged-line headchar-lower
+I-Body	and the speech. The SU detection task is evaluated	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	on both the reference human transcriptions (REF)	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	and speech recognition outputs (STT). Evaluation	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	across transcription types allows us to obtain the per-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance for the best-case scenario when the tran-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scriptions are correct; thus factoring out the con-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	founding effect of speech recognition errors on the	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	SU detection task. We use the speech recognition	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	output obtained from the SRI recognizer (Stolcke et	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	al., 2003).	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Body	System performance is evaluated using the offi-	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	cial NIST evaluation tools. <sup>4</sup> System output is scored	page=3 xpos=0 ypos=8 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	by first finding a minimum edit distance alignment	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	between the hypothesized word string and the refer-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>4</sup> See http://www.nist.gov/speech/tests/rt/rt2003/fall/ for	page=3 xpos=0 ypos=9 left-column left-indent indented-line line-double-space line-space year headchar-super
+I-Footnote	more details about scoring.	page=3 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	454	page=3 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	ence transcriptions, and then comparing the aligned	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	event labels. The SU error rate is defined as the total	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	number of deleted or inserted SU boundary events,	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	divided by the number of true SU boundaries. In	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	addition to this NIST SU error metric, we use the	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	total number of interword boundaries as the denomi-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nator, and thus obtain results for the per-boundary-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	based metric.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Feature Extraction and Modeling	page=3 xpos=5 ypos=1 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	To obtain a good-quality estimation of the condi-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tional probability of the event tag given the obser-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vations P ( E i j O i ) , the observations should be based	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	on features that are discriminative of the two events	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	(SU versus not). As in (Liu et al., 2004), we utilize	page=3 xpos=5 ypos=2 right-column full-justified aligned-line year
+E-Body	both textual and prosodic information.	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We extract prosodic features that capture duration,	page=3 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	pitch, and energy patterns associated with the word	page=3 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	boundaries (Shriberg et al., 2000). For all the model-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ing methods, we adopt a modular approach to model	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the prosodic features, that is, a decision tree classi-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fier is used to model them. During testing, the de-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cision tree prosody model estimates posterior prob-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	abilities of the events given the associated prosodic	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	features for a word boundary. The posterior prob-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ability estimates are then used in various modeling	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	approaches in different ways as described later.	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Since words and sentence boundaries are mu-	page=3 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tually constraining, the word identities themselves	page=3 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	(from automatic recognition or human transcrip-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line tailchar-hiphen
+I-Body	tions) constitute a primary knowledge source for	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	sentence segmentation. We also make use of vari-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ous automatic taggers that map the word sequence to	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	other representations. Tagged versions of the word	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	stream are provided to support various generaliza-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions of the words and to smooth out possibly un-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dertrained word-based probability estimates. These	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	tags include part-of-speech tags, syntactic chunk	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	tags, and automatically induced word classes. In ad-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dition, we use extra text corpora, which were not an-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	notated according to the guideline used for the train-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing and test data (Strassel, 2003). For BN, we use	page=3 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	the training corpus for the LM for speech recogni-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. For CTS, we use the Penn Treebank Switch-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	board data. There is punctuation information in	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	both, which we use to approximate SUs as defined	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	in the annotation guideline (Strassel, 2003).	page=3 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	As explained in Section 1, the prosody model and	page=3 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital page-bottom
+B-Caption	Table 1: Knowledge sources and their representations in different modeling approaches: HMM, Maxent,	page=4 xpos=0 ypos=0 single-column full-justified page-top string-table headchar-capital tailchar-comma
+I-Body	__Table 1__	page=4 xpos=-1 ypos=0 single-column left-over box table-area column-bottom above-blank-line above-double-space above-line-space
+I-Body	the N-gram LM can be integrated in an HMM. When	page=4 xpos=0 ypos=2 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower
+I-Body	various textual information is used, jointly modeling	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	words and tags may be an effective way to model the	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	richer feature set; however, a joint model requires	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	more parameters. Since the training set for the SU	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	detection task in the EARS program is quite limited,	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we use a loosely coupled approach:	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Listitem	 Linearly combine three LMs: the word-based	page=4 xpos=0 ypos=4 left-column left-indent font-largest indented-line longer-tail line-space
+I-Listitem	LM from the LDC training data, the automatic-	page=4 xpos=0 ypos=4 left-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Listitem	class-based LMs, and the word-based LM	page=4 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower
+I-Listitem	trained from the additional corpus.	page=4 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	 These interpolated LMs are then combined	page=4 xpos=0 ypos=4 left-column left-indent font-largest hanged-line longer-tail line-space
+I-Listitem	with the prosody model via the HMM. The	page=4 xpos=0 ypos=5 left-column left-indent indented-line headchar-lower
+I-Listitem	posterior probabilities of events at each bound-	page=4 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ary are obtained from this step, denoted as	page=4 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Listitem	P HMM ( E i j W; C; F ) .	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-largest aligned-line shorter-tail headchar-capital tailchar-period
+B-Listitem	 Apply the POS-based LM alone to the POS	page=4 xpos=0 ypos=6 left-column left-indent font-largest hanged-line longer-tail
+I-Listitem	sequence (obtained by running the POS tag-	page=4 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	ger on the word sequence W ) and generate the	page=4 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Listitem	posterior probabilities for each word boundary	page=4 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Listitem	P posLM ( E i j P OS ) , which are then combined	page=4 xpos=0 ypos=6 left-column left-indent font-largest aligned-line headchar-capital
+I-Listitem	from the posteriors from the previous step,	page=4 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower tailchar-comma
+I-Listitem	i.e., P final ( E i j T ; F ) = P HMM ( E i j W; C; F )+	page=4 xpos=0 ypos=7 left-column left-indent font-largest aligned-line headchar-lower
+I-Listitem	P posLM ( E i j P ) .	page=4 xpos=0 ypos=7 left-column left-indent right-indent font-largest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Body	The features used for the CRF are the same as	page=4 xpos=0 ypos=8 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	those used for the Maxent model devised for the SU	page=4 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+E-Body	detection task (Liu et al., 2004), briefly listed below.	page=4 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-period above-line-space
+B-Listitem	 N-grams of words or various tags (POS tags,	page=4 xpos=0 ypos=8 left-column left-indent font-largest indented-line line-space tailchar-comma
+I-Listitem	automatically induced classes). Different N s	page=4 xpos=0 ypos=8 left-column left-indent indented-line headchar-lower
+I-Listitem	and different position information are used ( N	page=4 xpos=0 ypos=9 left-column left-indent right-indent aligned-line headchar-lower
+I-Listitem	varies from one through four).	page=4 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	455	page=4 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Listitem	 The cumulative binned posterior probabilities	page=4 xpos=5 ypos=2 right-column left-indent font-largest column-top
+I-Listitem	from the decision tree prosody model.	page=4 xpos=5 ypos=2 right-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-period
+B-Listitem	 The N-gram LM trained from the extra cor-	page=4 xpos=5 ypos=2 right-column left-indent font-largest hanged-line longer-tail tailchar-hiphen
+I-Listitem	pus is used to estimate posterior event proba-	page=4 xpos=5 ypos=3 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	bilities for the LDC-annotated training and test	page=4 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower
+I-Listitem	sets, and these posteriors are then thresholded	page=4 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower
+I-Listitem	to yield binary features.	page=4 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	 Other features: speaker or turn change, and	page=4 xpos=5 ypos=4 right-column left-indent font-largest hanged-line longer-tail
+I-Listitem	compound features of POS tags and decisions	page=4 xpos=5 ypos=4 right-column left-indent indented-line headchar-lower
+I-Listitem	from the prosody model.	page=4 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Table 1 summarizes the features and their repre-	page=4 xpos=5 ypos=4 right-column left-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+I-Body	sentations used in the three modeling approaches.	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	The same knowledge sources are used in these ap-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	proaches, but with different representations. The	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	goal of this paper is to evaluate the ability of these	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	three modeling approaches to combine prosodic and	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	textual knowledge sources, not in a rigidly parallel	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	fashion, but by exploiting the inherent capabilities	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of each approach. We attempt to compare the mod-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els in as parallel a fashion as possible; however, it	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	should be noted that the two discriminative methods	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	better model the textual sources and the HMM bet-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ter models prosody given its representation in this	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	study.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Experimental Results and Discussion	page=4 xpos=5 ypos=7 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	SU detection results using the CRF, HMM, and	page=4 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	Maxent approaches individually, on the reference	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	transcriptions or speech recognition output, are	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	shown in Tables 2 and 3 for CTS and BN data, re-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	spectively. We present results when different knowl-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	edge sources are used: word N-gram only, word N-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gram and prosodic information, and using all the	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+B-Caption	Table 2: Conversational telephone speech SU detection results reported using the NIST SU error rate (%)	page=5 xpos=0 ypos=0 single-column full-justified page-top string-table headchar-capital
+I-Caption	and the boundary-based error rate (% in parentheses) using the HMM, Maxent, and CRF individually and in	page=5 xpos=0 ypos=0 single-column full-justified aligned-line headchar-lower
+I-Caption	combination. Note that the ‘all features’ condition uses all the knowledge sources described in Section 3.2.	page=5 xpos=0 ypos=0 single-column full-justified aligned-line headchar-lower tailchar-period
+I-Caption	‘Vote’ is the result of the majority vote over the three modeling approaches, each of which uses all the	page=5 xpos=0 ypos=0 single-column full-justified aligned-line
+I-Caption	features. The baseline error rate when assuming there is no SU boundary at each word boundary is 100%	page=5 xpos=0 ypos=0 single-column full-justified aligned-line headchar-lower
+E-Caption	for the NIST	page=5 xpos=0 ypos=1 single-column right-indent aligned-line shorter-tail headchar-lower
+Table	__Table 2__	page=5 xpos=1 ypos=1 single-column centered left-indent right-indent box indented-line longer-tail table-area column-bottom above-blank-line above-double-space above-line-space
+I-Body	features described in Section 3.2. The word N-	page=5 xpos=0 ypos=3 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	grams are from the LDC training data and the extra	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	text corpora. ‘All the features’ means adding textual	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	information based on tags, and the ‘other features’ in	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the Maxent and CRF models as well. The detection	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	error rate is reported using the NIST SU error rate,	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	as well as the per-boundary-based classification er-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ror rate (in parentheses in the table) in order to factor	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	out the effect of the different SU priors. Also shown	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	in the tables are the majority vote results over the	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	three modeling approaches when all the features are	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	used.	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 CTS Results	page=5 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	For CTS, we find from Table 2 that the CRF is supe-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	rior to both the HMM and the Maxent model across	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	all conditions (the differences are significant at p <	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	0 : 05 ). When using only the word N-gram informa-	page=5 xpos=0 ypos=7 left-column full-justified font-largest aligned-line numbered-heading1 tailchar-hiphen
+I-Body	tion, the gain of the CRF is the greatest, with the dif-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferences among the models diminishing as more fea-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures are added. This may be due to the impact of the	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	sparse data problem on the CRF or simply due to the	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	fact that differences among modeling approaches are	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	less when features become stronger, that is, the good	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	features compensate for the weaknesses in models.	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Notice that with fewer knowledge sources (e.g., us-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ing only word N-gram and prosodic information),	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the CRF is able to achieve performance similar to or	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	even better than other methods using all the knowl-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	456	page=5 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	edges sources. This may be useful when feature ex-	page=5 xpos=5 ypos=3 right-column full-justified column-top headchar-lower tailchar-hiphen
+E-Body	traction is computationally expensive.	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We observe from Table 2 that there is a large	page=5 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	increase in error rate when evaluating on speech	page=5 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	recognition output. This happens in part because	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	word information is inaccurate in the recognition	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	output, thus impacting the effectiveness of the LMs	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	and lexical features. The prosody model is also af-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fected, since the alignment of incorrect words to the	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	speech is imperfect, thereby degrading prosodic fea-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture extraction. However, the prosody model is more	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	robust to recognition errors than textual knowledge,	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	because of its lesser dependence on word identity.	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The results show that the CRF suffers most from the	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	recognition errors. By focusing on the results when	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	only word N-gram information is used, we can see	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the effect of word errors on the models. The SU	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	detection error rate increases more in the STT con-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dition for the CRF model than for the other models,	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	suggesting that the discriminative CRF model suf-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fers more from the mismatch between the training	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	(using the reference transcription) and the test con-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line tailchar-hiphen
+E-Body	dition (features obtained from the errorful words).	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We also notice from the CTS results that when	page=5 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	only word N-gram information is used (with or	page=5 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	without combining with prosodic information), the	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	HMM is superior to the Maxent; only when various	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	additional textual features are included in the fea-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture set does Maxent show its strength compared to	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+B-Caption	Table 3: Broadcast news SU detection results reported using the NIST SU error rate (%) and the boundary-	page=6 xpos=0 ypos=0 single-column full-justified page-top string-table headchar-capital tailchar-hiphen
+I-Caption	based error rate (% in parentheses) using the HMM, Maxent, and CRF individually and in combination. The	page=6 xpos=0 ypos=0 single-column full-justified aligned-line headchar-lower
+E-Caption	baseline	page=6 xpos=0 ypos=0 single-column right-indent aligned-line shorter-tail headchar-lower
+Table	__Table 3__	page=6 xpos=1 ypos=0 single-column centered left-indent right-indent box indented-line longer-tail table-area column-bottom above-blank-line above-double-space above-line-space
+I-Body	the HMM, highlighting the benefit of Maxent’s han-	page=6 xpos=0 ypos=3 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+E-Body	dling of the textual features.	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The combined result (using majority vote) of the	page=6 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	three approaches in Table 2 is superior to any model	page=6 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	alone (the improvement is not significant though).	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Previously, it was found that the Maxent and HMM	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	posteriors combine well because the two approaches	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	have different error patterns (Liu et al., 2004). For	page=6 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	example, Maxent yields fewer insertion errors than	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	HMM because of its reliance on different knowledge	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	sources. The toolkit we use for the implementation	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	of the CRF does not generate a posterior probabil-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity for a sequence; therefore, we do not combine	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the system output via posterior probability interpola-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion, which is expected to yield better performance.	page=6 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 BN Results	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Table 3 shows the SU detection results for BN. Sim-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+I-Body	ilar to the patterns found for the CTS data, the CRF	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	consistently outperforms the HMM and Maxent, ex-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cept on the STT condition when all the features are	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	used. The CRF yields relatively less gain over the	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	other approaches on BN than on CTS. One possible	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	reason for this difference is that there is more train-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing data for the CTS task, and both the CRF and	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	Maxent approaches require a relatively larger train-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ing set than the HMM. Overall the degradation on	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the STT condition for BN is smaller than on CTS.	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This can be easily explained by the difference in	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	word error rates, 22.9% on CTS and 12.1% on BN.	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Finally, the vote among the three approaches outper-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	forms any model on both the REF and STT condi-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	457	page=6 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	tions, and the gain from voting is larger for BN than	page=6 xpos=5 ypos=3 right-column full-justified column-top headchar-lower
+E-Body	CTS.	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	Comparing Table 2 and Table 3, we find that the	page=6 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	NIST SU error rate on BN is generally higher than	page=6 xpos=5 ypos=3 right-column full-justified hanged-line headchar-capital
+I-Body	on CTS. This is partly because the NIST error rate	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	is measured as the percentage of errors per refer-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence SU, and the number of SUs in CTS is much	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	larger than for BN, giving a large denominator and	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	a relatively lower error rate for the same number of	page=6 xpos=5 ypos=4 right-column full-justified aligned-line itemization headchar-lower
+I-Body	boundary detection errors. Another reason is that the	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	training set is smaller for BN than for CTS. Finally,	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the two genres differ significantly: CTS has the ad-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vantage of the frequent backchannels and first per-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	son pronouns that provide good cues for SU detec-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. When the boundary-based classification metric	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	is used (results in parentheses), the SU error rate is	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	lower on BN than on CTS; however, it should also	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	be noted that the baseline error rate (i.e., the priors	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	of the SUs) is lower on BN than CTS.	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusion and Future Work	page=6 xpos=5 ypos=7 right-column right-indent font-largest aligned-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Finding sentence boundaries in speech transcrip-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tions is important for improving readability and aid-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing downstream language processing modules. In	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	this paper, prosodic and textual knowledge sources	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	are integrated for detecting sentence boundaries in	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	speech. We have shown that a discriminatively	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	trained CRF model is a competitive approach for	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the sentence boundary detection task. The CRF	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	combines the advantages of being discriminatively	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	trained and able to model the entire sequence, and	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	so it outperforms the HMM and Maxent approaches	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	consistently across various testing conditions. The	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	CRF takes longer to train than the HMM and Max-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ent models, especially when the number of features	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	becomes large; the HMM requires the least training	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	time of all approaches. We also find that as more fea-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures are used, the differences among the modeling	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	approaches decrease. We have explored different ap-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proaches to modeling various knowledge sources in	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	an attempt to achieve good performance for sentence	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	boundary detection. Note that we have not fully op-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	timized each modeling approach. For example, for	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the HMM, using discriminative training methods is	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	likely to improve system performance, but possibly	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	at a cost of reducing the accuracy of the combined	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	system.	page=7 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In future work, we will examine the effect of	page=7 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	Viterbi decoding versus forward-backward decoding	page=7 xpos=0 ypos=3 left-column full-justified hanged-line headchar-capital
+I-Body	for the CRF approach, since the latter better matches	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the classification accuracy metric. To improve SU	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	detection results on the STT condition, we plan to	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	investigate approaches that model recognition un-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	certainty in order to mitigate the effect of word er-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rors. Another future direction is to investigate how	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	to effectively incorporate prosodic features more di-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rectly in the Maxent or CRF framework, rather than	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	using a separate prosody model and then binning the	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	resulting posterior probabilities.	page=7 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Important ongoing work includes investigating	page=7 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	the impact of SU detection on downstream language	page=7 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	processing modules, such as parsing. For these ap-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plications, generating probabilistic SU decisions is	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	crucial since that information can be more effec-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tively used by subsequent modules.	page=7 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-SectionHeader	6 Acknowledgments	page=7 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail line-space string-acknowledgement numbered-heading1 above-double-space above-line-space
+B-Body	The authors thank the anonymous reviewers for their valu-	page=7 xpos=0 ypos=6 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	able comments, and Andrew McCallum and Aron Culotta at	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower
+I-Body	the University of Massachusetts and Fernando Pereira at the	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower
+I-Body	University of Pennsylvania for their assistance with their CRF	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-capital
+I-Body	toolkit. This work has been supported by DARPA under	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower
+I-Body	contract MDA972-02-C-0038, NSF-STIMULATE under IRI-	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Body	9619921, NSF KDI BCS-9980054, and ARDA under contract	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line year
+I-Body	MDA904-03-C-1788. Distribution is unlimited. Any opinions	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-capital
+I-Body	expressed in this paper are those of the authors and do not reflect	page=7 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Body	the funding agencies. Part of the work was carried out while the	page=7 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+E-Body	last author was on leave from Purdue University and at NSF.	page=7 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	S. Chen and R. Rosenfeld. 1999. A Gaussian prior for smooth-	page=7 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ing maximum entropy models. Technical report, Carnegie	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Mellon University.	page=7 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+Page	458	page=7 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Reference	H. Christensen, Y. Gotoh, and S. Renal. 2001. Punctuation an-	page=7 xpos=5 ypos=0 right-column full-justified font-smallest column-top year headchar-capital tailchar-hiphen
+I-Reference	notation using statistical prosody models. In ISCA Workshop	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	on Prosody in Speech Recognition and Understanding.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Y. Gotoh and S. Renals. 2000. Sentence boundary detection in	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	broadcast speech transcripts. In Proceedings of ISCA Work-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	shop: Automatic Speech Recognition: Challenges for the	page=7 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	New Millennium ASR-2000, pages 228–235.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	J. Huang and G. Zweig. 2002. Maximum entropy model for	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	punctuation annotation from speech. In Proceedings of the	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	International Conference on Spoken Language Processing,	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	pages 917–920.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	J. Kim and P. C. Woodland. 2001. The use of prosody in a com-	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	bined system for punctuation generation and speech recogni-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tion. In Proceedings of the European Conference on Speech	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Communication and Technology, pages 2757–2760.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	J. Lafferty, A. McCallum, and F. Pereira. 2001. Conditional	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	random field: Probabilistic models for segmenting and la-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	beling sequence data. In Proceedings of the International	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Conference on Machine Learning, pages 282–289.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Y. Liu, A. Stolcke, E. Shriberg, and M. Harper. 2004. Com-	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	paring and combining generative and posterior probability	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	models: Some advances in sentence boundary detection in	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	speech. In Proceedings of the Conference on Empirical	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Methods in Natural Language Processing.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Y. Liu. 2004. Structural Event Detection for Rich Transcription	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	of Speech. Ph.D. thesis, Purdue University.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	A. McCallum and W. Li. 2003. Early results for named en-	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tity recognition with conditional random fields. In Proceed-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ings of the Conference on Computational Natural Language	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Learning.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	A. McCallum. 2002. Mallet: A machine learning for language	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	toolkit. http://mallet.cs.umass.edu.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	NIST-RT03F. 2003. RT-03F workshop agenda and	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	presentations. http://www.nist.gov/speech/tests/rt/rt2003/	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line year headchar-lower
+I-Reference	fall/presentations/, November.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	F. Sha and F. Pereira. 2003. Shallow parsing with conditional	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	random fields. In Proceedings of Human Language Technol-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ogy Conference / North American Chapter of the Association	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	for Computational Linguistics annual meeting.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	E. Shriberg, A. Stolcke, D. Hakkani-Tur, and G. Tur. 2000.	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Prosody-based automatic segmentation of speech into sen-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	tences and topics. Speech Communication, pages 127–154.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	A. Stolcke and E. Shriberg. 1996. Automatic linguistic seg-	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	mentation of conversational speech. In Proceedings of the	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	International Conference on Spoken Language Processing,	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	pages 1005–1008.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	A. Stolcke, H. Franco, R. Gadde, M. Graciarena, K. Pre-	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	coda, A. Venkataraman, D. Vergyri, W. Wang, and	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	J. Zheng. 2003. Speech-to-text research at SRI-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line year headchar-capital tailchar-hiphen
+I-Reference	ICSI-UW. http://www.nist.gov/speech/tests/rt/rt2003/	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line year headchar-capital
+I-Reference	spring/presentations/index.htm.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	S. Strassel, 2003. Simple Metadata Annotation Specification	page=7 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	V5.0. Linguistic Data Consortium.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period

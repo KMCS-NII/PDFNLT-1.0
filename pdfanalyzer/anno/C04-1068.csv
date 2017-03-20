@@ -1,0 +1,625 @@
+Title	Filtering Speaker-Specific Words from Electronic Discussions	page=0 xpos=0 ypos=0 single-column left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Ingrid Zukerman and Yuval Marom	page=0 xpos=2 ypos=0 single-column left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	School of Computer Science and Software Engineering	page=0 xpos=2 ypos=0 single-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Affiliation	Monash University, Clayton, Victoria 3800, AUSTRALIA	page=0 xpos=2 ypos=0 single-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Email	ingrid, yuvalm  @csse.monash.edu.au	page=0 xpos=2 ypos=1 single-column left-indent right-indent font-smaller indented-line shorter-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	The work presented in this paper is the first	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	step in a project which aims to cluster and sum-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	marise electronic discussions in the context of	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	help-desk applications. The eventual objective	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	of this project is to use these summaries to as-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sist help-desk users and operators. In this pa-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	per, we identify features of electronic discus-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sions that influence the clustering process, and	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	offer a filtering mechanism that removes unde-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sirable influences. We tested the clustering and	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	filtering processes on electronic newsgroup dis-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cussions, and evaluated their performance by	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	means of two experiments: coarse-level cluster-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing and simple information retrieval. Our eval-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	uation shows that our filtering mechanism has a	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	significant positive effect on both tasks.	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-line-space
+B-Body	The ability to draw on past experience is often use-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ful in information-providing applications. For in-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stance, users who interact with help-desk applica-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions would benefit from the availability of rele-	page=0 xpos=0 ypos=5 left-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	vant contextual information about their request, e.g.,	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	from previous, similar interactions between the sys-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem and other users, or from interactions between	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	domain experts.	page=0 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The work reported in this paper is the first step	page=0 xpos=0 ypos=6 left-column left-indent right-over indented-line longer-tail headchar-capital
+I-Body	in a project which aims to provide such informa-	page=0 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tion. The eventual objective of our project is to au-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tomatically identify related interactions in help-desk	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	applications, and to generate summaries from their	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	combined experience. These summaries would then	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	assist both users and operators.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our approach to the identification of related in-	page=0 xpos=0 ypos=8 left-column left-indent right-over indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	teractions hinges on the application of clustering	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	techniques. These techniques have been used in	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	Information Retrieval for some time (e.g. Salton,	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	1971). They involve grouping a set of related docu-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	ments, and then using a representative element to	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	match input queries (as opposed to matching the	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	whole collection of documents). Document cluster-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing has been used in search engine applications to	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	improve and speed up retrieval (e.g. Zamir and Et-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	zioni, 1998), but also for more descriptive purposes,	page=0 xpos=5 ypos=2 right-column right-indent column-top year headchar-lower tailchar-comma
+I-Body	such as using representative elements of a cluster to	page=0 xpos=5 ypos=2 right-column right-indent aligned-line headchar-lower
+E-Body	generate lists of keywords (Neto et al., 2000).	page=0 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Body	However, discussions (and dialogues in general)	page=0 xpos=5 ypos=2 right-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Body	have distinguishing features which make cluster-	page=0 xpos=5 ypos=2 right-column right-indent hanged-line headchar-lower tailchar-hiphen
+I-Body	ing a corpus of such interactions a more challeng-	page=0 xpos=5 ypos=2 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	ing task than clustering plain documents. These	page=0 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+I-Body	features are: (1) the corpus consists of contribu-	page=0 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	tions made by a community of authors, or “speak-	page=0 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	ers”; (2) certain speakers are more dominant in the	page=0 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+I-Body	corpus; and (3) speakers often use idiosyncratic,	page=0 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower tailchar-comma
+I-Body	speaker-specific language, or make comments that	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	are not about the task at hand.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In this paper, we report on a preliminary study	page=0 xpos=5 ypos=4 right-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Body	where we cluster discussions carried out in elec-	page=0 xpos=5 ypos=4 right-column right-indent hanged-line headchar-lower tailchar-hiphen
+I-Body	tronic newsgroups. Specifically, we report on the	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	influence of the above features on the clustering pro-	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-hiphen
+I-Body	cess, and describe a filtering mechanism that identi-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail headchar-lower tailchar-hiphen
+E-Body	fies and removes undesirable influences.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Table 1 shows the newsgroups used as data	page=0 xpos=5 ypos=5 right-column left-indent right-indent indented-line longer-tail line-space string-table headchar-capital
+I-Body	sources in our experiments. These newsgroups were	page=0 xpos=5 ypos=5 right-column right-indent hanged-line headchar-lower
+I-Body	obtained from the Internet. The table shows the	page=0 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	number of threads in each newsgroup, the number	page=0 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	of people posting to the newsgroups, and the high-	page=0 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	est number of postings by an individual for each	page=0 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	newsgroup. It also shows the impact of the filter-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ing mechanism on each newsgroup (Section 2).	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The clustering process and filtering mechanism	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	were evaluated by means of two experiments:	page=0 xpos=5 ypos=7 right-column right-indent hanged-line headchar-lower tailchar-colon
+I-Body	(1) coarse-level clustering, and (2) simple informa-	page=0 xpos=5 ypos=7 right-column right-indent aligned-line itemization tailchar-hiphen
+E-Body	tion retrieval.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Coarse-level clustering. This experiment con-	page=0 xpos=5 ypos=8 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	sists of merging the discussion threads (documents)	page=0 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower
+I-Body	in different newsgroups into a single dataset, and	page=0 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower
+I-Body	applying a clustering mechanism to separate them.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower tailchar-period
+I-Body	The performance of the clustering mechanism is	page=0 xpos=5 ypos=8 right-column right-indent aligned-line headchar-capital
+I-Body	then evaluated by how well the generated clusters	page=0 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower
+I-Body	match the original newsgroups from which the dis-	page=0 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	cussion threads were obtained. Clearly, this eval-	page=0 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	uation is at a coarser level of granularity than that	page=0 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower
+I-Body	required for our final system. However, we find it	page=0 xpos=5 ypos=9 right-column right-over aligned-line longer-tail headchar-lower
+I-Body	useful for the following reasons:	page=0 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon page-bottom
+Table	__Table 1__	page=1 xpos=0 ypos=-2 single-column left-indent right-indent box page-top table-area
+B-Caption	Table 1: Description of the newsgroups.	page=1 xpos=3 ypos=0 single-column left-indent right-indent indented-line shorter-tail string-table headchar-capital tailchar-period column-bottom above-double-space above-line-space
+B-Listitem	Owing to the number and diversity of news-	page=1 xpos=0 ypos=0 left-column left-indent right-indent column-top line-double-space line-space headchar-capital tailchar-hiphen
+I-Listitem	groups on the Internet, we can perform con-	page=1 xpos=0 ypos=0 left-column left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	trolled experiments where we vary the degree	page=1 xpos=0 ypos=0 left-column left-indent right-indent aligned-line headchar-lower
+I-Listitem	of similarity between newsgroups, thereby	page=1 xpos=0 ypos=0 left-column left-indent right-indent aligned-line headchar-lower
+I-Listitem	simulating discussions with different levels of	page=1 xpos=0 ypos=1 left-column left-indent right-indent aligned-line headchar-lower
+I-Listitem	relatedness.	page=1 xpos=0 ypos=1 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	Our experiments show that our filtering mech-	page=1 xpos=0 ypos=1 left-column left-indent aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Listitem	anism has a positive influence at different lev-	page=1 xpos=0 ypos=1 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-hiphen
+I-Listitem	els of granularity (Section 4). Hence, there is	page=1 xpos=0 ypos=1 left-column left-indent right-indent aligned-line headchar-lower
+I-Listitem	reason to expect that this influence will remain	page=1 xpos=0 ypos=2 left-column left-indent right-indent aligned-line headchar-lower
+I-Listitem	for finer levels of granularity, e.g., the level of	page=1 xpos=0 ypos=2 left-column left-indent aligned-line longer-tail headchar-lower
+I-Listitem	a task or request.	page=1 xpos=0 ypos=2 left-column left-indent right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period above-line-space
+B-Listitem	Finally, the different newsgroups are identified	page=1 xpos=0 ypos=2 left-column left-indent aligned-line longer-tail line-space headchar-capital
+I-Listitem	in advance, which obviates the need for manual	page=1 xpos=0 ypos=2 left-column left-indent right-indent aligned-line headchar-lower
+I-Listitem	discussion-tagging at this stage.	page=1 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Due to space limitations, we report only on a sub-	page=1 xpos=0 ypos=3 left-column left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	set of our experiments. In (Marom and Zukerman,	page=1 xpos=0 ypos=3 left-column right-indent hanged-line headchar-lower tailchar-comma
+I-Body	2004) we present a comparative study that consid-	page=1 xpos=0 ypos=3 left-column right-indent aligned-line year tailchar-hiphen
+I-Body	ers different sets of newsgroups of varying levels of	page=1 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	relatedness. We regard the set of newsgroups pre-	page=1 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	sented here as having a “medium” level of related-	page=1 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+E-Body	ness.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Simple information retrieval. This experiment	page=1 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-space headchar-capital
+I-Body	constitutes a simplistic and restricted version of the	page=1 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	document retrieval functionality envisaged for our	page=1 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	eventual system. In this experiment, we matched	page=1 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	pairs of query terms to the centroids of the generated	page=1 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	clusters, and assessed the system’s ability to retrieve	page=1 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	relevant discussion threads from the best-matching	page=1 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	cluster, with and without filtering. The experiment	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	makes the implicit assumption that the corpus con-	page=1 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	tains discussions relevant to incoming requests, i.e.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower tailchar-period
+I-Body	that new requests are similar to old ones. We believe	page=1 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	that the results of this restricted experiment are in-	page=1 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	dicative of future system performance, as the envis-	page=1 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	aged system is also expected to operate under this	page=1 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower
+E-Body	assumption.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Next, we describe our filtering mechanism. Sec-	page=1 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tion 3 describes the clustering procedure, includ-	page=1 xpos=0 ypos=8 left-column right-indent hanged-line headchar-lower tailchar-hiphen
+I-Body	ing our data representation and cluster identification	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	method. Section 4 presents the results from our ex-	page=1 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+E-Body	periments, and Section 5 concludes the paper.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 The Filtering Mechanism	page=1 xpos=0 ypos=9 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1
+B-Body	Our filtering mechanism identifies and removes id-	page=1 xpos=0 ypos=9 left-column right-over aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Body	iosyncratic words used by dominant speakers. Such	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower
+I-Body	words typically have a high frequency in the post-	page=1 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	ings authored by these speakers. Even though these	page=1 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower column-bottom
+I-Body	words can appear anywhere in a person’s posting,	page=1 xpos=5 ypos=0 right-column right-indent column-top headchar-lower tailchar-comma
+I-Body	they appear mostly in signatures (about 75% of	page=1 xpos=5 ypos=0 right-column right-indent aligned-line headchar-lower
+I-Body	these words appear towards the end of a person’s	page=1 xpos=5 ypos=0 right-column right-indent aligned-line headchar-lower
+I-Body	posting, while the remaining 25% are distributed	page=1 xpos=5 ypos=0 right-column right-indent aligned-line headchar-lower
+I-Body	throughout the posting). We therefore refer to them	page=1 xpos=5 ypos=1 right-column right-indent aligned-line headchar-lower
+E-Body	throughout this paper as signature words.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The filtering mechanism operates in two stages:	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-colon
+I-Body	(1) profile building, and (2) signature-word re-	page=1 xpos=5 ypos=1 right-column full-justified hanged-line itemization tailchar-hiphen
+E-Body	moval.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Profile building. First, our system builds a ‘pro-	page=1 xpos=5 ypos=2 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	file’, or distribution of word posting frequencies, for	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	each person posting to a newsgroup. The posting	page=1 xpos=5 ypos=2 right-column right-indent aligned-line headchar-lower
+I-Body	frequency of a word is the number of postings where	page=1 xpos=5 ypos=2 right-column right-indent aligned-line headchar-lower
+I-Body	the word is used. For example, a person might have	page=1 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+I-Body	two postings in one newsgroup discussion, and three	page=1 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+I-Body	postings in another, in which case the maximum	page=1 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+I-Body	possible posting frequency for each word used by	page=1 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+I-Body	this person is five. Alternatively, one could count all	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	occurrences of a word in a posting, which could be	page=1 xpos=5 ypos=4 right-column right-indent aligned-line headchar-lower
+I-Body	useful for constructing more detailed stylistic pro-	page=1 xpos=5 ypos=4 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	files. However, at present we are mainly concerned	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	with words that appear across postings.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Signature-word removal. In the second stage,	page=1 xpos=5 ypos=4 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	word-usage proportions are calculated for each per-	page=1 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	son. These are the word posting frequencies divided	page=1 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	by the person’s total number of postings. The aim	page=1 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	of this calculation is to filter out words that have	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	a very high proportion. In addition, we wanted to	page=1 xpos=5 ypos=5 right-column right-indent aligned-line itemization headchar-lower
+I-Body	distinguish between the profile of a dominant in-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dividual and that of a non-dominant one. Hence,	page=1 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower tailchar-comma
+I-Body	rather than just using a simple cut-off threshold for	page=1 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	word-usage proportions, we base the decision to fil-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ter on the number of postings made by an individual	page=1 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	as well as on the proportions. This is done by util-	page=1 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	ising a statistical significance test (a Bernoulli test)	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	that measures if a proportion is significantly higher	page=1 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower
+I-Body	than a threshold (0.4), <sup>1</sup> where significance is based	page=1 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	on the number of postings.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The impact of this filtering mechanism on the var-	page=1 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ious newsgroups is shown in the last column of Ta-	page=1 xpos=5 ypos=8 right-column right-indent hanged-line headchar-lower tailchar-hiphen
+I-Body	ble 1, which displays the average number of times	page=1 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower
+I-Body	the filter is applied per discussion thread. This num-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ber gives an indication of the existence of signature	page=1 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> Although this threshold seems to pick out the signature	page=1 xpos=5 ypos=9 right-column left-indent right-indent indented-line line-double-space line-space headchar-super
+I-Footnote	words, we have found that the filtering mechanism is not very	page=1 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	sensitive to this parameter. That is, its actual value is not im-	page=1 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	portant so long as it is sufficiently high.	page=1 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+I-Body	words from dominant speakers. For example, al-	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	though the ‘hp’ newsgroup has a very dominant in-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dividual (who accounts for 17.5% of the postings),	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the filter is applied to this person’s postings a very	page=2 xpos=0 ypos=0 left-column right-over aligned-line headchar-lower
+I-Body	small number of times, as s/he does not have sig-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nature words. In contrast, the ‘tex’ and ‘photo-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	shop’ newsgroups have less dominant individuals,	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	but here the filter is applied more frequently, as	page=2 xpos=0 ypos=1 left-column right-over aligned-line headchar-lower
+E-Body	these individuals do have signatures.	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 The Clustering Procedure	page=2 xpos=0 ypos=1 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-line-space
+B-Body	The clustering algorithm we have chosen is the	page=2 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	K-Means algorithm, because it is one of the sim-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	plest, fastest, and most popular clustering algo-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rithms. Further, at this stage our focus is on in-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vestigating the effect of the filtering mechanism,	page=2 xpos=0 ypos=2 left-column right-over aligned-line headchar-lower tailchar-comma
+I-Body	rather than on finding the best clustering algorithm	page=2 xpos=0 ypos=2 left-column right-over aligned-line headchar-lower
+I-Body	for the task at hand. K-Means places centers, or	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	centroids, in the input space, and assigns each data	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	point to one of these centers, such that the total Eu-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	clidean distance between the points and the centers	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	is minimised.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Recall from Section 1 that our evaluative ap-	page=2 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	proach consists of merging discussion threads from	page=2 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	multiple newsgroups into a single dataset, apply-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the clustering algorithm to this dataset, and then	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	evaluating the resulting clusters using the known	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	newsgroup memberships. Before describing how	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	clusters created by K-Means are matched to news-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	groups (Section 3.2), we describe the data represen-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tation used to form the input to K-Means.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 Data Representation	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	As indicated in Section 1, we are interested in clus-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tering complete newsgroup discussions rather than	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	individual postings. Hence, we extract discussion	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	threads from the newsgroups as units of represen-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tation. Each thread constitutes a document, which	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	consists of a person’s inquiry to a newsgroup and	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	all the responses to the inquiry.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our data representation is a bag-of-words with	page=2 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	TF . IDF scoring (Salton and McGill, 1983). Each	page=2 xpos=0 ypos=7 left-column full-justified hanged-line year headchar-capital
+I-Body	document (thread) yields one data point, which is	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	represented by a vector. The components of the vec-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tor correspond to the words chosen to represent a	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	newsgroup. The values of these components are the	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	normalised TF . IDF scores of these words.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The words chosen to represent a newsgroup are	page=2 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	all the words that appear in the newsgroup, except	page=2 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	function words, very frequent words (whose fre-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quency is greater than the 95th percentile of the	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	newsgroup’s word frequencies), and very infrequent	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	words (which appeared less than 20 times through-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	out the newsgroup). This yields vectors whose typ-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ical dimensionality (i.e. the number of words re-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	tained) is between 1000 and 2000. Since dimension-	page=2 xpos=5 ypos=0 right-column full-justified column-top year headchar-lower tailchar-hiphen
+I-Body	ality reduction is not detrimental to retrieval per-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance (Schütze and Pedersen, 1995) and speeds	page=2 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+I-Body	up the clustering process, we use Principal Compo-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nents Analysis (Afifi and Clark, 1996) to reduce the	page=2 xpos=5 ypos=0 right-column right-over aligned-line longer-tail year headchar-lower
+I-Body	dimensionality of our dataset. This process yields	page=2 xpos=5 ypos=0 right-column full-justified aligned-line shorter-tail headchar-lower
+E-Body	vectors of size 200.	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The TF . IDF method is used to calculate the score	page=2 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	of each word. This method rewards words that ap-	page=2 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	pear frequently in a document (term frequency –	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	TF ), and penalises words that appear in many docu-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ments (inverse document frequency – IDF ). There	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	are several ways to calculate TF . IDF (Salton and	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	McGill, 1983). In our experiments it is calculated	page=2 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-capital
+I-Body	as TF and IDF "# ,	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	% where   is the frequency of word $ in document	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line
+I-Body	,  is the number of documents where word $ ap-	page=2 xpos=5 ypos=2 right-column left-indent indented-line tailchar-hiphen
+I-Body	pears, and  is the total number of documents in the	page=2 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	dataset. In order to reduce the effect of document	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	length, the TF . IDF score of a word in a document is	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	then normalised by taking into account the scores of	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	the other words in the document.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	One might expect that the IDF component should	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	be able to reduce the influence of signature words	page=2 xpos=5 ypos=4 right-column right-indent hanged-line headchar-lower
+I-Body	of dominant individuals in a newsgroup. However,	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	IDF alone cannot distinguish between words that are	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	representative of a newsgroup and signature words	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of frequent contributors, i.e. it would discount these	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	equally. Further, we have observed that an individ-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ual does not have to post to many threads (docu-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments) for his/her signature words to influence the	page=2 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	clustering process. Since IDF discounts words that	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	occur in many documents, it would fail to discount	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	signature words that appear mainly in the subset of	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	documents where such individuals have postings.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Clustering and Identification	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In order to evaluate the clusters produced by K-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	Means for a particular dataset, we compare each	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	document’s cluster assignment to its true ‘label’ —	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	a value that identifies the newsgroup to which the	page=2 xpos=5 ypos=7 right-column right-over aligned-line itemization headchar-lower
+I-Body	document belongs, of which there are & (three in	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the dataset considered here). However, because K-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	Means is an unsupervised mechanism, we do not	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	know which cluster to compare with which news-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	group. We resolve this issue as follows.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We calculate the goodness <sub>-,</sub> of the match between <sub>%</sub>	page=2 xpos=5 ypos=8 right-column left-indent font-largest indented-line longer-tail line-space headchar-capital
+I-Body	each <sub>,</sub> cluster /. $')( +* * and each newsgroup '	page=2 xpos=5 ypos=8 right-column right-indent font-largest hanged-line shorter-tail headchar-lower
+I-Body	( +* *& ( & ) using the F-score from Information	page=2 xpos=5 ypos=8 right-column centered left-indent aligned-line longer-tail
+I-Body	Retrieval (Salton and McGill, 1983). This gives an	page=2 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-capital
+I-Body	overall measure of how well the cluster represents	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	the newsgroup, taking into account the ‘correctness’	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	of the cluster (precision) and how much of the news-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	group it accounts for (recall). Precision is calculated	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	as	page=3 xpos=0 ypos=0 left-column right-indent page-top headchar-lower above-line-space
+B-Equation	# documents in cluster $ and newsgroup <sup>%</sup>	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line longer-tail line-space
+I-Equation	 	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-smallest hanged-line shorter-tail
+I-Equation	# documents in cluster $	page=3 xpos=1 ypos=0 left-column left-indent right-indent indented-line longer-tail above-double-space above-line-space
+I-Body	and recall as	page=3 xpos=0 ypos=0 left-column right-indent hanged-line shorter-tail line-double-space line-space headchar-lower above-line-space
+B-Equation	 <sub></sub>  # documents in cluster $ and newsgroup % <sup>%</sup>	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line longer-tail line-space
+I-Equation	# documents in newsgroup	page=3 xpos=1 ypos=1 left-column left-indent right-indent indented-line shorter-tail above-double-space above-line-space
+I-Body	The F-score is then calculated as	page=3 xpos=0 ypos=1 left-column right-indent hanged-line shorter-tail line-double-space line-space headchar-capital above-double-space above-line-space
+I-Equation	 <sub></sub>   (  *    <sub></sub>       ,	page=3 xpos=1 ypos=1 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space tailchar-comma above-line-space
+B-Body	Once all the   have been calculated, we choose	page=3 xpos=0 ypos=2 left-column left-indent font-largest hanged-line longer-tail line-space headchar-capital
+I-Body	for each cluster the best newsgroup assignment, i.e.	page=3 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	the one with the highest F-score. As a result of this	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	process, multiple clusters may be assigned to the	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	same newsgroup, in which case they are pooled into	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	a single cluster. The F-score is then re-calculated for	page=3 xpos=0 ypos=3 left-column full-justified aligned-line itemization headchar-lower
+I-Body	each pooled cluster to give an overall performance	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	measure for these clusters.	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The clustering procedure is evaluated using two	page=3 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	main measures: (1) the number of newsgroups that	page=3 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	were matched by the generated clusters (between 1	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	and & ), and (2) the F-score of the pooled clusters.	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The first measure estimates how many clusters are	page=3 xpos=0 ypos=4 left-column right-over aligned-line headchar-capital
+I-Body	needed to find all the newsgroups, while the sec-	page=3 xpos=0 ypos=4 left-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	ond measure assesses the quality of these clusters.	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Further, the number of clusters that are needed to	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	achieve an acceptable quality of performance sug-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gests the level of granularity needed to separate the	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	newsgroups (few clusters correspond to a coarse	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	level of granularity, many clusters to a fine one).	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The clustering procedure is also evaluated as a	page=3 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	whole by calculating its overall precision, i.e. the	page=3 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	proportion of documents that were assigned cor-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rectly over the whole dataset. Note that the over-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	all recall is the same as the overall precision, since	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the denominators in both measures consist of all	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the documents in the dataset. Hence, the F-score	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	is equal to the precision.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.3 Example	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	We now show a sample output of the clustering pro-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	cedure described above, with and without the filter-	page=3 xpos=0 ypos=8 left-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	ing mechanism described in Section 2. Tables 2	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	and 3 display the pooled clusters created without	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	and with filtering, respectively. These tables show	page=3 xpos=0 ypos=8 left-column right-over aligned-line headchar-lower
+I-Body	how many clusters were found for each newsgroup,	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the number of documents in each pooled cluster,	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and the performance of the cluster (P, R and F). The	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	tables also present the top 30 representative words	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	in each cluster (restricted to 30 due to space limita-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions). These words are sorted in decreasing order	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	of their average TF . IDF score over the documents in	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	the cluster (words representative of a cluster should	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	have high TF . IDF scores, because they appear fre-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quently in the documents in the cluster, and infre-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	quently in the documents in other clusters).	page=3 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	According to the results in Table 2, the top-30 list	page=3 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	for the ‘hp’ cluster does not have many signature	page=3 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	words. This was anticipated by the observation that	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	the filtering mechanism was applied very rarely to	page=3 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower
+I-Body	the ‘hp’ newsgroup (Table 1). In contrast, the major-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity of the top-30 words in the ‘tex’ cluster are signa-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture words (some exceptions are ‘chapter’, ‘english’	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	and ‘examples’). We conclude that this pooled clus-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ter was created (using two different clusters) to rep-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resent the various signatures in the ‘tex’ newsgroup.	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Further, a relatively small number of documents are	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	assigned to the ‘tex’ cluster, which therefore has a	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	very low recall value (0.34). Its precision is perfect,	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	but its low recall suggests that many of the docu-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments representing the true topics of this newsgroup	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	were assigned to other clusters.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The ‘photoshop’ cluster has a very high precision	page=3 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	and recall, so most of the ‘photoshop’ documents	page=3 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	were assigned correctly. However, here too many	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of the top words are signature words. Even when	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the ‘obvious’ signature words are ignored (such as	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	URLs and people’s names), there are still words that	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	confuse the topics of this newsgroup, such as ‘mil-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	lion’, ‘america’, ‘urban’ and ‘dragon’.	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In Table 3 most of the words discovered by the	page=3 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	clustering procedure represent the true topics of the	page=3 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	newsgroups. The filtering mechanism removes the	page=3 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower
+I-Body	dominant signature words, and thus the clustering	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	procedure is able to find the true topic-related clus-	page=3 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	ters (precision and recall are very high for all pooled	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	clusters). Notice that there are still some signature-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	related words, such as ‘arseneau’ and ‘fairbairns’ in	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the ‘tex’ cluster, and ‘tacit’ and ‘gifford’ in the ‘pho-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	toshop’ cluster. These words correspond mainly to	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	a dominant individual’s name or email address, and	page=3 xpos=5 ypos=6 right-column full-justified aligned-line itemization headchar-lower
+I-Body	the filtering mechanism fails to filter them when	page=3 xpos=5 ypos=7 right-column right-over aligned-line longer-tail headchar-lower
+I-Body	other individuals reply to the dominant individual	page=3 xpos=5 ypos=7 right-column full-justified aligned-line shorter-tail headchar-lower
+I-Body	using these words. In a thread (document) contain-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing a dominant individual, that individual’s signa-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture words are filtered, but unless the people reply-	page=3 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	ing to the dominant individual are dominant them-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	selves, the words they use to refer to this individual	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	will not be filtered, and therefore will influence the	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	clustering process. This highlights further the prob-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lem that our filtering mechanism is addressing, and	page=3 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower
+E-Body	suggests that more filtering should be done.	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Evaluation	page=3 xpos=5 ypos=9 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-line-space
+B-Body	The example presented in the last section pertains to	page=3 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	a specific run of the clustering procedure. We now	page=3 xpos=5 ypos=9 right-column right-over aligned-line itemization headchar-lower
+I-Body	evaluate our system more generally by looking at	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Table	__Table 2__	page=4 xpos=-1 ypos=-4 single-column left-over box page-top table-area
+B-Caption	Table 2: Top 30 centroid words found by the clustering procedure without filtering.	page=4 xpos=1 ypos=0 single-column left-indent right-indent indented-line shorter-tail string-table headchar-capital tailchar-period above-double-space above-line-space
+Table	__Table 3__	page=4 xpos=-1 ypos=0 single-column left-over box hanged-line longer-tail line-double-space line-space table-area
+B-Caption	Table 3: Top 30 centroid words found by the clustering procedure with filtering.	page=4 xpos=1 ypos=3 single-column left-indent right-indent indented-line shorter-tail string-table headchar-capital tailchar-period column-bottom above-double-space above-line-space
+I-Body	clustering performance for a range of values of , The main conclusions with respect to the dataset	page=4 xpos=0 ypos=4 left-column right-over column-top line-double-space line-space headchar-lower column-bottom
+I-Body	and inspecting the implications of this performance presented here are as follows.	page=4 xpos=0 ypos=4 single-column right-indent column-top headchar-lower tailchar-period
+E-Body	with respect to a document retrieval task.	page=4 xpos=0 ypos=4 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-double-space above-line-space
+B-SubsectionHeader	4.1 Coarse-Level Clustering	page=4 xpos=0 ypos=4 left-column right-indent column-top line-double-space line-space numbered-heading2 above-line-space
+B-Body	Figure 1 shows the overall clustering performance	page=4 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-space string-figure headchar-capital
+I-Body	obtained without filtering (solid line) and with fil-	page=4 xpos=0 ypos=5 left-column right-over aligned-line longer-tail headchar-lower tailchar-hiphen
+I-Body	tering (dashed line). The left-hand-side of the figure	page=4 xpos=0 ypos=5 left-column right-over aligned-line headchar-lower
+I-Body	shows the average number of newsgroups matched	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	to clusters, while the right-hand-side shows the	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	overall performance (F-score) obtained. The error	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	bars in the plots are averages of 100 repetitions of	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the clustering procedure described in Section 3.2	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	(with random initialisation of the centroids at the	page=4 xpos=0 ypos=7 left-column full-justified aligned-line
+I-Body	start of each run). The widths of the error bars in-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dicate 95% confidence intervals for these averages.	page=4 xpos=0 ypos=7 left-column right-over aligned-line headchar-lower tailchar-period
+I-Body	Hence, non-overlapping intervals correspond to a	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+E-Body	difference with p-value lower than 0.05.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In (Marom and Zukerman, 2004), we show that	page=4 xpos=0 ypos=8 left-column left-indent indented-line longer-tail year headchar-capital
+I-Body	the effect of the filtering mechanism on clustering	page=4 xpos=0 ypos=8 left-column right-over hanged-line headchar-lower
+I-Body	performance depends on three factors: (1) the pres-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence of signature words from dominant contribu-	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tors; (2) the ‘natural’, topical overlap between the	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	newsgroups; and (3) the level of granularity in the	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	clustering, i.e. the number of centroids.	page=4 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Listitem	Firstly, there is a heavy presence of signature	page=4 xpos=5 ypos=4 right-column full-justified column-top headchar-capital
+I-Listitem	words in two of the newsgroups (‘tex’ and	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Listitem	‘photoshop’ – see Table 1), and therefore the	page=4 xpos=5 ypos=5 right-column full-justified aligned-line
+I-Listitem	filtering mechanism has a significant effect on	page=4 xpos=5 ypos=5 right-column right-over aligned-line longer-tail headchar-lower
+I-Listitem	this dataset as a whole. As can be seen in Fig-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line shorter-tail headchar-lower tailchar-hiphen
+I-Listitem	ure 1, the performance (F-score) without fil-	page=4 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tering is poorer for all values of , and sub-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	stantially more so for low values of . Al-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	though the clustering procedure without filter-	page=4 xpos=5 ypos=6 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ing is able to find three distinct newsgroups	page=4 xpos=5 ypos=6 right-column right-over aligned-line headchar-lower
+I-Listitem	with   , it requires a higher value of to	page=4 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	achieve a satisfactory performance. This sug-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	gests that the signature words create undesir-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	able overlaps between the clusters. In contrast,	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Listitem	when filtering is used, the clustering procedure	page=4 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower
+I-Listitem	reaches its best performance with  <sup></sup> , where	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Listitem	the performance is extremely good.	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	Secondly, the fact that the performance with	page=4 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Listitem	filtering converges for such a low value of	page=4 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower
+I-Listitem	suggests that there is little true topical overlap	page=4 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail headchar-lower
+I-Listitem	between the newsgroups, and the fact that the	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Listitem	performance is significantly better for  <sup></sup>	page=4 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower page-bottom
+Figure	__Figure 1__	page=5 xpos=-1 ypos=0 left-column right-indent box page-top figure-area
+B-Caption	Figure 1: Overall clustering performance.	page=5 xpos=0 ypos=1 left-column left-indent right-indent indented-line shorter-tail string-figure headchar-capital tailchar-period above-double-space above-line-space
+Figure	__Figure 2__	page=5 xpos=0 ypos=1 left-column left-indent right-indent box hanged-line longer-tail line-double-space line-space figure-area above-line-space
+B-Caption	Figure 2: Clustering performance by newsgroup.	page=5 xpos=0 ypos=4 left-column left-indent right-indent indented-line line-space string-figure headchar-capital tailchar-period
+I-Listitem	than for   suggests that there is some	page=5 xpos=0 ypos=4 left-column left-indent right-indent box indented-line longer-tail headchar-lower
+I-Listitem	overlap, possibly created by a sub-topic of one	page=5 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-lower
+I-Listitem	of the newsgroups. That is, although there are	page=5 xpos=0 ypos=5 left-column left-indent right-indent aligned-line headchar-lower
+I-Listitem	only three newsgroups, four centroids are bet-	page=5 xpos=0 ypos=5 left-column left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ter at finding them than three centroids, be-	page=5 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	cause the fourth centroid may correspond to	page=5 xpos=0 ypos=5 left-column left-indent right-indent aligned-line headchar-lower
+I-Listitem	an overlap region between two clusters, which	page=5 xpos=0 ypos=5 left-column left-indent right-indent aligned-line headchar-lower
+I-Listitem	then gets assigned to the correct newsgroup.	page=5 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We can get a better insight into these results by	page=5 xpos=0 ypos=6 left-column left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	inspecting the individual performance of the pooled	page=5 xpos=0 ypos=6 left-column right-indent hanged-line headchar-lower
+I-Body	clusters, particularly their precision and recall. Fig-	page=5 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	ure 2 shows the average performance of the pooled	page=5 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	clusters separately for each of the three newsgroups.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower tailchar-period
+I-Body	This figure confirms that the ‘hp’ newsgroup is the	page=5 xpos=0 ypos=7 left-column right-over aligned-line longer-tail headchar-capital
+I-Body	least affected by signature words: for low values	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower
+I-Body	of , without filtering, the average performance (F-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	score) of the pooled clusters corresponding to the	page=5 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower
+I-Body	‘hp’ newsgroup is generally better than that of the	page=5 xpos=0 ypos=7 left-column right-indent aligned-line
+I-Body	clusters corresponding to the other newsgroups (and	page=5 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	it even matches  the performance achieved with fil-	page=5 xpos=0 ypos=8 left-column full-justified box aligned-line headchar-lower tailchar-hiphen
+I-Body	tering for  ). This is particularly evident when	page=5 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	we compare recall curves: recall for the ‘hp’ news-	page=5 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	group without filtering reaches the recall obtained	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	with filtering when   . In contrast, precision	page=5 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	only achieves this level of performance for higher	page=5 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower
+I-Body	values of — this is because some of the documents	page=5 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower
+I-Body	in the ‘hp’ newsgroup are confused with documents	page=5 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower
+E-Body	in the other two newsgroups.	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-SubsectionHeader	4.2 Simple Information Retrieval	page=5 xpos=5 ypos=0 right-column right-indent column-top numbered-heading2 above-line-space
+B-Body	A desirable outcome for retrieval systems that per-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	form document clustering prior to retrieval is that	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	the returned clusters contain as much useful infor-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation as possible regarding a user’s query. If the	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	clustering is performed well, the words in the query	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	should appear in many documents in the best match-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ing cluster(s).	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our retrieval experiments consist of retrieving	page=5 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	documents that match three simple queries, each	page=5 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	comprising a word pair that occurs frequently in the	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	newsgroups. As before, for each experiment we re-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	peated the clustering procedure 100 times and av-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eraged the results. Retrieval performance was mea-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sured as follows:	page=5 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	correct documents in the selected cluster	page=5 xpos=5 ypos=2 right-column centered left-indent right-indent indented-line longer-tail line-double-space line-space headchar-lower above-line-space
+I-Equation	total correct documents in the dataset	page=5 xpos=5 ypos=3 right-column centered left-indent right-indent indented-line shorter-tail line-space headchar-lower above-double-space above-line-space
+I-Body	where a correct document is one that contains all	page=5 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	the words in a query, and the selected cluster is that	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	whose centroid has the highest average value for	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the query   terms.   That   is, , if a query comprises % has a cen- the	page=5 xpos=5 ypos=3 right-column full-justified box aligned-line headchar-lower
+I-Body	troid value    for word ,  and  , then cluster the  % cluster that	page=5 xpos=5 ypos=3 right-column full-justified box aligned-line headchar-lower
+I-Body	words (     * * *	page=5 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Equation	%  query is the cluster   such that	page=5 xpos=6 ypos=4 right-column left-indent right-indent box indented-line longer-tail line-double-space line-space
+I-Equation	<sup>best</sup> <sup>matches</sup> <sup>the</sup>     (       ,	page=5 xpos=5 ypos=4 right-column right-indent box hanged-line shorter-tail headchar-super tailchar-comma
+I-Equation	    *	page=5 xpos=7 ypos=4 right-column left-indent right-indent box indented-line longer-tail above-line-space
+B-Body	Our measure for retrieval performance considers	page=5 xpos=5 ypos=5 right-column left-indent hanged-line longer-tail line-space headchar-capital
+I-Body	only recall (i.e. how many correct documents were	page=5 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	found for a particular query). It does not have a pre-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cision component, because the system retrieves only	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	documents that contain all the words in the query.	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+E-Body	That is, precision is always perfect.	page=5 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	According to Figure 2, the recall for the ‘hp’	page=5 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	newsgroup <sub>.</sub> is equally high with and without filtering	page=5 xpos=5 ypos=6 right-column right-over font-largest hanged-line headchar-lower
+I-Body	when  , as opposed to the other newsgroups,	page=5 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	where the recall is significantly better with filtering	page=5 xpos=5 ypos=6 right-column right-over aligned-line longer-tail headchar-lower
+I-Body	for all values of . We therefore chose   to	page=5 xpos=5 ypos=7 right-column full-justified font-largest aligned-line shorter-tail headchar-lower
+I-Body	evaluate retrieval, in order to expose the differences	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	between the newsgroups.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Table 4 shows the retrieval performance obtained	page=5 xpos=5 ypos=7 right-column left-indent indented-line longer-tail string-table headchar-capital
+I-Body	for the three queries, when clustering is performed	page=5 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	with and without filtering, and with   . The	page=5 xpos=5 ypos=8 right-column right-over font-largest aligned-line headchar-lower
+I-Body	table shows the average performance of the pooled	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	clusters separately for each of the three newsgroups.	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Also shown for each query is the total number of	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	documents in the dataset that contain all the words	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	in the query. The average performance of the best-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	matching cluster is displayed in bold font, and the	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	standard deviation appears in brackets next to the	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	performance.	page=5 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The first query is related to the ‘hp’ newsgroup.	page=5 xpos=5 ypos=9 right-column left-indent right-over indented-line longer-tail headchar-capital tailchar-period
+I-Body	The retrieval performance of the matching cluster	page=5 xpos=5 ypos=9 right-column full-justified hanged-line headchar-capital page-bottom
+Table	__Table 4__	page=6 xpos=0 ypos=-1 left-column left-indent right-indent box page-top table-area above-line-space
+B-Caption	Table 4: Queries used to evaluate the retrieval task.	page=6 xpos=0 ypos=1 left-column left-indent right-indent line-space string-table headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+I-Body	for this query is high with and without the filter-	page=6 xpos=0 ypos=2 left-column full-justified line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ing mechanism (the difference in performance is not	page=6 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	statistically significant). As discussed above, this	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	result is expected due to the similar recall score of	page=6 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	the pooled cluster obtained with and without filter-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ing for this newsgroup.	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Filtering has a more significant effect for the	page=6 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	queries relating to the other newsgroups. Query 2	page=6 xpos=0 ypos=3 left-column right-indent hanged-line headchar-lower
+I-Body	is very specific to the ‘tex’ newsgroup: when filter-	page=6 xpos=0 ypos=3 left-column right-over aligned-line longer-tail headchar-lower tailchar-hiphen
+I-Body	ing is used, almost all the relevant documents are re-	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-hiphen
+I-Body	trieved by the corresponding cluster. The benefit of	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	filtering is very clear when we consider the poor re-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	trieval performance when filtering is not used: 33%	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	of the documents are missed (the p-value for the	page=6 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	difference in retrieval score is  *   ). The third	page=6 xpos=0 ypos=4 left-column right-indent font-largest aligned-line headchar-lower
+I-Body	query has more ambiguity (the word ‘colour’ ap-	page=6 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	pears in the ‘hp’ newsgroup), and therefore the over-	page=6 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	all retrieval performance is worse than for the other	page=6 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	queries. About 17% of the documents were missed	page=6 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	when filtering was used, most of which were allo-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cated to the ‘hp’ newsgroup. Nevertheless, the fil-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tering mechanism has a significant effect even for	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	this ambiguous query (p-value=0.03).	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusion	page=6 xpos=0 ypos=6 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-line-space
+B-Body	In this paper, we have identified features of elec-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tronic discussions that influence clustering perfor-	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-hiphen
+I-Body	mance, and presented a filtering mechanism that re-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail headchar-lower tailchar-hiphen
+I-Body	moves adverse influences. The effect of our filtering	page=6 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower
+I-Body	mechanism was evaluated by means of two experi-	page=6 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	ments: coarse-level clustering and simple informa-	page=6 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	tion retrieval. Our results show that filtering out the	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	signature words of dominant speakers has a posi-	page=6 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	tive effect on clustering and retrieval performance.	page=6 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower tailchar-period
+I-Body	Although these experiments were performed at a	page=6 xpos=0 ypos=8 left-column right-indent aligned-line headchar-capital
+I-Body	coarser level of granularity than that of our target	page=6 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	domain, our results indicate that filtering signature	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	words is a promising pre-processing step for clus-	page=6 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+E-Body	tering electronic discussions.	page=6 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	From a more qualitative perspective, we clearly	page=6 xpos=0 ypos=9 left-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Body	saw the benefit of the filtering mechanism in the ex-	page=6 xpos=0 ypos=9 left-column right-over hanged-line longer-tail headchar-lower tailchar-hiphen
+I-Body	ample in Section 3.3 (Tables 2 and 3): when a gen-	page=6 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-hiphen column-bottom
+I-Body	eration component is used to describe the contents	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	of clusters, the inclusion of author-specific words is	page=6 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower
+E-Body	uninformative and even confusing.	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our approach to filtering is general in the sense	page=6 xpos=5 ypos=0 right-column left-indent right-over indented-line longer-tail headchar-capital
+I-Body	that we do not target specific parts of electronic dis-	page=6 xpos=5 ypos=0 right-column right-over hanged-line headchar-lower tailchar-hiphen
+I-Body	cussions (e.g. the last few lines of a posting) for	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	filtering. We have experimented with a more naive	page=6 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower
+I-Body	approach that removes all web and email addresses	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	from a posting (they account for a significant por-	page=6 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of a signature). However, this simple heuris-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic yielded only a small improvement in clustering	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	performance. More importantly, it clearly does not	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	generalise to deal with the problem of identifying	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	and removing author-specific terminology.	page=6 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Acknowledgments	page=6 xpos=5 ypos=2 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-acknowledgement numbered-heading1 above-line-space
+B-Body	This research was supported in part by grant	page=6 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	LP0347470 from the Australian Research Council	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+E-Body	and by an endowment from Hewlett Packard.	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=6 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Abdelmonem Abdelaziz Afifi and Virginia Ann	page=6 xpos=5 ypos=3 right-column right-over aligned-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Clark. 1996. Computer-Aided Multivariate	page=6 xpos=5 ypos=3 right-column left-indent indented-line shorter-tail year headchar-capital
+I-Reference	Analysis. Chapman & Hall, London.	page=6 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Yuval Marom and Ingrid Zukerman. 2004. Im-	page=6 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	proving newsgroup clustering by filtering author-	page=6 xpos=5 ypos=4 right-column left-indent right-over indented-line headchar-lower tailchar-hiphen
+I-Reference	specific words. In PRICAI’04 – Proceedings of	page=6 xpos=5 ypos=4 right-column left-indent right-over aligned-line headchar-lower
+I-Reference	the 8th Pacific Rim International Conference on	page=6 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower
+I-Reference	Artificial Intelligence, Auckland, New Zealand.	page=6 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	J. L. Neto, A. D. Santos, C. A. A. Kaestner, and	page=6 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail headchar-capital
+I-Reference	A. A. Freitas. 2000. Document clustering and	page=6 xpos=5 ypos=5 right-column left-indent indented-line year headchar-capital
+I-Reference	text summarization. In PAKDD-2000 – Proceed-	page=6 xpos=5 ypos=5 right-column left-indent aligned-line year headchar-lower tailchar-hiphen
+I-Reference	ings of the 4th International Conference on Prac-	page=6 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	tical Applications of Knowledge Discovery and	page=6 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower
+I-Reference	Data Mining, pages 41–55, London, UK.	page=6 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	G. Salton and M.J. McGill. 1983. An Introduction	page=6 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	to Modern Information Retrieval. McGraw Hill.	page=6 xpos=5 ypos=6 right-column left-indent right-indent indented-line headchar-lower tailchar-period
+B-Reference	Gerald Salton. 1971. Cluster search strategies and	page=6 xpos=5 ypos=6 right-column full-justified hanged-line year headchar-capital
+I-Reference	the optimization of retrieval effectiveness. In	page=6 xpos=5 ypos=6 right-column left-indent indented-line headchar-lower
+I-Reference	Gerald Salton, editor, The SMART Retrieval Sys-	page=6 xpos=5 ypos=7 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	tem — Experiments in Automatic Document Pro-	page=6 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	cessing, pages 223–242. Prentice-Hall, Inc., En-	page=6 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	glewood Cliffs, NJ.	page=6 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Hinrich Schütze and Jan O. Pedersen. 1995. Infor-	page=6 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	mation retrieval based on word senses. In Pro-	page=6 xpos=5 ypos=7 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	ceedings of the 4th Annual Symposium on Doc-	page=6 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ument Analysis and Information Retrieval, pages	page=6 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower
+I-Reference	161–175, Las Vegas, Nevada.	page=6 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail tailchar-period
+B-Reference	Oren Zamir and Oren Etzioni. 1998. Web docu-	page=6 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ment clustering: A feasibility demonstration. In	page=6 xpos=5 ypos=8 right-column left-indent indented-line headchar-lower
+I-Reference	SIGIR’98 – Proceedings of the 21st ACM Inter-	page=6 xpos=5 ypos=9 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	national Conference on Research and Develop-	page=6 xpos=5 ypos=9 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ment in Information Retrieval, pages 46–54, Mel-	page=6 xpos=5 ypos=9 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	bourne, Australia.	page=6 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period

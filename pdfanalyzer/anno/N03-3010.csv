@@ -1,0 +1,429 @@
+Title	Cooperative Model Based Language Understanding in Dialogue	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Donghui Feng	page=0 xpos=4 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Information Sciences Institute,	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital tailchar-comma
+I-Affiliation	University of Southern California	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+Address	4676 Admiralty Way	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest indented-line shorter-tail
+Address	Marina Del Rey, CA 90292-6695	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+Email	donghui@isi.edu	page=0 xpos=4 ypos=1 single-column centered left-indent right-indent font-largest indented-line shorter-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital
+B-Abstract	In this paper, we propose a novel	page=0 xpos=0 ypos=2 left-column left-indent right-indent hanged-line longer-tail headchar-capital
+I-Abstract	Cooperative Model for natural language	page=0 xpos=0 ypos=3 left-column left-indent right-indent hanged-line headchar-capital
+I-Abstract	understanding in a dialogue system. We	page=0 xpos=0 ypos=3 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	build this based on both Finite State Model	page=0 xpos=0 ypos=3 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	(FSM) and Statistical Learning Model	page=0 xpos=0 ypos=3 left-column left-indent right-indent aligned-line
+I-Abstract	(SLM). FSM provides two strategies for	page=0 xpos=0 ypos=3 left-column left-indent right-indent aligned-line
+I-Abstract	language understanding and have a high	page=0 xpos=0 ypos=3 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	accuracy but little robustness and flexibility.	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	Statistical approach is much more robust	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-capital
+I-Abstract	but less accurate. Cooperative Model	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	incorporates all the three strategies together	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	and thus can suppress all the shortcomings	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	of different strategies and has all the	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	advantages of the three strategies.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-largest hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper, we propose a novel language	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	understanding approach, Cooperative Model, for a	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	dialogue system. It combines both Finite State Model	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	and Statistical Learning Model for sentence	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	interpretation.	page=0 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	This approach is implemented in the project MRE	page=0 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	(Mission Rehearsal Exercise). The goal of MRE is to	page=0 xpos=0 ypos=7 left-column full-justified hanged-line
+I-Body	provide an immersive learning environment in which	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	army trainees experience the sights, sounds and	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	circumstances they will encounter in real-world	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	scenarios (Swartout et al., 2001). In the whole	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	procedure, language processing part plays the role to	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	support the communication between trainees and	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	computers.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the language processing pipeline, audio signals	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	are first transformed into natural language sentences by	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	speech recognition. Sentence interpretation part is used	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	to “understand” the sentence and extract an information	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	case frame for future processing such as dialogue	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	management and action planning. We adopt the	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	Cooperative Model as the overall frame of sentence	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	interpretation, which incorporates two mainly used	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	language processing approaches: the Finite State Model	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	and the Statistical Learning Model. Currently there is	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower
+I-Body	relatively little work on the cooperation of the two kinds	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	of models for language understanding.	page=0 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The Cooperative Model has great advantages. It	page=0 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	balances the shortcomings of each separate model. It is	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	easy to implement the parsing algorithm and get the	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	exact expected result for finite state model (FSM) but	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	it’s difficult and tedious to design the finite state	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	network by hand. Also, the finite state model is not too	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	robust and the failure of matching produces no results.	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	On the other hand, statistical learning model (SLM) can	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	deal with unexpected cases during designing and	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	training by giving a set of candidate results with	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	confidence scores. It is a must to provide some kind of	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	rules to select results needed. However, applying it may	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	not give a completely satisfactory performance.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The rest of this paper is organized as follows:	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-colon
+I-Body	Section 2 describes the case frame as the semantic	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-capital
+I-Body	representation produced by the cooperative model. In	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	section 3, we explain our cooperative language	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	understanding model and discuss two different	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	strategies of the Finite State Model and the Statistical	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	Learning Model. We analyze the experimental results in	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	Section 4. Section 5 concludes with on-going research	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+E-Body	and future work.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Semantic Representation	page=0 xpos=5 ypos=7 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The goal of automated natural language understanding	page=0 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	is to parse natural language string, extract meaningful	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	information and store them for future processing. For	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	our application of training environment, it’s impossible	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	to parse sentences syntactically and we here directly	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	produce the nested information frames as output. The	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	topmost level of the information frame is defined as	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	follows:	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+Figure	__Figure 1__	page=0 xpos=5 ypos=9 right-column left-indent right-indent font-largest indented-line longer-tail line-space figure-area above-line-space
+B-Caption	Figure 1. Topmost-Level Information Frame	page=0 xpos=5 ypos=9 right-column centered left-indent right-indent indented-line line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-Body	In the definition, <semantic-object> consists of	page=0 xpos=5 ypos=9 right-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital page-bottom
+I-Body	three types: question, action and proposition. Here,	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-comma
+I-Body	question refers to requests for information, action refers	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	to orders and suggestions except requests, and all the	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	rest falls into the category of proposition.	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Each of these types can also be further	page=1 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+E-Body	decomposed as Figure 2 and 3.	page=1 xpos=0 ypos=0 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-period above-line-space
+Figure	__Figure 2__	page=1 xpos=0 ypos=1 left-column left-indent right-indent box indented-line longer-tail line-space figure-area above-double-space above-line-space
+B-Caption	Figure 2. Second-Level Information Frame	page=1 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+Figure	__Figure 3__	page=1 xpos=0 ypos=3 left-column left-indent right-indent box hanged-line longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 3. Third-Level Information Frame	page=1 xpos=0 ypos=5 left-column centered left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-Body	These information frames can be further extended	page=1 xpos=0 ypos=6 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	and nested as necessary. In our application, most of the	page=1 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	information frames obtained contain at most three levels.	page=1 xpos=0 ypos=6 left-column right-over aligned-line headchar-lower tailchar-period
+I-Body	In Figure 4, we give an example of information frame	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	for the English sentence “who is not critically hurt?”.	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	All the target information frames in our domain are	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+E-Body	similar to that format.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+Figure	__Figure 4__	page=1 xpos=0 ypos=7 left-column left-indent right-indent box indented-line longer-tail line-space figure-area above-line-space
+B-Caption	Figure 4. Example Nested Information Frame	page=1 xpos=0 ypos=9 left-column centered left-indent right-indent font-smallest indented-line shorter-tail line-space string-figure headchar-capital column-bottom
+B-Body	Since the information frames are nested, for the	page=1 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	statistical learning model to be addressed, ideally both	page=1 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	the semantic information and structural information	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	should be represented correctly. Therefore we use prefix	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	strings to represent the cascading level of each	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	slot-value pair. The case frame in Figure 4 can be	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	re-represented as shown in Figure 5. Here we assume	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	that the slots in the information frame are independent	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	of each other. Reversely the set of meaning items can be	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	restored to a normal nested information frame.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 5__	page=1 xpos=5 ypos=1 right-column left-indent right-indent box indented-line longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 5. Re-representation to handle cascading	page=1 xpos=5 ypos=3 right-column centered left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-Body	We introduce the cooperative model in the	page=1 xpos=5 ypos=4 right-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	following section to extract meaningful information	page=1 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+E-Body	frames for all the English sentences in our domain.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Cooperative Model	page=1 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The Cooperative Model (CM) combines two	page=1 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	commonly-used methods in natural language processing,	page=1 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower tailchar-comma
+I-Body	Finite State Model (FSM) and Statistical Learning	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	Model (SLM). We discuss them in section 3.1 and 3.2	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+E-Body	respectively.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.1 Finite State Model	page=1 xpos=5 ypos=6 right-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2
+B-Body	The main idea of finite state model is to put all the	page=1 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	possible input word sequences and their related output	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	information on the arcs.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For our application, the input is a string composed	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	of a sequence of words, and the output should be a	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	correctly structured information frame. We apply two	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	strategies of FSM. The Series Mode refers to build a	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	series of finite state machine with each corresponding to	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	a single slot. The Single Model builds only one complex	page=1 xpos=5 ypos=7 right-column full-justified aligned-line itemization headchar-lower
+I-Body	Finite State Machine that incorporates all the sentence	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+E-Body	patterns and slot-value pairs.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsubsectionHeader	3.1.1 Strategy I: Series Model of Finite State	page=1 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading3
+I-SubsubsectionHeader	Machine	page=1 xpos=5 ypos=8 right-column left-indent right-indent indented-line shorter-tail headchar-capital
+B-Body	For this strategy, we analyze our domain to obtain a list	page=1 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail headchar-capital
+I-Body	of all possible slots. From the perspective of linguistics,	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	a slot can be viewed as characterized by some specific	page=1 xpos=5 ypos=9 right-column full-justified aligned-line itemization headchar-lower
+I-Body	words, say, a set of feature words. We therefore can	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	make a separate semantic filter for each slot. Each	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	sentence passes through a series of filters and as soon as	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	we find the “feature” words, we extract their	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	corresponding slot-value pairs. All the slot-value pairs	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	extracted produce the final nested case frame.	page=2 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 6__	page=2 xpos=0 ypos=0 left-column right-over box aligned-line longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 6. An Example from Series Model of FSM	page=2 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-Body	Figure 6 is an example of the way that series	page=2 xpos=0 ypos=3 left-column left-indent longer-tail line-blank-line line-double-space line-space string-figure headchar-capital
+I-Body	model of finite state machine works. For example, three	page=2 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	slot-value pairs are extracted from the word “who”.	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Practically, we identified 27 contexts and built 27 finite	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	state machines as semantic filters, with each one	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	associated with a set of feature words. The number of	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	arcs for each finite state machine ranges from 4 to 70	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	and the size of the feature word set varies from 10 to 50.	page=2 xpos=0 ypos=4 left-column centered right-indent aligned-line headchar-lower tailchar-period
+B-Body	This strategy extracts semantic information based	page=2 xpos=0 ypos=4 left-column left-indent indented-line headchar-capital
+I-Body	on the mapping between words and slots. It is relatively	page=2 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	easy to design the finite state machine networks and	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	implement the parsing algorithm. For every input	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	sentence it will provide all possible information using	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the predefined mappings. Even if the sentence contains	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	no feature words, the system will end gracefully with an	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	empty frame. However, this method doesn’t take into	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	account the patterns of word sequences. Single word	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	may have different meanings under different situations.	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In most cases it is also difficult to put one word into one	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	single class; sometimes a word can even belong to	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	different slots’ feature word sets that can contradict each	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	other. On the other hand, the result produced may have	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	some important slot-value pairs missed and the number	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	of slots is fixed.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsubsectionHeader	3.1.2 Strategy II: Single Model of Finite State	page=2 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading3
+I-SubsubsectionHeader	Machine	page=2 xpos=0 ypos=7 left-column left-indent right-indent indented-line shorter-tail headchar-capital
+B-Body	In this strategy we only build a big finite state network.	page=2 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail headchar-capital tailchar-period
+I-Body	When a new sentence goes into the big FSM parser, it	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	starts from “START” state and a successful matching of	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	prespecified patterns or words will move forward to	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	another state. Any matching procedure coming to the	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	“END” state means a successful parsing of the whole	page=2 xpos=0 ypos=9 left-column full-justified aligned-line
+I-Body	sentence. And all the outputs on the arcs along the path	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	compose the final parsing result. If no patterns or words	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	are successfully matched at some point, the parser will	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	die and return failure.	page=2 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	This strategy requires all the patterns to be	page=2 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	processed with this finite state model available before	page=2 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	designing the finite state network. The target sentence	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	set includes 65 sentence patterns and 23 classes of	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	words and we combine them into a complex finite state	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	network manually. Figure 7 gives some examples of the	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	collected sentence patterns and word classes.	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 7__	page=2 xpos=5 ypos=1 right-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space figure-area above-line-space
+B-Caption	Figure 7. Target Sentence Patterns	page=2 xpos=6 ypos=3 right-column centered left-indent right-indent font-smallest indented-line shorter-tail line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-Body	Aimed at processing these sentences, we design	page=2 xpos=5 ypos=3 right-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	our finite state network consisting of 128 states. This	page=2 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	network covers more than 20k commonly-used	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	sentences in our domain. It will return the exact parsing	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	result without missing any important information. If all	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of the input sentences in the application belong to the	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	target sentence set of this domain, this approach	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	perfectly produces all of the correct results. However,	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the design of the network is done totally by hand, which	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	is very tedious and time-consuming. The system is not	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	very flexible or robust and it’s difficult to add new	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	sentences into the network before a thorough	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	investigation of the whole finite state network. It is not	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	convenient and efficient for extension and maintenance.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower tailchar-period
+B-Body	Finite state models can’t process any sentence with	page=2 xpos=5 ypos=5 right-column left-indent indented-line headchar-capital
+I-Body	new sentence patterns. However in reality most systems	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	require more flexibility, robustness, and more powerful	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	processing abilities on unexpected sentences. The	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	statistical machine learning model gives us some light	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	on that. We discuss learning models in Section 3.2.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.2 Statistical Learning Model	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-blank-line above-double-space above-line-space
+B-SubsubsectionHeader	3.2.1 Naïve Bayes Learning	page=2 xpos=5 ypos=7 right-column right-indent aligned-line line-blank-line line-double-space line-space numbered-heading3
+B-Body	Naïve Bayes learning has been widely used in natural	page=2 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	language processing with good results such as statistical	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	syntactic parsing (Collins, 1997; Charniak, 1997),	page=2 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower tailchar-comma
+E-Body	hidden language understanding (Miller et al., 1994).	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	We represent the mappings between words and	page=2 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	their potential associated meanings (meaning items	page=2 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	including level information and slot-value pairs) with	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	P(M|W). W refers to words and M refers to meaning	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+E-Body	items. With Bayes’ theorem, we have the formula 3.1.	page=2 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	arg max P(M | W) = arg max P(W | <sub>P(W)</sub> M) * P(M) (3.1)	page=2 xpos=5 ypos=9 right-column centered left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space headchar-lower above-double-space above-line-space
+B-Body	Here P(W|M) refers to the probability of words	page=2 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+E-Body	given their meanings.	page=2 xpos=5 ypos=9 right-column left-indent right-indent hanged-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Body	In our domain, we can view P (W) as a constant	page=3 xpos=0 ypos=0 left-column left-indent page-top headchar-capital
+I-Body	and transform Formula 3.1 to Formula 3.2 as follows:	page=3 xpos=0 ypos=0 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	arg max P(M | W) = arg max P(W | M) * P(M) (3.2)	page=3 xpos=0 ypos=0 left-column centered left-indent right-indent font-largest indented-line line-double-space line-space headchar-lower
+I-Equation	m m	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower above-blank-line above-double-space above-line-space
+B-SubsubsectionHeader	3.2.2 Training Set and Testing Set	page=3 xpos=0 ypos=1 left-column right-indent hanged-line longer-tail line-blank-line line-double-space line-space numbered-heading3
+B-Body	We created the training sentences and case frames by	page=3 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	running full range of variation on Finite State Machine	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	described in Section 3.1.2. This gives a set of 20, 677	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	sentences. We remove ungrammatical sentences and	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	have 16,469 left. Randomly we take 7/8 of that as the	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	training set and 1/8 as the testing set.	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsubsectionHeader	3.2.3 Meaning Model	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading3
+B-Body	The meaning model P(M) refers to the probability of	page=3 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	meanings. In our application, meanings are represented	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	by meaning items. We assume each meaning item is	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	independent of each other at this point. In the meaning	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	model, the meaning item not only includes slot-value	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	pairs but level information. Let C(m <sub>i</sub> ) be the number of	page=3 xpos=0 ypos=3 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	times the meaning item m <sub>i</sub> appears the training set, we	page=3 xpos=0 ypos=3 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	obtain P(M) as follows:	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	P(m <sub>i</sub> ) = <sub>n</sub> <sup>C(m</sup> i )	page=3 xpos=1 ypos=4 left-column left-indent right-indent font-largest indented-line longer-tail line-space headchar-capital
+I-Equation	∑ <sub>j</sub> <sub>=</sub> 1 C(m j )	page=3 xpos=1 ypos=4 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	(3.3)	page=3 xpos=3 ypos=4 left-column left-indent right-indent indented-line longer-tail above-blank-line above-double-space above-line-space
+B-Body	This can be easily obtained by counting all the	page=3 xpos=0 ypos=4 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	meaning items of all the information frames in the	page=3 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+E-Body	training set.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsubsectionHeader	3.2.4 Word Model	page=3 xpos=0 ypos=5 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading3
+B-Body	In the naïve Bayes learning approach, P(W|M) stands	page=3 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	for the probability of words appearing under given	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	meanings. And from the linguistic perspective, the	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	patterns of word sequences can imply strong	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	information of meanings. We introduce a language	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	model based on a Hidden Markov Model (HMM). The	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	word model can be described as P (w <sub>i</sub> | m j , w i-2 w i-1 ), P	page=3 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	(w <sub>i</sub> | m j , w i-1 ) or P (w i | m j ) for trigram model, bigram	page=3 xpos=0 ypos=6 left-column full-justified font-larger aligned-line
+I-Body	model, and unigram model respectively. They can be	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	calculated with the following formulas:	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	P(w <sub>i</sub> | m j , w i - 2 w i - 1 ) = # <sub>#</sub> of of ( m ( m j , <sub>j</sub> , w w i - i 2 - w 2 w i - 1 i w - 1 ) i ) (3.4)	page=3 xpos=0 ypos=7 left-column centered left-indent right-indent font-largest indented-line longer-tail line-space headchar-capital above-double-space above-line-space
+B-Equation	P(w <sub>i</sub> | m j , w i - 1 ) = # <sub>#</sub> of of ( m ( m j , <sub>j</sub> , w w i - 1 i - w 1 ) i )	page=3 xpos=0 ypos=7 left-column left-indent right-indent font-largest shorter-tail line-double-space line-space headchar-capital
+I-Equation	(3.5)	page=3 xpos=3 ypos=7 left-column left-indent right-indent indented-line longer-tail above-double-space above-line-space
+B-Equation	P(w <sub>i</sub> | m j ) = # <sub>#</sub> of of ( m ( m j , <sub>j</sub> w ) i )	page=3 xpos=0 ypos=8 left-column left-indent right-indent font-largest hanged-line shorter-tail line-double-space line-space headchar-capital
+I-Equation	(3.6)	page=3 xpos=3 ypos=8 left-column left-indent right-indent indented-line longer-tail above-blank-line above-double-space above-line-space
+B-SubsubsectionHeader	3.2.5 Weighted Sum Voting and Pruning	page=3 xpos=0 ypos=8 left-column right-indent hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading3
+B-Body	We parse each sentence based on the naïve Bayes	page=3 xpos=0 ypos=9 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	learning Formula 3.2. Each word in the sentence can be	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	associated with a set of candidate meaning items. Then	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	we normalize each candidate set of meaning items and	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	use the voting schema to get the final result set with a	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+E-Body	probability for each meaning item.	page=3 xpos=5 ypos=0 right-column right-indent column-top headchar-lower tailchar-period
+B-Body	However, this inevitably produces noisy results.	page=3 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital tailchar-period
+I-Body	Sometimes the meanings obtained even contradict other	page=3 xpos=5 ypos=0 right-column full-justified hanged-line headchar-capital
+I-Body	useful meaning items. We employ two cutoff strategies	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	to eliminate such noise. The first is to cut off	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	unsatisfactory meaning items based on a gap in	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	probability. The degree of jump can be defined with an	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	arbitrary threshold value. The second is to group all the	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	slot-value pairs with the same name and take the top one	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	as the result.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.3 Cooperative Mechanism	page=3 xpos=5 ypos=1 right-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2
+B-Body	In the previous two sections, we discussed two	page=3 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	approaches in our natural language understanding	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	system. However, neither is completely satisfactory.	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Cooperative Model can combine all three	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	approaches from these two models. The main idea is to	page=3 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	run the three parsing models together whenever a new	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	sentence comes into the system. With the statistical	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	learning model, we obtain a set of information frames.	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For the result we get from single model of finite state	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	machine, if an information frame exists, it means the	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	sentence is stored in the finite state network. We	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	therefore assign a score 1.0. The result should be no	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	worse than any information frame we get from	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	statistical learning model. Otherwise, it means this	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	sentence is not stored in our finite state work, we can	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	ignore this result. In the end, we combine this	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	information frame with the frame set from statistical	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	learning model and rank them according to the	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	confidence scores. Generally we can consider the one	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	with the highest confidence score as our parsing result.	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The cooperative model takes all advantages of the	page=3 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	three methods and combines them together. The	page=3 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	cooperative mechanism also suppresses the	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	disadvantages of those methods. The series model of the	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	finite state machine has the advantage of mapping	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	between word classes and contexts, though it sometimes	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	may lose some information, and it contains real	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	semantic knowledge. The statistical learning model can	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	produce a set of information frames based on the word	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	patterns and its noise can be removed by the result of	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the series model of the finite state machine. For the	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	single finite state machine model, if it can parse	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	sentence successfully, the result will always be the best	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	one. Therefore through the cooperation of the three	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	methods, it can either produce the exact result for	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	sentences stored in the finite state network or return the	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	most probable result through statistical machine	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	learning method if no sentence matching occurs. Also	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the noise is reduced by the other finite state machine	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	model. The cooperative model is robust and has the	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	ability to learn in our target domain.	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Experimental Results	page=3 xpos=5 ypos=9 right-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The cooperative model will demonstrate its ability on	page=3 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	sentence processing no matter whether the sentence is in	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	the original sentence set. However, currently we only	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	have simple preference rule for the cooperation and	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	haven’t obtained the overall performance. In this section,	page=4 xpos=0 ypos=0 left-column right-over aligned-line headchar-lower tailchar-comma
+I-Body	we’ll compare the different models’ performance to	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	demonstrate the cooperative model’s potential ability.	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Based on our target sentence patterns and word	page=4 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	classes, we built a blind set with 159 completely new	page=4 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	sentences. Although all the words used belong to this	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	domain these sentences don’t appear in the training set	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	and the testing set. In the evaluation of its performance,	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we compare the results of the three approaches and get	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	Table 1. As we can see from this table, finite state	page=4 xpos=0 ypos=1 left-column full-justified aligned-line string-table headchar-capital
+I-Body	method is better in the relative processing speed and for	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	processing existing patterns while statistical model is	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	better for processing new sentence patterns, which	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	makes the system very robust.	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 1__	page=4 xpos=-1 ypos=2 left-column left-over right-indent box longer-tail line-double-space line-space table-area
+B-Caption	Table 1. Results Comparison	page=4 xpos=1 ypos=4 left-column left-indent right-indent indented-line shorter-tail string-table headchar-capital above-blank-line above-double-space above-line-space
+B-Body	On the other hand, we investigate the performance	page=4 xpos=0 ypos=4 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	of statistical model in more detail on the blind test.	page=4 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	Given the whole blind testing set, the statistical learning	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	model produced 159 partially correct information	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	frames. We manually corrected them one by one. This	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	took us 97 minutes in total. To measure this efficiency,	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we also built all the real information frames for the	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	blind test set manually, one by one. It took 366 minutes	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	to finish all the 159 information frames. This means it is	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	much more efficient to process a completely new	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	sentence set with the statistical learning model.	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We next investigate the precision and recall of this	page=4 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	statistical learning model. Taking the result frames we	page=4 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	manually built as the real answers, we define precision,	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	recall, and F-score to measure the system’s	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	performance.	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	# of correct slot - value pairs	page=4 xpos=1 ypos=7 left-column left-indent right-indent font-smallest indented-line longer-tail line-double-space line-space
+I-Equation	precsion =	page=4 xpos=0 ypos=7 left-column left-indent right-indent font-smaller hanged-line shorter-tail headchar-lower
+I-Equation	# of slot - value pairs from learning model	page=4 xpos=1 ypos=7 left-column left-indent right-indent font-smallest indented-line longer-tail above-double-space above-line-space
+B-Equation	recall = # of correct slot - value pairs	page=4 xpos=0 ypos=8 left-column left-indent right-indent font-largest hanged-line shorter-tail line-double-space line-space headchar-lower
+I-Equation	# of slot - value pairs from real answer	page=4 xpos=1 ypos=8 left-column left-indent right-indent font-smaller indented-line longer-tail above-double-space above-line-space
+B-Equation	F_Score = 2 * <sub>precision</sub> ( precision <sub>+</sub> * recall recall )	page=4 xpos=1 ypos=8 left-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	Our testing strategy is to randomly select some	page=4 xpos=0 ypos=8 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	portion of the new blind set and add it into the training	page=4 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower
+I-Body	set. Then we test the system with sentences in the rest of	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the blind set. As more and more new sentences are	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	added into the training set (1/4, 1/3, 1/2, etc) we can see	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the performance changing accordingly. We investigate	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	the three models: P(M|W), P(W|M) and P(M)*P(M|W).	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-period
+E-Body	All of them are tested with same testing strategy.	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+Table	__Table 2__	page=4 xpos=5 ypos=0 right-column centered left-indent right-indent box longer-tail line-double-space line-space table-area above-line-space
+B-Caption	Table 2. Result of P (M|W)	page=4 xpos=6 ypos=1 right-column centered left-indent right-indent indented-line shorter-tail line-space string-table headchar-capital above-double-space above-line-space
+Table	__Table 3__	page=4 xpos=5 ypos=1 right-column centered left-indent right-indent box hanged-line longer-tail line-double-space line-space table-area above-line-space
+B-Caption	Table 3. Result of P (W|M)	page=4 xpos=6 ypos=2 right-column centered left-indent right-indent indented-line shorter-tail line-space string-table headchar-capital above-double-space above-line-space
+Table	__Table 4__	page=4 xpos=5 ypos=2 right-column centered left-indent right-indent box hanged-line longer-tail line-double-space line-space table-area
+B-Caption	Table 4. Result of P (W|M) * P (M)	page=4 xpos=6 ypos=3 right-column centered left-indent right-indent indented-line shorter-tail string-table headchar-capital above-blank-line above-double-space above-line-space
+B-Body	From the three tables, we can see that as new	page=4 xpos=5 ypos=3 right-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	sentences are added into the training set, the	page=4 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	performance improves. Comparing Tables 2, 3 and 4,	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the poor performance of P (W|M)* P (M) is partially due	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to unbalance in the training set. The higher occurrences	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of some specific meaning items increase P(M) and	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	affect the result during voting.	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusions	page=4 xpos=5 ypos=5 right-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper we proposed a cooperative model	page=4 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	incorporating finite state model and statistical model for	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	language understanding. It takes all of their advantages	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	and suppresses their shortcomings. The successful	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	incorporation of the methods can make our system very	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	robust and scalable for future use.	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We notice that the series model of the finite state	page=4 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	machine model actually incorporates some semantic	page=4 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	knowledge from human beings. Ongoing research work	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	includes finding new ways to integrate semantic	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	knowledge to our system. For the statistical learning	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	model, the quality and the different configurations of	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	training set highly affect the performance of models	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	trained and thus their abilities to process sentences. The	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	balance of training set is also a big issue. How to build a	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	balanced training set with single finite state machine	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	model will remain our important work in the future. For	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the learning mechanism, Naïve Bayesian learning	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	requires more understanding of different factors’ roles	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	and their importance. These problems should be	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	investigated in future work.	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+AcknowledgementHeader	Acknowledgements	page=4 xpos=5 ypos=9 right-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	The author would like to thank Deepak Ravichandran	page=4 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+E-Acknowledgement	for his invaluable help of the whole work.	page=4 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+ReferenceHeader	References	page=5 xpos=0 ypos=0 left-column right-indent font-largest page-top string-reference headchar-capital
+B-Reference	Eugene Charniak. 1997. Statistical Parsing with a Context-free	page=5 xpos=0 ypos=0 left-column full-justified font-smallest aligned-line longer-tail year headchar-capital above-line-space
+I-Reference	Grammar and Word Statistics. Proc. Of AAAI-97. pp.	page=5 xpos=0 ypos=1 left-column left-indent font-smallest indented-line line-space headchar-capital tailchar-period above-line-space
+I-Reference	598-603.	page=5 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail line-space tailchar-period above-blank-line above-double-space above-line-space
+B-Reference	M. Collins. 1997. Three Generative, Lexicalised Models for	page=5 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail line-blank-line line-double-space line-space year headchar-capital
+I-Reference	Statistical Parsing. Proc. of the 35 <sup>th</sup> ACL.	page=5 xpos=0 ypos=3 left-column left-indent right-indent indented-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-Reference	S. Miller, R. Bobrow, R. Ingria, and R. Schwartz. 1994.	page=5 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-blank-line line-double-space line-space year headchar-capital tailchar-period above-line-space
+I-Reference	Hidden Understanding Models of Natural Language,"	page=5 xpos=0 ypos=5 left-column left-indent font-smallest indented-line line-space headchar-capital above-line-space
+I-Reference	Proceedings of the Association of Computational	page=5 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line line-space headchar-capital above-line-space
+I-Reference	Linguistics, pp. 25-32.	page=5 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-Reference	W. Swartout, et al. 2001. Toward the Holodeck: Integrating	page=5 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-blank-line line-double-space line-space year headchar-capital above-line-space
+I-Reference	Graphics, Sound, Character and Story. Proceedings of 5th	page=5 xpos=0 ypos=8 left-column left-indent font-smallest indented-line line-space headchar-capital above-line-space
+I-Reference	International Conference on Autonomous Agents	page=5 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-capital

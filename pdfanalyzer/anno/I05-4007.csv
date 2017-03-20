@@ -1,0 +1,592 @@
+Title	Cross-lingual Conversion of Lexical Semantic Relations: Building	page=0 xpos=0 ypos=0 single-column centered left-over right-over font-largest page-top headchar-capital above-line-space
+Title	Parallel Wordnets	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-space headchar-capital above-blank-line above-double-space above-line-space
+Author	Chu-Ren Huang <sup>1</sup> , I-Li Su 1 , Jia-Fei Hong 1 , Xiang-Bing Li 2	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital above-double-space above-line-space
+B-Affiliation	1 . Institute of Linguistics	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+I-Affiliation	2. Institute of Information Science	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail line-double-space line-space itemization above-double-space above-line-space
+I-Affiliation	Academia Sinica,	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-double-space line-space headchar-capital tailchar-comma above-double-space above-line-space
+Address	No.128 Academic Sinica Road, SEC.2 Nankang,	page=0 xpos=1 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma above-double-space above-line-space
+Address	Taipei 115, Taiwan	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-double-space line-space headchar-capital above-double-space above-line-space
+Email	1. { churen, isu, jiafei }@gate.sinica.edu.tw	page=0 xpos=2 ypos=2 single-column centered left-indent right-indent font-larger hanged-line longer-tail line-double-space line-space symbol-atmark itemization column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital
+B-Abstract	Parallel wordnets built upon	page=0 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail headchar-capital
+I-Abstract	correspondences between different	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	languages can play a crucial role in	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	multilingual knowledge processing. Since	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	there is no homomorphism between pairs of	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	monolingual wordnets, we must rely on	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	lexical semantic relation (LSR) mappings to	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	ensure conceptual cohesion. In this paper,	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Abstract	we propose and implement a model for	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Abstract	bootstrapping parallel wordnets based on	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Abstract	one monolingual wordnet and a set of	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Abstract	cross-lingual lexical semantic relations. In	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Abstract	particular, we propose a set of inference	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Abstract	rules to predict Chinese wordnet structure	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Abstract	based on English wordnet and	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Abstract	English-Chinese translation relations. We	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Abstract	show that this model of parallel wordnet	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Abstract	building is effective and achieves higher	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Abstract	precision in LSR prediction.	page=0 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-blank-line above-double-space above-line-space
+B-Body	A knowledgebase which systemizes	page=0 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	lexical and conceptual information of	page=0 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	human knowledge is a basic infrastructure	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	for Natural Language Processing (NLP)	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	applications. Wordnets, pioneered by the	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	Princeton WordNet (WN, Fellbaum 1998),	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-capital tailchar-comma
+I-Body	and greatly enriched by EuroWordnet (EWN,	page=0 xpos=0 ypos=7 left-column right-over aligned-line headchar-lower tailchar-comma
+I-Body	Vossen 1998), have become the standard for	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-capital
+I-Body	a lexical knowledgebase enriched with	page=0 xpos=0 ypos=8 left-column full-justified aligned-line itemization headchar-lower
+I-Body	lexical semantic relations. In addition to the	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	multilingual architecture of EWN, there are	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	some proposals to construct the expansion	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower
+I-Body	for monolingual wordnets to parallel	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	wordnet systems, such as Pianta and Girardi	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	(2002). However, the construction of	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year
+I-Body	multilingual wordnets eventually faces the	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	challenge of low-density languages, which	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	is dealt with in Huang, et al. (2002).	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	Low-density languages, as opposed to	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	high-density languages, usually refer to	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	languages that are not spoken by a large	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	number of people. However, there is neither	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	a direct correspondence between language	page=0 xpos=5 ypos=4 right-column full-justified aligned-line itemization headchar-lower
+I-Body	population and language technology, nor an	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	objective population number that defines	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	density level. In this work, we use the	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	availability of language resources instead to	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	define language density. That is, low-density	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	languages are languages that do not have	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	enough language resources to support fully	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	automated language processing, such as	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	machine translation. In our current line of	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	work, we (Huang et al. 2002) refer to	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Body	low-density languages as those which do not	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	have enough existing resources for	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	semi-automatic construction of monolingual	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	wordnet.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	There are two alternative approaches to	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	build parallel wordnets, as shown in Figure	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	1. The first approach relies on two fully	page=0 xpos=5 ypos=7 right-column full-justified aligned-line itemization
+I-Body	annotated monolingual wordnets with	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	synsets and LSR’s. The second approach	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	requires only one fully annotated WN in	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	addition to LSR-based cross-lingual	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	translation correspondences.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	48	page=0 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-Figure	A PPROACH I	page=1 xpos=0 ypos=0 left-column left-indent right-indent font-smallest page-top headchar-capital column-bottom
+I-Figure	Map and pair Language A and Fully annotated	page=1 xpos=3 ypos=0 single-column left-indent right-indent font-smallest column-top headchar-capital
+I-Figure	Given fully annotated	page=1 xpos=0 ypos=0 single-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Figure	Language B synsets with parallel wordnet	page=1 xpos=3 ypos=0 single-column left-indent right-indent font-smallest indented-line longer-tail headchar-capital
+I-Figure	monolingual wordents	page=1 xpos=0 ypos=0 single-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-lower
+I-Figure	cross-lingual LSRs	page=1 xpos=3 ypos=0 single-column left-indent right-indent font-smallest indented-line longer-tail headchar-lower
+I-Figure	with synsets and LSRs	page=1 xpos=0 ypos=0 single-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-lower column-bottom above-blank-line above-double-space above-line-space
+I-Figure	A PPROACH II Grow LSR links among	page=1 xpos=0 ypos=1 left-column left-indent right-over font-larger column-top line-blank-line line-double-space line-space headchar-capital column-bottom
+I-Figure	Map LSR-annotated	page=1 xpos=3 ypos=1 single-column left-indent right-indent font-smallest column-top headchar-capital column-bottom
+I-Figure	Given fully annotated WN Language B synsets by	page=1 xpos=0 ypos=1 left-column left-indent right-over font-larger column-top headchar-capital column-bottom
+I-Figure	synsets in Language A to	page=1 xpos=3 ypos=1 single-column left-indent right-indent font-smallest column-top headchar-lower column-bottom
+I-Figure	of language A; and using language A LSR	page=1 xpos=0 ypos=1 left-column left-indent right-over font-larger column-top headchar-lower column-bottom
+I-Figure	Language B through	page=1 xpos=3 ypos=1 single-column left-indent right-indent font-smallest column-top headchar-capital column-bottom
+I-Figure	bilingual translation and cross-lingual LSR	page=1 xpos=0 ypos=1 left-column left-indent right-over font-larger column-top headchar-lower column-bottom
+I-Figure	translation LSRs (T-LSR’s)	page=1 xpos=3 ypos=2 single-column left-indent right-indent font-smallest column-top headchar-lower column-bottom
+I-Figure	equivalents annotated	page=1 xpos=0 ypos=2 left-column left-indent right-indent font-smallest column-top headchar-lower above-double-space above-line-space
+I-Figure	with LSR	page=1 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail line-double-space line-space headchar-lower column-bottom
+E-Figure	inference rules	page=1 xpos=6 ypos=2 right-column left-indent right-indent font-smallest column-top headchar-lower column-bottom above-blank-line above-double-space above-line-space
+B-Caption	Figure1. Two Approaches to Building Bilingual Wordnets	page=1 xpos=1 ypos=2 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space string-figure headchar-capital column-bottom above-blank-line above-double-space above-line-space
+B-Body	Approach I maps and pairs Language A	page=1 xpos=0 ypos=3 left-column left-indent column-top line-blank-line line-double-space line-space headchar-capital
+I-Body	synsets with Language B synsets and	page=1 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	annotates cross-lingual LSR’s. The result is	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	a fully annotated parallel wordnet. Approach	page=1 xpos=0 ypos=3 left-column full-justified aligned-line itemization headchar-lower
+I-Body	II maps language A synsets to language B	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	through translation equivalents. After	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	language B synsets are thus established,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	language B LSR’s are predicted based on	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	corresponding LSR’s in language A. A new	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	set of monolingual LSR’s is bootstrapped	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	and predicted basing on inference rules	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	governed by translation LSR’s (T-LSR’s). In	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	general, approach I applies to high-density	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	languages while approach II applies to	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	low-density languages. In this paper, we will	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	focus on the application of approach II to	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	build a Chinese Wordnet with conceptual	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	cohesion.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The current model was first explored in	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	Huang et al. (2003). This previous study	page=1 xpos=0 ypos=6 left-column full-justified hanged-line year headchar-capital
+I-Body	covered 210 lemmas, consisted of the top	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	ranked lemmas in each part-of-speech	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	(POS). The translation LSR’s discussed in	page=1 xpos=0 ypos=6 left-column full-justified aligned-line
+I-Body	the previous model were antonymy,	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	hypernymy and hyponymy. In this current	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	work, we expand our study to all possible	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	LSR’s as well as to all the bilingual lexical	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	pairs in our English-Chinese translation	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	equivalents databases. Moreover, the LSR’s	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	in Princeton WordNet are again used as the	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	basis for bootstrapping. In addition, we	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	establish a set of evaluation for the results.	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The approach will be evaluated in term of	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	both the precision of prediction and the	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	confidence of prediction. We aim to show	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	that T-LSR’s bootstrapped approach does	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	provide an effective model for building	page=1 xpos=5 ypos=3 right-column full-justified column-top headchar-lower
+E-Body	parallel wordnets for low-density languages.	page=1 xpos=5 ypos=3 right-column centered right-indent aligned-line headchar-lower tailchar-period
+B-Body	After the introduction, the main part of	page=1 xpos=5 ypos=3 right-column left-indent indented-line headchar-capital
+I-Body	this paper consists of the following sections:	page=1 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-colon
+I-Body	in section 2, we briefly introduce the	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	existing resources required for this work.	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We discuss methodology of T-LSR	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	bootstrapping step by step in section 3. A	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	series of LSR-predicting inference rules are	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	also given in this section. In section 4, we	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	plan to evaluate the results of our	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	experiment and demonstrate the feasibility	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of maintaining conceptual cohesion in	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	cross-lingual LSR mapping.	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Required Resources: ECTED and	page=1 xpos=5 ypos=5 right-column full-justified font-larger aligned-line longer-tail line-double-space line-space numbered-heading1
+I-SectionHeader	WN	page=1 xpos=5 ypos=5 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+B-Body	As we mentioned above, the T-LSR	page=1 xpos=5 ypos=6 right-column left-indent aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	approach to parallel wordnet requires two	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	language resources: a fully annotated	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	monolingual wordnet and a set of translation	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	LSR’s to map the wordnet information to	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	the target language. In our current study, we	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	use the English WN as the source of synset	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	and LSR information. The semantic relation	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	between an English synset and its Chinese	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	translation is based on The English-Chinese	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	Translation Equivalents Database (ECTED,	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-comma
+E-Body	Huang et al. 2002).	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	2.1 The English-Chinese Translation	page=1 xpos=5 ypos=8 right-column centered left-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2
+I-SubsectionHeader	Equivalents Databases (ECTED)	page=1 xpos=5 ypos=8 right-column left-indent right-indent indented-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+B-Body	The basic idea of ECTED is to provide	page=1 xpos=5 ypos=9 right-column left-indent longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	the Chinese translation equivalents for each	page=1 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	49	page=1 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	WN English synset. Our ECTED was	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-capital
+I-Body	bootstrapped with a combined lexical	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	knowledgebase integrating at least four	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	English-Chinese or Chinese-English	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	bilingual resources. Based on this combined	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	LKB, a group of translators chose (or	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	created) up to three best translation	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	equivalents for each WN synset. In addition,	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	for each English-Chinese translation	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	equivalent, a lexical semantic relation is	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	annotated. In addition to synonym, the	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	semantic relations marked including	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	antonym, hypernym, hyponym, holonym,	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	meronym, and near-synonym. We use all	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	semantic relations, with the exception of	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	antonymy, in this study.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	2.2 Wordnet (WN)	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The Cognitive Science Laboratory of	page=2 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	Princeton University created WN, a lexical	page=2 xpos=0 ypos=3 left-column full-justified hanged-line headchar-capital
+I-Body	knowledgebase for English, in 1990	page=2 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower
+I-Body	(Fellbaum, 1998). Synsets (a group of	page=2 xpos=0 ypos=3 left-column full-justified aligned-line year
+I-Body	form-meaning pairs sharing same sense) are	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the main units used in WN to organize the	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	lexicon conceptually. Each sense can be	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	expanded either by gloss or context. It is	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	easy for users to distinguish each sense by	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	simply checking the synonyms, the example	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	sentences or explanation. Nouns, verbs,	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	adjectives and adverbs are the main lexical	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	categories to classify all the lexicons. Such	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	classification of lexicons is based on the	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	principles in psycholinguistics. Besides, the	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	semantic relations of each sense in WN are	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	ii	page=2 xpos=2 ypos=6 left-column left-indent right-indent font-smallest indented-line shorter-tail line-blank-line line-double-space line-space headchar-lower column-bottom
+I-Body	also expressed like a Word-network. In	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	other words, WN resembles an ontology	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	system and links all the semantic relations	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	of words. Therefore, English WN is not just	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	a lexical knowledgebase but also an	page=2 xpos=5 ypos=0 right-column full-justified aligned-line itemization headchar-lower
+I-Body	ontological system that expresses the	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	semantic relations and the concepts of	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	words.	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The current version of WN is Wordnet	page=2 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	2.0, but Wordnet 1.6 is more widely used by	page=2 xpos=5 ypos=1 right-column full-justified hanged-line
+I-Body	the most applications in NLP and linguistic	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	research. Therefore, after considering the	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	compatibility with other applications, we	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	connected the ECTED with Wordnet 1.6.	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	However, we are still working on keeping	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	updating our systems by using the content in	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the new version of WN. We believe this will	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	keep the information updated and shorten	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the gap caused by the different versions of	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	WN.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Inferring Lexical Semantic	page=2 xpos=5 ypos=3 right-column full-justified font-larger aligned-line longer-tail line-double-space line-space numbered-heading1
+I-SectionHeader	Relations for WN and ECTED	page=2 xpos=5 ypos=3 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+B-Body	As we mentioned above, WN does not	page=2 xpos=5 ypos=4 right-column left-indent aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	only express the knowledge of lexicons but	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	also cover the semantic relations of lexicons.	page=2 xpos=5 ypos=4 right-column right-over aligned-line headchar-lower tailchar-period
+I-Body	Therefore, in order to present such semantic	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	relations clearly and logically, Huang (2002)	page=2 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	proposed to use cross-lingual Lexical	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	Semantic Relations (LSRs) to predict the	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	semantic relations in the target language.	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The proposed framework is shown in	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+E-Body	Diagram 1.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-Figure	CW2 EW2(Synset number)	page=2 xpos=1 ypos=6 single-column left-indent right-indent font-smaller column-top line-blank-line line-double-space line-space headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Figure	y x	page=2 xpos=1 ypos=7 left-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space itemization headchar-lower column-bottom above-blank-line above-double-space above-line-space
+I-Figure	CW1	page=2 xpos=1 ypos=7 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital column-bottom
+I-Figure	x = EW1-EW2	page=2 xpos=6 ypos=6 right-column left-indent right-indent font-smallest column-top itemization headchar-lower above-double-space above-line-space
+I-Figure	y = CW1-CW2	page=2 xpos=6 ypos=6 right-column left-indent right-indent font-smallest aligned-line line-double-space line-space itemization headchar-lower above-double-space above-line-space
+I-Figure	i = Translation LSR	page=2 xpos=6 ypos=7 right-column left-indent right-indent font-smallest aligned-line longer-tail line-double-space line-space itemization headchar-lower above-double-space above-line-space
+I-Figure	ii = Translation LSR	page=2 xpos=6 ypos=7 right-column left-indent right-indent font-smallest aligned-line line-double-space line-space headchar-lower above-double-space above-line-space
+I-Figure	The unknown LSR y = i+x+ii	page=2 xpos=6 ypos=7 right-column left-indent right-indent font-smallest aligned-line longer-tail line-double-space line-space headchar-capital column-bottom above-line-space
+I-Figure	EW1(Synset number)	page=2 xpos=4 ypos=7 single-column left-indent right-indent font-smallest column-top line-space headchar-capital above-line-space
+E-Figure	i	page=2 xpos=2 ypos=7 single-column left-indent right-indent font-smallest hanged-line shorter-tail line-space headchar-lower above-double-space above-line-space
+B-Caption	Diagram 1. Translation-mediated LSR (the complete model)	page=2 xpos=2 ypos=8 single-column left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital column-bottom above-blank-line above-double-space above-line-space
+B-Body	In Diagram1, EW1 and EW2 are head	page=2 xpos=0 ypos=8 left-column right-indent column-top line-blank-line line-double-space line-space headchar-capital
+I-Body	words for two different English synsets.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail headchar-lower tailchar-period
+I-Body	CW1 and CW2 are translation equivalents	page=2 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail headchar-capital
+I-Body	in ECTED for these two head words. LSR i	page=2 xpos=0 ypos=9 left-column right-indent aligned-line longer-tail headchar-lower
+I-Body	and ii are the T-LSRs stipulating the	page=2 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower column-bottom
+I-Body	semantic relations between the head words	page=2 xpos=5 ypos=8 right-column right-indent column-top headchar-lower
+I-Body	and their Chinese TEs. In WN, each synset	page=2 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower
+I-Body	is linked to a network of their synsets	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower
+I-Body	through a number of LSR’s. Hence, we use	page=2 xpos=5 ypos=9 right-column right-indent aligned-line longer-tail headchar-lower
+I-Body	LSR x to represent the semantic relation	page=2 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	50	page=2 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	between EW1 and EW2. The four LSR’s	page=3 xpos=0 ypos=0 left-column right-indent page-top headchar-lower
+I-Body	form a closed network that includes three	page=3 xpos=0 ypos=0 left-column right-indent aligned-line headchar-lower
+I-Body	know LSR’s: two T-LSRs, i and ii, and one	page=3 xpos=0 ypos=0 left-column right-indent aligned-line longer-tail headchar-lower
+I-Body	English LSR, x, from WN. The only	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-capital
+I-Body	unknown LSR is y, the semantic relation	page=3 xpos=0 ypos=0 left-column right-indent aligned-line longer-tail headchar-lower
+I-Body	between CW1 and CW2. Huang et al (2002)	page=3 xpos=0 ypos=0 left-column centered right-indent aligned-line longer-tail year headchar-lower
+I-Body	claimed that LSR y can be inferred as a	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower
+I-Body	functional combination of the three LSRs - i,	page=3 xpos=0 ypos=1 left-column right-over aligned-line longer-tail headchar-lower tailchar-comma
+E-Body	x and ii.	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period
+B-Body	Language translation does not only	page=3 xpos=0 ypos=1 left-column centered left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	involve the semantic correspondences but	page=3 xpos=0 ypos=1 left-column right-indent hanged-line longer-tail headchar-lower
+I-Body	also the human decision in choosing	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower
+I-Body	translation equivalents that are affected by	page=3 xpos=0 ypos=2 left-column right-indent aligned-line longer-tail headchar-lower
+I-Body	the social and cultural factors. Our main	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	y	page=3 xpos=3 ypos=3 left-column left-indent right-indent font-smallest indented-line shorter-tail line-blank-line line-double-space line-space headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	CW1	page=3 xpos=2 ypos=4 left-column left-indent right-indent font-smallest hanged-line shorter-tail line-blank-line line-double-space line-space headchar-capital above-double-space above-line-space
+I-Figure	i	page=3 xpos=3 ypos=4 left-column left-indent right-indent font-smallest indented-line longer-tail line-double-space line-space headchar-lower column-bottom
+I-Body	priority in this paper is to infer the lexical	page=3 xpos=5 ypos=0 right-column right-over column-top headchar-lower
+I-Body	semantic information across different	page=3 xpos=5 ypos=0 right-column right-over aligned-line shorter-tail headchar-lower
+I-Body	language rather than the translational	page=3 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower
+I-Body	idiosyncrasies, so the elements regarding	page=3 xpos=5 ypos=0 right-column right-over aligned-line longer-tail headchar-lower
+I-Body	translational idiosyncrasies are excluded	page=3 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower
+I-Body	here. In order to simplify the complexity of	page=3 xpos=5 ypos=0 right-column right-over aligned-line longer-tail headchar-lower
+I-Body	LSR combination and get a better prediction	page=3 xpos=5 ypos=1 right-column right-over aligned-line longer-tail headchar-capital
+I-Body	of LSR, here, we only take account of the	page=3 xpos=5 ypos=1 right-column right-over aligned-line shorter-tail headchar-lower
+I-Body	situations when LSR ii is exactly equivalent,	page=3 xpos=5 ypos=1 right-column right-over aligned-line longer-tail headchar-lower tailchar-comma
+I-Body	EW2=CW2 or ii=0. Therefore, we have a	page=3 xpos=5 ypos=1 right-column right-over aligned-line shorter-tail headchar-capital
+I-Body	reduced model of the translation-mediated	page=3 xpos=5 ypos=1 right-column right-over aligned-line longer-tail headchar-lower
+E-Body	LSR Prediction as shown in diagram 2.	page=3 xpos=5 ypos=1 right-column right-over aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-Figure	EW2(Synset number)=CW2 (ii=0)	page=3 xpos=5 ypos=2 right-column full-justified font-smallest aligned-line shorter-tail line-blank-line line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+I-Figure	x	page=3 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail line-blank-line line-double-space line-space headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	EW1(Synset number)	page=3 xpos=5 ypos=4 right-column right-indent font-smallest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital column-bottom above-blank-line above-double-space above-line-space
+E-Figure	The unknown LSR y= i + x	page=3 xpos=4 ypos=4 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+B-Caption	Diagram 2. Translation-mediated LSR (the reduced model)	page=3 xpos=2 ypos=4 single-column left-indent right-over hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital column-bottom above-blank-line above-double-space above-line-space
+B-Body	Synonym, hypernym, hyponym,	page=3 xpos=0 ypos=5 left-column left-indent column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Body	holonym, meronym and near-synonym are	page=3 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	the main semantic relations that we will	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	discuss in the following sections. First of all,	page=3 xpos=0 ypos=5 left-column right-over aligned-line headchar-lower tailchar-comma
+I-Body	we would like to discuss the foundational	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	situation of LSR prediction, synonym, as	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	y	page=3 xpos=3 ypos=7 left-column left-indent right-indent font-smallest indented-line shorter-tail line-blank-line line-double-space line-space headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	CW1	page=3 xpos=2 ypos=7 left-column left-indent right-indent font-smallest hanged-line shorter-tail line-blank-line line-double-space line-space headchar-capital column-bottom
+I-Body	shown in diagram 3. When translation LSR i	page=3 xpos=5 ypos=5 right-column right-over column-top headchar-lower
+I-Body	is exactly equivalent, i.e. CW1=EW1, and	page=3 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower
+I-Body	LSR ii is also exactly equivalent, i.e.	page=3 xpos=5 ypos=5 right-column right-over aligned-line headchar-capital tailchar-period
+I-Body	EW2=CW2, the LSR combination, LSR y,	page=3 xpos=5 ypos=5 right-column right-over aligned-line headchar-capital tailchar-comma
+I-Body	is directly inherited the semantic relation of	page=3 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower
+E-Body	LSR x.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-Figure	EW2(Synset number)=CW2 (ii=0)	page=3 xpos=5 ypos=6 right-column full-justified font-smallest aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+I-Figure	x	page=3 xpos=5 ypos=7 right-column left-indent right-indent font-smallest indented-line shorter-tail line-blank-line line-double-space line-space headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	EW1(Synset number)	page=3 xpos=5 ypos=7 right-column right-indent font-smallest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital column-bottom above-blank-line above-double-space above-line-space
+E-Figure	CW1=EW1(i=0) The unknown LSR y= 0 + x = x	page=3 xpos=3 ypos=8 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+B-Caption	Diagram 3. Translation-mediated LSR (When TEs are synonymous)	page=3 xpos=1 ypos=8 single-column left-indent right-over hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+Page	51	page=3 xpos=4 ypos=9 single-column left-indent right-indent font-smallest indented-line shorter-tail line-blank-line line-double-space line-space numeric-only page-bottom
+B-Figure	fat(00934421A) = fei2pang4de5	page=4 xpos=4 ypos=0 single-column left-indent right-indent font-smallest page-top headchar-lower column-bottom above-blank-line above-double-space above-line-space
+I-Figure	y = ANT	page=4 xpos=3 ypos=0 left-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space itemization headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	shou4	page=4 xpos=2 ypos=1 left-column left-indent right-indent font-smallest hanged-line shorter-tail line-blank-line line-double-space line-space headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	CW1=EW1(i=0)	page=4 xpos=3 ypos=1 left-column left-indent right-indent font-smallest indented-line longer-tail line-blank-line line-double-space line-space headchar-capital column-bottom
+I-Figure	x= ANT	page=4 xpos=6 ypos=0 right-column left-indent right-indent font-smallest column-top headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	thin (00936334A)	page=4 xpos=5 ypos=1 right-column left-indent right-indent font-smallest hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower column-bottom above-blank-line above-double-space above-line-space
+I-Figure	chubby(00935062A) = feng1man3de5	page=4 xpos=4 ypos=2 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-lower column-bottom above-blank-line above-double-space above-line-space
+I-Figure	y =NSYN	page=4 xpos=3 ypos=2 left-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space itemization headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	fei2pang4d	page=4 xpos=2 ypos=3 left-column left-indent right-indent font-smallest hanged-line shorter-tail line-blank-line line-double-space line-space headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	CW1=EW1(i=0)	page=4 xpos=3 ypos=3 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space headchar-capital column-bottom
+I-Figure	x = NSYN	page=4 xpos=6 ypos=2 right-column left-indent right-indent font-smallest column-top itemization headchar-lower above-blank-line above-double-space above-line-space
+E-Figure	fat (00934421A)	page=4 xpos=5 ypos=3 right-column left-indent right-indent font-smallest hanged-line shorter-tail line-blank-line line-double-space line-space headchar-lower column-bottom above-blank-line above-double-space above-line-space
+B-Caption	Diagram 4. Examples of the LSR (When TEs are synonymous)	page=4 xpos=1 ypos=4 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space headchar-capital column-bottom above-blank-line above-double-space above-line-space
+B-Body	As shown in diagram 4 above,	page=4 xpos=0 ypos=4 left-column left-indent column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Body	according to the ECTED, the English head	page=4 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	word ‘thin’ is exactly equivalent with	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	‘shou4’ in Chinese. The LSR x between	page=4 xpos=0 ypos=4 left-column full-justified aligned-line
+I-Body	EW1 and EW2 in WN is marked ‘ANT’	page=4 xpos=0 ypos=5 left-column centered right-over aligned-line headchar-capital
+I-Body	which means ‘fat’ is the antonym of ‘thin.’	page=4 xpos=0 ypos=5 left-column centered right-over aligned-line headchar-lower
+I-Body	Therefore, according to the prediction in	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	diagram 3, we can infer that the CW2	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	(fei2pang4de5) is the antonym of CW1	page=4 xpos=0 ypos=5 left-column full-justified aligned-line
+I-Body	(shou4). The above inference can also be	page=4 xpos=0 ypos=6 left-column full-justified aligned-line
+I-Body	applied to another example in diagram 4.	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The LSR prediction in WN plays a very	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	crucial role in determining the unknown	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	LSR y. Even an English head word may	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	have more than one sense, it is still very	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	clear to infer the LSR between the TEs.	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	However, there is a potential problem within	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital column-bottom
+I-Body	this inference. If a head word has more than	page=4 xpos=5 ypos=4 right-column full-justified column-top headchar-lower
+I-Body	one Chinese TEs which can all correspond	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to the head word, there might be a problem	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to consider whether those TEs are really	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	synonyms.	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	However, the situation is not always	page=4 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	that ideal as above. When the Chinese	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	translation equivalents and the corresponded	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	English synset have a non-identical	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	semantic relation, CW1EW1, the	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	prediction of LSR y needs to be considered	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	further and carefully.	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	52	page=4 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-Figure	cut(00248688N)=jian3kai1	page=5 xpos=3 ypos=0 single-column left-indent right-indent font-smallest page-top headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	y x= HYP (‘cut’ is the hypernym of ‘nick’)	page=5 xpos=2 ypos=0 single-column left-indent right-indent font-smallest hanged-line longer-tail line-blank-line line-double-space line-space itemization headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	shang1kou3	page=5 xpos=0 ypos=1 single-column left-indent right-indent font-smallest hanged-line shorter-tail line-blank-line line-double-space line-space headchar-lower column-bottom
+I-Figure	The unknown LSR y	page=5 xpos=5 ypos=0 right-column left-indent right-indent font-smallest column-top headchar-capital above-double-space above-line-space
+I-Figure	= i + x	page=5 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-double-space line-space column-bottom
+I-Figure	nick(00248910N)	page=5 xpos=3 ypos=1 single-column left-indent right-indent font-smallest column-top headchar-lower column-bottom
+I-Figure	=HYP +HYP =HYP	page=5 xpos=5 ypos=1 right-column left-indent right-indent font-smallest column-top column-bottom above-line-space
+I-Figure	i= HYP (‘nick’ is the hypernym of ‘shang1kou3’ )	page=5 xpos=0 ypos=1 single-column left-indent right-indent font-smallest column-top line-space headchar-lower column-bottom
+E-Figure	(‘jian3kai1’ is the hypernym of ‘shang1kou3’)	page=5 xpos=5 ypos=1 right-column left-indent right-indent font-smallest column-top column-bottom above-blank-line above-double-space above-line-space
+B-Caption	Diagram 5. Predicting LSR (Hypernym) and its example	page=5 xpos=1 ypos=2 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+B-Figure	baklava(05674827N)=guo3ren2mi4tang2qian1ceng2bing3	page=5 xpos=2 ypos=2 single-column left-indent right-indent font-smallest indented-line shorter-tail line-blank-line line-double-space line-space headchar-lower column-bottom above-blank-line above-double-space above-line-space
+I-Figure	y x= HPO	page=5 xpos=1 ypos=3 left-column left-indent right-over font-smallest column-top line-blank-line line-double-space line-space itemization headchar-lower column-bottom above-blank-line above-double-space above-line-space
+I-Figure	gao1dian3	page=5 xpos=0 ypos=3 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-lower column-bottom
+I-Figure	The unknown LSR y	page=5 xpos=5 ypos=3 right-column left-indent right-indent font-smallest column-top headchar-capital above-double-space above-line-space
+I-Figure	= i + x	page=5 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-double-space line-space above-double-space above-line-space
+I-Figure	=HPO +HPO =HPO	page=5 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line longer-tail line-double-space line-space above-double-space above-line-space
+I-Figure	(‘guo3ren2mi4tang2qian1ceng2bing3’ is the	page=5 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line longer-tail line-double-space line-space column-bottom
+I-Figure	pastry(05670938N)	page=5 xpos=3 ypos=3 single-column left-indent right-indent font-smallest column-top headchar-lower column-bottom above-double-space above-line-space
+I-Figure	i= HPO	page=5 xpos=1 ypos=4 left-column left-indent right-indent font-smallest column-top line-double-space line-space headchar-lower column-bottom
+E-Figure	hyponym of ‘gao1dian3’)	page=5 xpos=5 ypos=4 right-column left-indent right-indent font-smallest column-top headchar-lower column-bottom above-blank-line above-double-space above-line-space
+B-Caption	Diagram 6. Predicting LSR(Hyponym) and its example	page=5 xpos=2 ypos=4 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space headchar-capital column-bottom above-blank-line above-double-space above-line-space
+B-Body	Logically, hypernym and hyponym are	page=5 xpos=0 ypos=4 left-column left-indent column-top line-blank-line line-double-space line-space headchar-capital
+I-Body	symmetric semantic relations. For instance,	page=5 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	if A is a hypernym of B, B is a hyponym of	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	A. For instance, as shown in diagram 5, the	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	English word ‘nick’ is the hypernym of the	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	Chinese term ‘shang1kou3’ and ‘cut’ is the	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	hypernym of ‘nick’ in WN and the exact	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	translation equivalent of ‘cut’ in Chinese is	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	‘jian3kai1.’ According to the logicality,	page=5 xpos=0 ypos=6 left-column full-justified aligned-line tailchar-comma
+I-Body	‘jian3kai1’ is the hypernym of	page=5 xpos=0 ypos=6 left-column full-justified aligned-line
+I-Body	‘shang1kou3.’ The example of hyponym is	page=5 xpos=0 ypos=6 left-column full-justified aligned-line
+I-Body	shown in diagram 6. Due to the varied	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	semantic relations in WN, the inferences of	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	LSRs , the unknown LSR y = i + x ,for	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	hypernym, hyponym, near-synonym,	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	holonym, and mernoym are listed as below:	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-blank-line above-double-space above-line-space
+B-Listitem	Hypernym(HYP)	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Listitem	(a) IF x=ANT	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y =HYP +ANT =ANT (CW2 is the	page=5 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	antonym of CW1.)	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(b) IF x=HYP	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = HYP+HYP =HYP (CW2 is the	page=5 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	hypernym of CW1.)	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(c) IF x= NSYN	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail itemization column-bottom
+I-Listitem	LSR y = HYP+NSYN =HYP (CW2 is the	page=5 xpos=5 ypos=4 right-column full-justified column-top headchar-capital
+I-Listitem	hypernym of CW1.)	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(d) IF x = HOL	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = HYP+HOL =HOL (CW2 is the	page=5 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	holonym of CW1.)	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(e) IF x = all other LSR	page=5 xpos=5 ypos=5 right-column right-indent aligned-line longer-tail itemization
+I-Listitem	LSR y = HYP +all other LSRs = ?	page=5 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	(Undecided)	page=5 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail above-blank-line above-double-space above-line-space
+B-Listitem	Hyponym(HPO)	page=5 xpos=5 ypos=6 right-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+B-Listitem	(a) IF x=ANT	page=5 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y =HPO +ANT =ANT (CW2 is the	page=5 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	antonym of CW1.)	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(b) IF x=HPO	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = HPO+HPO =HPO (CW2 is the	page=5 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	hyponym of CW1.)	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(c) IF x= NSYN	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = HPO+NSYN =HPO (CW2 is the	page=5 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	hyponym of CW1.)	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(d) IF x = MER	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = HPO+MER =MER (CW2 is the	page=5 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	meronym of CW1.)	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(e) IF x = all other LSR	page=5 xpos=5 ypos=8 right-column right-indent aligned-line longer-tail itemization
+I-Listitem	LSR y = HPO +all other LSRs = ?	page=5 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	(Undecided)	page=5 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail column-bottom above-blank-line above-double-space above-line-space
+Page	53	page=5 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-Listitem	Near-Synonym(NSYN)	page=6 xpos=0 ypos=0 left-column right-indent page-top headchar-capital
+B-Listitem	(a) IF x=ANT	page=6 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = NSYN+ANT =ANT (CW2 is the	page=6 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	antonym of CW1.)	page=6 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(b) IF x=HYP	page=6 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = NSYN+HYP =HYP (CW2 is the	page=6 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	hypernym of CW1.)	page=6 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(c) IF x=HPO	page=6 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = NSYN+HPO =HPO (CW2 is the	page=6 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	hyponym of CW1.)	page=6 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(d) IF x= NSYN	page=6 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = NSYN+NSYN =NSYN (CW2 is	page=6 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	the near-synonym of CW1.)	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(e) IF x = MER	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = NSYN+MER =MER (CW2 is the	page=6 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	meronym of CW1.)	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(f) IF x = HOL	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = NSYN+HOL =HOL (CW2 is the	page=6 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	holonym of CW1.)	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-Listitem	Holonym(HOL)	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Listitem	(a) IF x=ANT	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = HOL+ANT =ANT (CW2 is the	page=6 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	antonym of CW1.)	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(b) IF x=HYP	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = HOL+HYP =HYP (CW2 is the	page=6 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	hypernym of CW1.)	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(c) IF x= NSYN	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = HOL+NSYN =HOL (CW2 is the	page=6 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	holonym of CW1.)	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(d) IF x = HOL	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = HOL+HOL =HOL (CW2 is the	page=6 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	holonym of CW1.)	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(e) IF x = all other LSR	page=6 xpos=0 ypos=5 left-column right-indent aligned-line longer-tail itemization
+I-Listitem	LSR y = HPO +all other LSRs = ?	page=6 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	(Undecided)	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail above-blank-line above-double-space above-line-space
+B-Listitem	Meronym(MER)	page=6 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+B-Listitem	(a) IF x=ANT	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = MER+ANT =ANT (CW2 is the	page=6 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	antonym of CW1.)	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(b) IF x=HPO	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = MER+HPO =HPO (CW2 is the	page=6 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	hyponym of CW1.)	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(c) IF x= NSYN	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = MER+NSYN =MER (CW2 is the	page=6 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	meronym of CW1.)	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(d) IF x = MER	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail itemization
+I-Listitem	LSR y = MER+MER =MER (CW2 is the	page=6 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	meronym of CW1.)	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(e) IF x = all other LSR	page=6 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail itemization
+I-Listitem	LSR y = HPO +all other LSRs = ?	page=6 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	(Undecided)	page=6 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail column-bottom
+B-SectionHeader	4 Implementation and Evaluation	page=6 xpos=5 ypos=0 right-column right-indent font-larger column-top numbered-heading1 above-blank-line above-double-space above-line-space
+B-Body	WN 1.6 contains 99,642 English	page=6 xpos=5 ypos=0 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	synsets and expands to 157,507 English	page=6 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	lemma tokens. On the other hand, the total	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	number of Chinese lemma types found in	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	our ECTED is 108,533. Hence, each	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	Chinese lemma type translates roughly 1.1	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+E-Body	English synsets in average.	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	In comparing the two approaches to	page=6 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	parallel wordnet building, we treat at	page=6 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	baseline the cases where the translation LSR	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	is synonymy. In others words, these are the	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	cases where both approach I and approach II	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	will make highly accurate predictions (e.g.	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Huang, et al. 2003). However, if the T-LSR	page=6 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-capital
+I-Body	is other than synonymy, we expect the	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	prediction based on source language LSR	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	will be much lower.	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In our study, there are in total 372,927	page=6 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	lexical semantic relations that can	page=6 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	potentially be bootstrapped when the T-LSR	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	is one of the five semantic relations in study.	page=6 xpos=5 ypos=3 right-column right-over aligned-line headchar-lower tailchar-period
+I-Body	These are expanded from the following	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	types of translations equivalence relations:	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-colon
+I-Body	11,396 translation near-synonyms, 2,782	page=6 xpos=5 ypos=4 right-column full-justified aligned-line
+I-Body	translation hypernyms, 2,106 translation	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	hyponyms, 252 translation meronyms and	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	145 translations holonyms. For evaluation,	page=6 xpos=5 ypos=4 right-column full-justified aligned-line tailchar-comma
+I-Body	due to constraints on resources, we	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	exhaustively check the types with less than	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	300 lemmas, while randomly checked close	page=6 xpos=5 ypos=5 right-column full-justified aligned-line
+E-Body	to 300 lemmas for the other types.	page=6 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We first introduce the baseline model	page=6 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	where synonym is assumed. This is where	page=6 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	source language LSR’s will be mapped	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	directly to target languages. We have shown	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	that if the T-LSR is really synonymy, the	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	precision will be 62.7%. However, when the	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	T-LSR’s are different, the baseline precision	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	is much lower. In Table 1, such naïve	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	prediction is manually classes into three	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	types: Correct, Incorrect, and Others.	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	‘Correct’ means that the prediction is	page=6 xpos=5 ypos=7 right-column full-justified aligned-line
+I-Body	verified. ‘Incorrect’ means the assigned	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	LSR is wrong. Two scenarios are possible.	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	One is that there is a possible prediction and	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	another one is the correct LSR is different	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	from the predicted one. ‘Others’ refers to	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	exceptional cases where these is no lexical	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	translation, or the source language LSR is	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	wrongly assigned and so on. Table 1 shows	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	that the baseline for non-synonymous	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	T-LSR is only 47% in average, and range	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital
+E-Body	from 30% to 65% for each semantic relation.	page=6 xpos=5 ypos=9 right-column right-over aligned-line headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	54	page=6 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 1__	page=7 xpos=0 ypos=-2 single-column centered left-indent right-indent box page-top table-area
+B-Caption	Table 1 Baseline Results (assuming synonym)	page=7 xpos=2 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+B-Body	Table 2 shows the comparison between	page=7 xpos=0 ypos=0 left-column left-indent column-top line-blank-line line-double-space line-space string-table headchar-capital
+I-Body	the T-LSR model and the baseline. It shows	page=7 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	that there is improvement of 17.8% in	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	average and that there is gain in precision	page=7 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	for each LSR type. The improvement varies	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	from just below 2% to 39%.	page=7 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-double-space above-line-space
+Table	__Table 2__	page=7 xpos=0 ypos=1 single-column centered left-indent right-indent box column-top line-double-space line-space table-area
+B-Caption	Table 2 Precision of using the LSR inferences	page=7 xpos=2 ypos=2 single-column centered left-indent right-indent indented-line shorter-tail string-table headchar-capital column-bottom above-double-space above-line-space
+B-SectionHeader	5 Conclusion	page=7 xpos=0 ypos=3 left-column right-indent font-larger column-top line-double-space line-space numbered-heading1 above-blank-line above-double-space above-line-space
+B-Body	It is interesting to note that the classes	page=7 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	with least improvements are hypernymy and	page=7 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	hyponymy. Since these are the classical	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	IS-A relations, we hypothesize that their	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	predictions are similar to the baseline	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	relation of synonym. If we take these two	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	relations out, the T-LSR model with	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	inference rules has a precision difference of	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	17.3% (178/1030), as well as an	page=7 xpos=0 ypos=5 left-column full-justified aligned-line
+I-Body	improvement of 35.6% (178/500). These are	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	substantial improvements over the baseline	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	model. The result will be reinforced when	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the evaluation is completed. We will also	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	analyze the prediction based on each T-LSR	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	to give a more explanatory account as well a	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	measure confidence or prediction. The result	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	offers strong support for T-LSR as a model	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	for bootstrapping parallel wordnets with a	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	low-density target language.	page=7 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-blank-line above-double-space above-line-space
+B-Reference	Fellbaum, C. (ed.) 1998. Wordent: An Electronic	page=7 xpos=0 ypos=7 left-column full-justified font-smaller aligned-line longer-tail line-blank-line line-double-space line-space year headchar-capital
+I-Reference	Lexical Database. Cambridge, MA: MIT Press.	page=7 xpos=0 ypos=8 left-column right-indent font-smaller aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Huang, Chu-Ren, D.B. Tsai, J.Lin, S. Tseng, K.J.	page=7 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Chen and Y. Chuang. 2001 Definition and Test	page=7 xpos=0 ypos=8 left-column full-justified font-smaller aligned-line year headchar-capital
+I-Reference	for Lexical Semantic Relation in Chinese. [in	page=7 xpos=0 ypos=8 left-column full-justified font-smaller aligned-line headchar-lower
+I-Reference	Chinese] Paper presented at the Second Chinese	page=7 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-capital
+I-Reference	Lexical Semantics Workshop. May 2001,	page=7 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-comma column-bottom
+I-Reference	Beijing, China.	page=7 xpos=5 ypos=3 right-column right-indent font-smallest column-top headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Huang, Chu-Ren, I-Ju E. Tseng, Dylan B.S. Tsai.	page=7 xpos=5 ypos=3 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2002. Translating Lexical Semantic Relations:	page=7 xpos=5 ypos=3 right-column full-justified font-smaller aligned-line year tailchar-colon
+I-Reference	The first step towards Multilingual Wordnets.	page=7 xpos=5 ypos=3 right-column full-justified font-smaller aligned-line headchar-capital tailchar-period
+I-Reference	Proceedings of the COLONG2002 Workshop	page=7 xpos=5 ypos=3 right-column full-justified font-smallest aligned-line year headchar-capital
+I-Reference	“SemaNet:Building and Using Semantic	page=7 xpos=5 ypos=4 right-column full-justified font-smallest aligned-line
+I-Reference	Networks”, ed. By Grace Ngai, Pascale Fung,	page=7 xpos=5 ypos=4 right-column full-justified font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	and Kenneth W. Church, 2-8.	page=7 xpos=5 ypos=4 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Huang, Chu-Ren, Elanna I. J. Tseng, Dylan B.S.	page=7 xpos=5 ypos=4 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Tsai, Brian Murphy. 2003 Cross-lingual	page=7 xpos=5 ypos=5 right-column full-justified font-smaller aligned-line year headchar-capital
+I-Reference	Portability of Semantic Relations: Bootstrapping	page=7 xpos=5 ypos=5 right-column full-justified font-smaller aligned-line headchar-capital
+I-Reference	Chinese WordNet with English WordNet	page=7 xpos=5 ypos=5 right-column full-justified font-smaller aligned-line headchar-capital
+I-Reference	Relations. pp.509-531.	page=7 xpos=5 ypos=5 right-column right-indent font-smaller aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Pianta, Emanuel, L. Benitivogli, C. Girardi.	page=7 xpos=5 ypos=5 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2002 MultiWordnet: Developing an aligned	page=7 xpos=5 ypos=6 right-column full-justified font-smaller aligned-line year
+I-Reference	nultilingual database. Proceedings of the 1 <sup>st</sup>	page=7 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Reference	International WordNet Conference, Maysore,	page=7 xpos=5 ypos=6 right-column full-justified font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	Inda, pp.293-302.	page=7 xpos=5 ypos=6 right-column right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Tsai, D.B.S., Chu-Ren Huang, J.Lin, K.J. Chen	page=7 xpos=5 ypos=7 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Reference	and Y. Chuang. 2002. Definition and Test for	page=7 xpos=5 ypos=7 right-column full-justified font-smaller aligned-line year headchar-lower
+I-Reference	Lexical Semantic Relation in Chinese. [ύЎຒ	page=7 xpos=5 ypos=7 right-column full-justified font-smaller aligned-line headchar-capital
+I-Reference	ကᜢ߯ޑۓကᆶղۓচ!	page=7 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail
+I-Reference	߾] Journal of Chinese Information Processing	page=7 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail above-line-space
+I-Reference	[ύЎߞ৲Ꮲൔ]. 16.4.21-31.	page=7 xpos=5 ypos=8 right-column right-indent font-smallest aligned-line shorter-tail line-space tailchar-period above-blank-line above-double-space above-line-space
+B-Reference	Vossen P. (ed.). 1998. EuroWordNet: A	page=7 xpos=5 ypos=8 right-column full-justified font-smaller aligned-line longer-tail line-blank-line line-double-space line-space year headchar-capital
+I-Reference	multilingual database with lexical semantic	page=7 xpos=5 ypos=8 right-column full-justified font-smaller aligned-line headchar-lower
+I-Reference	networks. Norwell, MA: Kluwer Academic	page=7 xpos=5 ypos=8 right-column full-justified font-smaller aligned-line headchar-lower
+I-Reference	Publisher	page=7 xpos=5 ypos=8 right-column right-indent font-smallest aligned-line shorter-tail headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	55	page=7 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only

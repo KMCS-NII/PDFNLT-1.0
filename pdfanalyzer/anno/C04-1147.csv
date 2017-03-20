@@ -1,0 +1,641 @@
+Title	Fast Computation of Lexical Affinity Models	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Egidio Terra Charles L.A. Clarke	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	School of Computer Science	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+I-Affiliation	University of Waterloo	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Address	Canada	page=0 xpos=4 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Email	elterra,claclark  @plg2.uwaterloo.ca	page=0 xpos=3 ypos=1 single-column left-indent right-indent font-largest hanged-line longer-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	We present a framework for the fast compu-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	tation of lexical affinity models. The frame-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	work is composed of a novel algorithm to effi-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ciently compute the co-occurrence distribution	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	between pairs of terms, an independence model,	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Abstract	and a parametric affinity model. In compari-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	son with previous models, which either use ar-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	bitrary windows to compute similarity between	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	words or use lexical affinity to create sequential	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	models, in this paper we focus on models in-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tended to capture the co-occurrence patterns of	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	any pair of words or phrases at any distance in	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	the corpus. The framework is flexible, allowing	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	fast adaptation to applications and it is scalable.	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Abstract	We apply it in combination with a terabyte cor-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Abstract	pus to answer natural language tests, achieving	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	encouraging results.	page=0 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-larger hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Modeling term co-occurrence is important for many	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	natural language applications, such as topic seg-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mentation (Ferret, 2002), query expansion (Vech-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tomova et al., 2003), machine translation (Tanaka,	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2002), language modeling (Dagan et al., 1999;	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year tailchar-semicolon
+I-Body	Yuret, 1998), and term weighting (Hisamitsu and	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-capital
+I-Body	Niwa, 2002). For these applications, we are in-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	terested in terms that co-occur in close proxim-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity more often than expected by chance, for exam-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ple,  “ NEW ”,“ YORK ”  ,  “ ACCURATE ”,“ EXACT ” 	page=0 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	and  “ GASOLINE ”,“ CRUDE ”  . These pairs of terms	page=0 xpos=0 ypos=7 left-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	represent distinct lexical-semantic phenomena, and	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	as consequence the terms have an affinity for each	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	other. Examples of such affinities include syn-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	onyms (Terra and Clarke, 2003), verb similari-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ties (Resnik and Diab, 2000) and word associa-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+E-Body	tions (Rapp, 2002).	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	Ideally, a language model would capture the pat-	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	terns of co-occurrences representing the affinity be-	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tween terms. Unfortunately, statistical models used	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	to capture language characteristics often do not take	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	contextual information into account. Many models	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	incorporating contextual information use only a se-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lect group of content words and the end product is a	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	model for sequences of adjacent words (Rosenfeld,	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower tailchar-comma
+I-Body	1996; Beeferman et al., 1997; Niesler and Wood-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line year tailchar-hiphen
+E-Body	land, 1997).	page=0 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	Practical problems exist when modeling text sta-	page=0 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tistically, since we require a reasonably sized cor-	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	pus in order to overcome sparseness problems, but	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	at the same time we face the difficulty of scal-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing our algorithms to larger corpora (Rosenfeld,	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2000). Attempts to scale language models to large	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year
+I-Body	corpora, in particular to the Web, have often used	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	general-purpose search engines to generate term	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	statistics (Berger and Miller, 1998; Zhu and Rosen-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	feld, 2001). However, many researchers are rec-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ognizing the limitations of relying on the statistics	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	provided by commercial search engines (Zhu and	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	Rosenfeld, 2001; Keller and Lapata, 2003). ACL	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-capital
+I-Body	2004 features a workshop devoted to the problem	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year
+I-Body	of scaling human language technologies to terabyte-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	scale corpora.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Another approach to capturing lexical affinity is	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	through the use of similarity measures (Lee, 2001;	page=0 xpos=5 ypos=5 right-column full-justified hanged-line year headchar-lower tailchar-semicolon
+I-Body	Terra and Clarke, 2003). Turney (2001) used statis-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	tics supplied by the Altavista search engine to com-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pute word similarity measures, solving a set of syn-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	onym questions taken from a series of practice ex-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ams for TOEFL (Test of English as a Foreign Lan-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage). While demonstrating the value of Web data	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	for this application, that work was limited by the	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	types of queries that the search engine supported.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Terra and Clarke (2003) extended Turney’s work,	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space year headchar-capital tailchar-comma
+I-Body	computing different similarity measures over a lo-	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	cal collection of Web data using a custom search	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	system. By gaining better control over search se-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantics, they were able to vary the techniques	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	used to estimate term co-occurrence frequencies	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	and achieved improved performance on the same	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	question set in a smaller corpus. The choice of the	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	term co-occurrence frequency estimates had a big-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ger impact on the results than the actual choice of	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	similarity measure. For example, in the case of the	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	pointwise mutual information measure (PMI), val-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ues for   are best estimated by counting the	page=0 xpos=5 ypos=9 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	number of times the terms  and   appear together	page=0 xpos=5 ypos=9 right-column full-justified font-largest aligned-line headchar-lower page-bottom
+I-Body	within 10-30 words. This experience suggests that	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	the empirical distribution of distances between ad-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	jacent terms may represent a valuable tool for as-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sessing term affinity. In this paper, we present an	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	novel algorithm for computing these distributions	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	over large corpora and compare them with the ex-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pected distribution under an independence assump-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In section 2, we present an independence model	page=1 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	and a parametric affinity model, used to capture	page=1 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	term co-occurrence with support for distance infor-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation. In section 3 we describe our algorithm for	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	computing lexical affinity over large corpora. Using	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	this algorithm, affinity may be computed between	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	terms consisting of individual words or phrases. Ex-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	periments and examples in the paper were generated	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	by applying this algorithm to a terabyte of Web data.	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We discuss practical applications of our framework	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	in section 4, which also provides validation of the	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	approach.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	2 Models for Word Co-occurrence	page=1 xpos=0 ypos=3 left-column right-indent font-larger aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	There are two types of models for the co-occurrence	page=1 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	of word pairs: functional models and distance mod-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els. Distance models use only positional informa-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion to measure co-occurrence frequency (Beefer-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	man et al., 1997; Yuret, 1998; Rosenfeld, 1996).	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	A special case of the distance model is the n-gram	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	model, where the only distance allowed between	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	pairs of words in the model is one. Any pair of word	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	represents a parameter in distance models. There-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fore, these models have to deal with combinato-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rial explosion problems, especially when longer se-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quences are considered. Functional models use the	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	underlying syntactic function of words to measure	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	co-occurrence frequency (Weeds and Weir, 2003;	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Niesler and Woodland, 1997; Grefenstette, 1993).	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-capital tailchar-period
+I-Body	The need for parsing affects the scalability of these	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+E-Body	models.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Note that both distance and functional models	page=1 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	rely only on pairs of terms comprised of a single	page=1 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	word. Consider the pair of terms “N EW Y ORK ” and	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	“T ERRORISM ”, or any pair where one of the two	page=1 xpos=0 ypos=7 left-column full-justified aligned-line
+I-Body	items is itself a collocation. To best of our knowl-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	<sup>edge,</sup> <sup>no</sup> <sup>model</sup>   tries or to estimate    where composite  ,  ,   , terms  are of form	page=1 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-super
+I-Body	words in the vocabulary, without regard to the dis-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tribution function of  .	page=1 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In this work, we use models based on distance in-	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	formation. The first is an independence model that	page=1 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower
+I-Body	is used as baseline to determine the strength of the	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	affinity between a pair of terms. The second is in-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tended to fit the empirical term distribution, reflect-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ing the actual affinity between the terms.	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	Notation. Let  be a random variable with range	page=1 xpos=5 ypos=0 right-column centered left-indent font-largest column-top headchar-capital
+I-Body	comprising of all the words in the vocabulary. Also,	page=1 xpos=5 ypos=0 right-column full-justified headchar-lower tailchar-comma
+I-Body	let us assume that  has multinomial probability	page=1 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	distribution function  . For any pair of terms 	page=1 xpos=5 ypos=0 right-column right-indent font-largest aligned-line headchar-lower
+I-Body	and  , let  "! # be a random variable with the dis-	page=1 xpos=5 ypos=0 right-column full-justified font-largest aligned-line longer-tail headchar-lower tailchar-hiphen
+I-Body	tance distribution for the co-occurrence of terms 	page=1 xpos=5 ypos=0 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	and  . Let the probability distribution function of	page=1 xpos=5 ypos=1 right-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	the random variable "! # be $%&  and the corre-	page=1 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	sponding cumulative be '($%&  .	page=1 xpos=5 ypos=1 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.1 Independence Model	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2
+B-Body	Let  and  be two terms, with occurrence proba-	page=1 xpos=5 ypos=1 right-column full-justified font-largest aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Body	bilities )*  and )+,  . The chances, under inde-	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	pendence, of the pair  and  co-occurring within a	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	specific distance - , .$/01  -  is given by a geomet-	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ric distribution with parameter  , 324/5 67-+81  .	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	This is straightforward since if  and  are indepen-	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	dent then +9  , ;:<=*  and similarly >1  * ;:	page=1 xpos=5 ypos=3 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon
+I-Body	)+  . If we fix a position for a  , then if in-	page=1 xpos=5 ypos=3 right-column full-justified font-largest aligned-line longer-tail tailchar-hiphen
+I-Body	<sup>dependent,</sup> )+ ;?@BADCE=+, F "GHJI the next  will at distance occur with - of probability  . The ex-	page=1 xpos=5 ypos=3 right-column full-justified box aligned-line symbol-atmark headchar-super tailchar-hiphen
+I-Body	pected distance is the mean of the geometric distri-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	bution with parameter  .	page=1 xpos=5 ypos=3 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The estimation of  is obtained using the Maxi-	page=1 xpos=5 ypos=4 right-column left-indent font-largest indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	mum Likelihood Estimator for the geometric distri-	page=1 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	bution. Let K G be the number of co-occurrences with	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	distance - , and L be the sample size:	page=1 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	A A	page=1 xpos=7 ypos=4 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+I-Equation	M: N : R	page=1 xpos=6 ypos=5 right-column left-indent right-indent font-largest hanged-line shorter-tail headchar-capital
+I-Equation	(1)	page=1 xpos=9 ypos=5 right-column left-indent indented-line longer-tail
+I-Equation	OQ I P KG	page=1 xpos=7 ypos=5 right-column left-indent right-indent font-largest hanged-line shorter-tail headchar-capital
+I-Equation	GBS)I	page=1 xpos=7 ypos=5 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+B-Body	We make the assumption that multiple occur-	page=1 xpos=5 ypos=5 right-column left-indent hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Body	<sup>rences</sup>  and vice-versa. of  do not This increase assumption the chances implies of seeing a dif-	page=1 xpos=5 ypos=5 right-column full-justified box hanged-line headchar-super tailchar-hiphen
+I-Body	ferent estimation procedure, since we explicitly dis-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	card what Befeerman et al. and Niesler call self-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	triggers (Beeferman et al., 1997; Niesler and Wood-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	land, 1997). We consider only those pairs in which	page=1 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Body	the terms are adjacent, with no intervening occur-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rences of  or  , although other terms may appear	page=1 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	between them	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Body	Figure 1 shows that the geometric distribution fits	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail string-figure headchar-capital
+I-Body	well the observed distance of independent words	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	DEMOCRACY and WATERMELON . When a de-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	pendency exists, the geometric model does not fit	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the data well, as can be seen in Figure 2. Since	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the geometric and exponential distributions repre-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sent related idea in discrete/continuous spaces it is	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	expected that both have similar results, especially	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	when MTUA .	page=1 xpos=5 ypos=8 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 Affinity Model	page=1 xpos=5 ypos=9 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	The model of affinity follows a exponential-like dis-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tribution, as in the independence model. Other re-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	searchers also used exponential models for affin-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+Figure	__Figure 1__ __Figure 2__	page=2 xpos=0 ypos=-4 single-column left-indent right-over box page-top figure-area column-bottom above-double-space above-line-space
+B-Caption	Figure 1: ' $  watermelon  democracy  	page=2 xpos=0 ypos=0 left-column left-indent right-indent font-largest column-top line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+I-Body	ity (Beeferman et al., 1997; Niesler and Woodland,	page=2 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space year headchar-lower tailchar-comma
+I-Body	1997). We use the gamma distribution, the gener-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	alized version of the exponential distribution to fit	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the observed data. Pairs of terms have a skewed	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	distribution, especially when they have affinity for	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	one another, and the gamma distribution is a good	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	choice to model this phenomenon.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	-&^HJI_59HGB`"a	page=2 xpos=3 ypos=2 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space
+I-Equation	D>VWVX1Y:Z-+8[\F] ;: (2)	page=2 xpos=0 ypos=2 left-column left-indent font-largest hanged-line longer-tail headchar-capital
+I-Equation	] ^7b [ 	page=2 xpos=3 ypos=3 left-column left-indent right-indent font-largest indented-line shorter-tail above-line-space
+I-Body	where b [  is the complete gamma function. The	page=2 xpos=0 ypos=3 left-column full-justified font-largest hanged-line longer-tail line-space headchar-lower
+I-Body	<sup>exponential</sup> A . Given a set distribution of co-occurrence is a special pairs, case estimates with [c: for	page=2 xpos=0 ypos=3 left-column full-justified box aligned-line headchar-super
+I-Body	[ and ] can be calculated using the Maximum Like-	page=2 xpos=0 ypos=4 left-column full-justified font-largest aligned-line tailchar-hiphen
+I-Body	lihood Estimators given by:	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	[d]e: A f P	page=2 xpos=1 ypos=4 left-column left-indent right-indent font-largest indented-line line-double-space line-space
+I-Equation	KG	page=2 xpos=2 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	(3)	page=2 xpos=4 ypos=5 left-column left-indent indented-line longer-tail
+I-Equation	L	page=2 xpos=2 ypos=5 left-column left-indent right-indent font-largest hanged-line shorter-tail headchar-capital
+I-Equation	GBS)I	page=2 xpos=2 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail headchar-capital
+I-Body	and by:	page=2 xpos=0 ypos=5 left-column left-indent right-indent hanged-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	A f	page=2 xpos=1 ypos=6 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital
+I-Equation	A f P K G  	page=2 xpos=3 ypos=6 left-column left-indent right-indent box indented-line longer-tail headchar-capital
+I-Equation	b=g [ 	page=2 xpos=0 ypos=6 left-column left-indent right-indent font-largest hanged-line shorter-tail headchar-lower
+I-Equation	b [   P K G L L	page=2 xpos=0 ypos=6 left-column left-indent right-indent font-largest longer-tail itemization headchar-lower
+I-Equation	GBS)I GBS)I <sub>(4)</sub>	page=2 xpos=2 ypos=6 left-column left-indent font-largest indented-line longer-tail headchar-capital above-line-space
+B-Body	Figure 2 shows the fit of the gamma distribution	page=2 xpos=0 ypos=7 left-column left-indent right-indent hanged-line line-space string-figure headchar-capital
+E-Body	to the word w>x <sub>).</sub> pair FRUITS and WATERMELON ( [q:	page=2 xpos=0 ypos=7 left-column right-indent font-largest hanged-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-SectionHeader	3 Computing the Empirical Distribution	page=2 xpos=0 ypos=8 left-column right-indent font-larger aligned-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	<sup>The</sup> <sup>independence</sup> <sup>and</sup> <sup>affinity</sup> N models depend on a good approximation to . We try to reduce the bias	page=2 xpos=0 ypos=8 left-column full-justified font-largest aligned-line longer-tail line-double-space line-space headchar-super
+I-Body	of the estimator by using a large corpus. Therefore,	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we want to scan the whole corpus efficiently in order	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	to make this framework usable.	page=2 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Caption	Figure 2: ' $  watermelon  fruits  	page=2 xpos=6 ypos=0 right-column left-indent right-indent font-largest column-top string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.1 Corpus	page=2 xpos=5 ypos=0 right-column right-indent hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-line-space
+B-Body	The corpus used in our experiments comprises a ter-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	abyte of Web data crawled from the general web	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	in 2001 (Clarke et al., 2002; Terra and Clarke,	page=2 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2003). The crawl was conducted using a breadth-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	first search from a initial seed set of URLs rep-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resenting the home page of 2392 universities and	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	other educational organizations. Pages with dupli-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cate content were eliminated. Overall, the collec-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion contains 53 billion words and 77 million docu-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ments.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Computing Affinity	page=2 xpos=5 ypos=3 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2
+B-Body	Given two terms,  and  , we wish to determine	page=2 xpos=5 ypos=3 right-column full-justified font-largest aligned-line longer-tail headchar-capital
+I-Body	the affinity between them by efficiently examining	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	all the locations in a large corpus where they co-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	occur. y <sub>=</sub> z Fz"{ We sk treat sks FzF| the where corpus } as is a the sequence size of of the terms cor-	page=2 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	pus. This I sequence is generated by concatenating	page=2 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	together all the documents in the collection. Docu-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ment boundaries are then ignored.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	While we are primarily interested in within-	page=2 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	document term affinity, ignoring the boundaries	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	simplifies both the algorithm and the model. Docu-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment information need not be maintained and ma-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nipulated by the algorithm, and document length	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	normalization need not be considered. The order	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	of the documents within the sequence is not of ma-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	jor importance. If the order is random, then our	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	independence assumption holds when a document	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	boundary is crossed and only the within-document	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	affinity can be measured. If the order is determined	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	by other factors, for example if Web pages from	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	a single site are grouped together in the sequence,	page=2 xpos=5 ypos=8 right-column full-justified aligned-line itemization headchar-lower tailchar-comma
+I-Body	then affinity can be measured across these groups of	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	pages.	page=2 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We are specifically interested in identifying all	page=2 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	the locations where  and  co-occur. Consider a	page=2 xpos=5 ypos=9 right-column full-justified font-largest hanged-line headchar-lower page-bottom
+I-Body	particular occurrence of  at position ~ in the se-	page=3 xpos=0 ypos=0 left-column full-justified font-largest page-top headchar-lower tailchar-hiphen
+I-Body	quence ( zF: ). Assume that the next occurrence	page=3 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	of  in the sequence is zF and that the next occur-	page=3 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	rence of  is zB (ignoring for now the exceptional	page=3 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	case where zF is close to the end of the sequence	page=3 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	and is not followed by another  and  ). If  ,	page=3 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	then no  or  occurs between z and z  , and the	page=3 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	<sup>interval</sup>  let can z" be be counted the last for occurrence this pair. of Otherwise,  before zF if .	page=3 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-super tailchar-period
+I-Body	No  or  occurs between z  and z  , and once again	page=3 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-capital
+E-Body	the interval containing the terms can be considered.	page=3 xpos=0 ypos=1 left-column centered right-indent aligned-line headchar-lower tailchar-period
+B-Body	Our algorithm efficiently computes all locations	page=3 xpos=0 ypos=2 left-column left-indent indented-line headchar-capital
+I-Body	in a large term sequence where  and  co-occur	page=3 xpos=0 ypos=2 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	with no intervening occurrences of either  or  .	page=3 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	Two versions of the algorithm are given, an asym-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	metric version that treats terms in a specific order,	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and a symmetric version that allows either term to	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	appear before the other.	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	 <sub>and</sub> <sup>The</sup>  algorithm depends on two access functions	page=3 xpos=0 ypos=3 left-column full-justified font-largest aligned-line longer-tail
+I-Body	sksks that return positions in the term sequence	page=3 xpos=0 ypos=3 left-column left-indent font-largest indented-line headchar-lower
+I-Body	z I  Fz | . Both take a term z and a position in the	page=3 xpos=0 ypos=3 left-column full-justified font-largest hanged-line itemization headchar-lower
+I-Body	term sequence ~ as arguments and return results as	page=3 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	<sup>follows:</sup> 	page=3 xpos=0 ypos=4 left-column right-indent font-largest aligned-line shorter-tail headchar-super
+B-Equation	oz  :czd ss ~M s s E 	page=3 xpos=2 ypos=4 left-column left-indent right-indent box indented-line longer-tail
+I-Equation	 z_~@ :  	page=3 xpos=0 ypos=4 left-column right-indent box hanged-line shorter-tail symbol-atmark
+I-Equation	¨@©ª« © ¡ :¢zd ~ME>£1¤	page=3 xpos=2 ypos=4 left-column left-indent right-over font-largest indented-line longer-tail symbol-atmark
+I-Equation	}¦¥ZA§j o	page=3 xpos=1 ypos=4 left-column left-indent right-indent font-largest hanged-line shorter-tail above-double-space above-line-space
+I-Body	and	page=3 xpos=0 ypos=4 left-column right-indent hanged-line shorter-tail line-double-space line-space headchar-lower
+B-Equation	 ss	page=3 xpos=1 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	 e­ k./z"®:¢zd ~M¯ ss ­	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-largest longer-tail
+I-Equation	r ¨7©ª« / © z  ¡ c : zd ~M¯ ­ £  ­	page=3 xpos=1 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail itemization headchar-lower
+I-Equation	Fz¬~@ \:	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-largest hanged-line shorter-tail symbol-atmark tailchar-colon
+I-Equation	j o	page=3 xpos=1 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail itemization headchar-lower
+B-Body	Informally, the access function  z¬~@  returns the	page=3 xpos=0 ypos=5 left-column full-justified font-largest hanged-line longer-tail symbol-atmark headchar-capital
+I-Body	position of the first occurrence of the term z located	page=3 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	at or after position ~ in the term sequence. If there	page=3 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	is no occurrence of z at or after position ~ , then	page=3 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	 z_~@  returns }±¥²A . Similarly, the access function	page=3 xpos=0 ypos=6 left-column full-justified font-largest aligned-line symbol-atmark
+I-Body	Fz_~@  returns the position of the last occurrence of	page=3 xpos=0 ypos=6 left-column full-justified font-largest aligned-line symbol-atmark
+I-Body	the term z located at or before position ~ in the term	page=3 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	sequence. If there is no occurrence r of z at or before	page=3 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	position ~ , then Fz_~@  returns .	page=3 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail symbol-atmark headchar-lower tailchar-period
+B-Body	These access functions may be efficiently imple-	page=3 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	mented using variants of the standard inverted list	page=3 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	data structure. A very simple approach, suitable for	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	a small corpus, stores all index information in mem-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	ory. For a term z , a binary search over a sorted list of	page=3 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	<sup>the</sup> <sup>positions</sup>  where z occurs computes the result of	page=3 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-super
+I-Body	a call to z¬~@  or Fz¬~@  in	page=3 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail symbol-atmark itemization headchar-lower
+I-Body	time. Our own implementation uses a two-level in-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail headchar-lower tailchar-hiphen
+I-Body	dex, split between memory and disk, and imple-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments different strategies depending on the relative	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	frequency of a term in the corpus, minimizing disk	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	traffic and skipping portions of the index where no	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	co-occurrence will be found. A cache and other data	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	structures maintain information from call to call.	page=3 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	The asymmetric version of the algorithm is given	page=3 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	below. Each iteration of the while loop makes three	page=3 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	calls to access functions to generate a co-occurrence	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	pair  ­ F,  , representing the interval in the corpus	page=3 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	from z" to z¶ where  and  are the start and end	page=3 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	of the interval. The first call ( ¸·  &~@  ) finds	page=3 xpos=5 ypos=0 right-column full-justified font-largest aligned-line symbol-atmark headchar-lower
+I-Body	the first occurrence of  after ~ , and the second	page=3 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	( ¢·  @F±¥¹A0  ) finds the first occurrence of 	page=3 xpos=5 ypos=1 right-column right-indent font-largest aligned-line shorter-tail symbol-atmark
+I-Body	after that, skipping any occurrences of  between ~	page=3 xpos=5 ypos=1 right-column right-indent font-largest aligned-line headchar-lower
+I-Body	and  . The third call ( ­ ·ºF&FCcA0  ) essentially	page=3 xpos=5 ypos=1 right-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	indexes “backwards” in the corpus to locate last oc-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	currence of  before  , skipping occurrences of 	page=3 xpos=5 ypos=1 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	between  and ­ . Since each iteration generates a	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	co-occurrence pair, the time complexity of the al-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gorithm depends on » , the number of such pairs,	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	rather than than number of times  and  appear in-	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	dividually in the corpus. Including the time required	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	by calls to access functions, the algorithm generates	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	all co-occurrence pairs in time.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	~·UA ;	page=3 xpos=6 ypos=3 right-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space tailchar-semicolon
+I-Equation	<sup>while</sup> <· ~M¤}    &~@  do ;	page=3 xpos=6 ypos=3 right-column left-indent right-indent box aligned-line longer-tail symbol-atmark headchar-super tailchar-semicolon
+I-Equation	 ·  @F¤¥cA0  ;	page=3 xpos=6 ypos=4 right-column left-indent right-indent font-largest indented-line longer-tail symbol-atmark tailchar-semicolon
+I-Equation	­ ·¼F&F®C½A0  ;	page=3 xpos=6 ypos=4 right-column left-indent right-indent font-largest aligned-line shorter-tail tailchar-semicolon
+I-Equation	if ½} then	page=3 xpos=6 ypos=4 right-column left-indent right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Equation	Generate  ­ F,  ;	page=3 xpos=6 ypos=4 right-column left-indent right-indent font-largest indented-line longer-tail headchar-capital tailchar-semicolon
+I-Equation	<sup>end</sup> ~· if; ­ ¥cA ;	page=3 xpos=6 ypos=4 right-column left-indent right-indent font-largest hanged-line shorter-tail headchar-super tailchar-semicolon
+I-Equation	end while;	page=3 xpos=6 ypos=5 right-column left-indent right-indent hanged-line shorter-tail headchar-lower tailchar-semicolon above-blank-line above-double-space above-line-space
+B-Body	The symmetric version of the algorithm is given	page=3 xpos=5 ypos=5 right-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	next. It generates all locations in the term sequence	page=3 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	where  and  co-occur with no intervening occur-	page=3 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	rences of either  or  , regardless of order. Its oper-	page=3 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	ation is similar to that of the asymmetric version.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	~·UA ;	page=3 xpos=6 ypos=6 right-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space tailchar-semicolon
+I-Equation	<sup>while</sup>  ·¸VX>¾ ~M¤}  do &~@ _  @~@ F  ;	page=3 xpos=6 ypos=6 right-column left-indent right-indent box aligned-line longer-tail symbol-atmark headchar-super tailchar-semicolon
+I-Equation	­ ·¸VW¿µLF&F, _FF, F  ;	page=3 xpos=6 ypos=7 right-column left-indent right-indent font-largest indented-line shorter-tail tailchar-semicolon
+I-Equation	if ½} then	page=3 xpos=6 ypos=7 right-column left-indent right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Equation	Generate  ­ F,  ;	page=3 xpos=6 ypos=7 right-column left-indent right-indent font-largest indented-line longer-tail headchar-capital tailchar-semicolon
+I-Equation	<sup>end</sup> ~· if; ­ ¥cA ;	page=3 xpos=6 ypos=7 right-column left-indent right-indent font-largest hanged-line shorter-tail headchar-super tailchar-semicolon
+I-Equation	end while;	page=3 xpos=6 ypos=8 right-column left-indent right-indent hanged-line shorter-tail headchar-lower tailchar-semicolon above-blank-line above-double-space above-line-space
+B-Body	To demonstrate the performance of the algorithm,	page=3 xpos=5 ypos=8 right-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Body	we apply it to the 99 word pairs described in Sec-	page=3 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tion 4.2 on the corpus described in Section 3.1,	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	distributed over a 17-node cluster-of-workstations.	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The terms in the corpus were indexed without stem-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ming. Table 1 presents the time required to scan all	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	co-occurrences of given pairs of terms. We report	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	the time for all hosts to return their results.	page=3 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Figure	__Figure 3__	page=4 xpos=0 ypos=-4 left-column left-indent right-over box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 3: Log-likelihood – WATERMELON	page=4 xpos=0 ypos=0 left-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+Table	__Table 1__	page=4 xpos=1 ypos=0 left-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 1: Scanning performance on 99 word pairs of	page=4 xpos=0 ypos=1 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	the Minnesota Word Association Norms	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-SectionHeader	4 Evaluation	page=4 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We use the empirical and the parametric affinity dis-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tributions in two applications. In both, the indepen-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	dence model is used as a baseline.	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	4.1 Log-Likelihood Ratio	page=4 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The co-occurrence distributions assign probabilities	page=4 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	for each pair at every distance. We can compare	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	point estimations from distributions and how un-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	likely they are by means of log-likelihood ratio test:	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	 $ & _8ÄÃ 	page=4 xpos=2 ypos=5 left-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space
+I-Equation	6&À,ÁM:c6&À)Â (5)	page=4 xpos=1 ypos=5 left-column left-indent font-largest hanged-line longer-tail
+I-Equation	$/& _8Å9 	page=4 xpos=2 ypos=6 left-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	Â	page=4 xpos=2 ypos=6 left-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Body	where  Ã and Å are the parameters for .$/0, 	page=4 xpos=0 ypos=6 left-column right-indent font-largest hanged-line longer-tail headchar-lower
+I-Body	under the empirical distribution and independence	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	models, respectively. It is also possible to use the	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	cumulative 'Æ$ instead of $ . Figure 3 show log-	page=4 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	likelihood ratios using the asymmetric empirical	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	distribution and Figure 4 depicts log-likelihood ra-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tio using the symmetric distribution.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	A set of fill-in-the-blanks questions taken from	page=4 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	GRE general tests were answered using the log-	page=4 xpos=0 ypos=8 left-column full-justified hanged-line headchar-capital tailchar-hiphen
+I-Body	likelihood ratio. For each question a sentence with	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	one or two blanks along with a set of options Ç was	page=4 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	given, as shown in Figure 5.	page=4 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The correct alternative maximizes the likelihood	page=4 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-space headchar-capital column-bottom
+Figure	__Figure 4__	page=4 xpos=5 ypos=-4 right-column left-indent right-over box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 4: Log-likelihood – UNITED	page=4 xpos=6 ypos=0 right-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+I-Body	of the complete sentence È :	page=4 xpos=5 ypos=0 right-column right-indent font-largest hanged-line shorter-tail line-double-space line-space headchar-lower tailchar-colon
+B-Equation	É É	page=4 xpos=6 ypos=0 right-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	$/&Ä  -*"! # _8 Ã  	page=4 xpos=7 ypos=0 right-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	 " Ê9Ë * # Ê9ËÌ!  Í # Â	page=4 xpos=6 ypos=1 right-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	6&À,ÁM:c6&À É É S	page=4 xpos=5 ypos=1 right-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	$/&Ä  -*"! # _8ÄÅ0  <sup>(6)</sup>	page=4 xpos=7 ypos=1 right-column left-indent font-largest indented-line longer-tail
+I-Equation	"Ê9Ë #*Ê9ËÌ!  S Í # Â	page=4 xpos=6 ypos=1 right-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Body	where -*"! # is distance of  and  in the sentence.	page=4 xpos=5 ypos=1 right-column full-justified font-largest hanged-line longer-tail headchar-lower tailchar-period
+I-Body	Since only the blanks change from one alternative to	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	another, the remaining pairs are treated as constants	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	and can be ignored for the purpose of ranking:	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	É	page=4 xpos=6 ypos=2 right-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	 &1  -*"! # _8ÄÃ\    $	page=4 xpos=7 ypos=3 right-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	 Í # Â	page=4 xpos=7 ypos=3 right-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	6&À,Á:c6&À É S	page=4 xpos=5 ypos=3 right-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	  $%&Ä  -*"! #9 _8Å&  <sup>(7)</sup>	page=4 xpos=7 ypos=3 right-column left-indent font-largest indented-line longer-tail
+I-Equation	 S Í # Â	page=4 xpos=7 ypos=3 right-column left-indent right-indent font-largest hanged-line shorter-tail
+E-Body	for every %ÎWÇ .	page=4 xpos=5 ypos=4 right-column right-indent font-largest hanged-line shorter-tail headchar-lower tailchar-period
+B-Body	It is not necessary to compute the likelihood for	page=4 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	all pairs in the whole sentence, instead a cut-off for	page=4 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	the maximum distance can be specified. If the cut-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	off is two, then the resulting behavior will be sim-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ilar to a word bigram language model (with differ-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ent estimates). An increase in the cut-off has two	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	immediate implications. First, it will incorporate	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the surroundings of the word as context. Second,	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	it causes an undirect effect of smoothing, since we	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	use cumulative probabilities to compute the likeli-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	hood. As with any distance model, this approach	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	has the drawback of allowing constructions that are	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	not syntactically valid.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The tests used are from GRE practice tests ex-	page=4 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tracted from the websites: gre.org (9 ques-	page=4 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tions), PrincetonReview.com(11 questions),	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	Syvum.com (15 questions) and Microedu.com	page=4 xpos=5 ypos=8 right-column centered right-over aligned-line headchar-capital
+I-Body	(28 questions). Table 2 shows the results for a cut-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line tailchar-hiphen
+I-Body	off of seven words. Every questions has five op-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions, and thus selecting the answer at random gives	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	an expected score of 20%. Our framework answers	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	55% of the questions.	page=4 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail tailchar-period page-bottom
+Figure	__Figure 5__	page=5 xpos=-1 ypos=-1 left-column centered left-over right-over box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 5: Example of fill-in-the-blanks question	page=5 xpos=0 ypos=1 left-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+Table	__Table 2__	page=5 xpos=0 ypos=1 left-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 2: Fill-in-the-blanks results	page=5 xpos=0 ypos=2 left-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-blank-line above-double-space above-line-space
+B-SubsectionHeader	4.2 Skew	page=5 xpos=0 ypos=3 left-column right-indent hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-line-space
+B-Body	Our second evaluation uses the parametric affinity	page=5 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	model. We use the skew of the fitted model to evalu-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ate the degree of affinity of two terms. We validated	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	our hypothesis that a greater positive skew corre-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sponds to more affinity. A list of pairs from word as-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sociation norms and a list of randomly picked pairs	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	are used. Word association is a common test in psy-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	chology (Nelson et al., 2000), and it consists of a	page=5 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	person providing an answer to a stimulus word by	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	giving an associated one in response. The set of	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	words used in the test are called “norms”. Many	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	word association norms are available in psychology	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	literature, we chose the Minnesota word association	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	norms for our experiments (Jenkings, 1970). It is	page=5 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Body	composed of 100 stimulus words and the most fre-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quent answer given by 1000 individuals who took	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the test. We also use 100 word pairs generated by	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	randomly choosing words from a small dictionary.	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The skew in the gamma distribution is ÏÐ:ÒÑÌÓ>Ô [	page=5 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail headchar-capital
+I-Body	and table 3 shows the normalized skew for the asso-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail headchar-lower tailchar-hiphen
+I-Body	ciation and the random pair sets. Note that the set	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of 100 random pairs include some non-independent	page=5 xpos=0 ypos=7 left-column centered right-indent aligned-line headchar-lower
+E-Body	ones.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The value of the skew was then tested on a set of	page=5 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	TOEFL synonym questions. Each question in this	page=5 xpos=0 ypos=8 left-column full-justified hanged-line headchar-capital
+I-Body	synonym test set is composed of one target word	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	and a set of four alternatives. This TOEFL syn-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	onym test set has been used by several other re-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	searchers. It was first used in the context of La-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tent Semantic Analisys(LSA) (Landauer and Du-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mais, 1997), where 64.4% of the questions were an-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	swered correctly. Turney (Turney, 2001) and Terra	page=5 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower
+I-Body	et al. (Terra and Clarke, 2003) used different sim-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower tailchar-hiphen column-bottom
+Table	__Table 3__	page=5 xpos=5 ypos=-1 right-column centered left-indent right-indent box column-top table-area
+B-Caption	Table 3: Skewness, ÏÕ:ZÑ indicates independence	page=5 xpos=5 ypos=0 right-column full-justified font-largest hanged-line longer-tail string-table headchar-capital above-blank-line above-double-space above-line-space
+I-Body	ilarity measures and statistical estimates to answer	page=5 xpos=5 ypos=0 right-column full-justified aligned-line line-blank-line line-double-space line-space headchar-lower
+I-Body	the questions, achieving 73.75% and 81.25% cor-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rect answers respectively. Jarmasz (Jarmasz and	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	Szpakowicz, 2003) used a thesaurus to compute	page=5 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-capital
+I-Body	the distance between the alternatives and the target	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	word, answering 78.75% correctly. Turney (Turney	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	et al., 2003) trained a system to answer the ques-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tions with an approach based on combined compo-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nents, including a module for LSA, PMI, thesaurus	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	and some heuristics based on the patterns of syn-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	onyms. This combined approach answered 97.50%	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	of the questions correctly after being trained over	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	351 examples. With the exception of (Turney et al.,	page=5 xpos=5 ypos=2 right-column full-justified aligned-line tailchar-comma
+I-Body	2003), all previous approaches were not exclusively	page=5 xpos=5 ypos=3 right-column full-justified aligned-line year
+I-Body	designed for the task of answering TOEFL synonym	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	questions.	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In order to estimate [ and ] we compute the em-	page=5 xpos=5 ypos=3 right-column left-indent font-largest indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	pirical distribution. This distribution provides us	page=5 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	with the right hand side of the equation 4 and we can	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	solve for [ numerically. The calculation of ] is then	page=5 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	straightforward. Using only skew, we were able to	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	answer 78.75% of the TOEFL questions correctly.	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Since skew represents the degree of asymmetry of	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	the affinity model, this result suggests that skew and	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	synonymy are strongly related.	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We also used log-likelihood to solve the TOEFL	page=5 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	synonym questions. For each target-alternative pair,	page=5 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	we calculated the log-likelihood for every distance	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	in the range four to 750. The initial cut-off dis-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	carded the affinity caused by phrases containing	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	both target and alternative words. The upper cut-off	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of 750 represents the average document size in the	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	collection. The cumulative log-likelihood was then	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	used as the score for each alternative, and we con-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sidered the best alternative the one with higher accu-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mulated log-likelihood. With this approach, we are	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	able to answer 86.25% of questions correctly, which	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	is a substantial improvement over similar methods,	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	which do not require training data.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusion	page=5 xpos=5 ypos=8 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-line-space
+B-Body	We presented a framework for the fast and effec-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tive computation of lexical affinity models. Instead	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	of using arbitrary windows to compute word simi-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	larity measures, we model lexical affinity using the	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	complete observed distance distribution along with	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	independence and parametric models for this distri-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bution. Our results shows that, with minimal ef-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fort to adapt the models, we achieve good results	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	by applying this framework to simple natural lan-	page=6 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	guage tasks, such as TOEFL synonym questions and	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	GRE fill-in-the-blanks tests. This framework allows	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	the use of terabyte-scale corpora by providing a fast	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	algorithm to extract pairs of co-occurrence for the	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	models, thus enabling the use of more precise esti-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mators.	page=6 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgments	page=6 xpos=0 ypos=1 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space string-acknowledgement headchar-capital above-line-space
+B-Acknowledgement	This work was made possible also in part by	page=6 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Acknowledgement	PUC/RS and Ministry of Education of Brazil	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+E-Acknowledgement	through CAPES agency.	page=6 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=6 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-line-space
+B-Reference	D. Beeferman, A. Berger, and J. Lafferty. 1997. A	page=6 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-space year headchar-capital
+I-Reference	model of lexical attraction and repulsion. In Pro-	page=6 xpos=0 ypos=2 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	ceedings of the 35th Annual Meeting of the ACL	page=6 xpos=0 ypos=2 left-column left-indent aligned-line headchar-lower
+I-Reference	and 8th Conference of the EACL, pages 373–380.	page=6 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower tailchar-period
+B-Reference	A. Berger and R. Miller. 1998. Just-in-time	page=6 xpos=0 ypos=3 left-column full-justified hanged-line year headchar-capital
+I-Reference	language modelling. In Proceedings of IEEE	page=6 xpos=0 ypos=3 left-column left-indent indented-line headchar-lower
+I-Reference	ICASSP, volume 2, pages 705–708, Seatle,	page=6 xpos=0 ypos=3 left-column left-indent aligned-line headchar-capital tailchar-comma
+I-Reference	Washington.	page=6 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	C.L.A. Clarke, G.V. Cormack, M. Laszlo, T.R. Ly-	page=6 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Reference	nam, and E.L. Terra. 2002. The impact of cor-	page=6 xpos=0 ypos=4 left-column left-indent indented-line year headchar-lower tailchar-hiphen
+I-Reference	pus size on question answering performance. In	page=6 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower
+I-Reference	Proceedings of 2002 SIGIR conference, Tampere,	page=6 xpos=0 ypos=4 left-column left-indent aligned-line year headchar-capital tailchar-comma
+I-Reference	Finland.	page=6 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	I. Dagan, L. Lee, and F. C. N. Pereira. 1999.	page=6 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Similarity-based models of word cooccurrence	page=6 xpos=0 ypos=4 left-column left-indent indented-line headchar-capital
+I-Reference	probabilities. Machine Learning, 34(1-3):43–69.	page=6 xpos=0 ypos=5 left-column left-indent right-indent aligned-line headchar-lower tailchar-period
+B-Reference	O. Ferret. 2002. Using collocations for topic seg-	page=6 xpos=0 ypos=5 left-column full-justified hanged-line year headchar-capital tailchar-hiphen
+I-Reference	mentation and link detection. In Proceedings of	page=6 xpos=0 ypos=5 left-column left-indent indented-line headchar-lower
+I-Reference	the 19th COLING.	page=6 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	G. Grefenstette. 1993. Automatic theasurus gener-	page=6 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ation from raw text using knowledge-poor tech-	page=6 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	niques. In Making sense of Words. 9th Annual	page=6 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Reference	Conference of the UW Centre for the New OED	page=6 xpos=0 ypos=6 left-column left-indent aligned-line headchar-capital
+I-Reference	and text Research.	page=6 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	T. Hisamitsu and Y. Niwa. 2002. A measure of	page=6 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	term representativeness based on the number of	page=6 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower
+I-Reference	co-occurring salient words. In Proceedings of the	page=6 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Reference	19th COLING.	page=6 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail tailchar-period
+B-Reference	M. Jarmasz and S. Szpakowicz. 2003. Roget’s the-	page=6 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	saurus and semantic similarity. In Proceedings of	page=6 xpos=0 ypos=7 left-column left-indent indented-line headchar-lower
+I-Reference	RANLP-03, Borovets, Bulgaria.	page=6 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	J.J. Jenkings. 1970. The 1952 minnesota word as-	page=6 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	sociation norms. In G. Keppel L. Postman, edi-	page=6 xpos=0 ypos=8 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	tor, Norms of word association, pages 1–38. Aca-	page=6 xpos=0 ypos=8 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	demic Press, New York.	page=6 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	F. Keller and M. Lapata. 2003. Using the web to	page=6 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	obtain frequencies for unseen bigrams. Compu-	page=6 xpos=0 ypos=8 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	tational Linguistics, 29(3):459–484.	page=6 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	T. K. Landauer and S. T. Dumais. 1997. A solu-	page=6 xpos=0 ypos=9 left-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tion to plato’s problem: The latent semantic anal-	page=6 xpos=0 ypos=9 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	ysis theory of the acquisition, induction, and rep-	page=6 xpos=0 ypos=9 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	resentation of knowledge. Psychological Review,	page=6 xpos=0 ypos=9 left-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	104(2):211–240.	page=6 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail tailchar-period column-bottom
+B-Reference	L. Lee. 2001. On the effectiveness of the skew di-	page=6 xpos=5 ypos=0 right-column full-justified column-top year headchar-capital tailchar-hiphen
+I-Reference	vergence for statistical language analysis. In Ar-	page=6 xpos=5 ypos=0 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	tificial Intelligence and Statistics 2001, pages 65–	page=6 xpos=5 ypos=0 right-column left-indent aligned-line year headchar-lower
+I-Reference	72.	page=6 xpos=5 ypos=0 right-column left-indent right-indent aligned-line shorter-tail tailchar-period
+B-Reference	D. Nelson, C. McEvoy, and S. Dennis. 2000. What	page=6 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	is and what does free association measure? Mem-	page=6 xpos=5 ypos=0 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	ory & Cognition, 28(6):887–899.	page=6 xpos=5 ypos=1 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	T. Niesler and P. Woodland. 1997. Modelling	page=6 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	word-pair relations in a category-based language	page=6 xpos=5 ypos=1 right-column left-indent indented-line headchar-lower
+I-Reference	model. In Proc. ICASSP ’97, pages 795–798,	page=6 xpos=5 ypos=1 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	Munich, Germany.	page=6 xpos=5 ypos=1 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	R. Rapp. 2002. The computation of word associa-	page=6 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tions: Comparing syntagmatic and paradigmatic	page=6 xpos=5 ypos=2 right-column left-indent indented-line headchar-lower
+I-Reference	approaches. In Proceedings of the 19th COLING.	page=6 xpos=5 ypos=2 right-column left-indent aligned-line headchar-lower tailchar-period
+B-Reference	P. Resnik and M. Diab. 2000. Measuring verb	page=6 xpos=5 ypos=2 right-column full-justified hanged-line year headchar-capital
+I-Reference	similarity. In 22nd Annual Meeting of the Cog-	page=6 xpos=5 ypos=2 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	nitive Science Society (COGSCI2000), Philadel-	page=6 xpos=5 ypos=2 right-column left-indent aligned-line year headchar-lower tailchar-hiphen
+I-Reference	phia, August.	page=6 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	R. Rosenfeld. 1996. A maximum entropy approach	page=6 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	to adaptive statistical language modeling. com-	page=6 xpos=5 ypos=3 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	puter speech and language. Computer Speech	page=6 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower
+I-Reference	and Language, 10:187–228.	page=6 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	R. Rosenfeld. 2000. Two decades of statistical lan-	page=6 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	guage modeling: Where do we go from here. In	page=6 xpos=5 ypos=4 right-column left-indent indented-line headchar-lower
+I-Reference	Proceedings of the IEEE, volume 88.	page=6 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	T. Tanaka. 2002. Measuring the similarity between	page=6 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	compound nouns in different languages using	page=6 xpos=5 ypos=4 right-column left-indent indented-line headchar-lower
+I-Reference	non-parallel corpora. In Proceedings of the 19th	page=6 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower
+I-Reference	COLING.	page=6 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	E. Terra and C. L. A. Clarke. 2003. Frequency es-	page=6 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	timates for statistical word similarity measures.	page=6 xpos=5 ypos=5 right-column left-indent indented-line headchar-lower tailchar-period
+I-Reference	In Proceedings of HLT–NAACL 2003, pages 244–	page=6 xpos=5 ypos=5 right-column left-indent aligned-line year headchar-capital
+I-Reference	251, Edmonton, Alberta.	page=6 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail tailchar-period
+B-Reference	P.D. Turney, Littman M.L., J. Bigham, and	page=6 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail headchar-capital
+I-Reference	V. Shnayder. 2003. Combining independent	page=6 xpos=5 ypos=5 right-column left-indent indented-line year headchar-capital
+I-Reference	modules to solve multiple-choice synonym and	page=6 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower
+I-Reference	analogy problems. In Proceedings of RANLP-03,	page=6 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	Borovets, Bulgaria.	page=6 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	P. D. Turney. 2001. Mining the Web for synonyms:	page=6 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-colon
+I-Reference	PMI–IR versus LSA on TOEFL. In Proceedings	page=6 xpos=5 ypos=6 right-column left-indent indented-line headchar-capital
+I-Reference	of ECML-2001, pages 491–502.	page=6 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Reference	O. Vechtomova, S. Robertson, and S. Jones. 2003.	page=6 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Query expansion with long-span collocates. In-	page=6 xpos=5 ypos=7 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Reference	formation Retrieval, 6(2):251–273.	page=6 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	J. Weeds and D. Weir. 2003. A general framework	page=6 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	for distributional similarity. In Proceedings of the	page=6 xpos=5 ypos=7 right-column left-indent indented-line headchar-lower
+I-Reference	2003 Conference on Empirical Methods in Natu-	page=6 xpos=5 ypos=8 right-column left-indent aligned-line year tailchar-hiphen
+I-Reference	ral Language Processing.	page=6 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	D. Yuret. 1998. Discovery of linguistic relations us-	page=6 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ing lexical attraction. Ph.D. thesis, Department	page=6 xpos=5 ypos=8 right-column left-indent indented-line headchar-lower
+I-Reference	of Computer Science and Electrical Engineering,	page=6 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	MIT, May.	page=6 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	X. Zhu and R. Rosenfeld. 2001. Improving trigram	page=6 xpos=5 ypos=9 right-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	language modeling with the world wide web. In	page=6 xpos=5 ypos=9 right-column left-indent indented-line headchar-lower
+I-Reference	Proceedings of IEEE ICASSP, volume 1, pages	page=6 xpos=5 ypos=9 right-column left-indent aligned-line headchar-capital
+I-Reference	533–536.	page=6 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail tailchar-period

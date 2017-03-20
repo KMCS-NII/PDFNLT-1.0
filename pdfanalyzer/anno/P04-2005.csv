@@ -1,0 +1,561 @@
+Title	Automatic Acquisition of English Topic Signatures Based on	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital
+Title	a Second Language	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail itemization headchar-lower above-blank-line above-double-space above-line-space
+Author	Xinglong Wang	page=0 xpos=4 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Department of Informatics	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Affiliation	University of Sussex	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Address	Brighton, BN1 9QH, UK	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Email	xw20@sussex.ac.uk	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	We present a novel approach for auto-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	matically acquiring English topic sig-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	natures. Given a particular concept,	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-comma
+I-Abstract	or word sense, a topic signature is a	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	set of words that tend to co-occur with	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	it. Topic signatures can be useful in a	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	number of Natural Language Process-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing (NLP) applications, such as Word	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	Sense Disambiguation (WSD) and Text	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	Summarisation. Our method takes ad-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	vantage of the different way in which	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	word senses are lexicalised in English	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	and Chinese, and also exploits the large	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	amount of Chinese text available in cor-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	pora and on the Web. We evaluated the	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	topic signatures on a WSD task, where	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	we trained a second-order vector co-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	occurrence algorithm on standard WSD	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	datasets, with promising results.	page=0 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=7 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Lexical knowledge is crucial for many NLP tasks.	page=0 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Body	Huge efforts and investments have been made to	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	build repositories with different types of knowl-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	edge. Many of them have proved useful, such as	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	WordNet (Miller et al., 1990). However, in some	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-capital
+I-Body	areas, such as WSD, manually created knowledge	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	bases seem never to satisfy the huge requirement	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	by supervised machine learning systems. This	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	is the so-called knowledge acquisition bottleneck.	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	As an alternative, automatic or semi-automatic ac-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	quisition methods have been proposed to tackle	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	the bottleneck. For example, Agirre et al. (2001)	page=0 xpos=5 ypos=2 right-column full-justified column-top year headchar-lower
+I-Body	tried to automatically extract topic signatures by	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	querying a search engine using monosemous syn-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	onyms or other knowledge associated with a con-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cept defined in WordNet.	page=0 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The Web provides further ways of overcoming	page=0 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	the bottleneck. Mihalcea et al. (1999) presented	page=0 xpos=5 ypos=4 right-column full-justified hanged-line year headchar-lower
+I-Body	a method enabling automatic acquisition of sense-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	tagged corpora, based on WordNet and an Inter-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	net search engine. Chklovski and Mihalcea (2002)	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	presented another interesting proposal which turns	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	to Web users to produce sense-tagged corpora.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Another type of method, which exploits dif-	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ferences between languages, has shown great	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	promise. For example, some work has been done	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	based on the assumption that mappings of words	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	and meanings are different in different languages.	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Gale et al. (1992) proposed a method which au-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	tomatically produces sense-tagged data using par-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	allel bilingual corpora. Diab and Resnik (2002)	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Body	presented an unsupervised method for WSD us-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the same type of resource. One problem with	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	relying on bilingual corpora for data collection is	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	that bilingual corpora are rare, and aligned bilin-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gual corpora are even rarer. Mining the Web for	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	bilingual text (Resnik, 1999) is not likely to pro-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	vide sufficient quantities of high quality data. An-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	other problem is that if two languages are closely	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	related, data for some words cannot be collected	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	because different senses of polysemous words in	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	one language often translate to the same word in	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	the other.	page=0 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In this paper, we present a novel approach for	page=0 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	automatically acquiring topic signatures (see Ta-	page=0 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen page-bottom
+I-Body	ble 1 for an example of topic signatures), which	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	also adopts the cross-lingual paradigm. To solve	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	the problem of different senses not being distin-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guishable mentioned in the previous paragraph,	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we chose a language very distant to English –	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	Chinese, since the more distant two languages	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	are, the more likely that senses are lexicalised	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	differently (Resnik and Yarowsky, 1999). Be-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	cause our approach only uses Chinese monolin-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gual text, we also avoid the problem of shortage	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	of aligned bilingual corpora. We build the topic	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	signatures by using Chinese-English and English-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	Chinese bilingual lexicons and a large amount of	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	Chinese text, which can be collected either from	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	the Web or from Chinese corpora. Since topic sig-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	natures are potentially good training data for WSD	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	algorithms, we set up a task to disambiguate 6	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	words using a WSD algorithm similar to Schütze’s	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	(1998) context-group discrimination. The results	page=1 xpos=0 ypos=3 left-column full-justified aligned-line year
+E-Body	show that our topic signatures are useful for WSD.	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	The remainder of the paper is organised as fol-	page=1 xpos=0 ypos=4 left-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Body	lows. Section 2 describes the process of acqui-	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sition of the topic signatures. Section 3 demon-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	strates the application of this resource on WSD,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and presents the results of our experiments. Sec-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion 4 discusses factors that could affect the acqui-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sition process and then we conclude in Section 5.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Acquisition of Topic Signatures	page=1 xpos=0 ypos=5 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	A topic signature is defined as: T S =	page=1 xpos=0 ypos=6 left-column full-justified font-largest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	{(t <sub>1</sub> , w 1 ), ..., (t i , w i ), ...}, where t i is a term	page=1 xpos=0 ypos=6 left-column full-justified font-largest aligned-line
+I-Body	highly correlated to a target topic (or concept) with	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	association weight w <sub>i</sub> , which can be omitted. The	page=1 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	steps we perform to produce the topic signatures	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	are described below, and illustrated in Figure 1.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 1__	page=1 xpos=3 ypos=7 left-column left-indent right-over box indented-line longer-tail line-double-space line-space figure-area
+B-Listitem	1. Translate an English ambiguous word	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-smallest hanged-line shorter-tail itemization
+I-Listitem	using an English-Chinese lexicon.	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period
+I-Listitem	tion we mentioned, each sense s <sub>i</sub> of w	page=1 xpos=0 ypos=7 left-column left-indent right-indent aligned-line longer-tail headchar-lower
+I-Listitem	tinct Chinese word <sup>1</sup> . At the end of	page=1 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-lower
+I-Listitem	produced a set C, which consists of	page=1 xpos=0 ypos=8 left-column left-indent right-indent font-smaller aligned-line longer-tail headchar-lower
+I-Listitem	{c <sub>1</sub> , c 2 , ..., c n }, where c i is the	page=1 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail
+I-Listitem	ing to sense s <sub>i</sub> of w, and n is the	page=1 xpos=0 ypos=8 left-column left-indent right-indent aligned-line longer-tail headchar-lower
+I-Listitem	w has.	page=1 xpos=0 ypos=8 left-column left-indent right-indent font-smaller aligned-line shorter-tail itemization headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	2. Query large Chinese corpora or/and a	page=1 xpos=0 ypos=8 left-column left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	that supports Chinese using each	page=1 xpos=0 ypos=9 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower
+I-Listitem	for each c <sub>i</sub> in C, we collect the text	page=1 xpos=0 ypos=9 left-column left-indent right-indent aligned-line longer-tail headchar-lower
+I-Listitem	and construct a Chinese corpus.	page=1 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>1</sup> It is also possible that the English sense maps to a set of	page=1 xpos=0 ypos=9 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-super
+I-Footnote	Chinese synonyms that realise the same concept.	page=1 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-capital tailchar-period column-bottom
+B-Figure	English ambiguous word w	page=1 xpos=6 ypos=0 right-column left-indent right-indent font-smallest column-top headchar-capital above-blank-line above-double-space above-line-space
+I-Figure	Sense 1 of w Sense 2 of w	page=1 xpos=5 ypos=0 right-column left-indent right-indent font-smallest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Figure	English-Chinese	page=1 xpos=7 ypos=0 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital
+I-Figure	Lexicon	page=1 xpos=7 ypos=0 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital above-line-space
+I-Figure	Chinese translation of Chinese translation of	page=1 xpos=5 ypos=0 right-column left-indent right-indent font-smallest hanged-line longer-tail line-space headchar-capital
+I-Figure	sense 1 sense 2 Chinese	page=1 xpos=5 ypos=1 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower
+I-Figure	Search	page=1 xpos=7 ypos=1 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital
+I-Figure	Engine	page=1 xpos=7 ypos=1 right-column left-indent right-indent font-smallest aligned-line headchar-capital
+I-Figure	1. Chinese document 1 1. Chinese document 1	page=1 xpos=5 ypos=1 right-column left-indent right-indent font-smallest hanged-line longer-tail itemization
+I-Figure	2. Chinese document 2 2. Chinese document 2	page=1 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line itemization
+I-Figure	Chinese	page=1 xpos=7 ypos=1 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital
+I-Figure	... ... ... ...	page=1 xpos=6 ypos=1 right-column left-indent right-indent font-smallest hanged-line longer-tail tailchar-period
+I-Figure	segmentation	page=1 xpos=7 ypos=1 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower
+I-Figure	and POS	page=1 xpos=7 ypos=1 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower
+I-Figure	tagging;	page=1 xpos=7 ypos=1 right-column left-indent right-indent font-smallest headchar-lower tailchar-semicolon
+I-Figure	1. {English topic signature 1} Chinese- 1. {English topic signature 1}	page=1 xpos=5 ypos=2 right-column left-indent right-indent font-smallest hanged-line longer-tail itemization
+I-Figure	2. {English topic signature 2} English 2. {English topic signature 2}	page=1 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line itemization
+E-Figure	... ... ... ... Lexicon	page=1 xpos=6 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail above-blank-line above-double-space above-line-space
+B-Caption	Figure 1:Process of automatic acquisition of topic signatures.	page=1 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-period
+E-Caption	For simplicity, we assume here that w has two senses.	page=1 xpos=5 ypos=2 right-column right-indent font-smaller aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-Listitem	3. Shallow process these Chinese corpora. Text segmen-	page=1 xpos=5 ypos=3 right-column left-indent font-smallest indented-line longer-tail line-blank-line line-double-space line-space itemization tailchar-hiphen
+I-Listitem	tation and POS tagging are done in this step.	page=1 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	4. Either use an electronic Chinese-English lexicon to	page=1 xpos=5 ypos=3 right-column left-indent font-smallest hanged-line longer-tail line-space itemization
+I-Listitem	translate the Chinese corpora word by word to En-	page=1 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Listitem	glish, or use machine translation software to translate	page=1 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower
+I-Listitem	the whole text. In our experiments, we did the former.	page=1 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The complete process is automatic, and unsu-	page=1 xpos=5 ypos=4 right-column left-indent hanged-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	pervised. At the end of this process, for each sense	page=1 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	s <sub>i</sub> of an ambiguous word w, we have a large set	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	of English contexts. Each context is a topic sig-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nature, which represents topical information that	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	tends to co-occur with sense s <sub>i</sub> . Note that an el-	page=1 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ement in our topic signatures is not necessarily a	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	single English word. It can be a set of English	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	words which are translations of a Chinese word c.	page=1 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	For example, the component of a topic signature,	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	{vesture, clothing, clothes}, is translated from the	page=1 xpos=5 ypos=6 right-column full-justified font-largest aligned-line
+I-Body	Chinese word Ñ. Under the assumption that the	page=1 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-capital
+I-Body	majority of c’s are unambiguous, which we dis-	page=1 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	cuss later, we refer to elements in a topic signature	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	as concepts in this paper.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Choosing an appropriate English-Chinese dic-	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tionary is the first problem we faced. The one	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	we decided to use is the Yahoo! Student English-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	Chinese On-line Dictionary <sup>2</sup> . As this dictionary	page=1 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-capital
+I-Body	is designed for English learners, its sense gran-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ularity is far coarser-grained than that of Word-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	Net. However, researchers argue that the granular-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ity of WordNet is too fine for many applications,	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and some also proposed new evaluation standards.	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For example, Resnik and Yarowsky (1999) sug-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-capital tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>2</sup> See: http://cn.yahoo.com/dictionary/	page=1 xpos=5 ypos=9 right-column left-indent right-indent indented-line shorter-tail line-double-space line-space headchar-super page-bottom
+I-Body	gested that for the purpose of WSD, the different	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	senses of a word could be determined by consid-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ering only sense distinctions that are lexicalised	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	cross-linguistically. Our approach is in accord	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	with their proposal, since bilingual dictionaries in-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	terpret sense distinctions crossing two languages.	page=2 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower tailchar-period above-line-space
+B-Body	For efficiency purposes, we extract our topic	page=2 xpos=0 ypos=1 left-column left-indent indented-line line-space headchar-capital
+I-Body	signatures mainly from the Mandarin portion of	page=2 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	the Chinese Gigaword Corpus (CGC), produced	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	by the LDC <sup>3</sup> , which contains 1.3GB of newswire	page=2 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	text drawn from Xinhua newspaper. Some Chi-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nese translations of English word senses could be	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	sparse, making it impossible to extract sufficient	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	training data simply relying on CGC. In this sit-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	uation, we can turn to the large amount of Chi-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nese text on the Web. There are many good search	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	engines and on-line databases supporting the Chi-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nese language. After investigation, we chose Peo-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ple’s Daily On-line <sup>4</sup> , which is the website for Peo-	page=2 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ple’s Daily, one of the most influential newspaper	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	in mainland China. It maintains a vast database	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	of news stories, available to search by the public.	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Among other reasons, we chose this website be-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	cause its articles have similar quality and cover-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	age to those in the CGC, so that we could com-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bine texts from these two resources to get a larger	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	amount of topic signatures. Note that we can al-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ways turn to other sources on the Web to retrieve	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	even more data, if needed.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	For Chinese text segmentation and POS tag-	page=2 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ging <sup>5</sup> we adopted the freely-available software	page=2 xpos=0 ypos=6 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	package — ICTCLAS <sup>6</sup> . This system includes a	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	word segmenter, a POS tagger and an unknown-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	word recogniser. The claimed precision of seg-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mentation is 97.58%, evaluated on a 1.2M word	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	portion of the People’s Daily Corpus.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	To automatically translate the Chinese text back	page=2 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	to English, we used the electronic LDC Chinese-	page=2 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	English Translation Lexicon Version 3.0. An al-	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	ternative was to use machine translation software,	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which would yield a rather different type of re-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	source, but this is beyond the scope of this pa-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	per. Then, we filtered the topic signatures with	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>3</sup> Available at: http://www.ldc.upenn.edu/Catalog/	page=2 xpos=0 ypos=9 left-column left-indent right-indent indented-line shorter-tail line-double-space line-space headchar-super
+B-Footnote	<sup>4</sup> See: http://www.people.com.cn	page=2 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail headchar-super
+B-Footnote	<sup>5</sup> POS tagging can be omitted. We did it in our experi-	page=2 xpos=0 ypos=9 left-column left-indent aligned-line longer-tail headchar-super tailchar-hiphen
+I-Footnote	ments purely for convenience for error analysis in the future.	page=2 xpos=0 ypos=9 left-column centered right-indent font-smallest hanged-line headchar-lower tailchar-period
+B-Footnote	<sup>6</sup> See: http://mtgroup.ict.ac.cn/ <sup>∼</sup> zhp/ICTCLAS/index.html	page=2 xpos=0 ypos=9 left-column left-indent right-over font-largest indented-line headchar-super column-bottom
+I-Body	a stop-word list, to ensure only content words are	page=2 xpos=5 ypos=0 right-column full-justified column-top itemization headchar-lower
+E-Body	included in our final results.	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	One might argue that, since many Chinese	page=2 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	words are also ambiguous, a Chinese word may	page=2 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	have more than one English translation and thus	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	translated concepts in topic signatures would still	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	be ambiguous. This happens for some Chinese	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	words, and will inevitably affect the performance	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	of our system to some extent. A practical solu-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion is to expand the queries with different descrip-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions associated with each sense of w, normally	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	provided in a bilingual dictionary, when retriev-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the Chinese text. To get an idea of the baseline	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	performance, we did not follow this solution in our	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	experiments.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Table	Topic signatures for the "financial" sense of "interest"	page=2 xpos=5 ypos=3 right-column centered left-indent right-indent font-smallest indented-line longer-tail line-blank-line line-double-space line-space headchar-capital above-double-space above-line-space
+I-Table	1. rate; 2. bond; 3. payment; 4. market; 5. debt; 6. dollar;	page=2 xpos=5 ypos=3 right-column left-indent right-indent font-smallest line-double-space line-space itemization tailchar-semicolon
+I-Table	7. bank; 8. year; 9. loan; 10. income; 11. company;	page=2 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail itemization tailchar-semicolon
+I-Table	M	page=2 xpos=5 ypos=3 right-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Table	12. inflation; 13. reserve; 14. government; 15. economy;	page=2 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line longer-tail itemization tailchar-semicolon
+I-Table	16. stock; 17. fund; 18. week; 19. security; 20. level;	page=2 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail itemization tailchar-semicolon above-line-space
+I-Table	1. {bank}; 2. {loan}; 3. {company, firm, corporation};	page=2 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line longer-tail line-space itemization tailchar-semicolon
+I-Table	4. {rate}; 5. {deposit}; 6. {income, revenue}; 7. {fund};	page=2 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line longer-tail itemization tailchar-semicolon
+I-Table	8. {bonus, divident}; 9. {investment}; 10. {market};	page=2 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail itemization tailchar-semicolon
+I-Table	A	page=2 xpos=5 ypos=4 right-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Table	11. {tax, duty}; 12. {economy}; 13. {debt}; 14. {money};	page=2 xpos=5 ypos=4 right-column left-indent right-indent font-smallest indented-line longer-tail itemization tailchar-semicolon
+I-Table	15. {saving}; 16. {profit}; 17. {bond}; 18. {income, earning};	page=2 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line longer-tail itemization tailchar-semicolon
+E-Table	19. {share, stock}; 20. {finance, banking};	page=2 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail itemization tailchar-semicolon above-double-space above-line-space
+B-Caption	Table 1:A sample of our topic signatures. Signature M was	page=2 xpos=5 ypos=5 right-column full-justified font-smaller hanged-line longer-tail line-double-space line-space string-table headchar-capital
+I-Caption	extracted from a manually-sense-tagged corpus and A was	page=2 xpos=5 ypos=5 right-column full-justified font-smaller aligned-line headchar-lower
+I-Caption	produced by our algorithm. Words occurring in both A and	page=2 xpos=5 ypos=5 right-column full-justified font-smaller aligned-line headchar-lower
+E-Caption	M are marked in bold.	page=2 xpos=5 ypos=5 right-column right-indent font-smaller aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Body	The topic signatures we acquired contain rich	page=2 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	topical information. But they do not provide any	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	other types of linguistic knowledge. Since they	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	were created by word to word translation, syntac-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic analysis of them is not possible. Even the dis-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tances between the target ambiguous word and its	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	context words are not reliable because of differ-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ences in word order between Chinese and English.	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Table 1 lists two sets of topic signatures, each con-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line string-table headchar-capital tailchar-hiphen
+I-Body	taining the 20 most frequent nouns, ranked by oc-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	currence count, that surround instances of the fi-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nancial sense of interest. One set was extracted	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	from a hand-tagged corpus (Bruce and Wiebe,	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	1994) and the other by our algorithm.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Application on WSD	page=2 xpos=5 ypos=9 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	To evaluate the usefulness of the topic signatures	page=2 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	acquired, we applied them in a WSD task. We	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	adopted an algorithm similar to Schütze’s (1998)	page=2 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-lower page-bottom
+I-Body	context-group discrimination, which determines a	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	word sense according to the semantic similarity	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	of contexts, computed using a second-order co-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	occurrence vector model. In this section, we firstly	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	introduce our adaptation of this algorithm, and	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	then describe the disambiguation experiments on	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	6 words for which a gold standard is available.	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail numbered-heading1 tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 Context-Group Discrimination	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We chose the so-called context-group discrimina-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tion algorithm because it disambiguates instances	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	only relying on topical information, which hap-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pens to be what our topic signatures specialise	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	in <sup>7</sup> . The original context-group discrimination	page=3 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	is a disambiguation algorithm based on cluster-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing. Words, contexts and senses are represented	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	in Word Space, a high-dimensional, real-valued	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	space in which closeness corresponds to semantic	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	similarity. Similarity in Word Space is based on	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	second-order co-occurrence: two tokens (or con-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	texts) of the ambiguous word are assigned to the	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	same sense cluster if the words they co-occur with	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	themselves occur with similar words in a training	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	corpus. The number of sense clusters determines	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	sense granularity.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In our adaptation of this algorithm, we omitted	page=3 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	the clustering step, because our data has already	page=3 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	been sense classified according to the senses de-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fined in the English-Chinese dictionary. In other	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	words, our algorithm performs sense classifica-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion by using a bilingual lexicon and the level	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	of sense granularity of the lexicon determines the	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	sense distinctions that our system can handle: a	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	finer-grained lexicon would enable our system to	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	identify finer-grained senses. Also, our adapta-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion represents senses in Concept Space, in con-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	trast to Word Space in the original algorithm. This	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	is because our topic signatures are not realised in	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the form of words, but concepts. For example, a	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	topic signature may consist of {duty, tariff, cus-	page=3 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	toms duty}, which represents a concept of “a gov-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ernment tax on imports or exports”.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	A vector for concept c is derived from all the	page=3 xpos=0 ypos=8 left-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	close neighbours of c, where close neighbours re-	page=3 xpos=0 ypos=8 left-column full-justified font-largest hanged-line headchar-lower tailchar-hiphen
+I-Body	fer to all concepts that co-occur with c in a context	page=3 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	window. The size of the window is around 100	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>7</sup> Using our topic signatures as training data, other classi-	page=3 xpos=0 ypos=9 left-column left-indent indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	fication algorithms would also work on this WSD task.	page=3 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period column-bottom
+I-Body	words. The entry for concept c <sup>0</sup> in the vector for	page=3 xpos=5 ypos=0 right-column full-justified font-largest column-top headchar-lower
+I-Body	c records the number of times that c <sup>0</sup> occurs close	page=3 xpos=5 ypos=0 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	to c in the corpus. It is this representational vector	page=3 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	space that we refer to as Concept Space.	page=3 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In our experiments, we chose concepts that	page=3 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	serve as dimensions of Concept Space using a	page=3 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	frequency cut-off. We count the number of oc-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	currences of any concepts that co-occur with the	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	ambiguous word within a context window. The	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	2, 500 most frequent concepts are chosen as the	page=3 xpos=5 ypos=1 right-column full-justified font-largest aligned-line
+I-Body	dimensions of the space. Thus, the Concept Space	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	was formed by collecting a n-by-2, 500 matrix M ,	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	such that element m <sub>ij</sub> records the number of times	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	that concept i and j co-occur in a window, where	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	n is the number of concept vectors that occur in	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	the corpus. Row l of matrix M represents concept	page=3 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	vector l.	page=3 xpos=5 ypos=3 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We measure the similarity of two vectors by the	page=3 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	cosine score:	page=3 xpos=5 ypos=3 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	P N v ~ <sub>i</sub> w ~ i	page=3 xpos=7 ypos=4 right-column left-indent right-indent font-largest indented-line longer-tail line-space headchar-capital
+I-Equation	corr(~v , w) ~ = qP <sub>N</sub> <sup>i=1</sup> P	page=3 xpos=5 ypos=4 right-column left-indent right-indent font-largest hanged-line shorter-tail headchar-lower
+I-Equation	i=1 v ~ i <sup>2</sup> N i=1 w ~ i 2	page=3 xpos=7 ypos=4 right-column left-indent right-indent font-largest indented-line longer-tail headchar-lower above-double-space above-line-space
+I-Body	where ~v and w ~ are vectors and N is the dimen-	page=3 xpos=5 ypos=4 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	sion of the vector space. The more overlap there	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	is between the neighbours of the two words whose	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	vectors are compared, the higher the score.	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Contexts are represented as context vectors in	page=3 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	Concept Space. A context vector is the sum of the	page=3 xpos=5 ypos=5 right-column full-justified hanged-line headchar-capital
+I-Body	vectors of concepts that occur in a context win-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dow. If many of the concepts in a window have a	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	strong component for one of the topics, then the	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	sum of the vectors, the context vector, will also	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	have a strong component for the topic. Hence, the	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	context vector indicates the strength of different	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	topical or semantic components in a context.	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Senses are represented as sense vectors in Con-	page=3 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	cept Space. A vector of sense s <sub>i</sub> is the sum of the	page=3 xpos=5 ypos=7 right-column full-justified font-largest hanged-line headchar-lower
+I-Body	vectors of contexts in which the ambiguous word	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	realises s <sub>i</sub> . Since our topic signatures are classi-	page=3 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	fied naturally according to definitions in a bilin-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gual dictionary, calculation of the vector for sense	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	s <sub>i</sub> is fairly straightforward: simply sum all the vec-	page=3 xpos=5 ypos=8 right-column full-justified font-largest aligned-line itemization headchar-lower tailchar-hiphen
+E-Body	tors of the contexts associated with sense s <sub>i</sub> .	page=3 xpos=5 ypos=8 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	After the training phase, we have obtained a	page=3 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	sense vector v ~ <sub>i</sub> for each sense s i of an ambiguous	page=3 xpos=5 ypos=9 right-column full-justified font-largest hanged-line headchar-lower
+I-Body	word w. Then, we perform the following steps to	page=3 xpos=5 ypos=9 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	tag an occurrence t of w:	page=3 xpos=5 ypos=9 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon page-bottom
+B-Listitem	1. Compute the context vector ~c for t in Concept Space	page=4 xpos=0 ypos=0 left-column left-indent font-smaller page-top itemization
+I-Listitem	by summing the vectors of the concepts in t’s context.	page=4 xpos=0 ypos=0 left-column left-indent font-smaller indented-line headchar-lower tailchar-period
+I-Listitem	Since the basic units of the test data are words rather	page=4 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line headchar-capital
+I-Listitem	than concepts, we have to convert all words in the test	page=4 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line headchar-lower
+I-Listitem	data into concepts. A simple way to achieve this is to	page=4 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line headchar-lower
+I-Listitem	replace a word v with all the concepts that contain v.	page=4 xpos=0 ypos=0 left-column left-indent right-indent font-smaller aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	2. Compute the cosine scores between all sense vectors of	page=4 xpos=0 ypos=1 left-column left-indent font-smallest hanged-line longer-tail line-space itemization
+I-Listitem	w and ~c , and then assign t to the sense s <sub>i</sub> whose sense	page=4 xpos=0 ypos=1 left-column left-indent indented-line itemization headchar-lower
+I-Listitem	vector s ~ <sub>j</sub> is closest to ~c .	page=4 xpos=0 ypos=1 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Experiments and Results	page=4 xpos=0 ypos=1 left-column right-indent hanged-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We tested our system on 6 nouns, as shown in Ta-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ble 2, which also shows information on the train-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing and test data we used in the experiments. The	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	training sets for motion, plant and tank are topic	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	signatures extracted from the CGC; whereas those	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	for bass, crane and palm are obtained from both	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	CGC and the People’s Daily On-line. This is be-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	cause the Chinese translation equivalents of senses	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	of the latter 3 words don’t occur frequently in	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	CGC, and we had to seek more data from the Web.	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	Where applicable, we also limited the training data	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	of each sense to a maximum of 6, 000 instances for	page=4 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	efficiency purposes.	page=4 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Table	Word Sense Training Test 'Supervised' <sub>Baseline</sub> Precision	page=4 xpos=0 ypos=4 left-column centered left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital
+I-Table	1. fish 418 10	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization
+I-Table	bass 1203 107 90.7% 93.5%	page=4 xpos=0 ypos=5 left-column centered left-indent right-indent font-smallest hanged-line longer-tail headchar-lower
+I-Table	2. music 825 97	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization
+I-Table	1. bird 829 24	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line itemization
+I-Table	crane 2301 95 74.7% 76.6%	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest hanged-line longer-tail headchar-lower
+I-Table	2. machine 1472 71	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization
+I-Table	1. physical 6000 141	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line itemization
+I-Table	motion 9265 201 70.1% 69.7%	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest hanged-line longer-tail headchar-lower
+I-Table	2. legal 3265 60	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization
+I-Table	1. hand 852 143	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line itemization
+I-Table	palm 1248 201 71.1% 76.1%	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest hanged-line longer-tail headchar-lower
+I-Table	2. tree 396 58	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization
+I-Table	1. living 6000 86	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line itemization
+I-Table	plant 12000 188 54.3% 70.2%	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-smallest hanged-line longer-tail year headchar-lower
+I-Table	2. factory 6000 102	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization
+I-Table	1. container 6000 126	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line itemization
+I-Table	tank 9346 201 62.7% 70.1%	page=4 xpos=0 ypos=6 left-column centered left-indent right-indent font-smallest hanged-line longer-tail headchar-lower
+E-Table	2. vehicle 3346 75	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization above-blank-line above-double-space above-line-space
+B-Caption	Table 2:Sizes of the training data and the test data, baseline	page=4 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital
+E-Caption	performance, and the results.	page=4 xpos=0 ypos=7 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The test data is a binary sense-tagged corpus,	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	the TWA Sense Tagged Data Set, manually pro-	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	duced by Rada Mihalcea and Li Yang (Mihalcea,	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2003), from text drawn from the British National	page=4 xpos=0 ypos=7 left-column full-justified aligned-line year
+I-Body	Corpus. We calculated a ‘supervised’ baseline	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	from the annotated data by assigning the most fre-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quent sense in the test data to all instances, al-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	though it could be argued that the baseline for un-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	supervised disambiguation should be computed by	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	randomly assigning one of the senses to instances	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	(e.g. it would be 50% for words with two senses).	page=4 xpos=0 ypos=9 left-column right-indent font-largest aligned-line tailchar-period
+B-Body	According to our previous description, the	page=4 xpos=0 ypos=9 left-column left-indent indented-line headchar-capital
+I-Body	2, 500 most frequent concepts were selected as di-	page=4 xpos=0 ypos=9 left-column full-justified font-largest hanged-line tailchar-hiphen column-bottom
+I-Body	mensions. The number of features in a Concept	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	Space depends on how many unique concepts ac-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tually occur in the training sets. Larger amounts	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	of training data tend to yield a larger set of fea-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures. At the end of the training stage, for each	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	sense, a sense vector was produced. Then we lem-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	matised the test data and extracted a set of context	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	vectors for all instances in the same way. For each	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	instance in the test data, the cosine scores between	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	its context vector and all possible sense vectors ac-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quired through training were calculated and com-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pared, and then the sense scoring the highest was	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	allocated to the instance.	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The results of the experiments are also given	page=4 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	in Table 2 (last column). Using our topic sig-	page=4 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	natures, we obtained good results: the accuracy	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	for all words exceeds the supervised baseline, ex-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cept for motion which approaches it. The Chi-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nese translations for motion are also ambiguous,	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which might be the reason that our WSD system	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	performed less well on this word. However, as	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	we mentioned, to avoid this problem, we could	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	have expanded motion’s Chinese translations, us-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing their Chinese monosemous synonyms, when	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	we query the Chinese corpus or the Web. Consid-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ering our system is unsupervised, the results are	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	very promising. An indicative comparison might	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	be with the work of Mihalcea (2003), who with	page=4 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower
+I-Body	a very different approach achieved similar perfor-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+E-Body	mance on the same test data.	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Discussion	page=4 xpos=5 ypos=6 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Although these results are promising, higher qual-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ity topic signatures would probably yield better re-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults in our WSD experiments. There are a num-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ber of factors that could affect the acquisition pro-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cess, which determines the quality of this resource.	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Firstly, since the translation was achieved by look-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ing up in a bilingual dictionary, the deficiencies	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	of the dictionary could cause problems. For ex-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ample, the LDC Chinese-English Lexicon we used	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	is not up to date, for example, lacking entries for	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	words such as ÃÅ (mobile phone), pé (the	page=4 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	Internet), etc. This defect makes our WSD algo-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	rithm unable to use the possibly strong topical in-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation contained in those words. Secondly, er-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rors generated during Chinese segmentation could	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	affect the distributions of words. For example, a	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	Chinese string ABC may be segmented as either	page=5 xpos=0 ypos=0 left-column full-justified font-largest page-top headchar-capital
+I-Body	A + BC or AB + C; assuming the former is cor-	page=5 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	rect whereas AB + C was produced by the seg-	page=5 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	menter, distributions of words A, AB, BC, and C	page=5 xpos=0 ypos=0 left-column centered right-indent font-largest aligned-line headchar-lower
+I-Body	are all affected accordingly. Other factors such as	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	cultural differences reflected in the different lan-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guages could also affect the results of this knowl-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	edge acquisition process.	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In our experiments, we adopted Chinese as a	page=5 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	source language to retrieve English topic signa-	page=5 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tures. Nevertheless, our technique should also	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	work on other distant language pairs, as long	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	as there are existing bilingual lexicons and large	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	monolingual corpora for the languages used. For	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	example, one should be able to build French topic	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	signatures using Chinese text, or Spanish topic	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	signatures from Japanese text. In particular cases,	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	where one only cares about translation ambiguity,	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	this technique can work on any language pair.	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusion and Future Work	page=5 xpos=0 ypos=4 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We presented a novel method for acquiring En-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	glish topic signatures from large quantities of	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	Chinese text and English-Chinese and Chinese-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	English bilingual dictionaries. The topic signa-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tures we acquired are a new type of resource,	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which can be useful in a number of NLP applica-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions. Experimental results have shown its appli-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cation to WSD is promising and the performance	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	is competitive with other unsupervised algorithms.	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We intend to carry out more extensive evaluation	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	to further explore this new resource’s properties	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	and potential.	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgements	page=5 xpos=0 ypos=7 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	This research is funded by EU IST-2001-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Acknowledgement	34460 project MEANING: Developing Multilin-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line tailchar-hiphen
+I-Acknowledgement	gual Web-Scale Language Technologies, and by	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	the Department of Informatics at Sussex Univer-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Acknowledgement	sity. I am very grateful to Dr John Carroll, my	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	supervisor, for his continual help and encourage-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Acknowledgement	ment.	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=5 xpos=0 ypos=9 left-column right-indent font-larger aligned-line longer-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Eneko Agirre, Olatz Ansa, David Martinez, and Ed-	page=5 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	uard Hovy. 2001. Enriching WordNet concepts	page=5 xpos=0 ypos=9 left-column left-indent font-smallest indented-line year headchar-lower
+I-Reference	with topic signatures. In Proceedings of the NAACL	page=5 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line headchar-lower column-bottom
+I-Reference	workshop on WordNet and Other Lexical Resources:	page=5 xpos=5 ypos=0 right-column left-indent font-smallest column-top headchar-lower tailchar-colon
+I-Reference	Applications, Extensions and Customizations. Pitts-	page=5 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	burgh, USA.	page=5 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Rebecca Bruce and Janyce Wiebe. 1994. Word-sense	page=5 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	disambiguation using decomposable models. In	page=5 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Proceedings of the 32 <sup>nd</sup> Annual Meeting of the As-	page=5 xpos=5 ypos=0 right-column left-indent font-largest aligned-line headchar-capital tailchar-hiphen
+I-Reference	sociation for Computational Linguistics, pages 139–	page=5 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	146.	page=5 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-line-space
+B-Reference	Timothy Chklovski and Rada Mihalcea. 2002. Build-	page=5 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	ing a sense tagged corpus with open mind word ex-	page=5 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	pert. In Proceedings of the ACL 2002 Workshop on	page=5 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line year headchar-lower
+I-Reference	“Word Sense Disambiguation Recent Successes and	page=5 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line
+I-Reference	Future Directions”. Philadelphia, USA.	page=5 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Mona Diab and Philip Resnik. 2002. An unsupervised	page=5 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	method for word sense tagging using parallel cor-	page=5 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	pora. In Proceedings of the 40 <sup>th</sup> Anniversary Meet-	page=5 xpos=5 ypos=2 right-column left-indent font-largest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ing of the Association for Computational Linguistics	page=5 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	(ACL-02). Philadelphia, USA.	page=5 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-line-space
+B-Reference	William A. Gale, Kenneth W. Church, and David	page=5 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-space headchar-capital
+I-Reference	Yarowsky. 1992. Using bilingual materials to	page=5 xpos=5 ypos=3 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	develop word sense disambiguation methods. In	page=5 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Proceedings of the International Conference on	page=5 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Theoretical and Methodological Issues in Machine	page=5 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Translation, pages 101–112.	page=5 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Rada Mihalcea and Dan I. Moldovan. 1999. An auto-	page=5 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	matic method for generating sense tagged corpora.	page=5 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In Proceedings of the 16 <sup>th</sup> Conference of the Amer-	page=5 xpos=5 ypos=4 right-column left-indent font-largest aligned-line headchar-capital tailchar-hiphen
+I-Reference	ican Association of Artificial Intelligence.	page=5 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Rada Mihalcea. 2003. The role of non-ambiguous	page=5 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	words in natural language disambiguation. In Pro-	page=5 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ceedings of the Conference on Recent Advances	page=5 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	in Natural Language Processing, RANLP 2003.	page=5 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-period
+I-Reference	Borovetz, Bulgaria.	page=5 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	George A. Miller, Richard Beckwith, Christiane Fell-	page=5 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Reference	baum, Derek Gross, and Katherine J. Miller.	page=5 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	1990. Introduction to WordNet: An on-line lexical	page=5 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line year
+I-Reference	database. Journal of Lexicography, 3(4):235–244.	page=5 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Philip Resnik and David Yarowsky. 1999. Distinguish-	page=5 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	ing systems and distinguishing senses: New evalua-	page=5 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tion methods for word sense disambiguation. Natu-	page=5 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ral Language Engineering, 5(2):113–133.	page=5 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Philip Resnik. 1999. Mining the Web for bilingual	page=5 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	text. In Proceedings of the 37 <sup>th</sup> Annual Meeting of	page=5 xpos=5 ypos=7 right-column left-indent font-largest indented-line headchar-lower
+I-Reference	the Association for Computational Linguistics.	page=5 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Hinrich Schütze. 1998. Automatic word sense dis-	page=5 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	crimination. Computational Linguistics, 24(1):97–	page=5 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	123.	page=5 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period

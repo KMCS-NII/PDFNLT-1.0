@@ -1,0 +1,317 @@
+Title	Semantic Role Labeling as Sequential Tagging	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Lluı́s Màrquez, Pere Comas, Jesús Giménez and Neus Català	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-larger hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	TALP Research Centre	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+I-Affiliation	Technical University of Catalonia (UPC)	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Email	{lluism,pcomas,jgimenez,ncatala}@lsi.upc.edu	page=0 xpos=1 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail symbol-atmark column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-blank-line above-double-space above-line-space
+B-Abstract	In this paper we present a semantic role	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Abstract	labeling system submitted to the CoNLL-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	2005 shared task. The system makes	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line year
+I-Abstract	use of partial and full syntactic informa-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion and converts the task into a sequen-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tial BIO-tagging. As a result, the label-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing architecture is very simple . Build-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing on a state-of-the-art set of features, a	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	binary classifier for each label is trained	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	using AdaBoost with fixed depth decision	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	trees. The final system, which combines	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	the outputs of two base systems performed	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	F 1 =76.59 on the official test set. Addi-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	tionally, we provide results comparing the	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	system when using partial vs. full parsing	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	input information.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Goals and System Architecture	page=0 xpos=0 ypos=6 left-column right-indent font-larger hanged-line longer-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The goal of our work is twofold. On the one hand,	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	we want to test whether it is possible to implement	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	a competitive SRL system by reducing the task to a	page=0 xpos=0 ypos=7 left-column full-justified aligned-line itemization headchar-lower
+I-Body	sequential tagging. On the other hand, we want to	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	investigate the effect of replacing partial parsing in-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation by full parsing. For that, we built two dif-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent individual systems with a shared sequential	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	strategy but using UPC chunks-clauses, and Char-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	niak’s parses, respectively. We will refer to those	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	systems as PP UPC and FP CHA , hereinafter.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Both partial and full parsing annotations provided	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	as input information are of hierarchical nature. Our	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	system navigates through these syntactic structures	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	in order to select a subset of constituents organized	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower
+I-Body	sequentially (i.e., non embedding). Propositions are	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	treated independently, that is, each target verb gen-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erates a sequence of tokens to be annotated. We call	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	this pre-processing step sequentialization.	page=0 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The sequential tokens are selected by exploring	page=0 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	the sentence spans or regions defined by the clause	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	boundaries <sup>1</sup> . The top-most syntactic constituents	page=0 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	falling inside these regions are selected as tokens.	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Note that this strategy is independent of the input	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	syntactic annotation explored, provided it contains	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	clause boundaries. It happens that, in the case of	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	full parses, this node selection strategy is equivalent	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to the pruning process defined by Xue and Palmer	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	(2004), which selects sibling nodes along the path of	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year
+I-Body	ancestors from the verb predicate to the root of the	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	tree <sup>2</sup> . Due to this pruning stage, the upper-bound re-	page=0 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	call figures are 95.67% for PP UPC and 90.32% for	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	FP CHA . These values give F 1 performance upper	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	bounds of 97.79 and 94.91, respectively, assuming	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	perfect predictors (100% precision).	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The nodes selected are labeled with B-I-O tags	page=0 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	depending if they are at the beginning, inside, or out-	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	side of a verb argument. There is a total of 37 argu-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ment types, which amount to 37*2+1=75 labels.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Regarding the learning algorithm, we used gen-	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	eralized AdaBoost with real-valued weak classifiers,	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	which constructs an ensemble of decision trees of	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	fixed depth (Schapire and Singer, 1999). We con-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	sidered a one-vs-all decomposition into binary prob-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>1</sup> Regions to the right of the target verb corresponding to an-	page=0 xpos=5 ypos=8 right-column left-indent indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	cestor clauses are omitted in the case of partial parsing.	page=0 xpos=5 ypos=8 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>2</sup> With the unique exception of the exploration inside sibling	page=0 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-super
+I-Footnote	PP constituents proposed by (Xue and Palmer, 2004).	page=0 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail year headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	193	page=0 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only
+B-Footer	Proceedings of the 9th Conference on Computational Natural Language Learning (CoNLL),	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail headchar-capital tailchar-comma
+I-Footer	pages 193–196, Ann Arbor, June 2005.  2005 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest year headchar-lower page-bottom
+E-Body	lems to address multi-class classification.	page=1 xpos=0 ypos=0 left-column right-indent page-top headchar-lower tailchar-period
+B-Body	AdaBoost binary classifiers are used for labeling	page=1 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	test sequences in a left-to-right tagging scheme us-	page=1 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ing a recurrent sliding window approach with infor-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation about the tag assigned to the preceding to-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ken. This tagging module ensures some basic con-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	straints, e.g., BIO correct structure, arguments do	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	not cross clause boundaries nor base chunk bound-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	aries, A0-A5 arguments not present in PropBank	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	frames for a certain verb are not allowed, etc. We	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	also tried beam search on top of the classifiers’ pre-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dictions to find the sequence of labels with highest	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	sentence-level probability (as a summation of indi-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vidual predictions). But the results did not improve	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	the basic greedy tagging.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Regarding feature representation, we used all	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	input information sources, with the exception of	page=1 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	verb senses and Collins’ parser. We did not con-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tribute with significantly original features. Instead,	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we borrowed most of them from the existing liter-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ature (Gildea and Jurafsky, 2002; Carreras et al.,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2004; Xue and Palmer, 2004). Broadly speaking, we	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year
+I-Body	considered features belonging to four categories <sup>3</sup> :	page=1 xpos=0 ypos=4 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Listitem	(1) On the verb predicate:	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail line-space itemization tailchar-colon above-double-space above-line-space
+B-Listitem	• Form; Lemma; POS tag; Chunk type and Type of	page=1 xpos=0 ypos=4 left-column left-indent font-smaller indented-line longer-tail line-double-space line-space itemization
+I-Listitem	verb phrase in which verb is included: single-word or	page=1 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-lower
+I-Listitem	multi-word; Verb voice: active, passive, copulative, in-	page=1 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Listitem	finitive, or progressive; Binary flag indicating if the verb	page=1 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower
+I-Listitem	is a start/end of a clause.	page=1 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• Subcategorization, i.e., the phrase structure rule expand-	page=1 xpos=0 ypos=5 left-column left-indent font-smaller hanged-line longer-tail line-space itemization tailchar-hiphen
+I-Listitem	ing the verb parent node.	page=1 xpos=0 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	(2) On the focus constituent:	page=1 xpos=0 ypos=6 left-column right-indent hanged-line longer-tail line-double-space line-space itemization tailchar-colon above-double-space above-line-space
+B-Listitem	• Type; Head: extracted using common head-word rules;	page=1 xpos=0 ypos=6 left-column left-indent font-smaller indented-line longer-tail line-double-space line-space itemization tailchar-semicolon
+I-Listitem	if the first element is a PP chunk, then the head of the first	page=1 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-lower
+I-Listitem	NP is extracted;	page=1 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-semicolon above-line-space
+B-Listitem	• First and last words and POS tags of the constituent.	page=1 xpos=0 ypos=6 left-column left-indent right-indent font-smaller hanged-line longer-tail line-space itemization tailchar-period above-line-space
+B-Listitem	• POS sequence: if it is less than 5 tags long; 2/3/4-grams	page=1 xpos=0 ypos=7 left-column left-indent font-smaller aligned-line longer-tail line-space itemization
+I-Listitem	of the POS sequence.	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• Bag-of-words of nouns, adjectives, and adverbs in the	page=1 xpos=0 ypos=7 left-column left-indent font-smaller hanged-line longer-tail line-space itemization
+I-Listitem	constituent.	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• TOP sequence: sequence of types of the top-most syn-	page=1 xpos=0 ypos=7 left-column left-indent font-smaller hanged-line longer-tail line-space itemization tailchar-hiphen
+I-Listitem	tactic elements in the constituent (if it is less than 5 ele-	page=1 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Listitem	ments long); in the case of full parsing this corresponds to	page=1 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower
+I-Listitem	the right-hand side of the rule expanding the constituent	page=1 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower
+I-Listitem	node; 2/3/4-grams of the TOP sequence.	page=1 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• Governing category as described in (Gildea and Juraf-	page=1 xpos=0 ypos=8 left-column left-indent font-smaller hanged-line longer-tail line-space itemization tailchar-hiphen
+I-Listitem	sky, 2002).	page=1 xpos=0 ypos=8 left-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>3</sup> Features extracted from partial parsing and Named Enti-	page=1 xpos=0 ypos=8 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	ties are common to PP UPC and FP CHA models, while features	page=1 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	coming from Charniak parse trees are implemented exclusively	page=1 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	in the FP CHA model.	page=1 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Listitem	• NamedEnt, indicating if the constituent embeds or	page=1 xpos=5 ypos=0 right-column left-indent font-smaller column-top itemization
+I-Listitem	strictly-matches a named entity along with its type.	page=1 xpos=5 ypos=0 right-column centered left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• TMP, indicating if the constituent embeds or strictly	page=1 xpos=5 ypos=0 right-column left-indent font-smaller hanged-line longer-tail line-space itemization
+I-Listitem	matches a temporal keyword (extracted from AM-TMP ar-	page=1 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Listitem	guments of the training set).	page=1 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	(3) Context of the focus constituent:	page=1 xpos=5 ypos=0 right-column right-indent hanged-line longer-tail line-double-space line-space itemization tailchar-colon above-double-space above-line-space
+B-Listitem	• Previous and following words and POS tags of the con-	page=1 xpos=5 ypos=1 right-column left-indent font-smaller indented-line longer-tail line-double-space line-space itemization tailchar-hiphen
+I-Listitem	stituent.	page=1 xpos=5 ypos=1 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• The same features characterizing focus constituents are	page=1 xpos=5 ypos=1 right-column left-indent font-smaller hanged-line longer-tail line-space itemization
+I-Listitem	extracted for the two previous and following tokens,	page=1 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Listitem	provided they are inside the clause boundaries of the cod-	page=1 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ified region.	page=1 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	(4) Relation between predicate and constituent:	page=1 xpos=5 ypos=2 right-column right-indent hanged-line longer-tail line-double-space line-space itemization tailchar-colon above-double-space above-line-space
+B-Listitem	• Relative position; Distance in words and chunks; Level	page=1 xpos=5 ypos=2 right-column left-indent font-smaller indented-line longer-tail line-double-space line-space itemization
+I-Listitem	of embedding with respect to the constituent: in number	page=1 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower
+I-Listitem	of clauses.	page=1 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• Constituent path as described in (Gildea and Jurafsky,	page=1 xpos=5 ypos=2 right-column left-indent font-smaller hanged-line longer-tail line-space itemization tailchar-comma
+I-Listitem	2002); All 3/4/5-grams of path constituents beginning at	page=1 xpos=5 ypos=3 right-column left-indent font-smallest indented-line year
+I-Listitem	the verb predicate or ending at the constituent.	page=1 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• Partial parsing path as described in (Carreras et al.,	page=1 xpos=5 ypos=3 right-column left-indent font-smaller hanged-line longer-tail line-space itemization tailchar-comma
+I-Listitem	2004); All 3/4/5-grams of path elements beginning at the	page=1 xpos=5 ypos=3 right-column left-indent font-smallest indented-line year
+I-Listitem	verb predicate or ending at the constituent.	page=1 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• Syntactic frame as described by Xue and Palmer (2004)	page=1 xpos=5 ypos=3 right-column left-indent right-indent font-smaller hanged-line longer-tail line-space itemization year above-double-space above-line-space
+B-SectionHeader	2 Experimental Setting and Results	page=1 xpos=5 ypos=4 right-column right-indent font-larger hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We trained the classification models using the com-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	plete training set (sections from 02 to 21). Once con-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	verted into one sequence per target predicate, the re-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sulting set amounts 1,049,049 training examples in	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the PP UPC model and 828,811 training examples in	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the FP CHA model. The average number of labels per	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	argument is 2.071 and 1.068, respectively. This fact	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	makes “I” labels very rare in the FP CHA model.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	When running AdaBoost, we selected as weak	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	rules decision trees of fixed depth 4 (i.e., each branch	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	may represent a conjunction of at most 4 basic fea-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures) and trained a classification model per label for	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	up to 2,000 rounds.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We applied some simplifications to keep training	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	times and memory requirements inside admissible	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	bounds. First, we discarded all the argument la-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bels that occur very infrequently and trained only	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the 41 most frequent labels in the case of PP UPC	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	and the 35 most frequent in the case of FP CHA .	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The remaining labels where joined in a new label	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	“other” in training and converted into “O” when-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line tailchar-hiphen
+I-Body	ever the SRL system assigns a “other” label dur-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing testing. Second, we performed a simple fre-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quency filtering by discarding those features occur-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ring less than 15 times in the training set. As an	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	194	page=1 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	exception, the frequency threshold for the features	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	referring to the verb predicate was set to 3. The final	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	number of features we worked with is 105,175 in the	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	case of PP UPC and 80,742 in the case of FP CHA .	page=2 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Training with these very large data and feature	page=2 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	sets becomes an issue. Fortunately, we could split	page=2 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	the computation among six machines in a Linux	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	cluster. Using our current implementation combin-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing Perl and C++ we could train the complete mod-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els in about 2 days using memory requirements be-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tween 1.5GB and 2GB. Testing with the ensembles	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	of 2,000 decision trees per label is also not very effi-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cient, though the resulting speed is admissible, e.g.,	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the development set is tagged in about 30 minutes	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	using a standard PC.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The overall results obtained by our individual	page=2 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	PP UPC and FP CHA SRL systems are presented in ta-	page=2 xpos=0 ypos=3 left-column full-justified hanged-line headchar-capital tailchar-hiphen
+I-Body	ble 1, with the best results in boldface. As expected,	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the FP CHA system significantly outperformed the	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	PP UPC system, though the results of the later can	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	be considered competitive. This fact is against the	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	belief, expressed as one of the conclusions of the	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	CoNLL-2004 shared task, that full-parsing systems	page=2 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-capital
+I-Body	are about 10 F 1 points over partial-parsing systems.	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In this case, we obtain a performance difference of	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+E-Body	2.18 points in favor of FP CHA .	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail numbered-heading2 tailchar-period
+B-Body	Apart from resulting performance, there are addi-	page=2 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tional advantages when using the FP CHA approach.	page=2 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	Due to the coarser granularity of sequence tokens,	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	FP CHA sequences are shorter. There are 21% less	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	training examples and a much lower quantity of “I”	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	tags to predict (the mapping between syntactic con-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stituents and arguments is mostly one-to-one). As	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	a consequence, FP CHA classifiers train faster with	page=2 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower
+I-Body	less memory requirements, and achieve competitive	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	results (near the optimal) with much less rounds of	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	boosting. See figure 1. Also related to the token	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	granularity, the number of completely correct out-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	puts is 4.13 points higher in FP CHA , showing that	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the resulting labelings are structurally better than	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	those of PP UPC .	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Interestingly, the PP UPC and FP CHA systems	page=2 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	make quite different argument predictions. For in-	page=2 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	stance, FP CHA is better at recognizing A0 and A1	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	arguments since parse constituents corresponding to	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	these arguments tend to be mostly correct. Compar-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	atively, PP UPC is better at recognizing A2-A4 argu-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments since they are further from the verb predicate	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	195	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 1__	page=2 xpos=5 ypos=-1 right-column centered left-indent right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 1: Overall F 1 performance of individual sys-	page=2 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space string-figure headchar-capital tailchar-hiphen
+I-Caption	tems on the development set with respect to the num-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Caption	ber of learning rounds	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+Table	__Table 1__	page=2 xpos=5 ypos=3 right-column centered left-over right-over box longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 1: Overall results of the individual systems on	page=2 xpos=5 ypos=4 right-column full-justified line-double-space line-space string-table headchar-capital
+E-Caption	the development set.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	and tend to accumulate more parsing errors, while	page=2 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	the fine granularity of the PP UPC sequences still al-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	low to capture them <sup>4</sup> . Another interesting observa-	page=2 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	tion is that the precision of both systems is much	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	higher than the recall.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The previous two facts suggest that combining the	page=2 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	outputs of the two systems may lead to a significant	page=2 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	improvement. We experimented with a greedy com-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bination scheme for joining the maximum number of	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	arguments from both solutions in order to increase	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	coverage and, hopefully, recall. It proceeds depart-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing from an empty solution by: First, adding all the	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	arguments from FP CHA in which this method per-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	forms best; Second, adding all the arguments from	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	PP UPC in which this method performs best; and	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	Third, making another loop through the two meth-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ods adding the arguments not considered in the first	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	loop. At each step, we require that the added argu-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments do not overlap/embed with arguments in the	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	current solution and also that they do not introduce	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	repetitions of A0-A5 arguments. The results on the	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>4</sup> As an example, the F 1 performance of PP UPC on A0 and	page=2 xpos=5 ypos=9 right-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	A2 arguments is 79.79 and 65.10, respectively. The perfor-	page=2 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-capital tailchar-hiphen
+I-Footnote	mance of FP CHA on the same arguments is 84.03 and 62.36.	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Table	__Table 2__	page=3 xpos=0 ypos=-1 left-column left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 2: Overall results (top) and detailed results on	page=3 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	the WSJ test (bottom).	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	development set (presented in table 1) confirm our	page=3 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	expectations, since a performance increase of 1.18	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	points over the best individual system was observed,	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	mainly caused by recall improvement. The final sys-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem we presented at the shared task performs exactly	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	this solution merging procedure. When applied on	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the WSJ test set, the combination scheme seems to	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	generalize well, since an improvement is observed	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	with respect to the development set. See the offi-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cial results of our system, which are presented in ta-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ble 2. Also from that table, it is worth noting that the	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	F 1 performance drops by more than 9 points when	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	tested on the Brown test set, indicating that the re-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults obtained on the WSJ corpora do not generalize	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	well to corpora with other genres. The study of the	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	sources of this lower performance deserves further	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	investigation, though we do not believe that it is at-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tributable to the greedy combination scheme.	page=3 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Conclusions	page=3 xpos=5 ypos=0 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We have presented a simple SRL system submit-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ted to the CoNLL-2005 shared task, which treats	page=3 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower
+I-Body	the SRL problem as a sequence tagging task (us-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing a BIO tagging scheme). Given the simplic-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity of the approach, we believe that the results are	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	very good and competitive compared to the state-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	of-the-art. We also provided a comparison between	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	two SRL systems sharing the same architecture, but	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	build on partial vs. full parsing, respectively. Al-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	though the full parsing approach obtains better re-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults and has some implementation advantages, the	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	partial parsing system shows also a quite competi-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive performance. The results on the development	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	set differ in 2.18 points, but the outputs generated	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	by the two systems are significantly different. The	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	final system, which scored F 1 =76.59 in the official	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	test set, is a combination of both individual systems	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	aiming at increasing coverage and recall.	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgements	page=3 xpos=5 ypos=4 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	This research has been partially supported by the	page=3 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Acknowledgement	European Commission (CHIL project, IP-506909).	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-period
+I-Acknowledgement	Jesús Giménez is a research fellow from the Span-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Acknowledgement	ish Ministry of Science and Technology (ALIADO	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Acknowledgement	project, TIC2002-04447-C02). We would like to	page=3 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Acknowledgement	thank also Xavier Carreras for providing us with	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Acknowledgement	many software components and Mihai Surdeanu for	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Acknowledgement	fruitful discussions on the problem and feature engi-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Acknowledgement	neering.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=3 xpos=5 ypos=7 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space string-reference headchar-capital above-line-space
+B-Reference	X. Carreras, L. Màrquez, and G. Chrupała. 2004. Hierarchical	page=3 xpos=5 ypos=7 right-column full-justified font-smallest aligned-line longer-tail line-space year headchar-capital
+I-Reference	recognition of propositional arguments with perceptrons. In	page=3 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Proceedings of CoNLL-2004.	page=3 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	D. Gildea and D. Jurafsky. 2002. Automatic labeling of seman-	page=3 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tic roles. Computational Linguistics, 28(3):245–288.	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	R. E. Schapire and Y. Singer. 1999. Improved Boosting Algo-	page=3 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	rithms Using Confidence-rated Predictions. Machine Learn-	page=3 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ing, 37(3).	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	N. Xue and M. Palmer. 2004. Calibrating features for semantic	page=3 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	role labeling. In Proceedings of the Conference on Empiri-	page=3 xpos=5 ypos=9 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	cal Methods in Natural Language Processing (EMNLP).	page=3 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	196	page=3 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only

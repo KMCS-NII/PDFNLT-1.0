@@ -1,0 +1,107 @@
+INSTALL 手順
+
+1. poppler のインストール
+
+poppler は PDF を解析するライブラリです。
+PDF を画像に変換する pdftoppm, テキストに変換する pdftotext などの
+コマンドラインユーティリティプログラムも含まれています。
+
+pdfanalyzer では、pdftotext の出力にフォント情報を含めるための
+パッチを適用した上で利用します。
+
+$ sudo yum install fontconfig-devel libjpeg-devel libcurl-devel libpng-devel libtiff-devel xorg-x11-fonts-Type1
+$ wget https://poppler.freedesktop.org/poppler-0.52.0.tar.xz
+$ tar xJf poppler-0.52.0.tar.xz
+$ cd poppler-0.52.0
+$ gzip -dc ../poppler-0.52.0.patch.gz | patch -p1
+$ ./configure --enable-xpdf-headers
+$ make
+$ sudo make install
+
+
+2. pdffigures のインストール
+
+pdffigures は PDF に含まれる図表を抽出するコマンドライン
+ユーティリティプログラムです。 pdfanalyzer では図表領域を
+テキスト解析の対象から除外するために利用します。
+
+(GCC4.9が必要)
+ref. https://superuser.com/questions/834862/how-to-install-g-4-9-2-in-cent-os-6-5
+$ sudo yum install centos-release-scl-rh
+$ sudo yum install devtoolset-3-gcc devtoolset-3-gcc-c++
+$ scl enable devtoolset-3 bash
+$ g++ --version
+g++ (GCC) 4.9.2 20150212 (Red Hat 4.9.2-6) <-- 4.9 以上
+
+
+$ sudo yum install leptonica-devel
+$ unzip pdffigures-20160622.zip
+$ cd pdffigures-master
+$ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+$ make DEBUG=0
+(インストーラはないので手でコピー)
+$ sudo cp pdffigures /usr/local/bin/
+
+
+3. crfsuite のインストール
+
+crfsuite は CRF 学習を行うコマンドラインユーティリティ
+プログラムです。 pdfanalyzer では PDF から生成した
+行単位のデータにラベル付けを行うために利用します。
+
+$ wget https://github.com/downloads/chokkan/liblbfgs/liblbfgs-1.10.tar.gz
+$ tar xvfz liblbfgs-1.10.tar.gz
+$ cd liblbfgs-1.10
+$ ./configure
+$ make
+$ sudo make install
+$ cd ..
+$ wget https://github.com/downloads/chokkan/crfsuite/crfsuite-0.12.tar.gz
+$ tar xvfz crfsuite-0.12.tar.gz
+$ cd crfsuite-0.12
+$ ./configure
+$ make
+$ sudo make install
+
+
+4. MeCab, php-mecab のインストール（オプション）
+
+MeCab は形態素解析を行うライブラリおよびコマンドライン
+ユーティリティ、php-mecab は MeCab を PHP から利用するための
+拡張モジュールです。MeCab, php-mecab がインストールされていて、
+対象となる PDF が日本語で記述されている場合、
+xhtml ファイルを生成する際に「語」の情報（座標情報など）を
+単語の単位にまとめます（インストールされていない場合には
+「文字」単位で出力されます）。
+
+（MeCab のダウンロード、インストールは以下を参照）
+  https://taku910.github.io/mecab/#download
+  ※辞書の文字コードは UTF-8 で作成してください。
+
+（php-mecab のインストール）
+$ git clone https://github.com/rsky/php-mecab.git
+$ cd php-mecab/mecab
+$ phpize
+$ ./configure
+$ make
+$ sudo make install
+
+
+5. pdfanalyzer のセットアップ
+
+$ tar xfz pdfanalyzer-20170312.tgz
+$ tar xfz pdfanalyzer-sampledata.tgz
+
+
+6. サンプルデータでモデル作成
+
+$ php pdfanalyze.php --command update_training --all  (*1)
+$ php pdfanalyze.php --command update_model
+$ php pdfanalyze.php --coomand generate_xhtml --all
+
+xtml/*.xhtml に xhtml ファイルが生成される
+
+
+(*1) Call to undefined function pspell_new() エラーが出たら
+sudo yum install php-pspell aspell aspell-en
+

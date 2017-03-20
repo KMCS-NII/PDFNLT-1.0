@@ -1,0 +1,773 @@
+Title	Hidden–Variable Models for Discriminative Reranking	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital column-bottom above-double-space above-line-space
+Author	Terry Koo	page=0 xpos=2 ypos=0 left-column left-indent right-indent font-larger column-top line-double-space line-space headchar-capital
+B-Affiliation	MIT CSAIL	page=0 xpos=2 ypos=0 left-column left-indent right-indent font-larger headchar-capital above-line-space
+Email	maestro@mit.edu	page=0 xpos=1 ypos=0 left-column left-indent right-indent font-smallest hanged-line longer-tail line-space symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=1 left-column centered left-indent right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-abstract headchar-capital above-line-space
+B-Abstract	We describe a new method for the repre-	page=0 xpos=0 ypos=1 left-column centered left-indent right-indent hanged-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Abstract	sentation of NLP structures within rerank-	page=0 xpos=0 ypos=1 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing approaches. We make use of a condi-	page=0 xpos=0 ypos=1 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tional log–linear model, with hidden vari-	page=0 xpos=0 ypos=1 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ables representing the assignment of lexi-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cal items to word clusters or word senses.	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	The model learns to automatically make	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	these assignments based on a discrimina-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tive training criterion. Training and de-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	coding with the model requires summing	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	over an exponential number of hidden–	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	variable assignments: the required sum-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	mations can be computed efficiently and	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	exactly using dynamic programming. As	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	a case study, we apply the model to	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line itemization headchar-lower
+I-Abstract	parse reranking. The model gives an F –	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	measure improvement of ≈ 1.25% be-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-larger aligned-line headchar-lower tailchar-hiphen
+I-Abstract	yond the base parser, and an ≈ 0.25%	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-larger aligned-line headchar-lower
+I-Abstract	improvement beyond the Collins (2000)	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line year headchar-lower
+I-Abstract	reranker. Although our experiments are	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	focused on parsing, the techniques de-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	scribed generalize naturally to NLP struc-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tures other than parse trees.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-larger hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	A number of recent approaches in statistical NLP	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	have focused on reranking algorithms. In rerank-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing methods, a baseline model is used to generate a	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	set of candidate output structures for each input in	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	training or test data. A second model, which typi-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cally makes use of more complex features than the	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	baseline model, is then used to rerank the candidates	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	proposed by the baseline. Reranking approaches	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	have given improvements in accuracy on a number	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of NLP problems including parsing (Collins, 2000;	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Charniak and Johnson, 2005), machine translation	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-capital
+I-Body	(Och and Ney, 2002; Shen et al., 2004), informa-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	tion extraction (Collins, 2002), and natural language	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+E-Body	generation (Walker et al., 2001).	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	The success of reranking approaches depends	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	critically on the choice of representation used by the	page=0 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower above-blank-line above-double-space above-line-space
+Page	507	page=0 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Author	Michael Collins	page=0 xpos=6 ypos=0 right-column left-indent right-indent font-larger column-top headchar-capital
+B-Affiliation	MIT CSAIL	page=0 xpos=6 ypos=0 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-line-space
+Email	mcollins@csail.mit.edu	page=0 xpos=5 ypos=0 right-column left-indent right-indent font-smallest hanged-line longer-tail line-space symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+I-Body	reranking model. Typically, each candidate struc-	page=0 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ture (e.g., each parse tree in the case of parsing) is	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	mapped to a feature–vector representation. Previous	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	work has generally relied on two approaches to rep-	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resentation: explicitly hand–crafted features (e.g., in	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	Charniak and Johnson (2005)) or features defined	page=0 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-capital
+E-Body	through kernels (e.g., see Collins and Duffy (2002)).	page=0 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower tailchar-period above-line-space
+B-Body	This paper describes a new method for the rep-	page=0 xpos=5 ypos=2 right-column left-indent indented-line line-space headchar-capital tailchar-hiphen
+I-Body	resentation of NLP structures within reranking ap-	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	proaches. We build on the intuition that lexical items	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	in natural language often fall into word clusters (for	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	example, president and chairman might belong to	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the same cluster) or fall into distinct word senses	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	(e.g., bank might have two distinct senses). Our	page=0 xpos=5 ypos=3 right-column full-justified aligned-line
+I-Body	method involves a hidden–variable model, where	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the hidden variables correspond to an assignment	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of words to either clusters or word–senses. Lexical	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	items are automatically assigned their hidden values	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	using unsupervised learning within a discriminative	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	reranking approach.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We make use of a conditional log–linear model	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	for our task. Formally, hidden variables within	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	the log–linear model consist of global assignments,	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	where a global assignment entails an assignment of	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	every word in the sentence to some hidden cluster	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	or sense value. The number of such global assign-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments grows exponentially fast with the length of	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the sentence being processed. Training and decod-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing with the model requires summing over the ex-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ponential number of possible global assignments, a	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	major technical challenge in our model. We show	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	that the required summations can be computed ef-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ficiently and exactly using dynamic–programming	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	methods (i.e., the belief propagation algorithm for	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	Markov random fields (Yedidia et al., 2003)) under	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital
+E-Body	certain restrictions on features in the model.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Previous work on reranking has made heavy use	page=0 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	of lexical statistics, but has treated lexical items as	page=0 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	atoms. The motivation for our method comes from	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the observation that statistics based on lexical items	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	are critical, but that these statistics suffer consid-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erably from problems of data sparsity and word–	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of Human Language Technology Conference and Conference on Empirical Methods in Natural Language	page=0 xpos=0 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital
+I-Footer	Processing (HLT/EMNLP), pages 507–514, Vancouver, October 2005.  2005 c Association for Computational Linguistics	page=0 xpos=0 ypos=9 single-column centered left-indent right-indent font-smallest hanged-line longer-tail year headchar-capital page-bottom
+I-Body	sense polysemy. Our model has the ability to allevi-	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	ate data sparsity issues by learning to assign words	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	to word clusters, and can mitigate problems with	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	word–sense polysemy by learning to assign lexical	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	items to underlying word senses based upon con-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	textual information. A critical difference between	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	our method and previous work on unsupervised ap-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proaches to word–clustering or word–sense discov-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ery is that our model is trained using a discriminative	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	criterion, where the assignment of words to clusters	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	or senses is driven by the reranking task in question.	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	As a case study, in this paper we focus on syn-	page=1 xpos=0 ypos=2 left-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Body	tactic parse reranking. We describe three model	page=1 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	types that can be captured by our approach. The	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	first method emulates a clustering operation, where	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the aim is to place similar words (e.g., president and	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	chairman) into the same cluster. The second method	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	emulates a refinement operation, where the aim is to	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	recover distinct senses underlying a single word (for	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	example, distinct senses underlying the noun bank).	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The third definition makes use of an existing ontol-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ogy (i.e., WordNet (Miller et al., 1993)). In this case	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	the set of possible hidden values for each word cor-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	responds to possible WordNet senses for the word.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In experimental results on the Penn Wall Street	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	Journal treebank parsing domain, the hidden–	page=1 xpos=0 ypos=5 left-column full-justified hanged-line headchar-capital
+I-Body	variable model gives an F –measure improvement of	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	≈ 1.25% beyond a baseline model (the parser de-	page=1 xpos=0 ypos=5 left-column full-justified font-larger aligned-line tailchar-hiphen
+I-Body	scribed in Collins (1999)), and gives an ≈ 0.25%	page=1 xpos=0 ypos=5 left-column full-justified font-larger aligned-line year headchar-lower
+I-Body	improvement beyond the reranking approach de-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scribed in Collins (2000). Although the experiments	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Body	in this paper are focused on parsing, the techniques	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	we describe generalize naturally to other NLP struc-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures such as strings or labeled sequences. We dis-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cuss this point further in Section 6.1.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Related Work	page=1 xpos=0 ypos=7 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Various machine–learning methods have been used	page=1 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	within reranking tasks, including conditional log–	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	linear models (Ratnaparkhi et al., 1994; Johnson et	page=1 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	al., 1999), boosting methods (Collins, 2000), vari-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ants of the perceptron algorithm (Collins, 2002;	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Shen et al., 2004), and generalizations of support–	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-capital
+I-Body	vector machines (Shen and Joshi, 2003). There have	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	been several previous approaches to parsing using	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	log–linear models and hidden variables. Riezler	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	et al. (2002) describe a discriminative LFG pars-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ing model that is trained on standard (syntax only)	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	508	page=1 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	treebank annotations by treating each tree as a full	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	LFG analysis with an observed c-structure and hid-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	den f -structure. Clark and Curran (2004) present an	page=1 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+I-Body	alternative CCG parsing approach that divides each	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	CCG parse into a dependency structure (observed)	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital
+I-Body	and a derivation (hidden). More recently, Matsuzaki	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	et al. (2005) introduce a probabilistic CFG aug-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	mented with hidden information at each nontermi-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nal, which gives their model the ability to tailor it-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	self to the task at hand. The form of our model is	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	closely related to that of Quattoni et al. (2005), who	page=1 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower
+I-Body	describe a hidden–variable model for object recog-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	nition in computer vision.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The approaches of Riezler et al., Clark and Cur-	page=1 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ran, and Matsuzaki et al. are similar to our own	page=1 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	work in that the hidden variables are exponential	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	in number and must be handled with dynamic–	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	programming techniques. However, they differ from	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	our approach in the definition of the hidden variables	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	(the Matsuzaki et al. model is the most similar). In	page=1 xpos=5 ypos=3 right-column full-justified aligned-line
+I-Body	addition, these three approaches don’t use rerank-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing, so their features must be restricted to local scope	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	in order to allow dynamic–programming approaches	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to training. Finally, these approaches use Viterbi	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	or other approximations during decoding, something	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	our model can avoid (see section 6.2).	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In some instantiations, our model effectively clus-	page=1 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ters words into categories. Our approach differs	page=1 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	from standard word clustering in that the cluster-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing criteria is directly linked to the reranking objec-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive, whereas previous word–clustering approaches	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	(e.g. Brown et al. (1992) or Pereira et al. (1993))	page=1 xpos=5 ypos=6 right-column full-justified aligned-line year
+I-Body	have typically leveraged distributional similarity. In	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	other instantiations, our model establishes word–	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	sense distinctions. Bikel (2000) has done previous	page=1 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Body	work on incorporating the WordNet hierarchy into	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	a generative parsing model; however, this approach	page=1 xpos=5 ypos=7 right-column full-justified aligned-line itemization headchar-lower
+I-Body	requires data with word–sense annotations whereas	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	our model deals with word–sense ambiguity through	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	unsupervised discriminative training.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 The Hidden–Variable Model	page=1 xpos=5 ypos=8 right-column right-indent font-larger aligned-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this section we describe a hidden–variable model	page=1 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	based on conditional log–linear models. Each sen-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence s <sub>i</sub> for i = 1 . . . n in our training data has a	page=1 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	set of n <sub>i</sub> candidate parse trees t i,1 , . . . , t i,n <sub>i</sub> , which	page=1 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	are the output of an N –best baseline parser. Each	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	candidate parse has an associated F –measure score,	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma page-bottom
+I-Body	indicating its similarity to the gold–standard parse.	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-period
+I-Body	Without loss of generality, we define t <sub>i,1</sub> to be the	page=2 xpos=0 ypos=0 left-column full-justified font-larger aligned-line headchar-capital
+E-Body	parse with the highest F –measure for sentence s <sub>i</sub> .	page=2 xpos=0 ypos=0 left-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Given a candidate parse tree t <sub>i,j</sub> , the hidden–	page=2 xpos=0 ypos=0 left-column left-indent font-larger indented-line longer-tail headchar-capital
+I-Body	variable model assigns a domain of hidden val-	page=2 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ues to each word in the tree. For example, the	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	hidden–value domain for the word bank could be	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	{bank <sub>1</sub> , bank 2 , bank 3 } or { NN 1 , NN 2 , NN 3 }. De-	page=2 xpos=0 ypos=1 left-column full-justified font-largest aligned-line tailchar-hiphen
+I-Body	tailed descriptions of the domains we used are given	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	in Section 4.1. Formally, if t <sub>i,j</sub> spans m words then	page=2 xpos=0 ypos=1 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	the hidden–value domains for each word are the sets	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	H <sub>1</sub> (t i,j ), . . . , H m (t i,j ). A global hidden–value as-	page=2 xpos=0 ypos=2 left-column full-justified font-larger aligned-line headchar-capital tailchar-hiphen
+I-Body	signment, which attaches a hidden value to every	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	word in t <sub>i,j</sub> , is written h = (h 1 , . . . , h m ) ∈ H(t i,j ),	page=2 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	where H(t <sub>i,j</sub> ) = H 1 (t i,j ) × . . . × H m (t i,j ) is the set	page=2 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	of all possible global assignments for t <sub>i,j</sub> .	page=2 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We define a feature–based representation Φ such	page=2 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	that Φ(t <sub>i,j</sub> , h) ∈ R <sup>d</sup> is a vector of feature occur-	page=2 xpos=0 ypos=3 left-column full-justified font-largest hanged-line headchar-lower tailchar-hiphen
+I-Body	rence counts that describes candidate parse t <sub>i,j</sub> with	page=2 xpos=0 ypos=3 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	global assignment h ∈ H(t <sub>i,j</sub> ). We write Φ <sub>k</sub> for	page=2 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	k = 1 . . . d to denote the k <sup>th</sup> component of the vec-	page=2 xpos=0 ypos=3 left-column full-justified font-largest aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	tor Φ. Each component of the feature vector is the	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	count of some substructure within (t <sub>i,j</sub> , h). For ex-	page=2 xpos=0 ypos=4 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	ample, Φ <sub>12</sub> and Φ 101 could be defined as follows:	page=2 xpos=0 ypos=4 left-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	Number of times the word the	page=2 xpos=2 ypos=4 left-column left-indent right-indent font-smallest indented-line shorter-tail line-space headchar-capital
+I-Equation	Φ <sub>12</sub> (t i,j , h) = <sup>occurs</sup> <sub>and</sub> part with of hidden speech value tag DT the in 3	page=2 xpos=0 ypos=4 left-column left-indent right-indent font-largest hanged-line
+I-Equation	(t <sub>i,j</sub> , h).	page=2 xpos=2 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail tailchar-period
+I-Equation	(1)	page=2 xpos=4 ypos=5 left-column left-indent indented-line longer-tail
+I-Equation	Number of times CEO <sub>1</sub> ap-	page=2 xpos=2 ypos=5 left-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-capital tailchar-hiphen
+I-Equation	Φ <sub>101</sub> (t i,j , h) = pears as the subject of owns 2	page=2 xpos=0 ypos=5 left-column left-indent right-indent font-larger hanged-line
+I-Equation	in (t <sub>i,j</sub> , h)	page=2 xpos=2 ypos=5 left-column centered left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-line-space
+B-Body	We use a parameter vector Θ ∈ R <sup>d</sup> to define a	page=2 xpos=0 ypos=6 left-column left-indent font-largest hanged-line longer-tail line-space headchar-capital
+I-Body	log–linear distribution over candidate trees together	page=2 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	with global hidden–value assignments:	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	p(t <sub>i,j</sub> , h | s i , Θ) = <sub>P</sub> <sub>j</sub> 0 ,h 0 ∈H(t <sup>e</sup> <sup>Φ(t</sup> <sub>i,j</sub> i,j 0 ) ,h)·Θ e Φ(t i,j 0 ,h 0 )·Θ	page=2 xpos=0 ypos=6 left-column left-indent right-indent box indented-line longer-tail line-space headchar-lower above-line-space
+B-Body	By marginalizing out the global assignments, we ob-	page=2 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tain a distribution over the candidate parses alone:	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	p(t <sub>i,j</sub> | s i , Θ) = P p(t i,j , h | s i , Θ) (2)	page=2 xpos=0 ypos=7 left-column left-indent font-largest indented-line longer-tail line-double-space line-space headchar-lower
+I-Equation	h∈H(t <sub>i,j</sub> )	page=2 xpos=1 ypos=7 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Later in this paper we will describe how to train	page=2 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	the parameters of the model by minimizing the fol-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lowing loss function—which is the negative log–	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	likelihood of the training data—with respect to Θ:	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	L(Θ) = − P log p(t <sub>i,1</sub> | s i , Θ)	page=2 xpos=0 ypos=9 left-column left-indent right-indent font-largest shorter-tail line-double-space line-space headchar-capital
+I-Equation	i	page=2 xpos=1 ypos=9 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower
+I-Equation	= − P log P <sub>h∈H(t</sub> <sub>i,1</sub> ) p(t i,1 , h | s i , Θ) <sup>(3)</sup>	page=2 xpos=0 ypos=9 left-column left-indent font-largest hanged-line longer-tail
+I-Equation	i	page=2 xpos=1 ypos=9 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+Page	509	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 1__	page=2 xpos=5 ypos=-1 right-column left-indent right-indent box column-top figure-area above-line-space
+B-Caption	Figure 1: A sample parse tree and its dependency tree.	page=2 xpos=5 ypos=0 right-column centered left-indent right-indent indented-line line-space string-figure headchar-capital tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 Local Feature Vectors	page=2 xpos=5 ypos=1 right-column right-indent hanged-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Note that the number of possible global assignments	page=2 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	(i.e., |H(t <sub>i,j</sub> )|) grows exponentially fast with respect	page=2 xpos=5 ypos=1 right-column full-justified font-largest aligned-line
+I-Body	to the number of words spanned by t <sub>i,j</sub> . This poses	page=2 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	a problem when training the model, or when calcu-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	lating the probability of a parse tree through Eq. 2.	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This section describes how to address this difficulty	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	by restricting features to sufficiently local scope. In	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	Section 3.2 we show that this restriction allows effi-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	cient training and decoding of the model.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The restriction to local feature–vectors makes use	page=2 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	of the dependency structure underlying the parse	page=2 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	tree t <sub>i,j</sub> . Formally, for tree t i,j , we define the cor-	page=2 xpos=5 ypos=3 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	responding dependency tree D(t <sub>i,j</sub> ) to be a set of	page=2 xpos=5 ypos=3 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	edges between words in t <sub>i,j</sub> , where (u, v) ∈ D(t i,j )	page=2 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	if and only if there is a head–modifier dependency	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	between words u and v. See Figure 1 for an exam-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ple dependency tree. We restrict the definition of	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	Φ in the following way <sup>1</sup> . If w, u and v are word	page=2 xpos=5 ypos=4 right-column full-justified font-largest aligned-line
+I-Body	indices, we introduce single–variable local feature	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	vectors φ(t <sub>i,j</sub> , w, h w ) ∈ R <sup>d</sup> and pairwise local fea-	page=2 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ture vectors φ(t <sub>i,j</sub> , u, v, h u , h v ) ∈ R <sup>d</sup> . The global	page=2 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	feature vector Φ(t <sub>i,j</sub> , h) is then decomposed into a	page=2 xpos=5 ypos=5 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	sum over the local feature vectors:	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	Φ(t <sub>i,j</sub> , h) = <sup>P</sup> φ(t i,j , w, h w ) +	page=2 xpos=5 ypos=6 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space
+I-Equation	1≤w≤m	page=2 xpos=6 ypos=6 right-column left-indent right-indent font-smallest indented-line shorter-tail
+I-Equation	<sup>P</sup> φ(t <sub>i,j</sub> , u, v, h u , h v ) (4)	page=2 xpos=7 ypos=6 right-column left-indent font-largest indented-line longer-tail headchar-super
+I-Equation	(u,v)∈D(t <sub>i,j</sub> )	page=2 xpos=6 ypos=6 right-column left-indent right-indent font-smallest hanged-line shorter-tail above-double-space above-line-space
+B-Body	Notice that the second sum, over pairwise local	page=2 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	feature vectors, respects the dependency structure	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	D(t <sub>i,j</sub> ). Section 3.2 describes how this decompo-	page=2 xpos=5 ypos=7 right-column full-justified font-larger aligned-line headchar-capital tailchar-hiphen
+I-Body	sition of Φ leads to an efficient and exact dynamic–	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	programming approach that, during training, allows	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	us to calculate the gradient <sub>∂Θ</sub> <sup>∂L</sup> and, during testing,	page=2 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+E-Body	allows us to find the most probable candidate parse.	page=2 xpos=5 ypos=8 right-column centered right-indent aligned-line headchar-lower tailchar-period
+B-Body	In our implementation, each dimension of the lo-	page=2 xpos=5 ypos=8 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Body	cal feature vectors is an indicator function signaling	page=2 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	the presence of a feature, so that a sum over local	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	feature vectors in a tree gives the occurrence count	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> Note that the restriction on local feature vectors only con-	page=2 xpos=5 ypos=9 right-column left-indent indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	cerns the inclusion of hidden values; features may still observe	page=2 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	arbitrary structure within the underlying parse tree t <sub>i,j</sub> .	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+I-Body	of features in that tree. For instance, define	page=3 xpos=0 ypos=0 left-column right-indent page-top headchar-lower above-line-space
+B-Equation	φ <sub>12</sub> (t i,j , w, h w ) = r h <sub>w</sub> w <sub>to</sub> = part–of–speech the 3 and tree t i,j DT assigns word z	page=3 xpos=0 ypos=0 left-column right-over font-largest aligned-line longer-tail line-space above-double-space above-line-space
+I-Equation	φ <sub>101</sub> (t i,j , u, v, h u , h v ) = s <sup>(h</sup> and u , tree h v ) t i,j = (CEO places 1 , (u, owns v) 2 in ) {	page=3 xpos=0 ypos=0 left-column right-over font-largest aligned-line line-double-space line-space
+I-Equation	a subject–verb relationship	page=3 xpos=2 ypos=0 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower above-double-space above-line-space
+I-Body	where the notation signifies a 0/1 indicator of	page=3 xpos=0 ypos=1 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	predicate P. When summed JPK over the tree, these defi-	page=3 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	nitions of φ <sub>12</sub> and φ 101 yield global features Φ 12 and	page=3 xpos=0 ypos=1 left-column full-justified font-larger aligned-line headchar-lower
+E-Body	Φ <sub>101</sub> as given in the previous example (see Eq. 1).	page=3 xpos=0 ypos=1 left-column right-indent font-larger aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Training the Model	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We now describe how the loss function in Eq. 3 can	page=3 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	be optimized using gradient descent. The gradient	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	of the loss function is given by:	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	∂Θ <sup>∂L</sup> = − P F (t <sub>i,1</sub> , Θ) + P p(t i,j | s i , Θ)F (t i,j , Θ)	page=3 xpos=0 ypos=2 left-column left-indent right-indent font-largest indented-line longer-tail line-space
+I-Equation	i i,j	page=3 xpos=1 ypos=3 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower above-double-space above-line-space
+I-Body	where F (t <sub>i,j</sub> , Θ) = <sup>P</sup> <sup>p(t</sup> <sub>p(t</sub> i,j ,h | <sup>|</sup> s i ,Θ) Φ(t i,j , h)	page=3 xpos=0 ypos=3 left-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	h∈H(t <sub>i,j</sub> ) <sup>i,j</sup> <sup>s</sup> i ,Θ)	page=3 xpos=1 ypos=3 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower
+I-Body	is the expected value of the feature vector produced	page=3 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail headchar-lower
+I-Body	by parse tree t <sub>i,j</sub> . As we remarked earlier, |H(t i,j )|	page=3 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	is exponential in size so direct calculation of either	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	p(t <sub>i,j</sub> | s i , Θ) or F (t i,j , Θ) is impractical. However,	page=3 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	using the feature–vector decomposition in Eq. 4, we	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	can rewrite the key functions of Θ as follows:	page=3 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	p(t <sub>i,j</sub> | s i , Θ) = <sub>P</sub> <sup>Z</sup> <sub>j</sub> 0 i,j Z i,j 0	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-largest indented-line shorter-tail line-space headchar-lower
+I-Equation	F (t <sub>i,j</sub> , Θ) =	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-larger aligned-line shorter-tail headchar-capital
+I-Equation	<sup>P</sup> p(t <sub>i,j</sub> , w, h w )φ(t i,j , w, h w ) +	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail headchar-super
+I-Equation	1 ≤ w ≤ m	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-smallest hanged-line shorter-tail numbered-heading1
+I-Equation	h <sub>w</sub> ∈ H w (t i,j )	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-smallest hanged-line longer-tail itemization headchar-lower above-line-space
+I-Equation	<sup>P</sup> p(t <sub>i,j</sub> , u, v, h u , h v )φ(t i,j , u, v, h u , h v )	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-largest indented-line longer-tail line-space headchar-super
+I-Equation	(u, v) ∈ D(t <sub>i,j</sub> )	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-smallest hanged-line shorter-tail
+I-Equation	h <sub>u</sub> ∈ H u (t i,j )	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-smallest itemization headchar-lower
+I-Equation	h <sub>v</sub> ∈ H v (t i,j )	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line itemization headchar-lower above-double-space above-line-space
+I-Body	where p(t <sub>i,j</sub> , w, h w ) and p(t i,j , u, v, h u , h v ) are	page=3 xpos=0 ypos=6 left-column full-justified font-larger hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	marginalized probabilities and Z <sub>i,j</sub> is the associated	page=3 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	normalization constant:	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	Z <sub>i,j</sub> = <sup>P</sup> e <sup>Φ(t</sup> i,j ,h)·Θ	page=3 xpos=1 ypos=7 left-column left-indent right-indent font-largest indented-line longer-tail line-space headchar-capital
+I-Equation	h∈H(t <sub>i,j</sub> )	page=3 xpos=2 ypos=7 left-column centered left-indent right-indent font-smallest indented-line shorter-tail headchar-lower
+I-Equation	p(t <sub>i,j</sub> , w, x) = <sup>P</sup> p(t i,j , h | s i , Θ)	page=3 xpos=0 ypos=7 left-column left-indent right-indent font-largest hanged-line longer-tail headchar-lower
+I-Equation	h | h <sub>w</sub> =x	page=3 xpos=2 ypos=7 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower
+I-Equation	p(t <sub>i,j</sub> , u, v, x, y) = <sup>P</sup> p(t <sub>i,j</sub> , h | s i , Θ)	page=3 xpos=0 ypos=8 left-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-lower
+I-Equation	h | h <sub>u</sub> =x,h v =y	page=3 xpos=2 ypos=8 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower above-double-space above-line-space
+B-Body	The three quantities above can be computed with be-	page=3 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	lief propagation (Yedidia et al., 2003), a dynamic–	page=3 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	programming technique that is efficient <sup>2</sup> and exact	page=3 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower above-line-space
+B-Footnote	<sup>2</sup> The running time of belief propagation varies linearly with	page=3 xpos=0 ypos=9 left-column left-indent indented-line line-space headchar-super
+I-Footnote	the number of nodes in D(t <sub>i,j</sub> ) and quadratically with the car-	page=3 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower tailchar-hiphen
+I-Footnote	dinality of the largest hidden–value domain.	page=3 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	510	page=3 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	when the graph D(t <sub>i,j</sub> ) is a tree, which is the case	page=3 xpos=5 ypos=0 right-column full-justified font-larger column-top headchar-lower
+I-Body	in our parse reranking model. Having calculated	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	the gradient in this way, we minimize the loss using	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	stochastic gradient descent <sup>3</sup> (LeCun et al., 1998).	page=3 xpos=5 ypos=0 right-column right-indent font-largest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Features for Parse Reranking	page=3 xpos=5 ypos=0 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The previous section described hidden–variable	page=3 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	models for discriminative reranking. We now de-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scribe features for the parse reranking problem. We	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	focus on the definition of hidden–value domains and	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	local feature vectors in the reranking model.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Hidden–Value Domains and Local Features	page=3 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Each word in a parse tree is given a domain of pos-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	sible hidden values by the hidden–variable model.	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Models with widely varying behavior can be created	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	by changing the way these domains are defined. In	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	particular, in this section we will see how different	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	definitions of the domains give rise to the three main	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	model types: clustering, refinement, and mapping	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	into a pre–built ontology such as WordNet.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As illustration, consider a simple approach that	page=3 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	splits each word into a domain of three word–sense	page=3 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	hidden values (e.g., the word bank would yield the	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	domain {bank <sub>1</sub> , bank 2 , bank 3 }). In this approach,	page=3 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	each word receives a domain of hidden values that	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	is not shared with any other word. The model is	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	then able to distinguish several different usages for	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	each word, emulating a refinement operation. An	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	alternative approach is to split each word’s part–of–	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	speech tag into several sub–tags (e.g., bank would	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	yield { NN <sub>1</sub> , NN 2 , NN 3 }). This approach assigns the	page=3 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	same domain to many words; for instance, singular	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	nouns such as bond, market, and bank all receive the	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	same domain. The behavior of the model then emu-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	lates a clustering operation.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Figure 2 shows the single–variable and pairwise	page=3 xpos=5 ypos=7 right-column left-indent indented-line longer-tail string-figure headchar-capital
+I-Body	features used in our experiments. The features	page=3 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	are shown with hidden variables corresponding to	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	word–specific hidden values, such as shares <sub>1</sub> or	page=3 xpos=5 ypos=7 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	bought <sub>3</sub> . In our experiments, we made use of fea-	page=3 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	tures such as those in Figure 2 in combination with	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the following four definitions of the hidden–value	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>3</sup> We also performed some experiments using the conjugate	page=3 xpos=5 ypos=8 right-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	gradient descent algorithm (Johnson et al., 1999). However, we	page=3 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line year headchar-lower
+I-Footnote	did not find a significant difference between the performance of	page=3 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	either method. Since stochastic gradient descent was faster and	page=3 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	required less memory, our final experiments used the stochastic	page=3 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	gradient method.	page=3 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Figure	frag replacements	page=4 xpos=0 ypos=0 left-column left-over right-indent font-larger page-top headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	S(bought)	page=4 xpos=2 ypos=0 left-column left-indent right-indent font-smallest indented-line longer-tail line-blank-line line-double-space line-space headchar-capital above-double-space above-line-space
+I-Figure	VP(bought)	page=4 xpos=2 ypos=1 left-column left-indent right-indent font-smallest indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+I-Figure	VBD(bought) NP(shares) PP(in) NP(yesterday)	page=4 xpos=1 ypos=1 left-column left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+I-Figure	bought 1.5m shares in heavy trading yesterday	page=4 xpos=1 ypos=1 left-column left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space headchar-lower above-double-space above-line-space
+I-Figure	Single–variable features generated for (shares 1 ) =	page=4 xpos=1 ypos=1 left-column left-indent right-indent font-smallest hanged-line shorter-tail line-double-space line-space headchar-capital
+I-Figure	(shares 1 )	page=4 xpos=1 ypos=2 left-column left-indent right-indent font-smallest indented-line shorter-tail
+I-Figure	(shares 1 , Word: shares)	page=4 xpos=1 ypos=2 left-column left-indent right-indent font-smallest aligned-line longer-tail
+I-Figure	(shares 1 , POS: NN )	page=4 xpos=1 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail
+I-Figure	(shares 1 , Word: shares, POS: NN )	page=4 xpos=1 ypos=2 left-column left-indent right-indent font-smallest aligned-line longer-tail
+I-Figure	(shares 1 , Highest NT: NP )	page=4 xpos=1 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail
+I-Figure	(shares 1 , Word: shares, Highest NT: NP )	page=4 xpos=1 ypos=2 left-column left-indent right-indent font-smallest aligned-line longer-tail
+I-Figure	(shares 1 , POS: NN , Highest NT: NP )	page=4 xpos=1 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail
+I-Figure	(shares 1 , Word: shares, POS: NN , Highest NT: NP )	page=4 xpos=1 ypos=2 left-column left-indent right-indent font-smallest aligned-line longer-tail
+I-Figure	(shares 1 , Up Path: NP , VP , S )	page=4 xpos=1 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail
+I-Figure	(shares 1 , Word: shares, Up Path: NP , VP , S )	page=4 xpos=1 ypos=2 left-column left-indent right-indent font-smallest aligned-line longer-tail
+I-Figure	(shares 1 , Down Path: NP , NN )	page=4 xpos=1 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail
+I-Figure	(shares 1 , Word: shares, Down Path: NP , NN )	page=4 xpos=1 ypos=3 left-column left-indent right-indent font-smallest aligned-line longer-tail
+I-Figure	(shares 1 , Head Rule: NP → CD , CD , NNS head )	page=4 xpos=1 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail
+I-Figure	(shares 1 , Word: shares, Head Rule: NP → CD , CD , NNS head )	page=4 xpos=1 ypos=3 left-column left-indent right-indent font-smallest aligned-line longer-tail
+I-Figure	(shares 1 , Mod Rule: VP → VBD head , NP mod , PP , NP )	page=4 xpos=1 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail
+I-Figure	(shares 1 , Word: shares, Mod Rule: VP → VBD head , NP mod , PP , NP )	page=4 xpos=1 ypos=3 left-column left-indent right-indent font-smallest aligned-line longer-tail
+I-Figure	(shares 1 , Head Gpar Rule: VP → NP → CD , CD , NNS head )	page=4 xpos=1 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail
+I-Figure	(shares 1 , Word: shares, Head Gpar Rule: VP → NP → CD , CD , NNS head )	page=4 xpos=1 ypos=3 left-column left-indent right-indent font-smallest aligned-line longer-tail
+I-Figure	(shares 1 , Mod Gpar Rule: S → VP → VBD head , NP mod , PP , NP )	page=4 xpos=1 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail
+I-Figure	(shares 1 , Word: shares, Mod Gpar Rule: S → VP → VBD head , NP mod , PP , NP )	page=4 xpos=1 ypos=3 left-column left-indent right-indent font-smallest aligned-line longer-tail
+I-Figure	Pairwise features generated for (shares 1 , bought <sub>3</sub> ) =	page=4 xpos=1 ypos=4 left-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Figure	(shares 1 , bought <sub>3</sub> , Dependency: VBD , NP , VP , Right , +Adj , -CC )	page=4 xpos=1 ypos=4 left-column left-indent right-indent font-smallest indented-line longer-tail
+I-Figure	(shares 1 , bought <sub>3</sub> , Rule: VP → VBD head , NP mod , PP , NP )	page=4 xpos=1 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail
+E-Figure	(shares 1 , bought <sub>3</sub> , Gpar Rule: S → VP → VBD head , NP mod , PP , NP )	page=4 xpos=1 ypos=4 left-column left-indent right-indent font-smallest aligned-line longer-tail above-line-space
+B-Caption	Figure 2: The features used in our model. We	page=4 xpos=1 ypos=4 left-column full-justified hanged-line longer-tail line-space string-figure headchar-capital
+I-Caption	show the single–variable features produced for hidden value	page=4 xpos=1 ypos=4 left-column full-justified font-smallest aligned-line headchar-lower
+I-Caption	shares <sub>1</sub> and the pairwise features produced for hidden values	page=4 xpos=1 ypos=4 left-column full-justified font-smallest aligned-line headchar-lower
+I-Caption	(shares <sub>1</sub> , bought <sub>3</sub> ), in the context of the given parse fragment.	page=4 xpos=1 ypos=4 left-column full-justified aligned-line tailchar-period
+I-Caption	Highest NT = highest nonterminal, Up Path = sequence of ances-	page=4 xpos=1 ypos=5 left-column full-justified font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Caption	tor nonterminals, Down Path = sequence of headed nonterminals,	page=4 xpos=1 ypos=5 left-column full-justified font-smallest aligned-line headchar-lower tailchar-comma
+I-Caption	Head Rule = rules headed by the word, Mod Rule = rule in which	page=4 xpos=1 ypos=5 left-column full-justified font-smallest aligned-line headchar-capital
+I-Caption	word acts as modifier, Head/Mod Gpar Rule = Head/Mod Rule plus	page=4 xpos=1 ypos=5 left-column full-justified font-smallest aligned-line headchar-lower
+E-Caption	grandparent nonterminal.	page=4 xpos=1 ypos=5 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+I-Body	domains (in each case we give the model type that	page=4 xpos=1 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-lower
+I-Body	results from the definition—clustering, refinement,	page=4 xpos=1 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	or pre–built ontology—in parentheses):	page=4 xpos=1 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Listitem	Lexical (Refinement) Each word is split into	page=4 xpos=1 ypos=6 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Listitem	three sub–values. See Figure 2 for an example of	page=4 xpos=1 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Listitem	features generated for this choice of domain.	page=4 xpos=1 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	Part–of–Speech (Clustering) The part–of–	page=4 xpos=1 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Listitem	speech tag of each word is split into five sub–values.	page=4 xpos=1 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Listitem	In Figure 2, the word shares would be assigned	page=4 xpos=1 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Listitem	the domain { NNS <sub>1</sub> , . . . , NNS 5 }, and the word bought	page=4 xpos=1 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	would have the domain { VBD <sub>1</sub> , . . . , VBD 5 }.	page=4 xpos=1 ypos=7 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	Highest Nonterminal (Clustering) The high-	page=4 xpos=1 ypos=7 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Listitem	est nonterminal to which each word propagates as	page=4 xpos=1 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Listitem	a headword is split into five sub–values. In Figure 2	page=4 xpos=1 ypos=8 left-column full-justified aligned-line itemization headchar-lower
+I-Listitem	the word bought yields domain { S <sub>1</sub> , . . . , S 5 }, while	page=4 xpos=1 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	in yields { PP <sub>1</sub> , . . . , PP 5 }.	page=4 xpos=1 ypos=8 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	Supersense (Pre–Built Ontology) We borrow	page=4 xpos=1 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Listitem	the idea of using WordNet lexicographer filenames	page=4 xpos=1 ypos=9 left-column full-justified hanged-line headchar-lower
+I-Listitem	as broad “supersenses” from Ciaramita and John-	page=4 xpos=1 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	son (2003). For each word, we split each of its	page=4 xpos=1 ypos=9 left-column full-justified aligned-line year headchar-lower above-blank-line above-double-space above-line-space
+Page	511	page=4 xpos=5 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Listitem	supersenses into three sub–supersenses. If no su-	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Listitem	persenses are available, we fall back to splitting	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Listitem	the part–of–speech into five sub–values. For ex-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ample, shares has the supersenses noun.possession ,	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Listitem	noun.act and noun.artifact , which yield the do-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	main { noun.possession <sub>1</sub> , noun.act 1 , noun.artifact 1 , . . .	page=4 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Listitem	noun.possession 3 , noun.act 3 , noun.artifact 3 }. On the	page=4 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	other hand, in does not have any WordNet super-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	senses, so it is assigned the domain { IN <sub>1</sub> , . . . , IN 5 }.	page=4 xpos=5 ypos=2 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 The Final Feature Sets	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We created eight feature sets by combining the	page=4 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	four hidden–value domains above with two alterna-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive definitions of dependency structures: standard	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	head–modifier dependencies and “sibling dependen-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cies.” When using sibling dependencies, connec-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions are established between the headwords of ad-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	jacent siblings. For instance, the head–modifier	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	dependencies produced by the tree fragment in	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	Figure 2 are (bought, shares), (bought, in), and	page=4 xpos=5 ypos=4 right-column full-justified aligned-line string-figure headchar-capital
+I-Body	(bought, yesterday), while the corresponding sibling	page=4 xpos=5 ypos=4 right-column full-justified aligned-line
+I-Body	dependencies are (bought, shares), (shares, in), and	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	(in, yesterday).	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.3 Mixed Models	page=4 xpos=5 ypos=5 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The different hidden–variable models display vary-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ing strengths and weaknesses. We created mixtures	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of different models using a weighted average:	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	M	page=4 xpos=7 ypos=5 right-column left-indent right-indent font-smallest indented-line shorter-tail line-space headchar-capital
+I-Equation	log p(t <sub>i,j</sub> |s i ) = <sup>X</sup> λ m log p m (t i,j |s i , Θ m ) − Z(s i )	page=4 xpos=5 ypos=5 right-column full-justified font-largest hanged-line longer-tail headchar-lower
+I-Equation	m=1	page=4 xpos=7 ypos=6 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower
+I-Body	where Z(s <sub>i</sub> ) is a normalization constant that can be	page=4 xpos=5 ypos=6 right-column full-justified font-larger hanged-line longer-tail headchar-lower
+I-Body	ignored, as it does not affect the ranking of parses.	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The λ <sub>m</sub> weights are determined through optimiza-	page=4 xpos=5 ypos=6 right-column full-justified font-larger aligned-line headchar-capital tailchar-hiphen
+E-Body	tion of parsing scores on a development set.	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Experimental Results	page=4 xpos=5 ypos=7 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We trained and tested the model on data from the	page=4 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	Penn Treebank (Marcus et al., 1994). Candidate	page=4 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital
+I-Body	parses were produced by an N –best version of the	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	Collins (1999) parser. Our training data consists of	page=4 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital
+I-Body	Treebank Sections 2–21, divided into a training cor-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	pus of 35,540 sentences and a development corpus	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	of 3,676 sentences. In later experiments, we made	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	use of a secondary development corpus of 1,914 sen-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences from Section 0. Sections 22–24, containing	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	5,455 sentences, were held out as the test set.	page=4 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	For each of the eight feature sets described in	page=4 xpos=6 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	Section 4.2, we used the stochastic gradient descent	page=4 xpos=5 ypos=9 right-column full-justified hanged-line headchar-capital page-bottom
+B-Table	Section 22 Section 23 Section 24 Total	page=5 xpos=0 ypos=0 left-column left-indent right-indent font-smallest page-top headchar-capital
+I-Table	LR LP LR LP LR LP LR LP	page=5 xpos=0 ypos=0 left-column left-indent right-indent font-smallest longer-tail headchar-capital
+I-Table	C99 89.12 89.20 88.14 88.56 87.17 87.97 88.19 88.60	page=5 xpos=0 ypos=0 left-column left-indent right-indent font-smallest hanged-line longer-tail headchar-capital
+I-Table	MIX 90.43 90.61 89.25 89.69 88.46 89.29 89.41 89.87	page=5 xpos=0 ypos=0 left-column left-indent right-indent font-smallest aligned-line headchar-capital
+I-Table	C2K 90.27 90.62 89.43 89.97 88.56 89.58 89.46 90.07	page=5 xpos=0 ypos=0 left-column left-indent right-indent font-smallest aligned-line headchar-capital
+E-Table	MIX+ 90.57 90.79 89.80 90.27 88.78 89.73 89.78 90.29	page=5 xpos=0 ypos=0 left-column centered left-indent right-indent font-smallest hanged-line headchar-capital above-double-space above-line-space
+B-Caption	Table 1: The results on Sections 22–24. LR = Labeled Recall,	page=5 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-comma
+E-Caption	LP = Labeled Precision.	page=5 xpos=0 ypos=1 left-column right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+I-Body	method to optimize the parameters of the model. We	page=5 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-lower
+I-Body	created various mixtures of the eight models using	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the weighted–average technique described in Sec-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion 4.3, testing the accuracy of each mixture on the	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	secondary development set. Our final model was a	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	mixture of three of the eight possible models: super-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sense hidden values with sibling trees, lexical hid-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	den values with sibling trees, and highest nontermi-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	nal hidden values with normal head–modifier trees.	page=5 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower tailchar-period above-line-space
+B-Body	Our final tests evaluated four models. The two	page=5 xpos=0 ypos=3 left-column left-indent indented-line line-space headchar-capital
+I-Body	baseline models are the Collins (1999) base parser,	page=5 xpos=0 ypos=3 left-column full-justified hanged-line year headchar-lower tailchar-comma
+I-Body	C99 , and the Collins (2000) reranker, C2K . The first	page=5 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-capital
+I-Body	new model is the MIX model, which is a combina-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of the C99 base model with the three models	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	described above. The second new model, MIX+ , is	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	created by augmenting MIX with features from the	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	method in C2K . Table 1 shows the results. The	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	MIX model obtains an F –measure improvement of	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	≈ 1.25% over the C99 baseline, an improvement that	page=5 xpos=0 ypos=4 left-column full-justified font-larger aligned-line
+I-Body	is comparable to the C2K reranker. The MIX+ model	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	yields an improvement of ≈ 0.25% beyond C2K .	page=5 xpos=0 ypos=5 left-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We tested the significance of 8 comparisons cor-	page=5 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	responding to the results in Table 1 using the sign	page=5 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	test <sup>4</sup> : we tested MIX vs. C99 on Sections 22, 23, and	page=5 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	24 individually, as well as on Sections 22–24 taken	page=5 xpos=0 ypos=6 left-column full-justified aligned-line numbered-heading1
+I-Body	as a whole; we also tested MIX+ vs. C2K on these 4	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	test sets. Of the 8 comparisons, all showed signif-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	icant improvements at the level p ≤ 0.01 with the	page=5 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower
+E-Body	exception of one test, MIX+ vs. C2K on Section 24.	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Discussion	page=5 xpos=0 ypos=7 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-line-space
+B-SubsectionHeader	6.1 Applying the Model to Other NLP Tasks	page=5 xpos=0 ypos=7 left-column right-indent aligned-line longer-tail line-space numbered-heading2 above-line-space
+B-Body	In this section, we discuss how hidden–variable	page=5 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	models might be applied to other NLP problems, and	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	in particular to structures other than parse trees. To	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>4</sup> The input to the sign test is a set of sentences with judge-	page=5 xpos=0 ypos=8 left-column left-indent indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	ments for each sentence indicating whether model 1 gives a	page=5 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	better parse than model 2, model 2 gives a better parse than	page=5 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	model 1, or models 1 and 2 give equal quality parses. When	page=5 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	using the sign test, for each sentence in question we calculate	page=5 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	the F –measure at the sentence level for the two models being	page=5 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	compared, deriving the required judgement from these scores.	page=5 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	512	page=5 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	summarize the model, the major components of the	page=5 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	approach are as follows:	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	• We assume some set of candidate structures t <sub>i,j</sub> ,	page=5 xpos=5 ypos=0 right-column left-indent font-largest indented-line longer-tail itemization tailchar-comma
+I-Listitem	which are to be reranked by the model. Each struc-	page=5 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Listitem	ture t <sub>i,j</sub> has n i,j words w 1 , . . . , w n <sub>i,j</sub> , and each word	page=5 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	w <sub>k</sub> has a set H k (t i,j ) of possible hidden values.	page=5 xpos=5 ypos=1 right-column right-indent font-largest aligned-line shorter-tail itemization headchar-lower tailchar-period
+B-Listitem	• We assume a graph D(t <sub>i,j</sub> ) for each t i,j that de-	page=5 xpos=5 ypos=1 right-column left-indent font-largest indented-line longer-tail itemization tailchar-hiphen
+I-Listitem	fines possible interactions between hidden variables	page=5 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Listitem	in the model. We assume some definition of local	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Listitem	feature vectors, which consider either single hidden	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Listitem	variables, or pairs of hidden variables that are con-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	nected by an edge in D(t <sub>i,j</sub> ).	page=5 xpos=5 ypos=2 right-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The approach can be instantiated in several ways	page=5 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	when applying the model to other NLP tasks. We	page=5 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	have already seen that by changing the definition	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	of the hidden–value domains H <sub>k</sub> (t i,j ), we can de-	page=5 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	rive models with widely varying behavior. In ad-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dition, there is no requirement that the hidden vari-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ables only be associated with words in the structure;	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-semicolon
+I-Body	the hidden variables could be associated with other	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	units. For example, in speech recognition hidden	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	variables could be associated with phonemes rather	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	than words, and in Chinese word segmentation, hid-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	den variables could be associated with individual	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	characters rather than words.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	NLP tasks other than parsing involve structures	page=5 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	t <sub>i,j</sub> that are not necessarily parse trees. For example,	page=5 xpos=5 ypos=5 right-column full-justified font-larger hanged-line itemization headchar-lower tailchar-comma
+I-Body	in speech recognition candidates are simply strings	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	(utterances); in tagging tasks candidates are labeled	page=5 xpos=5 ypos=5 right-column full-justified aligned-line
+I-Body	sequences (e.g., sentences labeled with part–of–	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	speech tag sequences); in machine translation can-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	didate structures may be source–language/target–	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	language pairs, along with alignment structures	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	specifying the correspondence between words in the	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	two languages. Sentences and labeled sequences are	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	in a sense simplifications of the parsing case, where	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	a natural choice for the underlying graph D(t <sub>i,j</sub> )	page=5 xpos=5 ypos=7 right-column full-justified font-larger aligned-line itemization headchar-lower
+I-Body	would be an N <sup>th</sup> order Markov structure, where each	page=5 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	word depends on the previous N words. Machine	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	translation alignments are a more interesting type of	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	structure, where the choice of D(t <sub>i,j</sub> ) might actually	page=5 xpos=5 ypos=7 right-column full-justified font-larger aligned-line headchar-lower
+E-Body	depend on the alignment between the two sentences.	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	As a final note, there is some flexibility in the	page=5 xpos=5 ypos=8 right-column left-indent indented-line headchar-capital
+I-Body	choice of D(t <sub>i,j</sub> ). In the case that D(t i,j ) is a tree	page=5 xpos=5 ypos=8 right-column full-justified font-larger hanged-line headchar-lower
+I-Body	belief propagation is exact. In the more general case	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	where D(t <sub>i,j</sub> ) contains cycles, there are alternative	page=5 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	algorithms that are either exact (Cowell et al., 1999)	page=5 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-lower
+E-Body	or approximate (Yedidia et al., 2003).	page=5 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period page-bottom
+B-SubsectionHeader	6.2 Packed Representations and Locality	page=6 xpos=0 ypos=0 left-column right-indent page-top numbered-heading2 above-double-space above-line-space
+B-Body	One natural extension of our reranker is to adapt it to	page=6 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	candidate parses represented as a packed parse for-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	est, so that it can operate on the base parser’s full	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	output instead of a limited N -best list. However,	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	as we described in Section 3.1, our features are lo-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cally scoped with respect to hidden–variable interac-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions but unrestricted regarding information derived	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	from the underlying candidate parses, which poses	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	a problem for the use of packed representations.	page=6 xpos=0 ypos=1 left-column full-justified aligned-line itemization headchar-lower tailchar-period
+I-Body	For instance, the Up/Down Path features (see Figure	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	2) enumerate the vertical sequences of nontermi-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line tailchar-hiphen
+I-Body	nals that extend above and below a given headword.	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We could restrict the features to local scope on the	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	candidate parses, allowing dynamic–programming	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	to be used to train the model with a packed rep-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resentation. However, even with these restrictions,	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	finding arg max <sub>t</sub> <sup>P</sup> <sub>h</sub> p(t, h | s, Θ) is NP–hard, and	page=6 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the Viterbi approximation arg max <sub>t,h</sub> p(t, h | s, Θ)	page=6 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	— or other approximations — would have to be used	page=6 xpos=0 ypos=3 left-column full-justified aligned-line
+E-Body	(see Matsuzaki et al. (2005)).	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-SubsectionHeader	6.3 Empirical Analysis of the Hidden Values	page=6 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Our model makes no assumptions about the interpre-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tation of the hidden values assigned to words: dur-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing training, the model simply learns a distribution	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	over global hidden–value assignments that is useful	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	in improving the log–likelihood of the training data.	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Intuitively, however, we expect that the model will	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	learn to make hidden–value assignments that are rea-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sonable from a linguistic standpoint. In this section	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	we describe some empirical observations concern-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ing hidden values assigned by the model.	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We established a corpus of parse trees with	page=6 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	hidden–value annotations, as follows. First, we find	page=6 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	the optimal parameters Θ <sup>∗</sup> on the training set. For	page=6 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	every sentence s <sub>i</sub> in the training set, we then use	page=6 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	Θ ∗ to find t ∗ <sub>i</sub> , the most probable candidate parse un-	page=6 xpos=0 ypos=7 left-column full-justified font-largest aligned-line tailchar-hiphen
+I-Body	der the model. Finally, we use Θ <sup>∗</sup> to decode h ∗ <sub>i</sub> ,	page=6 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	the most probable global assignment of hidden val-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ues, for each parse tree t <sup>∗</sup> <sub>i</sub> . We created a corpus of	page=6 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	(t ∗ <sub>i</sub> , h ∗ i ) pairs for the feature set defined by part–of–	page=6 xpos=0 ypos=8 left-column full-justified font-largest aligned-line
+I-Body	speech hidden–value domains and standard depen-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dency structures. The remainder of this section de-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scribes trends for several of the most common part–	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	of–speech categories in the corpus.	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As a first example, consider the hidden values	page=6 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	for the part–of–speech VB (infinitival verb). In the	page=6 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower above-blank-line above-double-space above-line-space
+Page	513	page=6 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	majority of cases, words tagged VB either modify a	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	modal verb tagged MD (e.g., in the new rate will/ MD	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	be/ VB payable) or the infinitival marker to (e.g., in in	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	an effort to streamline/ VB bureaucracy). The statis-	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tics of our corpus reflect this distinction. In 11,546	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	cases of the VB <sub>1</sub> hidden value, 10,652 cases mod-	page=6 xpos=5 ypos=0 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	ified to, and 81 cases modified modals tagged MD .	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In contrast, in 11,042 cases of the VB <sub>2</sub> value, the	page=6 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-capital
+I-Body	numbers were 8,354 and 599 for modification of	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	modals and to respectively, showing the opposite	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	preference. This polarization of hidden values al-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lows modifiers to the VB (e.g., payable in the new	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	rate will be payable) to be sensitive to whether the	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	verb is modifying a modal or to.	page=6 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In a related case, the hidden values for the part–	page=6 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	of–speech TO (corresponding to the word to) also	page=6 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	show that the model is learning useful structure.	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Consider cases where to heads a clause which may	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	or may not have a subject (e.g., in it expects hits sales	page=6 xpos=5 ypos=3 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	to remain steadyi vs. a proposal hto ease reporting	page=6 xpos=5 ypos=3 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	requirementsi). We find that for hidden values TO <sub>1</sub>	page=6 xpos=5 ypos=3 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	and TO <sub>5</sub> together, 946 out of 976 cases have a sub-	page=6 xpos=5 ypos=4 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	ject. In contrast, for the hidden value TO <sub>4</sub> , only 29	page=6 xpos=5 ypos=4 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	out of 10,148 cases have a subject. This splitting	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of the TO part–of–speech allows modifiers to to, or	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	words modified by to, to be sensitive to the presence	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	or absence of a subject in the clause headed by to.	page=6 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Finally, consider the hidden values for the part–	page=6 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	of–speech NNS (plural noun). In this case, the model	page=6 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	distinguishes contexts where a plural noun acting as	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the head of a noun–phrase is or isn’t modified by a	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	post–modifier (such as a prepositional phrase or rel-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ative clause). For hidden value NNS <sub>3</sub> , 12,003 out	page=6 xpos=5 ypos=6 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	of the 12,664 instances in our corpus have a post–	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	modifier, but for hidden value NNS <sub>5</sub> , only 4,099 of	page=6 xpos=5 ypos=6 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	the 39,763 occurrences have a post–modifier. Sim-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ilar contextual effects were observed for other noun	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	categories such as singular or proper nouns.	page=6 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	7 Conclusions and Future Research	page=6 xpos=5 ypos=7 right-column right-indent font-larger aligned-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The hidden–variable model is a novel method for	page=6 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	representing NLP structures in the reranking frame-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	work. We can obtain versatile behavior from the	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	model simply by manipulating the definition of the	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	hidden–value domains, and we have experimented	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	with models that emulate word clustering, word re-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	finement, and mappings from words into an existing	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	ontology. In the case of the parse reranking task,	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma page-bottom
+I-Body	the hidden–variable model achieves reranking per-	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	formance comparable to the reranking approach de-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scribed by Collins (2000), and the two rerankers can	page=7 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower
+E-Body	be combined to yield an additive improvement.	page=7 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Future work may consider the use of hidden–	page=7 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	value domains with mixed contents, such as a do-	page=7 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	main that contains 3 refinement–oriented lexical val-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ues and 3 clustering–oriented part–of–speech val-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ues. These mixed values would allow the hidden–	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	variable model to exploit interactions between clus-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tering and refinement at the level of words and de-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pendencies. Another area for future research is to	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	investigate the use of unlabeled data within the ap-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach, for example by making use of clusters de-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rived from large amounts of unlabeled data (e.g., see	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	Miller et al. (2004)). Finally, future work may apply	page=7 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-capital
+E-Body	the models to NLP tasks other than parsing.	page=7 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgements	page=7 xpos=0 ypos=3 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	We would like to thank Regina Barzilay, Igor	page=7 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Acknowledgement	Malioutov, and Luke Zettlemoyer for their many	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Acknowledgement	comments on the paper. We gratefully acknowl-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Acknowledgement	edge the support of the National Science Founda-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Acknowledgement	tion (under grants 0347631 and 0434222) and the	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	DARPA/SRI CALO project (through subcontract	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+E-Acknowledgement	No. 03-000215).	page=7 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=5 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-line-space
+B-Reference	Daniel Bikel. 2000. A statistical model for parsing and word–	page=7 xpos=0 ypos=5 left-column full-justified font-smallest aligned-line longer-tail line-space year headchar-capital
+I-Reference	sense disambiguation. In Proceedings of EMNLP.	page=7 xpos=0 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Peter F. Brown, Vincent J. Della Pietra, Peter V. deSouza, Jen-	page=7 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	nifer C. Lai, and Robert L. Mercer. 1992. Class–based n–	page=7 xpos=0 ypos=6 left-column left-indent font-smallest indented-line year headchar-lower
+I-Reference	gram models of natural language. Computational Linguis-	page=7 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tics, 18(4):467–479.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Eugene Charniak and Mark Johnson. 2005. Coarse–to–fine n–	page=7 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	best parsing and maxent discriminative reranking. In Pro-	page=7 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ceedings of the 43 <sup>rd</sup> ACL.	page=7 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Massimiliano Ciaramita and Mark Johnson. 2003. Supersense	page=7 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	tagging of unknown nouns in wordnet. In EMNLP 2003.	page=7 xpos=0 ypos=7 left-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Stephen Clark and James R. Curran. 2004. Parsing the wsj	page=7 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	using ccg and log–linear models. In ACL, pages 103–110.	page=7 xpos=0 ypos=7 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Michael Collins and Nigel Duffy. 2002. New ranking algo-	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	rithms for parsing and tagging: Kernels over discrete struc-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tures, and the voted perceptron. In ACL 2002.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Michael Collins. 1999. Head–Driven Statistical Models for	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Natural Language Parsing. Ph.D. thesis, University of	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Pennsylvania, Philadelphia, PA.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Michael Collins. 2000. Discriminative reranking for natural	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	language parsing. In Proceedings of the 17 <sup>th</sup> ICML.	page=7 xpos=0 ypos=9 left-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	514	page=7 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Reference	Michael Collins. 2002. Ranking algorithms for named entity	page=7 xpos=5 ypos=0 right-column full-justified font-smallest column-top year headchar-capital
+I-Reference	extraction: Boosting and the voted perceptron. In ACL 2002.	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Robert G. Cowell, A. Philip Dawid, Steffen L. Lauritzen, and	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line line-double-space line-space headchar-capital
+I-Reference	David J. Spiegelhalter. 1999. Probabilistic Networks and	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	Expert Systems. Springer.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Mark Johnson, Stuart Geman, Stephen Canon, Zhiyi Chi, and	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Stefan Riezler. 1999. Estimators for stochastic “unification–	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	based” grammars. In Proceedings of the 37 <sup>th</sup> ACL.	page=7 xpos=5 ypos=1 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Y. LeCun, L. Bottou, Y. Bengio, and P. Haffner. 1998.	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Gradient–based learning applied to document recognition.	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-capital tailchar-period
+I-Reference	Proceedings of the IEEE, 86(11):2278–2324, November.	page=7 xpos=5 ypos=1 right-column centered left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Mitchell P. Marcus, Beatrice Santorini, and Mary Ann	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Marcinkiewicz. 1994. Building a large annotated corpus	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	of english: The penn treebank. Computational Linguistics,	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	19(2):313–330.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Takuya Matsuzaki, Yusuke Miyao, and Jun’ichi Tsujii. 2005.	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Probabilistic cfg with latent annotations. In ACL.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	George A. Miller, Richard Beckwith, Christiane Fellbaum,	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	Derek Gross, and Katherine Miller. 1993. Five papers on	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	wordnet. Technical report, Stanford University.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Scott Miller, Jethran Guinness, and Alex Zamanian. 2004.	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Name tagging with word clusters and discriminative train-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	ing. In HLT–NAACL, pages 337–342.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Franz Josef Och and Hermann Ney. 2002. Discriminative train-	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ing and maximum entropy models for statistical machine	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	translation. In Proceedings of the 40 <sup>th</sup> ACL, pages 295–302.	page=7 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Fernando C. N. Pereira, Naftali Tishby, and Lillian Lee. 1993.	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Distributional clustering of english words. In Proceedings	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	of the 31 <sup>st</sup> ACL, pages 183–190.	page=7 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Ariadna Quattoni, Michael Collins, and Trevor Darrell. 2005.	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Conditional random fields for object recognition. In NIPS	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	17. MIT Press.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail itemization tailchar-period above-double-space above-line-space
+B-Reference	Adwait Ratnaparkhi, Salim Roukos, and R. Todd Ward. 1994.	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	A maximum entropy model for parsing. In ICSLP 1994.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Stefan Riezler, Tracy H. King, Ronald M. Kaplan, Richard S.	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Crouch, John T. Maxwell III, and Mark Johnson. 2002.	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line year headchar-capital tailchar-period
+I-Reference	Parsing the wall street journal using a lexical–functional	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	grammar and discriminative estimation techniques. In ACL.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Libin Shen and Aravind K. Joshi. 2003. An svm–based vot-	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ing algorithm with application to parse reranking. In Walter	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Daelemans and Miles Osborne, editors, Proceedings of the	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	7 <sup>th</sup> CoNLL, pages 9–16. Edmonton, Canada.	page=7 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail numbered-heading1 tailchar-period above-double-space above-line-space
+B-Reference	Libin Shen, Anoop Sarkar, and Franz Josef Och. 2004. Dis-	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	criminative reranking for machine translation. In HLT–	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	NAACL, pages 177–184.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Marilyn A. Walker, Owen Rambow, and Monica Rogati. 2001.	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Spot: A trainable sentence planner. In NAACL.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Jonathan S. Yedidia, William T. Freeman, and Yair Weiss,	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	2003. Exploring Artificial Intelligence in the New Millen-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	nium, chapter 8: “Understanding Belief Propagation and Its	page=7 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Generalizations”, pages 239–236. Science & Technology	page=7 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Books.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period

@@ -1,0 +1,750 @@
+Title	Automatic Recognition of Logical Relations for English, Chinese and	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-line-space
+Title	Japanese in the GLARF Framework	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-space headchar-capital above-blank-line above-double-space above-line-space
+Author	Adam Meyers † , Michiko Kosaka ‡ , Nianwen Xue ⋄ , Heng Ji ⋆ , Ang Sun † , Shasha Liao † and Wei Xu †	page=0 xpos=0 ypos=1 single-column centered left-over right-over font-largest hanged-line longer-tail line-blank-line line-double-space line-space symbol-dagger symbol-dagger headchar-capital
+B-Affiliation	† New York University, ‡ Monmouth University, ⋄ Brandeis University, ⋆ City University of New York	page=0 xpos=0 ypos=1 single-column centered left-over right-over font-largest indented-line shorter-tail symbol-dagger symbol-dagger column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=2 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	We present GLARF, a framework for repre-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	senting three linguistic levels and systems for	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	generating this representation. We focus on a	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	logical level, like LFG’s F-structure, but com-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	patible with Penn Treebanks. While less fine-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	grained than typical semantic role labeling ap-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	proaches, our logical structure has several ad-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	vantages: (1) it includes all words in all sen-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tences, regardless of part of speech or seman-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tic domain; and (2) it is easier to produce ac-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	curately. Our systems achieve 90% for En-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	glish/Japanese News and 74.5% for Chinese	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	News – these F-scores are nearly the same as	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-capital
+I-Abstract	those achieved for treebank-based parsing.	page=0 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-larger hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	For decades, computational linguists have paired a	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	surface syntactic analysis with an analysis represent-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing something “deeper”. The work of Harris (1968),	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	Chomsky (1957) and many others showed that one	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-capital
+I-Body	could use these deeper analyses to regularize differ-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ences between ways of expressing the same idea.	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For statistical methods, these regularizations, in ef-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	fect, reduce the number of significant differences be-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tween observable patterns in data and raise the fre-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quency of each difference. Patterns are thus easier	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	to learn from training data and easier to recognize in	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	test data, thus somewhat compensating for the spare-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ness of data. In addition, deeper analyses are often	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	considered semantic in nature because conceptually,	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	two expressions that share the same regularized form	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	also share some aspects of meaning. The specific de-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tails of this “deep” analysis have varied quite a bit,	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	perhaps more than surface syntax.	page=0 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	146	page=0 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Body	In the 1970s and 1980s, Lexical Function Gram-	page=0 xpos=5 ypos=2 right-column left-indent column-top year headchar-capital tailchar-hiphen
+I-Body	mar’s (LFG) way of dividing C-structure (surface)	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	and F-structure (deep) led to parsers such as (Hobbs	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	and Grishman, 1976) which produced these two lev-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	els, typically in two stages. However, enthusiasm	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	for these two-stage parsers was eclipsed by the ad-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vent of one stage parsers with much higher accu-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	racy (about 90% vs about 60%), the now-popular	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	treebank-based parsers including (Charniak, 2001;	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Collins, 1999) and many others. Currently, many	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-capital
+I-Body	different “deeper” levels are being manually anno-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tated and automatically transduced, typically using	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	surface parsing and other processors as input. One	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of the most popular, semantic role labels (annota-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion and transducers based on the annotation) char-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	acterize relations anchored by select predicate types	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	like verbs (Palmer et al., 2005), nouns (Meyers et	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower
+I-Body	al., 2004a), discourse connectives (Miltsakaki et al.,	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2004) or those predicates that are part of particular	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year
+I-Body	semantic frames (Baker et al., 1998). The CONLL	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Body	tasks for 2008 and 2009 (Surdeanu et al., 2008;	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Hajič et al., 2009) has focused on unifying many of	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-capital
+I-Body	these individual efforts to produce a logical structure	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	for multiple parts of speech and multiple languages.	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Like the CONLL shared task, we link surface lev-	page=0 xpos=5 ypos=7 right-column left-indent indented-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	els to logical levels for multiple languages. How-	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ever, there are several differences: (1) The logical	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	structures produced automatically by our system can	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	be expected to be more accurate than the compara-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ble CONLL systems because our task involves pre-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dicting semantic roles with less fine-grained distinc-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions. Our English and Japanese results were higher	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	than the CONLL 2009 SRL systems. Our English F-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	scores range from 76.3% (spoken) to 89.9% (News):	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-colon column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of the NAACL HLT Workshop on Semantic Evaluations: Recent Achievements and Future Directions, pages 146–154,	page=0 xpos=0 ypos=9 single-column left-over right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Footer	Boulder, Colorado, June 2009.  2009 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital page-bottom
+I-Body	the best CONLL 2009 English scores were 73.31%	page=1 xpos=0 ypos=0 left-column full-justified page-top year headchar-lower
+I-Body	(Brown) and 85.63% (WSJ). Our Japanese system	page=1 xpos=0 ypos=0 left-column full-justified aligned-line
+I-Body	scored 90.6%: the best CONLL 2009 Japanese score	page=1 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower
+I-Body	was 78.35%. Our Chinese system 74.5%, 4 points	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	lower than the best CONLL 2009 system (78.6%),	page=1 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	probably due to our system’s failings, rather than the	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	complexity of the task; (2) Each of the languages	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	in our system uses the same linguistic framework,	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	using the same types of relations, same analyses of	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	comparable constructions, etc. In one case, this re-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quired a conversion from a different framework to	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	our own. In contrast, the 2009 CONLL task puts	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Body	several different frameworks into one compatible in-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put format. (3) The logical structures produced by	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	our system typically connect all the words in the sen-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence. While this is true for some of the CONLL	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	2009 languages, e.g., Czech, it is not true about	page=1 xpos=0 ypos=3 left-column full-justified aligned-line year
+I-Body	all the languages. In particular, the CONLL 2009	page=1 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower
+I-Body	English and Chinese logical structures only include	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+E-Body	noun and verb predicates.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In this paper, we will describe the GLARF frame-	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	work (Grammatical and Logical Representation	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	Framework) and a system for producing GLARF	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	output (Meyers et al., 2001; Meyers, 2008). GLARF	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	provides a logical structure for English, Chinese and	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	Japanese with an F-score that is within a few per-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	centage points of the best parsing results for that	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	language. Like LFG’s (LFG) F-structure, our log-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ical structure is less fine-grained than many of the	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	popular semantic role labeling schemes, but also has	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	two main advantages over these schemes: it is more	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	reliable and it is more comprehensive in the sense	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	that it covers all parts of speech and the resulting	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	logical structure is a connected graph. Our approach	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	has proved adequate for three genetically unrelated	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	natural languages: English, Chinese and Japanese.	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	It is thus a good candidate for additional languages	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+E-Body	with accurate parsers.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 The GLARF framework	page=1 xpos=0 ypos=7 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Our system creates a multi-tiered representation in	page=1 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the GLARF framework, combining the theory un-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	derlying the Penn Treebank for English (Marcus et	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	al., 1994) and Chinese (Xue et al., 2005) (Chom-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	skian linguistics of the 1970s and 1980s) with: (2)	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	Relational Grammar’s graph-based way of repre-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	senting “levels” as sequences of relations; (2) Fea-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	147	page=1 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	ture structures in the style of Head-Driven Phrase	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	Structure Grammar; and (3) The Z. Harris style goal	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital
+I-Body	of attempting to regularize multiple ways of saying	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	the same thing into a single representation. Our	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	approach differs from LFG F-structure in several	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	ways: we have more than two levels; we have a	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	different set of relational labels; and finally, our ap-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach is designed to be compatible with the Penn	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	Treebank framework and therefore, Penn-Treebank-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	based parsers. In addition, the expansion of our the-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ory is governed more by available resources than by	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	the underlying theory. As our main goal is to use	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	our system to regularize data, we freely incorporate	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	any analysis that fits this goal. Over time, we have	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	found ways of incorporating Named Entities, Prop-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	Bank, NomBank and the Penn Discourse Treebank.	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	Our agenda also includes incorporating the results of	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+E-Body	other research efforts (Pustejovsky et al., 2005).	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	For each sentence, we generate a feature structure	page=1 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	(FS) representing our most complete analysis. We	page=1 xpos=5 ypos=3 right-column full-justified hanged-line
+I-Body	distill a subset of this information into a dependency	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	structure governed by theoretical assumptions, e.g.,	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	about identifying functors of phrases. Each GLARF	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	dependency is between a functor and an argument,	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	where the functor is the head of a phrase, conjunc-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, complementizer, or other function word. We	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	have built applications that use each of these two	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	representations, e.g., the dependency representation	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	is used in (Shinyama, 2007) and the FS represen-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tation is used in (K. Parton and K. R. McKeown	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	and R. Coyne and M. Diab and R. Grishman and	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	D. Hakkani-Tür and M. Harper and H. Ji and W. Y.	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	Ma and A. Meyers and S. Stolbach and A. Sun and	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+E-Body	G. Tür and W. Xu and S. Yarman, 2009).	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period
+B-Body	In the dependency representation, each sentence	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	is a set of 23 tuples, each 23-tuple characterizing up	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	to three relations between two words: (1) a SUR-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	FACE relation, the relation between a functor and an	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	argument in the parse of a sentence; (2) a LOGIC1	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	relation which regularizes for lexical and syntac-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic phenomena like passive, relative clauses, deleted	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	subjects; and (3) a LOGIC2 relation corresponding	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	to relations in PropBank, NomBank, and the Penn	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	Discourse Treebank (PDTB). While the full output	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	has all this information, we will limit this paper to	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	a discussion of the LOGIC1 relations. Figure 1 is	page=1 xpos=5 ypos=8 right-column full-justified aligned-line itemization headchar-lower
+I-Body	a 5 tuple subset of the 23 tuple GLARF analysis of	page=1 xpos=5 ypos=9 right-column full-justified aligned-line itemization headchar-lower
+I-Body	the sentence Who was eaten by Grendel? (The full	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Figure	__Figure 1__	page=2 xpos=-1 ypos=-1 left-column left-over right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 1: 5-tuples: Who was eaten by Grendel	page=2 xpos=0 ypos=1 left-column centered left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+Figure	__Figure 2__	page=2 xpos=1 ypos=1 left-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 2: Graph of Who was eaten by Grendel	page=2 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+I-Body	23 tuples include unique ids and fine-grained lin-	page=2 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space numbered-heading1 tailchar-hiphen
+I-Body	guistic features). The fields listed are: logic1 label	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	(L1), surface label (Surf), logic2 label (L2), func-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line tailchar-hiphen
+I-Body	tor (Func) and argument (Arg). NIL indicates that	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	there is no relation of that type. Figure 2 repre-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sents this as a graph. For edges with two labels,	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the ARG0 or ARG1 label indicates a LOGIC2 re-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lation. Edges with an L- prefix are LOGIC1 la-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bels (the edges are curved); edges with S-prefixes	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	are SURFACE relations (the edges are dashed); and	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	other (thick) edges bear unprefixed labels represent-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing combined SURFACE/LOGIC1 relations. Delet-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the dashed edges yields a LOGIC1 representa-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion; deleting the curved edges yields a SURFACE	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	representation; and a LOGIC2 consists of the edges	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	labeled ARGO and ARG1 relations, plus the sur-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	face subtrees rooted where the LOGIC2 edges ter-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	minate. Taken together, a sentence’s SURFACE re-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lations form a tree; the LOGIC1 relations form a	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	directed acyclic graph; and the LOGIC2 relations	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	form directed graphs with some cycles and, due to	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	PDTB relations, may connect sentences to previous	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	ones, e.g., adverbs like however, take the previous	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	sentence as one of their arguments.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	LOGIC1 relations (based on Relational Gram-	page=2 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	mar) regularize across grammatical and lexical al-	page=2 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	148	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	ternations. For example, subcategorized verbal ar-	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	guments include: SBJect, OBJect and IND-OBJ (in-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	direct Object), COMPlement, PRT (Particle), PRD	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	(predicative complement). Other verbal modifiers	page=2 xpos=5 ypos=0 right-column full-justified aligned-line
+I-Body	include AUXilliary, PARENthetical, ADVerbial. In	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	contrast, FrameNet and PropBank make finer dis-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tinctions. Both PP arguments of consulted in John	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	consulted with Mary about the project bear COMP	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	relations with the verb in GLARF, but would have	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	distinct labels in both PropBank and FrameNet.	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Thus Semantic Role Labeling (SRL) should be more	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+E-Body	difficult than recognizing LOGIC1 relations.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Beginning with Penn Treebank II, Penn Treebank	page=2 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	annotation includes Function tags, hyphenated addi-	page=2 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tions to phrasal categories which indicate their func-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. There are several types of function tags:	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	• Argument <sub>OBJ),</sub> CLR Tags (COMP) such and as SBJ, PRD–These OBJ, IO are (IND- lim-	page=2 xpos=5 ypos=3 right-column left-indent font-largest indented-line longer-tail line-double-space line-space itemization tailchar-hiphen
+I-Listitem	ited to verbal relations and not all are used in	page=2 xpos=5 ypos=3 right-column left-indent indented-line headchar-lower
+I-Listitem	all treebanks. For example, OBJ and IO are	page=2 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower
+I-Listitem	used in the Chinese, but not the English tree-	page=2 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	bank. These labels can often be directly trans-	page=2 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	lated into GLARF LOGIC1 relations.	page=2 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	• Adjunct <sub>MNR,</sub> PRP–These Tags such tags as ADV, often TMP, translate DIR, into LOC, a	page=2 xpos=5 ypos=4 right-column left-indent font-largest hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	single LOGIC1 tag (ADV). However, some of	page=2 xpos=5 ypos=5 right-column left-indent indented-line headchar-lower
+I-Listitem	these also correspond to LOGIC1 arguments.	page=2 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower tailchar-period
+I-Listitem	In particular, some DIR and MNR tags are re-	page=2 xpos=5 ypos=5 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Listitem	alized as LOGIC1 COMP relations (based on	page=2 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower
+I-Listitem	dictionary entries). The fine grained seman-	page=2 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tic distinctions are maintained in other features	page=2 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower
+I-Listitem	that are part of the GLARF description.	page=2 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	In addition, GLARF treats Penn’s PRN phrasal	page=2 xpos=5 ypos=6 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	category as a relation rather than a phrasal category.	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	For example, given a sentence like, Banana ketchup,	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	the agency claims, is very nutritious, the phrase	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the agency claims is analyzed as an S(entence) in	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	GLARF bearing a (surface) PAREN relation to the	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	main clause. Furthermore, the whole sentence is a	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	COMP of the verb claims. Since PAREN is a SUR-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	FACE relation, not a LOGIC1 relation, there is no	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	LOGIC1 cycle as shown by the set of 5-tuples in	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	Figure 3– a cycle only exists if you include both	page=2 xpos=5 ypos=8 right-column full-justified aligned-line string-figure headchar-capital
+E-Body	SURFACE and LOGIC1 relations in a single graph.	page=2 xpos=5 ypos=8 right-column centered right-indent aligned-line headchar-capital tailchar-period
+B-Body	Another important feature of the GLARF frame-	page=2 xpos=5 ypos=9 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Body	work is transparency, a term originating from N.	page=2 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-period page-bottom
+B-Figure	L1 Surf L2 Func Arg	page=3 xpos=0 ypos=0 left-column left-indent right-indent page-top headchar-capital
+I-Figure	NIL SBJ ARG1 is ketchup	page=3 xpos=0 ypos=0 left-column left-indent right-indent aligned-line longer-tail headchar-capital
+I-Figure	PRD PRD ARG2 is nutritious	page=3 xpos=0 ypos=0 left-column left-indent right-over aligned-line longer-tail headchar-capital
+I-Figure	SBJ NIL NIL nutritious Ketchup	page=3 xpos=0 ypos=0 left-column left-indent aligned-line shorter-tail headchar-capital
+I-Figure	ADV ADV NIL nutritious very	page=3 xpos=0 ypos=0 left-column left-indent right-indent aligned-line shorter-tail headchar-capital
+I-Figure	N-POS N-POS NIL ketchup Banana	page=3 xpos=0 ypos=1 left-column left-indent right-indent aligned-line longer-tail headchar-capital
+I-Figure	NIL PAREN NIL is claims	page=3 xpos=0 ypos=1 left-column left-indent right-indent aligned-line shorter-tail headchar-capital
+I-Figure	SBJ SBJ ARG0 claims agency	page=3 xpos=0 ypos=1 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Figure	Q-POS Q-POS NIL agency the	page=3 xpos=0 ypos=1 left-column left-indent right-indent aligned-line shorter-tail headchar-capital
+E-Figure	COMP NIL ARG1 claims is	page=3 xpos=0 ypos=1 left-column left-indent right-indent aligned-line shorter-tail headchar-capital above-double-space above-line-space
+B-Caption	Figure 3: 5-tuples: Banana Ketchup, the agency claims,	page=3 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space string-figure headchar-capital tailchar-comma
+E-Caption	is very nutritious	page=3 xpos=0 ypos=2 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower above-double-space above-line-space
+Figure	__Figure 3__	page=3 xpos=-1 ypos=2 left-column left-over right-indent box longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 4: 5-tuples: John and Mary ate the box of cookies	page=3 xpos=0 ypos=4 left-column full-justified font-smallest longer-tail line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+I-Body	Sager’s unpublished work. A relation between two	page=3 xpos=0 ypos=4 left-column full-justified aligned-line line-blank-line line-double-space line-space headchar-capital
+I-Body	words is transparent if: the functor fails to character-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ize the selectional properties of the phrase (or sub-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	graph in a Dependency Analysis), but its argument	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	does. For example, relations between conjunctions	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	(e.g., and, or, but) and their conjuncts are transparent	page=3 xpos=0 ypos=5 left-column full-justified aligned-line
+I-Body	CONJ relations. Thus although and links together	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	John and Mary, it is these dependents that deter-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	mine that the resulting phrase is noun-like (an NP	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	in phrase structure terminology) and sentient (and	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	thus can occur as the subject of verbs like ate). An-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	other common example of transparent relations are	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the relations connecting certain nouns and the prepo-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sitional objects under them, e.g., the box of cookies	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	is edible, because cookies are edible even though	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	boxes are not. These features are marked in the	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	NOMLEX-PLUS dictionary (Meyers et al., 2004b).	page=3 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-capital tailchar-period
+I-Body	In Figure 4, we represent transparent relations, by	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+E-Body	prefixing the LOGIC1 label with asterisks.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The above description most accurately describes	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	English GLARF. However, Chinese GLARF has	page=3 xpos=0 ypos=8 left-column full-justified hanged-line headchar-capital
+I-Body	most of the same properties, the main exception be-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing that PDTB arguments are not currently marked.	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	149	page=3 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	For Japanese, we have only a preliminary represen-	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-capital tailchar-hiphen
+I-Body	tation of LOGIC2 relations and they are not derived	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	from PropBank/NomBank/PDTB.	page=3 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.1 Scoring the LOGIC1 Structure	page=3 xpos=5 ypos=0 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	For purposes of scoring, we chose to focus on	page=3 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	LOGIC1 relations, our proposed high-performance	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	level of semantics. We scored with respect to: the	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	LOGIC1 relational label, the identity of the functor	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	and the argument, and whether the relation is trans-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	parent or not. If the system output differs in any of	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	these respects, the relation is marked wrong. The	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	following sections will briefly describe each system	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	and present an evaluation of its results.	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The answer keys for each language were created	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	by native speakers editing system output, as repre-	page=3 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sented similarly to the examples in this paper, al-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	though part of speech is included for added clar-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity. In addition, as we attempted to evaluate logi-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cal relation (or dependency) accuracy independent	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	of sentence splitting. We obtained sentence divi-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sions from data providers and treebank annotation	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	for all the Japanese and most of the English data, but	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	used automatic sentence divisions for the English	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	BLOG data. For the Chinese, we omitted several	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	sentences from our evaluation set due to incorrect	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	sentence splits. The English and Japanese answer	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	keys were annotated by single native speakers ex-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pert in GLARF. The Chinese data was annotated by	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	several native speakers and may have been subject	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	to some interannotator agreement difficulties, which	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	we intend to resolve in future work. Currently, cor-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	recting system output is the best way to create an-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	swer keys due to certain ambiguities in the frame-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	work, some of which we hope to incorporate into fu-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture scoring procedures. For example, consider the	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	interpretation of the phrase five acres of land in Eng-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	land with respect to PP attachment. The difference	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in meaning between attaching the PP in England	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	to acres or to land is too subtle for these authors–	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	we have difficulty imagining situations where one	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	statement would be accurate and the other would	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	not. This ambiguity is completely predictable be-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cause acres is a transparent noun and similar ambi-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guities hold for all such cases where a transparent	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	noun takes a complement and is followed by a PP	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	attachment. We believe that a more complex scor-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing program could account for most of these cases.	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-period page-bottom
+I-Body	Similar complexities arise for coordination and sev-	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-capital tailchar-hiphen
+E-Body	eral other phenomena.	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 English GLARF	page=4 xpos=0 ypos=0 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We generate English GLARF output by applying a	page=4 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	procedure that combines:	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	1. The output of the 2005 version of the Charniak	page=4 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-double-space line-space itemization year
+I-Listitem	parser described in (Charniak, 2001), which	page=4 xpos=0 ypos=1 left-column left-indent indented-line year headchar-lower
+I-Listitem	label precision and recall scores in the 85%	page=4 xpos=0 ypos=1 left-column left-indent aligned-line headchar-lower
+I-Listitem	range. The updated version of the parser seems	page=4 xpos=0 ypos=2 left-column left-indent aligned-line headchar-lower
+I-Listitem	to perform closer to 90% on News data and per-	page=4 xpos=0 ypos=2 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	form lower on other genres. That performance	page=4 xpos=0 ypos=2 left-column left-indent aligned-line headchar-lower
+I-Listitem	would reflect reports on other versions of the	page=4 xpos=0 ypos=2 left-column left-indent aligned-line headchar-lower
+I-Listitem	Charniak parser for which statistics are avail-	page=4 xpos=0 ypos=2 left-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Listitem	able (Foster and van Genabith, 2008).	page=4 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	2. Named entity (NE) tags from the JET NE sys-	page=4 xpos=0 ypos=3 left-column left-indent hanged-line longer-tail line-double-space line-space itemization tailchar-hiphen
+I-Listitem	tem (Ji and Grishman, 2006), which achieves	page=4 xpos=0 ypos=3 left-column left-indent indented-line year headchar-lower
+I-Listitem	F-scores ranging 86%-91% on newswire for	page=4 xpos=0 ypos=3 left-column left-indent aligned-line headchar-capital
+I-Listitem	both English and Chinese (depending on	page=4 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower
+I-Listitem	Epoch). The JET system identifies seven	page=4 xpos=0 ypos=4 left-column left-indent aligned-line headchar-capital
+I-Listitem	classes of NEs: Person, GPE, Location, Orga-	page=4 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	nization, Facility, Weapon and Vehicle.	page=4 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	3. Machine Readable dictionaries: COMLEX	page=4 xpos=0 ypos=4 left-column left-indent hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	(Macleod et al., 1998), NOMBANK dictio-	page=4 xpos=0 ypos=5 left-column left-indent indented-line year tailchar-hiphen
+I-Listitem	naries (from http://nlp.cs.nyu.edu/	page=4 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Listitem	meyers/nombank/) and others.	page=4 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	4. A sequence of hand-written rules (citations	page=4 xpos=0 ypos=5 left-column left-indent hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	omitted) such that: (1) the first set of rules con-	page=4 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	vert the Penn Treebank into a Feature Structure	page=4 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Listitem	representation; and (2) each rule N after the	page=4 xpos=0 ypos=6 left-column left-indent font-largest aligned-line headchar-lower
+I-Listitem	first rule is applied to an entire Feature Struc-	page=4 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ture that is the output of rule N − 1.	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	For this paper, we evaluated the English output for	page=4 xpos=0 ypos=7 left-column left-indent hanged-line longer-tail line-space headchar-capital
+I-Body	several different genres, all of which approximately	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	track parsing results for that genre. For written	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	genres, we chose between 40 and 50 sentences.	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For speech transcripts, we chose 100 sentences–we	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	chose this larger number because a lot of so-called	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	sentences contained text with empty logical de-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scriptions, e.g., single word utterances contain no	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	relations between pairs of words. Each text comes	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	from a different genre. For NEWS text, we used 50	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	sentences from the aligned Japanese-English data	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	created as part of the JENAAD corpus (Utiyama	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	150	page=4 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Table	__Table 1__	page=4 xpos=5 ypos=-1 right-column left-over right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 1: English Aggregate Scores	page=4 xpos=6 ypos=1 right-column centered left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+Table	__Table 2__	page=4 xpos=5 ypos=1 right-column left-over right-indent box hanged-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 2: English Score per Sentence	page=4 xpos=6 ypos=3 right-column centered left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space string-table headchar-capital above-blank-line above-double-space above-line-space
+I-Body	and Isahara, 2003); the web text (BLOGs) was	page=4 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space year headchar-lower
+I-Body	taken from some corpora provided by the Linguistic	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	Data Consortium through the GALE (http:	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-colon
+I-Body	//projects.ldc.upenn.edu/gale/) pro-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line tailchar-hiphen
+I-Body	gram; the LETTer genre (a letter from Good Will)	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	was taken from the ICIC Corpus of Fundraising	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	Texts (Indiana Center for Intercultural Communi-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	cation); Finally, we chose two spoken language	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	transcripts: a TELEphone conversation from	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the Switchboard Corpus (http://www.ldc.	page=4 xpos=5 ypos=5 right-column centered right-over aligned-line headchar-lower tailchar-period
+I-Body	upenn.edu/Catalog/readme_files/	page=4 xpos=5 ypos=5 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower above-line-space
+I-Body	switchboard.readme.html) and one NAR-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-space headchar-lower tailchar-hiphen
+I-Body	Rative from the Charlotte Narrative and Conversa-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tion Collection (http://newsouthvoices.	page=4 xpos=5 ypos=6 right-column centered right-over aligned-line headchar-lower tailchar-period
+I-Body	uncc.edu/cncc.php). In both cases, we	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	assumed perfect sentence splitting (based on Penn	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	Treebank annotation). The ICIC, Switchboard	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	and Charlotte texts that we used are part of the	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	Open American National Corpus (OANC), in	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	particular, the SIGANN shared subcorpus of the	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	OANC (http://nlp.cs.nyu.edu/wiki/	page=4 xpos=5 ypos=7 right-column centered right-over aligned-line headchar-capital
+E-Body	corpuswg/ULA-OANC-1) (Meyers et al., 2007).	page=4 xpos=5 ypos=7 right-column right-indent aligned-line year headchar-lower tailchar-period above-line-space
+B-Body	Comparable work for English includes: (1) (Gab-	page=4 xpos=5 ypos=7 right-column left-indent indented-line line-space headchar-capital tailchar-hiphen
+I-Body	bard et al., 2006), a system which reproduces the	page=4 xpos=5 ypos=8 right-column full-justified hanged-line year headchar-lower
+I-Body	function tags of the Penn Treebank with 89% accu-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	racy and empty categories (and their antecedents)	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	with varying accuracies ranging from 82.2% to	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	96.3%, excluding null complementizers, as these are	page=4 xpos=5 ypos=8 right-column full-justified aligned-line
+I-Body	theory-internal and have no value for filling gaps.	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	(2) Current systems that generate LFG F-structure	page=4 xpos=5 ypos=9 right-column full-justified aligned-line itemization page-bottom
+I-Body	such as (Wagner et al., 2007) which achieve an F	page=5 xpos=0 ypos=0 left-column full-justified page-top year headchar-lower
+I-Body	score of 91.1 on the F-structure PRED relations,	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	which are similar to our LOGIC1 relations.	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	4 Chinese GLARF	page=5 xpos=0 ypos=0 left-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The Chinese GLARF program takes a Chinese	page=5 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	Treebank-style syntactic parse and the output of a	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	Chinese PropBanker (Xue, 2008) as input, and at-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	tempts to determine the relations between the head	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	and its dependents within each constituent. It does	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	this by first exploiting the structural information	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	and detecting six broad categories of syntactic rela-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions that hold between the head and its dependents.	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	These are predication, modification, complementa-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tion, coordination, auxiliary, and flat. Predication	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	holds at the clause level between the subject and the	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	predicate, where the predicate is considered to be	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the head and the subject is considered to the depen-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dent. Modification can also hold mainly within NPs	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	and VPs, where the dependents are modifiers of the	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	NP head or adjuncts to the head verb. Coordination	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	holds almost for all phrasal categories where each	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	non-punctuation child within this constituent is ei-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ther conjunction or a conjunct. The head in a co-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ordination structure is underspecified and can be ei-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ther a conjunct or a conjunction depending on the	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	grammatical framework. Complementation holds	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	between a head and its complement, with the com-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plement usually being a core argument of the head.	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For example, inside a PP, the preposition is the head	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	and the phrase or clause it takes is the dependent. An	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	auxiliary structure is one where the auxiliary takes	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	a VP as its complement. This structure is identi-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	fied so that the auxiliary and the verb it modifies can	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	form a verb group in the GLARF framework. Flat	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	structures are structures where a constituent has no	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	meaningful internal structure, which is possible in a	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	small number of cases. After these six broad cate-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gories of relations are identified, more fine-grained	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	relation can be detected with additional information.	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Figure 5 is a sample 4-tuple for a Chinese translation	page=5 xpos=0 ypos=8 left-column full-justified aligned-line string-figure headchar-capital
+E-Body	of the sentence in figure 3.	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	For the results reported in Table 3, we used the	page=5 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	Harper and Huang parser described in (Harper and	page=5 xpos=0 ypos=8 left-column full-justified hanged-line headchar-capital
+I-Body	Huang, Forthcoming) which can achieve F-scores	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	as high as 85.2%, in combination with informa-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion about named entities from the output of the	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	151	page=5 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 5__	page=5 xpos=5 ypos=-1 right-column left-over right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 5: Agency claims, Banana Ketchup is very have	page=5 xpos=5 ypos=3 right-column full-justified font-smallest indented-line longer-tail line-double-space line-space string-figure headchar-capital
+E-Caption	nutrition DE.	page=5 xpos=5 ypos=4 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	JET Named Entity tagger for Chinese (86%-91% F-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	measure as per section 3). We used the NE tags to	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	adjust the parts of speech and the phrasal boundaries	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of named entities (we do the same with English).	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	As shown in Table 3, we tried two versions of the	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	Harper and Huang parser, one which adds function	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	tags to the output and one that does not. The Chinese	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	GLARF system scores significantly (13.9% F-score)	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	higher given function tagged input, than parser out-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put without function tags. Our current score is about	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	10 points lower than the parser score. Our initial er-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line numbered-heading1 tailchar-hiphen
+I-Body	ror analysis suggests that the most common forms	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of errors involve: (1) the processing of long NPs;	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-semicolon
+I-Body	(2) segmentation and POS errors; (3) conjunction	page=5 xpos=5 ypos=7 right-column full-justified aligned-line itemization
+E-Body	scope; and (4) modifier attachment.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Japanese GLARF	page=5 xpos=5 ypos=7 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	For Japanese, we process text with the KNP parser	page=5 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	(Kurohashi and Nagao, 1998) and convert the output	page=5 xpos=5 ypos=8 right-column full-justified aligned-line year
+I-Body	into the GLARF framework. The KNP/Kyoto Cor-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pus framework is a Japanese-specific Dependency	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	framework, very different from the Penn Treebank	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	framework used for the other systems. Process-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing in Japanese proceeds as follows: (1) we pro-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cess the Japanese with the Juman segmenter (Kuro-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+Table	__Table 3__	page=6 xpos=-1 ypos=-2 left-column left-over right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 3: 53 Chinese Newswire Sentences: Aggregate and	page=6 xpos=0 ypos=0 left-column full-justified font-smallest longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	Average Sentence Scores	page=6 xpos=0 ypos=0 left-column right-indent font-smallest aligned-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+I-Body	hashi et al., 1994) and KNP parser 2.0 (Kurohashi	page=6 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space year headchar-lower
+I-Body	and Nagao, 1998), which has reported accuracy of	page=6 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower
+I-Body	91.32% F score for dependency accuracy, as re-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line tailchar-hiphen
+I-Body	ported in (Noro et al., 2005). As is standard in	page=6 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower
+I-Body	Japanese linguistics, the KNP/Kyoto Corpus (K)	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	framework uses a dependency analysis that has some	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	features of a phrase structure analysis. In partic-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ular, the dependency relations are between bun-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	setsu, small constituents which include a head word	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	and some number of modifiers which are typically	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	function words (particles, auxiliaries, etc.), but can	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	also be prenominal noun modifiers. Bunsetsu can	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	also include multiple words in the case of names.	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The K framework differentiates types of dependen-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	cies into: the normal head-argument variety, coor-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dination (or parallel) and apposition. We convert	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the head-argument variety of dependency straight-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	forwardly into a phrase consisting of the head and	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	all the arguments. In a similar way, appositive re-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lations could be represented using an APPOSITIVE	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	relation (as is currently done with English). In the	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	case of bunsetsu, the task is to choose a head and	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	label the other constituents–This is very similar to	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	our task of labeling and subdividing the flat noun	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	phrases of the English Penn Treebank. Conjunction	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	is a little different because the K analysis assumes	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	that the final conjunct is the functor, rather than a	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	conjunction. We automatically changed this analy-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sis to be the same as it is for English and Chinese.	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	When there was no actual conjunction, we created a	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	theory-internal NULL conjunction. The final stages	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	include: (1) processing conjunction and apposition,	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	including recognizing cases that the parser does not	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	recognize; (2) correcting parts of speech; (3) label-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing all relations between arguments and heads; (4)	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	recognizing and labeling special constituent types	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	152	page=6 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 6__	page=6 xpos=5 ypos=-2 right-column left-over right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 6: It is the state’s duty to protect lives and assets.	page=6 xpos=5 ypos=2 right-column centered left-indent right-indent font-smallest longer-tail line-double-space line-space string-figure headchar-capital tailchar-period above-double-space above-line-space
+Table	__Table 4__	page=6 xpos=5 ypos=3 right-column left-over right-indent box hanged-line shorter-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 4: 40 Japanese Sentences from JENAA Corpus:	page=6 xpos=5 ypos=4 right-column full-justified font-smallest longer-tail line-double-space line-space string-table headchar-capital tailchar-colon
+E-Caption	Aggregate and Average Sentence Scores	page=6 xpos=5 ypos=4 right-column right-indent font-smallest aligned-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+I-Body	such as Named Entities, double quote constituents	page=6 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	and number phrases (twenty one); (5) handling com-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mon idioms; and (6) processing light verb and cop-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ula constructions.	page=6 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Figure 6 is a sample 4-tuple for a Japanese	page=6 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space string-figure headchar-capital
+I-Body	sentence meaning It is the state’s duty to protect	page=6 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	lives and assets. Conjunction is handled as dis-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cussed above, using an invisible NULL conjunction	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	and transparent (asterisked) logical CONJ relations.	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Copulas in all three languages take surface subjects,	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	which are the LOGIC1 subjects of the PRD argu-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment of the copula. We have left out glosses for the	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	particles, which act solely as case markers and help	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	us identify the grammatical relation.	page=6 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We scored Japanese GLARF on forty sentences of	page=6 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	the Japanese side of the JENAA data (25 of which	page=6 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	are parallel with the English sentences scored). Like	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the English, the F score is very close to the parsing	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	scores achieved by the parser.	page=6 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-SectionHeader	6 Concluding Remarks and Future Work	page=7 xpos=0 ypos=0 left-column right-indent font-larger page-top numbered-heading1 above-double-space above-line-space
+B-Body	In this paper, we have described three systems	page=7 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	for generating GLARF representations automati-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cally from text, each system combines the out-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put of a parser and possibly some other processor	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	(segmenter, Named Entity Recognizer, PropBanker,	page=7 xpos=0 ypos=1 left-column full-justified aligned-line tailchar-comma
+I-Body	etc.) and creates a logical representation of the sen-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence. Dictionaries, word lists, and various other	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	resources are used, in conjunction with hand writ-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ten rules. In each case, the results are very close to	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	parsing accuracy. These logical structures are in the	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	same annotation framework, using the same labeling	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	scheme and the same analysis for key types of con-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structions. There are several advantages to our ap-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach over other characterizations of logical struc-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture: (1) our representation is among the most accu-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rate and reliable; (2) our representation connects all	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the words in the sentence; and (3) having the same	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	representation for multiple languages facilitates run-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ning the same procedures in multiple languages and	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	creating multilingual applications.	page=7 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The English system was developed for the News	page=7 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	genre, specifically the Penn Treebank Wall Street	page=7 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	Journal Corpus. We are therefore considering	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	adding rules to better handle constructions that ap-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pear in other genres, but not news. The experi-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments describe here should go a long way towards	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	achieving this goal. We are also considering ex-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	periments with parsers tailored to particular genres	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	and/or parsers that add function tags (Harper et al.,	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2005). In addition, our current GLARF system uses	page=7 xpos=0 ypos=6 left-column full-justified aligned-line year
+I-Body	internal Propbank/NomBank rules, which have good	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	precision, but low recall. We expect that we achieve	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	better results if we incorporate the output of state	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	of the art SRL systems, although we would have to	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	conduct experiments as to whether or not we can im-	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	prove such results with additional rules.	page=7 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We developed the English system over the course	page=7 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	of eight years or so. In contrast, the Chinese and	page=7 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	Japanese systems are newer and considerably less	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	time was spent developing them. Thus they cur-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rently do not represent as many regularizations. One	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	obstacle is that we do not currently use subcate-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gorization dictionaries for either language, while	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	we have several for English. In particular, these	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	would be helpful in predicting and filling relative	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	clause and others gaps. We are considering auto-	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	153	page=7 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	matically acquiring simple dictionaries by recording	page=7 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	frequently occurring argument types of verbs over	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	a larger corpus, e.g., along the lines of (Kawahara	page=7 xpos=5 ypos=0 right-column full-justified aligned-line itemization headchar-lower
+I-Body	and Kurohashi, 2002). In addition, existing Japanese	page=7 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+I-Body	dictionaries such as the IPAL (monolingual) dictio-	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nary (technology Promotion Agency, 1987) or previ-	page=7 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ously acquired case information reported in (Kawa-	page=7 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	hara and Kurohashi, 2002).	page=7 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	Finally, we are investigating several avenues for	page=7 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	using this system output for Machine Translation	page=7 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	(MT) including: (1) aiding word alignment for other	page=7 xpos=5 ypos=2 right-column full-justified aligned-line
+I-Body	MT system (Wang et al., 2007); and (2) aiding the	page=7 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-capital
+I-Body	creation various MT models involving analyzed text,	page=7 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	e.g., (Gildea, 2004; Shen et al., 2008).	page=7 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgments	page=7 xpos=5 ypos=2 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	This work was supported by NSF Grant IIS-	page=7 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+E-Acknowledgement	0534700 Structure Alignment-based MT.	page=7 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	C. F. Baker, C. J. Fillmore, and J. B. Lowe. 1998. The	page=7 xpos=5 ypos=4 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Berkeley FrameNet Project. In Coling-ACL98, pages	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	86–90.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	E. Charniak. 2001. Immediate-head parsing for language	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	models. In ACL 2001, pages 116–123.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-lower tailchar-period
+B-Reference	N. Chomsky. 1957. Syntactic Structures. Mouton, The	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Hague.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period
+B-Reference	M. Collins. 1999. Head-Driven Statistical Models for	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Natural Language Parsing. Ph.D. thesis, University	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	of Pennsylvania.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	J. Foster and J. van Genabith. 2008. Parser Evaluation	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	and the BNC: 4 Parsers and 3 Evaluation Metrics. In	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	LREC 2008, Marrakech, Morocco.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	R. Gabbard, M. Marcus, and S. Kulick. 2006. Fully pars-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ing the penn treebank. In NAACL/HLT, pages 184–	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	191.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	D. Gildea. 2004. Dependencies vs. Constituents for	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Tree-Based Alignment. In EMNLP, Barcelona.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period
+B-Reference	J. Hajič, M. Ciaramita, R. Johansson, D. Kawahara,	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-comma
+I-Reference	M. A. Martı́, L. Màrquez, A. Meyers, J. Nivre, S. Padó,	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-capital tailchar-comma
+I-Reference	J. Štěpánek, P. Straňák, M. Surdeanu, N. Xue, and	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Y. Zhang. 2009. The CoNLL-2009 shared task:	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line year headchar-capital tailchar-colon
+I-Reference	Syntactic and semantic dependencies in multiple lan-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	guages. In CoNLL-2009, Boulder, Colorado, USA.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period
+B-Reference	M. Harper and Z. Huang. Forthcoming. Chinese Statis-	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Reference	tical Parsing. In J. Olive, editor, Global Autonomous	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Language Exploitation. Publisher to be Announced.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	M. Harper, B. Dorr, J. Hale, B. Roark, I. Shafran,	page=7 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-comma
+I-Reference	M. Lease, Y. Liu, M. Snover, L. Yung, A. Krasnyan-	page=7 xpos=5 ypos=9 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	skaya, and R. Stewart. 2005. Parsing and Spoken	page=7 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line year headchar-lower page-bottom
+I-Reference	Structural Event. Technical Report, The John-Hopkins	page=8 xpos=0 ypos=0 left-column left-indent font-smallest page-top headchar-capital
+I-Reference	University, 2005 Summer Research Workshop.	page=8 xpos=0 ypos=0 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	Z. Harris. 1968. Mathematical Structures of Language.	page=8 xpos=0 ypos=0 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Wiley-Interscience, New York.	page=8 xpos=0 ypos=0 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period
+B-Reference	J. R. Hobbs and R. Grishman. 1976. The Automatic	page=8 xpos=0 ypos=0 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Transformational Analysis of English Sentences: An	page=8 xpos=0 ypos=0 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Implementation. International Journal of Computer	page=8 xpos=0 ypos=1 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Mathematics, 5:267–283.	page=8 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	H. Ji and R. Grishman. 2006. Analysis and Repair of	page=8 xpos=0 ypos=1 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Name Tagger Errors. In COLING/ACL 2006, Sydney,	page=8 xpos=0 ypos=1 left-column left-indent font-smallest indented-line year headchar-capital tailchar-comma
+I-Reference	Australia.	page=8 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	K. Parton and K. R. McKeown and R. Coyne and M. Diab	page=8 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	and R. Grishman and D. Hakkani-Tür and M. Harper	page=8 xpos=0 ypos=2 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	and H. Ji and W. Y. Ma and A. Meyers and S. Stol-	page=8 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	bach and A. Sun and G. Tür and W. Xu and S. Yarman.	page=8 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	2009. Who, What, When, Where, Why? Comparing	page=8 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line year
+I-Reference	Multiple Approaches to the Cross-Lingual 5W Task.	page=8 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-capital tailchar-period
+I-Reference	In ACL 2009.	page=8 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	D. Kawahara and S. Kurohashi. 2002. Fertilization	page=8 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	of Case Frame Dictionary for Robust Japanese Case	page=8 xpos=0 ypos=3 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Analysis. In Proc. of COLING 2002.	page=8 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	S. Kurohashi and M. Nagao. 1998. Building a Japanese	page=8 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	parsed corpus while improving the parsing system. In	page=8 xpos=0 ypos=3 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Proceedings of The 1st International Conference on	page=8 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Language Resources & Evaluation, pages 719–724.	page=8 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	S. Kurohashi, T. Nakamura, Y. Matsumoto, and M. Na-	page=8 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Reference	gao. 1994. Improvements of Japanese Morpholog-	page=8 xpos=0 ypos=4 left-column left-indent font-smallest indented-line year headchar-lower tailchar-hiphen
+I-Reference	ical Analyzer JUMAN. In Proc. of International	page=8 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Workshop on Sharable Natural Language Resources	page=8 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	(SNLR), pages 22–28.	page=8 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	C. Macleod, R. Grishman, and A. Meyers. 1998. COM-	page=8 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	LEX Syntax. Computers and the Humanities, 31:459–	page=8 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	481.	page=8 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	M. P. Marcus, B. Santorini, and M. A. Marcinkiewicz.	page=8 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-period
+I-Reference	1994. Building a large annotated corpus of en-	page=8 xpos=0 ypos=6 left-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	glish: The penn treebank. Computational Linguistics,	page=8 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	19(2):313–330.	page=8 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	A. Meyers, M. Kosaka, S. Sekine, R. Grishman, and	page=8 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	S. Zhao. 2001. Parsing and GLARFing. In Proceed-	page=8 xpos=0 ypos=6 left-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	ings of RANLP-2001, Tzigov Chark, Bulgaria.	page=8 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period
+B-Reference	A. Meyers, R. Reeves, C. Macleod, R. Szekely, V. Zielin-	page=8 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Reference	ska, B. Young, and R. Grishman. 2004a. The Nom-	page=8 xpos=0 ypos=7 left-column left-indent font-smallest indented-line year headchar-lower tailchar-hiphen
+I-Reference	Bank Project: An Interim Report. In NAACL/HLT	page=8 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	2004 Workshop Frontiers in Corpus Annotation,	page=8 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line year tailchar-comma
+I-Reference	Boston.	page=8 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	A. Meyers, R. Reeves, Catherine Macleod, Rachel Szeke-	page=8 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Reference	ley, Veronkia Zielinska, and Brian Young. 2004b. The	page=8 xpos=0 ypos=8 left-column left-indent font-smallest indented-line year headchar-lower
+I-Reference	Cross-Breeding of Dictionaries. In Proceedings of	page=8 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	LREC-2004, Lisbon, Portugal.	page=8 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	A. Meyers, N. Ide, L. Denoyer, and Y. Shinyama. 2007.	page=8 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	The shared corpora working group report. In Pro-	page=8 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	ceedings of The Linguistic Annotation Workshop, ACL	page=8 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	2007, pages 184–190, Prague, Czech Republic.	page=8 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail year tailchar-period above-blank-line above-double-space above-line-space
+Page	154	page=8 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Reference	A. Meyers. 2008. Using treebank, dictionaries and	page=8 xpos=5 ypos=0 right-column full-justified font-smallest column-top year headchar-capital
+I-Reference	glarf to improve nombank annotation. In Proceedings	page=8 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of The Linguistic Annotation Workshop, LREC 2008,	page=8 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-comma
+I-Reference	Marrakesh, Morocco.	page=8 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	E. Miltsakaki, A. Joshi, R. Prasad, and B. Webber. 2004.	page=8 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Annotating discourse connectives and their arguments.	page=8 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-capital tailchar-period
+I-Reference	In A. Meyers, editor, NAACL/HLT 2004 Workshop:	page=8 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line year headchar-capital tailchar-colon
+I-Reference	Frontiers in Corpus Annotation, pages 9–16, Boston,	page=8 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	Massachusetts, USA, May 2 - May 7. Association for	page=8 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Computational Linguistics.	page=8 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	T. Noro, C. Koike, T. Hashimoto, T. Tokunaga, and	page=8 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	Hozumi Tanaka. 2005. Evaluation of a Japanese CFG	page=8 xpos=5 ypos=1 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	Derived from a Syntactically Annotated corpus with	page=8 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Respect to Dependency Measures. In 2005 Workshop	page=8 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line year headchar-capital
+I-Reference	on Treebanks and Linguistic theories, pages 115–126.	page=8 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+B-Reference	M. Palmer, D. Gildea, and P. Kingsbury. 2005. The	page=8 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line year headchar-capital
+I-Reference	Proposition Bank: An annotated corpus of semantic	page=8 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	roles. Computational Linguistics, 31(1):71–106.	page=8 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	J. Pustejovsky, A. Meyers, M. Palmer, and M. Poe-	page=8 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Reference	sio. 2005. Merging PropBank, NomBank, TimeBank,	page=8 xpos=5 ypos=3 right-column left-indent font-smallest indented-line year headchar-lower tailchar-comma
+I-Reference	Penn Discourse Treebank and Coreference. In ACL	page=8 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	2005 Workshop: Frontiers in Corpus Annotation II:	page=8 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line year tailchar-colon
+I-Reference	Pie in the Sky.	page=8 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	L. Shen, J. Xu, and R. Weischedel. 2008. A New String-	page=8 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	to-Dependency Machine Translation Algorithm with a	page=8 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Target Dependency Language Model. In ACL 2008.	page=8 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	Y. Shinyama. 2007. Being Lazy and Preemptive at	page=8 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Learning toward Information Extraction. Ph.D. the-	page=8 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	sis, NYU.	page=8 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	M. Surdeanu, R. Johansson, A. Meyers, Ll. Márquez,	page=8 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-comma
+I-Reference	and J. Nivre. 2008. The CoNLL-2008 Shared Task	page=8 xpos=5 ypos=5 right-column left-indent font-smallest indented-line year headchar-lower
+I-Reference	on Joint Parsing of Syntactic and Semantic Dependen-	page=8 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	cies. In Proceedings of the CoNLL-2008 Shared Task,	page=8 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-comma
+I-Reference	Manchester, GB.	page=8 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Information technology Promotion Agency. 1987. IPA	page=8 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Lexicon of the Japanese Language for Computers	page=8 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	IPAL (Basic Verbs). (in Japanese).	page=8 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	M. Utiyama and H. Isahara. 2003. Reliable Measures	page=8 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	for Aligning Japanese-English News Articles and Sen-	page=8 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tences. In ACL-2003, pages 72–79.	page=8 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period
+B-Reference	J. Wagner, D. Seddah, J. Foster, and J. van Genabith.	page=8 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-period
+I-Reference	2007. C-Structures and F-Structures for the British	page=8 xpos=5 ypos=7 right-column left-indent font-smallest indented-line year
+I-Reference	National Corpus. In Proceedings of the Twelfth In-	page=8 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	ternational Lexical Functional Grammar Conference,	page=8 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	Stanford. CSLI Publications.	page=8 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	C. Wang, M. Collins, and P. Koehn. 2007. Chinese syn-	page=8 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tactic reordering for statistical machine translation. In	page=8 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	EMNLP-CoNLL 2007, pages 737–745.	page=8 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	N. Xue, F. Xia, F. Chiou, and M. Palmer. 2005. The	page=8 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Penn Chinese TreeBank: Phrase Structure Annotation	page=8 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	of a Large Corpus. Natural Language Engineering,	page=8 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	11:207–238.	page=8 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	N. Xue. 2008. Labeling Chinese Predicates with Seman-	page=8 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tic roles. Computational Linguistics, 34:225–255.	page=8 xpos=5 ypos=9 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period

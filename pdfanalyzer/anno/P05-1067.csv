@@ -1,0 +1,713 @@
+Title	Machine Translation Using Probabilistic	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital
+Title	Synchronous Dependency Insertion Grammars	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Author	Yuan Ding Martha Palmer	page=0 xpos=2 ypos=0 left-column left-indent right-over font-larger column-top line-blank-line line-double-space line-space headchar-capital column-bottom
+B-Affiliation	Department of Computer and Information Science	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent column-top headchar-capital
+I-Affiliation	University of Pennsylvania	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent indented-line shorter-tail headchar-capital
+Address	Philadelphia, PA 19104, USA	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent hanged-line longer-tail year headchar-capital
+Email	{yding, mpalmer}@linc.cis.upenn.edu	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent hanged-line longer-tail symbol-atmark column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	Syntax-based statistical machine transla-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	tion (MT) aims at applying statistical	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	models to structured data. In this paper,	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-comma
+I-Abstract	we present a syntax-based statistical ma-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	chine translation system based on a prob-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	abilistic synchronous dependency	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	insertion grammar. Synchronous depend-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ency insertion grammars are a version of	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	synchronous grammars defined on de-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	pendency trees. We first introduce our	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	approach to inducing such a grammar	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	from parallel corpora. Second, we de-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	scribe the graphical model for the ma-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	chine translation task, which can also be	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	viewed as a stochastic tree-to-tree trans-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ducer. We introduce a polynomial time	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	decoding algorithm for the model. We	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	evaluate the outputs of our MT system us-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing the NIST and Bleu automatic MT	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	evaluation software. The result shows that	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	our system outperforms the baseline sys-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tem based on the IBM models in both	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	translation speed and quality.	page=0 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Statistical approaches to machine translation, pio-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	neered by (Brown et al., 1993), achieved impres-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	sive performance by leveraging large amounts of	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	parallel corpora. Such approaches, which are es-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sentially stochastic string-to-string transducers, do	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	not explicitly model natural language syntax or	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	semantics. In reality, pure statistical systems some-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	times suffer from ungrammatical outputs, which	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	are understandable at the phrasal level but some-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	times hard to comprehend as a coherent sentence.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In recent years, syntax-based statistical machine	page=0 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital above-blank-line above-double-space above-line-space
+Page	541	page=0 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	translation, which aims at applying statistical mod-	page=0 xpos=5 ypos=1 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	els to structural data, has begun to emerge. With	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the research advances in natural language parsing,	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	especially the broad-coverage parsers trained from	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	treebanks, for example (Collins, 1999), the utiliza-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tion of structural analysis of different languages	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	has been made possible. Ideally, by combining the	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	natural language syntax and machine learning	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	methods, a broad-coverage and linguistically well-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	motivated statistical MT system can be constructed.	page=0 xpos=5 ypos=3 right-column right-over aligned-line headchar-lower tailchar-period
+B-Body	However, structural divergences between lan-	page=0 xpos=5 ypos=3 right-column left-indent indented-line headchar-capital tailchar-hiphen above-line-space
+I-Body	guages (Dorr, 1994)，which are due to either sys-	page=0 xpos=5 ypos=3 right-column full-justified hanged-line line-space year headchar-lower tailchar-hiphen
+I-Body	tematic differences between languages or loose	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower above-line-space
+I-Body	translations in real corpora，pose a major chal-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line line-space headchar-lower tailchar-hiphen
+I-Body	lenge to syntax-based statistical MT. As a result,	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the syntax based MT systems have to transduce	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	between non-isomorphic tree structures.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	(Wu, 1997) introduced a polynomial-time solu-	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail year tailchar-hiphen
+I-Body	tion for the alignment problem based on synchro-	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	nous binary trees. (Alshawi et al., 2000) represents	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower
+I-Body	each production in parallel dependency trees as a	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	finite-state transducer. Both approaches learn the	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	tree representations directly from parallel sen-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences, and do not make allowances for non-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	isomorphic structures. (Yamada and Knight, 2001,	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2002) modeled translation as a sequence of tree	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year
+I-Body	operations transforming a syntactic tree into a	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	string of the target language.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	When researchers try to use syntax trees in both	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	languages, the problem of non-isomorphism must	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	be addressed. In theory, stochastic tree transducers	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	and some versions of synchronous grammars pro-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vide solutions for the non-isomorphic tree based	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	transduction problem and hence possible solutions	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	for MT. Synchronous Tree Adjoining Grammars,	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	proposed by (Shieber and Schabes, 1990), were	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	introduced primarily for semantics but were later	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	also proposed for translation. Eisner (2003) pro-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	posed viewing the MT problem as a probabilistic	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	synchronous tree substitution grammar parsing	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of the 43rd Annual Meeting of the ACL, pages 541–548,	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Footer	Ann Arbor, June 2005.  2005 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail year headchar-capital page-bottom
+I-Body	problem. Melamed (2003, 2004) formalized the	page=1 xpos=0 ypos=0 left-column full-justified page-top year headchar-lower
+I-Body	MT problem as synchronous parsing based on	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	multitext grammars. Graehl and Knight (2004) de-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	fined training and decoding algorithms for both	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	generalized tree-to-tree and tree-to-string transduc-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ers. All these approaches, though different in for-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	malism, model the two languages using tree-based	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	transduction rules or a synchronous grammar, pos-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sibly probabilistic, and using multi-lemma elemen-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tary structures as atomic units. The machine	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	translation is done either as a stochastic tree-to-tree	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	transduction or a synchronous parsing process.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	However, few of the above mentioned formal-	page=1 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	isms have large scale implementations. And to the	page=1 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	best of our knowledge, the advantages of syntax	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	based statistical MT systems over pure statistical	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	MT systems have yet to be empirically verified.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	We believe difficulties in inducing a synchro-	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	nous grammar or a set of tree transduction rules	page=1 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	from large scale parallel corpora are caused by:	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	1. The abilities of synchronous grammars and	page=1 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail itemization
+I-Listitem	tree transducers to handle non-isomorphism	page=1 xpos=0 ypos=3 left-column left-indent indented-line headchar-lower
+I-Listitem	are limited. At some level, a synchronous	page=1 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower
+I-Listitem	derivation process must exist between the	page=1 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower
+I-Listitem	source and target language sentences.	page=1 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	2. The training and/or induction of a synchro-	page=1 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail itemization tailchar-hiphen
+I-Listitem	nous grammar or a set of transduction rules	page=1 xpos=0 ypos=4 left-column left-indent indented-line headchar-lower
+I-Listitem	are usually computationally expensive if all	page=1 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Listitem	the possible operations and elementary struc-	page=1 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tures are allowed. The exhaustive search for	page=1 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Listitem	all the possible sub-sentential structures in a	page=1 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Listitem	syntax tree of a sentence is NP-complete.	page=1 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	3. The problem is aggravated by the non-perfect	page=1 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail itemization
+I-Listitem	training corpora. Loose translations are less of	page=1 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower
+I-Listitem	a problem for string based approaches than for	page=1 xpos=0 ypos=6 left-column left-indent aligned-line itemization headchar-lower
+I-Listitem	approaches that require syntactic analysis.	page=1 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Hajic et al. (2002) limited non-isomorphism by	page=1 xpos=0 ypos=6 left-column left-indent hanged-line longer-tail year headchar-capital
+I-Body	n-to-m matching of nodes in the two trees. How-	page=1 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ever, even after extending this model by allowing	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	cloning operations on subtrees, Gildea (2003)	page=1 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	found that parallel trees over-constrained the	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	alignment problem, and achieved better results	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	with a tree-to-string model than with a tree-to-tree	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	model using two trees. In a different approach,	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	Hwa et al. (2002) aligned the parallel sentences	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-capital
+I-Body	using phrase based statistical MT models and then	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	projected the alignments back to the parse trees.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	This motivated us to look for a more efficient	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	and effective way to induce a synchronous gram-	page=1 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	mar from parallel corpora and to build an MT sys-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem that performs competitively with the pure	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	542	page=1 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	statistical MT systems. We chose to build the syn-	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	chronous grammar on the parallel dependency	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	structures of the sentences. The synchronous	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	grammar is induced by hierarchical tree partition-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing operations. The rest of this paper describes the	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	system details as follows: Sections 2 and 3 de-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scribe the motivation behind the usage of depend-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ency structures and how a version of synchronous	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	dependency grammar is learned. This grammar is	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	used as the primary translation knowledge source	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	for our system. Section 4 defines the tree-to-tree	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	transducer and the graphical model for the stochas-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic tree-to-tree transduction process and introduces	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	a polynomial time decoding algorithm for the	page=1 xpos=5 ypos=2 right-column full-justified aligned-line itemization headchar-lower
+I-Body	transducer. We evaluate our system in section 5	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	with the NIST/Bleu automatic MT evaluation	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	software and the results are discussed in Section 6.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 The Synchronous Grammar	page=1 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	2.1 Why Dependency Structures?	page=1 xpos=5 ypos=3 right-column right-indent aligned-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	According to Fox (2002), dependency representa-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Body	tions have the best inter-lingual phrasal cohesion	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	properties. The percentage for head crossings is	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	12.62% and that of modifier crossings is 9.22%.	page=1 xpos=5 ypos=4 right-column full-justified aligned-line tailchar-period
+I-Body	Furthermore, a grammar based on dependency	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	structures has the advantage of being simple in	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	formalism yet having CFG equivalent formal gen-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	erative capacity (Ding and Palmer, 2004b).	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	Dependency structures are inherently lexical-	page=1 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ized as each node is one word. In comparison,	page=1 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	phrasal structures (treebank style trees) have two	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	node types: terminals store the lexical items and	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	non-terminals store word order and phrasal scopes.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 S ynchronous D ependency I nsertion G rammars	page=1 xpos=5 ypos=6 right-column centered right-indent aligned-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Ding and Palmer (2004b) described one version of	page=1 xpos=5 ypos=6 right-column full-justified aligned-line line-double-space line-space year headchar-capital
+I-Body	synchronous grammar: Synchronous Dependency	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	Insertion Grammars. A Dependency Insertion	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	Grammars (DIG) is a generative grammar formal-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ism that captures word order phenomena within the	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	dependency representation. In the scenario of two	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	languages, the two sentences in the source and tar-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	get languages can be modeled as being generated	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	from a synchronous derivation process.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	A synchronous derivation process for the two	page=1 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	syntactic structures of both languages suggests the	page=1 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	level of cross-lingual isomorphism between the	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	two trees (e.g. Synchronous Tree Adjoining	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	Grammars (Shieber and Schabes, 1990)).	page=1 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period page-bottom
+B-Body	Apart from other details, a DIG can be viewed	page=2 xpos=0 ypos=0 left-column left-indent page-top headchar-capital
+I-Body	as a tree substitution grammar defined on depend-	page=2 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ency trees (as opposed to phrasal structure trees).	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The basic units of the grammar are elementary	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	trees (ET), which are sub-sentential dependency	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	structures containing one or more lexical items.	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The synchronous version, SDIG, assumes that the	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	isomorphism of the two syntactic structures is at	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the ET level, rather than at the word level, hence	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	allowing non-isomorphic tree to tree mapping.	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We illustrate how the SDIG works using the	page=2 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	following pseudo-translation example:	page=2 xpos=0 ypos=2 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	y [Source] The girl kissed her kitty cat.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line longer-tail itemization headchar-lower tailchar-period
+B-Listitem	y [Target] The girl gave a kiss to her cat.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line longer-tail itemization headchar-lower tailchar-period above-line-space
+Figure	__Figure 1__	page=2 xpos=0 ypos=2 left-column left-indent right-indent font-largest indented-line shorter-tail line-space figure-area
+B-Caption	Figure 1.	page=2 xpos=3 ypos=2 left-column left-indent right-indent indented-line longer-tail string-figure headchar-capital tailchar-period
+E-Caption	An example	page=2 xpos=3 ypos=3 left-column left-indent right-indent hanged-line longer-tail headchar-capital
+Figure	__Figure 2__	page=2 xpos=0 ypos=3 left-column left-indent right-indent box hanged-line shorter-tail figure-area
+B-Caption	Figure 2.	page=2 xpos=3 ypos=4 left-column left-indent right-indent indented-line longer-tail string-figure headchar-capital tailchar-period
+I-Caption	Tree-to-tree	page=2 xpos=3 ypos=4 left-column left-indent right-indent hanged-line longer-tail headchar-capital
+E-Caption	transduction	page=2 xpos=3 ypos=4 left-column left-indent right-indent headchar-lower above-blank-line above-double-space above-line-space
+B-Body	Almost any tree-transduction operations de-	page=2 xpos=0 ypos=5 left-column left-indent hanged-line line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	fined on a single node will fail to generate the tar-	page=2 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	get sentence from the source sentence without	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	using insertion/deletion operations. However, if we	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	view each dependency tree as an assembly of indi-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	visible sub-sentential elementary trees (ETs), we	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	can find a proper way to transduce the input tree to	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the output tree. An ET is a single “symbol” in a	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	transducer’s language. As shown in Figure 2, each	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	circle stands for an ET and thick arrows denote the	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	transduction of each ET as a single symbol.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Inducing a Synchronous Dependency	page=2 xpos=0 ypos=7 left-column full-justified font-larger aligned-line longer-tail line-double-space line-space numbered-heading1
+I-SectionHeader	Insertion Grammar	page=2 xpos=0 ypos=7 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	As the start to our syntax-based SMT system, the	page=2 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+E-Body	SDIG must be learned from the parallel corpora.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 Cross-lingual Dependency Inconsistencies	page=2 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	One straightforward way to induce a generative	page=2 xpos=0 ypos=8 left-column full-justified aligned-line line-double-space line-space headchar-capital
+I-Body	grammar is using EM style estimation on the gen-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erative process. Different versions of such training	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	algorithms can be found in (Hajic et al., 2002; Eis-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	543	page=2 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+E-Body	ner 2003; Gildea 2003; Graehl and Knight 2004).	page=2 xpos=5 ypos=0 right-column right-indent column-top year headchar-lower tailchar-period
+B-Body	However, a synchronous derivation process	page=2 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	cannot handle two types of cross-language map-	page=2 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	pings: crossing-dependencies (parent-descendent	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	switch) and broken dependencies (descendent ap-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pears elsewhere), which are illustrated below:	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+Figure	__Figure 3__	page=2 xpos=5 ypos=1 right-column centered left-indent right-indent box longer-tail line-double-space line-space figure-area above-line-space
+B-Caption	Figure 3. Cross-lingual dependency consistencies	page=2 xpos=5 ypos=2 right-column centered left-indent right-indent line-space string-figure headchar-capital above-double-space above-line-space
+B-Body	In the above graph, the two sides are English	page=2 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	and the foreign dependency trees. Each node in a	page=2 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	tree stands for a lemma in a dependency tree. The	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	arrows denote aligned nodes and those resulting	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	inconsistent dependencies are marked with a “*”.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Fox (2002) collected the statistics mainly on	page=2 xpos=5 ypos=3 right-column left-indent indented-line longer-tail year headchar-capital
+I-Body	French and English data: in dependency represen-	page=2 xpos=5 ypos=3 right-column full-justified hanged-line headchar-capital tailchar-hiphen
+I-Body	tations, the percentage of head crossings per	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	chance (case [b] in the graph) is 12.62%.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Using the statistics on cross-lingual dependency	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	consistencies from a small word to word aligned	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	Chinese-English parallel corpus <sup>1</sup> , we found that the	page=2 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-capital
+I-Body	percentage of crossing-dependencies (case [b])	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	between Chinese and English is 4.7% while that of	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	broken dependencies (case [c]) is 59.3%.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The large number of broken dependencies pre-	page=2 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	sents a major challenge for grammar induction	page=2 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+E-Body	based on a top-down style EM learning process.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Such broken and crossing dependencies can be	page=2 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	modeled by SDIG if they appear inside a pair of	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	elementary trees. However, if they appear between	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the elementary trees, they are not compatible with	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the isomorphism assumption on which SDIG is	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	based. Nevertheless, the hope is that the fact that	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the training corpus contains a significant percent-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	age of dependency inconsistencies does not mean	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	that during decoding the target language sentence	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	cannot be written in a dependency consistent way.	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Grammar Induction by Synchronous	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	Hierarchical Tree Partitioning	page=2 xpos=5 ypos=8 right-column left-indent right-indent indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	(Ding and Palmer, 2004a) gave a polynomial time	page=2 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space year
+I-Body	solution for learning parallel sub-sentential de-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+B-Footnote	<sup>1</sup> Total 826 sentence pairs, 9957 Chinese words, 12660 Eng-	page=2 xpos=5 ypos=9 right-column right-indent font-smaller aligned-line shorter-tail line-blank-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	lish words. Data made available by the courtesy of Microsoft	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line headchar-lower
+I-Footnote	Research, Asia and IBM T.J. Watson Research.	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period page-bottom
+I-Body	pendency structures from non-isomorphic depend-	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	ency trees. Our approach, while similar to (Ding	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	and Palmer, 2004a) in that we also iteratively parti-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tion the parallel dependency trees based on a heu-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ristic function, departs (Ding and Palmer, 2004a)	page=3 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower
+I-Body	in three ways: (1) we base the hierarchical tree par-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	titioning operations on the categories of the de-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pendency trees; (2) the statistics of the resultant	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	tree pairs from the partitioning operation are col-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lected at each iteration rather than at the end of the	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	algorithm; (3) we do not re-train the word to word	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	probabilities at each iteration. Our grammar induc-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion algorithm is sketched below:	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Algorithm	Step 0. View each tree as a “bag of words” and train a	page=3 xpos=0 ypos=2 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Algorithm	statistical translation model on all the tree pairs to	page=3 xpos=0 ypos=2 left-column left-indent font-smallest indented-line headchar-lower
+I-Algorithm	acquire word-to-word translation probabilities. In	page=3 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-lower
+I-Algorithm	our implementation, the IBM Model 1 (Brown et	page=3 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower
+I-Algorithm	al., 1993) is used.	page=3 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period
+I-Algorithm	Step 1. Let i denote the current iteration and let	page=3 xpos=0 ypos=3 left-column right-indent hanged-line longer-tail headchar-capital
+I-Algorithm	C = CategorySequence [ i ] be the current syntac-	page=3 xpos=0 ypos=3 left-column left-indent right-indent font-largest indented-line longer-tail headchar-capital tailchar-hiphen above-line-space
+I-Algorithm	tic category set.	page=3 xpos=0 ypos=3 left-column left-indent right-indent font-smallest shorter-tail line-space headchar-lower tailchar-period
+I-Algorithm	For each tree pair in the corpus, do {	page=3 xpos=0 ypos=3 left-column right-indent font-smallest hanged-line longer-tail headchar-capital
+I-Algorithm	a) For the tentative synchronous partitioning opera-	page=3 xpos=0 ypos=4 left-column left-indent right-indent font-smallest indented-line longer-tail headchar-lower tailchar-hiphen
+I-Algorithm	tion, use a heuristic function to select the BEST word	page=3 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line longer-tail headchar-lower above-line-space
+I-Algorithm	pair ( e <sub>i</sub> * , f j * ) , where both e i * , f j * are NOT “chosen”,	page=3 xpos=0 ypos=4 left-column left-indent font-largest aligned-line longer-tail line-space headchar-lower tailchar-comma above-line-space
+I-Algorithm	Category ( e <sub>i</sub> * ) ∈ C and Category ( f <sub>j</sub> * ) ∈ C .	page=3 xpos=0 ypos=4 left-column left-indent right-indent font-largest shorter-tail line-space headchar-capital tailchar-period above-double-space above-line-space
+I-Algorithm	b) If ( e <sub>i</sub> * , f j * ) is found in (a), mark e i * , f j * as “cho-	page=3 xpos=0 ypos=4 left-column left-indent font-largest longer-tail line-double-space line-space headchar-lower tailchar-hiphen above-line-space
+I-Algorithm	sen” and go back to (a), else go to (c).	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-lower tailchar-period
+I-Algorithm	c) Execute the synchronous tree partitioning opera-	page=3 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line longer-tail headchar-lower tailchar-hiphen
+I-Algorithm	tion on all the “chosen” word pairs on the tree pair.	page=3 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Algorithm	Hence, several new tree pairs are created. Replace the	page=3 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-capital
+I-Algorithm	old tree pair with the new tree pairs together with the	page=3 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower
+I-Algorithm	rest of the old tree pair.	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+I-Algorithm	d) Collect the statistics for all the new tree pairs as	page=3 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line longer-tail headchar-lower
+I-Algorithm	elementary tree pairs. }	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower
+E-Algorithm	Step 2. i = i + 1 . Go to Step 1 for the next iteration.	page=3 xpos=0 ypos=6 left-column right-indent font-largest hanged-line longer-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Body	At each iteration, one specific set of categories	page=3 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	of nodes is handled. The category sequence we	page=3 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	used in the grammar induction is:	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	1. Top-NP: the noun phrases that do not have	page=3 xpos=0 ypos=7 left-column left-indent indented-line longer-tail itemization
+I-Listitem	another noun phrase as parent or ancestor.	page=3 xpos=0 ypos=7 left-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-period
+B-Listitem	2. NP: all the noun phrases	page=3 xpos=0 ypos=7 left-column left-indent right-indent hanged-line shorter-tail itemization
+B-Listitem	3. VP, IP, S, SBAR: verb phrases equivalents.	page=3 xpos=0 ypos=8 left-column left-indent aligned-line longer-tail itemization tailchar-period
+B-Listitem	4. PP, ADJP, ADVP, JJ, RB: all the modifiers	page=3 xpos=0 ypos=8 left-column left-indent aligned-line itemization
+B-Listitem	5. CD: all the numbers.	page=3 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail itemization tailchar-period
+B-Body	We first process top NP chunks because they are	page=3 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail headchar-capital
+I-Body	the most stable between languages. Interestingly,	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	NPs are also used as anchor points to learn mono-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	lingual paraphrases (Ibrahim et al., 2003). The	page=3 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower
+I-Body	phrasal structure categories can be extracted from	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	544	page=3 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+E-Body	automatic parsers using methods in (Xia, 2001).	page=3 xpos=5 ypos=0 right-column right-indent column-top year headchar-lower tailchar-period
+B-Body	An illustration is given below (Chinese in pin-	page=3 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	yin form). The placement of the dependency arcs	page=3 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	reflects the relative word order between a parent	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	node and all its immediate children. The collected	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	ETs are put into square boxes and the partitioning	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital
+E-Body	operations taken are marked with dotted arrows.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Figure	y [English] I have been in Canada since 1947.	page=3 xpos=5 ypos=1 right-column right-indent font-smallest aligned-line shorter-tail itemization year headchar-lower tailchar-period
+I-Figure	y [Chinese] Wo 1947 nian yilai yizhi zhu zai jianada.	page=3 xpos=5 ypos=1 right-column right-over font-smallest aligned-line longer-tail itemization year headchar-lower tailchar-period
+I-Figure	y [Glossary] I 1947 year since always live in Canada	page=3 xpos=5 ypos=1 right-column right-indent font-smallest aligned-line shorter-tail itemization year headchar-lower above-double-space above-line-space
+I-Figure	[ I TERATION 1 & 2 ] Partition at word pair	page=3 xpos=5 ypos=1 right-column centered left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space
+I-Figure	(“I” and “wo”) (“Canada” and “janada”)	page=3 xpos=5 ypos=2 right-column centered left-indent right-indent font-smallest above-blank-line above-double-space above-line-space
+I-Figure	[ I TERATION 3 ] (“been” and “zhu”) are chosen but no	page=3 xpos=5 ypos=3 right-column centered left-indent right-indent font-smallest hanged-line longer-tail line-blank-line line-double-space line-space
+I-Figure	partition operation is taken because they are roots.	page=3 xpos=5 ypos=3 right-column centered left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+I-Figure	[ I TERATION 4 ] Partition at word pair	page=3 xpos=5 ypos=4 right-column centered left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space
+I-Figure	(“since” and “yilai”) (“in” and “zai”)	page=3 xpos=5 ypos=4 right-column centered left-indent right-indent font-smallest aligned-line above-blank-line above-double-space above-line-space
+I-Figure	[ I TERATION 5 ] Partition at “1947” and “1947”	page=3 xpos=5 ypos=6 right-column centered left-indent right-indent font-smallest hanged-line longer-tail line-blank-line line-double-space line-space year above-blank-line above-double-space above-line-space
+E-Figure	[ F INALLY ] Total of 6 resultant ET pairs (figure omitted)	page=3 xpos=5 ypos=7 right-column right-over font-smallest hanged-line longer-tail line-blank-line line-double-space line-space above-line-space
+B-Caption	Figure 4. An Example	page=3 xpos=6 ypos=8 right-column centered left-indent right-indent indented-line shorter-tail line-space string-figure headchar-capital above-double-space above-line-space
+B-SubsectionHeader	3.3 Heuristics	page=3 xpos=5 ypos=8 right-column right-indent hanged-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Similar to (Ding and Palmer, 2004a), we also use a	page=3 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Body	heuristic function in Step 1(a) of the algorithm to	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	rank all the word pairs for the tentative tree parti-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+I-Body	tioning operation. The heuristic function is based	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	on a set of heuristics, most of which are similar to	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	those in (Ding and Palmer, 2004a).	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Body	For a word pair ( e <sub>i</sub> , f j ) for the tentative parti-	page=4 xpos=0 ypos=0 left-column left-indent font-largest indented-line longer-tail line-space headchar-capital tailchar-hiphen above-line-space
+I-Body	tioning operation, we briefly describe the heuristics:	page=4 xpos=0 ypos=0 left-column right-over hanged-line line-space headchar-lower tailchar-colon
+B-Listitem	y Inside-outside probabilities: We borrow the	page=4 xpos=0 ypos=1 left-column full-justified aligned-line itemization headchar-lower
+I-Listitem	idea from PCFG parsing. This is the probabil-	page=4 xpos=0 ypos=1 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	ity of an English subtree (inside) generating a	page=4 xpos=0 ypos=1 left-column left-indent aligned-line headchar-lower
+I-Listitem	foreign subtree and the probability of the Eng-	page=4 xpos=0 ypos=1 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	lish residual tree (outside) generating a for-	page=4 xpos=0 ypos=1 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	eign residual tree. Here both probabilities are	page=4 xpos=0 ypos=1 left-column left-indent aligned-line headchar-lower
+I-Listitem	based on a “bag of words” model.	page=4 xpos=0 ypos=2 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	y Inside-outside penalties: here the probabilities	page=4 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail itemization headchar-lower
+I-Listitem	of the inside English subtree generating the	page=4 xpos=0 ypos=2 left-column left-indent indented-line headchar-lower
+I-Listitem	outside foreign residual tree and outside Eng-	page=4 xpos=0 ypos=2 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	lish residual tree generating the inside English	page=4 xpos=0 ypos=2 left-column left-indent aligned-line headchar-lower
+I-Listitem	subtree are used as penalty terms.	page=4 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	y Entropy: the entropy of the word to word	page=4 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail itemization headchar-lower above-line-space
+I-Listitem	translation probability of the English word e <sub>i</sub> .	page=4 xpos=0 ypos=3 left-column left-indent right-indent font-largest indented-line line-space headchar-lower tailchar-period
+B-Listitem	y Part-of-Speech mapping template: whether the	page=4 xpos=0 ypos=3 left-column full-justified hanged-line itemization headchar-lower
+I-Listitem	POS tags of the two words are in the “highly	page=4 xpos=0 ypos=3 left-column left-indent indented-line headchar-capital
+I-Listitem	likely to match” POS tag pairs.	page=4 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	y Word translation probability: P( f <sub>j</sub> | e i ) .	page=4 xpos=0 ypos=4 left-column right-indent font-largest hanged-line longer-tail line-space itemization headchar-lower tailchar-period above-line-space
+B-Listitem	y Rank: the rank of the word to word probabil-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-space itemization headchar-lower tailchar-hiphen above-line-space
+I-Listitem	ity of f <sub>j</sub> in as a translation of e i among all	page=4 xpos=0 ypos=4 left-column left-indent font-largest indented-line line-space headchar-lower above-line-space
+I-Listitem	the foreign words in the current tree.	page=4 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail line-space headchar-lower tailchar-period
+B-Body	The above heuristics are a set of real valued	page=4 xpos=0 ypos=5 left-column left-indent hanged-line longer-tail headchar-capital
+I-Body	numbers. We use a Maximum Entropy model to	page=4 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	interpolate the heuristics in a log-linear fashion,	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which is different from the error minimization	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	training in (Ding and Palmer, 2004a).	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Equation	P ( y | h 0 ( e i , f j ), h 1 ( e i , f j )... h n ( e i , f j ) )	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail headchar-capital above-line-space
+I-Equation	(1)	page=4 xpos=4 ypos=6 left-column left-indent right-indent indented-line longer-tail line-space
+I-Equation	= 1 exp  ∑ λ h ( e , f ) + λ 	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	Z   k k k i j s  	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-largest indented-line headchar-capital
+I-Body	where y = (0,1) as labeled in the training data	page=4 xpos=0 ypos=6 left-column left-indent font-largest hanged-line longer-tail headchar-lower above-line-space
+E-Body	whether the two words are mapped with each other.	page=4 xpos=0 ypos=7 left-column right-over hanged-line line-space headchar-lower tailchar-period
+B-Body	The MaxEnt model is trained using the same	page=4 xpos=0 ypos=7 left-column left-indent indented-line headchar-capital
+I-Body	word level aligned parallel corpus as the one in	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	Section 3.1. Although the training corpus isn’t	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	large, the fact that we only have a handful of pa-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	rameters to fit eased the problem.	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.4 A Scaled-down SDIG	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	It is worth noting that the set of derived parallel	page=4 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	dependency Elementary Trees is not a full-fledged	page=4 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	SDIG yet. Many features in the SDIG formalism	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	such as arguments, head percolation, etc. are not	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	545	page=4 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	yet filled. We nevertheless use this derived gram-	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	mar as a Mini-SDIG, assuming the unfilled fea-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures as empty by default. A full-fledged SDIG	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	remains a goal for future research.	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 The Machine Translation System	page=4 xpos=5 ypos=0 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	4.1 System Architecture	page=4 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	As discussed before (see Figure 1 and 2), the archi-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tecture of our syntax based statistical MT system is	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	illustrated in Figure 5. Note that this is a non-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	deterministic process. The input sentence is first	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	parsed using an automatic parser and a dependency	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	tree is derived. The rest of the pipeline can be	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	viewed as a stochastic tree transducer. The MT	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	decoding starts first by decomposing the input de-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pendency tree in to elementary trees. Several dif-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent results of the decomposition are possible.	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Each decomposition is indeed a derivation process	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	on the foreign side of SDIG. Then the elementary	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	trees go through a transfer phase and target ETs are	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	combined together into the output.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+Figure	__Figure 5__	page=4 xpos=5 ypos=4 right-column left-indent right-indent box indented-line longer-tail line-space figure-area
+B-Caption	Figure 5. System architecture	page=4 xpos=6 ypos=5 right-column left-indent right-indent indented-line shorter-tail string-figure headchar-capital above-double-space above-line-space
+B-SubsectionHeader	4.2 The Graphical Model	page=4 xpos=5 ypos=5 right-column right-indent hanged-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The stochastic tree-to-tree transducer we propose	page=4 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+E-Body	models MT as a probabilistic optimization process.	page=4 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower tailchar-period
+B-Body	Let f be the input sentence (foreign language),	page=4 xpos=5 ypos=6 right-column left-indent indented-line headchar-capital tailchar-comma above-line-space
+I-Body	and e be the output sentence (English). We have	page=4 xpos=5 ypos=6 right-column full-justified hanged-line line-space headchar-lower above-line-space
+I-Body	P( e | f ) = P( f | e ) P( e ) , and the best translation is:	page=4 xpos=5 ypos=6 right-column left-indent right-indent font-largest shorter-tail line-space headchar-capital tailchar-colon
+B-Equation	P( f )	page=4 xpos=6 ypos=6 right-column left-indent right-indent indented-line shorter-tail headchar-capital above-line-space
+I-Equation	e * = arg max P( f | e ) P( e ) (2)	page=4 xpos=6 ypos=7 right-column left-indent right-indent font-largest hanged-line longer-tail line-space itemization headchar-lower
+I-Equation	e	page=4 xpos=6 ypos=7 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-line-space
+B-Body	P( f | e ) and P( e ) are also known as the “trans-	page=4 xpos=5 ypos=7 right-column left-indent hanged-line longer-tail line-space headchar-capital tailchar-hiphen above-line-space
+I-Body	lation model” (TM) and the “language model”	page=4 xpos=5 ypos=7 right-column full-justified hanged-line line-space headchar-lower
+I-Body	(LM). Assuming the decomposition of the foreign	page=4 xpos=5 ypos=7 right-column full-justified aligned-line
+I-Body	tree is given, our approach, which is based on ETs,	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	uses the graphical model shown in Figure 6.	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the model, the left side is the input depend-	page=4 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ency tree (foreign language) and the right side is	page=4 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	the output dependency tree (English). Each circle	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	stands for an ET. The solid lines denote the syntac-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tical dependencies while the dashed arrows denote	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	the statistical dependencies.	page=4 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Figure	__Figure 6__	page=5 xpos=0 ypos=0 left-column left-indent right-indent box page-top figure-area
+B-Caption	Figure 6	page=5 xpos=3 ypos=0 left-column left-indent right-indent indented-line longer-tail string-figure headchar-capital
+I-Caption	The graphical	page=5 xpos=3 ypos=0 left-column left-indent right-indent hanged-line longer-tail headchar-capital
+E-Caption	model	page=5 xpos=3 ypos=0 left-column left-indent right-indent indented-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-Body	Let T( x ) be the dependency tree constructed	page=5 xpos=0 ypos=1 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital above-line-space
+I-Body	from sentence x . A tree-decomposition function	page=5 xpos=0 ypos=1 left-column full-justified hanged-line line-space headchar-lower
+I-Body	D( t ) is defined on a dependency tree t , and out-	page=5 xpos=0 ypos=1 left-column left-indent headchar-capital tailchar-hiphen above-line-space
+I-Body	puts a certain ET derivation tree of t , which is	page=5 xpos=0 ypos=1 left-column full-justified line-space headchar-lower above-line-space
+I-Body	generated by decomposing t into ETs. Given t ,	page=5 xpos=0 ypos=2 left-column full-justified aligned-line line-space headchar-lower tailchar-comma
+I-Body	there could be multiple decompositions. Condi-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tioned on decomposition D , we can rewrite (2) as:	page=5 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower tailchar-colon
+B-Equation	e * = arg max ∑ P( f , e | D ) P( D )	page=5 xpos=0 ypos=2 left-column left-indent right-indent font-largest indented-line shorter-tail itemization headchar-lower
+I-Equation	e D	page=5 xpos=1 ypos=2 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower
+I-Equation	(3)	page=5 xpos=4 ypos=2 left-column left-indent right-indent indented-line longer-tail
+I-Equation	= arg max ∑ P( f | e , D ) P( e | D ) P( D )	page=5 xpos=0 ypos=2 left-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	e D	page=5 xpos=1 ypos=3 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower above-line-space
+B-Body	By definition, the ET derivation trees of the in-	page=5 xpos=0 ypos=3 left-column left-indent hanged-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	put and output trees should be isomorphic:	page=5 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-colon
+I-Body	D(T( f )) ≅ D(T( e )) . Let Tran( u ) be a set of possi-	page=5 xpos=0 ypos=3 left-column left-indent font-largest headchar-capital tailchar-hiphen above-line-space
+I-Body	ble translations for the ET u . We have:	page=5 xpos=0 ypos=3 left-column right-indent shorter-tail line-space headchar-lower tailchar-colon
+B-Equation	P( f | e , D ) = P(T( f ) | P(T( e ), D )	page=5 xpos=0 ypos=4 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-line-space
+I-Equation	(4)	page=5 xpos=4 ypos=4 left-column left-indent right-indent indented-line longer-tail line-space
+I-Equation	u ∈ D(T( f )), v ∈ ∏ D(T( e )), v ∈ Tran( u ) P( u | v )	page=5 xpos=1 ypos=4 left-column left-indent right-indent font-largest hanged-line shorter-tail itemization headchar-lower
+I-Equation	=	page=5 xpos=1 ypos=4 left-column left-indent right-indent font-largest hanged-line shorter-tail above-blank-line above-double-space above-line-space
+B-Body	For any ET v in a given ET derivation tree d ,	page=5 xpos=0 ypos=4 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-comma above-line-space
+I-Body	let Root( d ) be the root ET of d , and let	page=5 xpos=0 ypos=4 left-column full-justified hanged-line line-space headchar-lower above-line-space
+I-Body	Parent( v ) denote the parent ET of v . We have:	page=5 xpos=0 ypos=5 left-column left-indent right-indent shorter-tail line-space headchar-capital tailchar-colon above-line-space
+B-Equation	P( e | D ) = P(T( e ) | D )	page=5 xpos=0 ypos=5 left-column left-indent right-indent font-largest shorter-tail line-space headchar-capital
+I-Equation	= P ( Root ( D(T( e ) ) ) ⋅ (5)	page=5 xpos=0 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail above-double-space above-line-space
+I-Equation	 	page=5 xpos=1 ypos=5 left-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space
+I-Equation	⋅ ∏ P( v | Parent( v )) 	page=5 xpos=0 ypos=6 left-column left-indent right-indent font-largest
+I-Equation	 v ∈ D(T( e )), v ≠ Root(D(T( e )) 	page=5 xpos=1 ypos=6 left-column left-indent right-indent font-largest above-line-space
+I-Body	where, letting root( v ) denote the root word of v ,	page=5 xpos=0 ypos=6 left-column right-indent hanged-line longer-tail line-space headchar-lower tailchar-comma
+I-Equation	P ( v | Parent( v ) ) = P ( root( v ) | root ( Parent( v ) ) ) (6)	page=5 xpos=0 ypos=6 left-column centered left-indent right-indent font-largest longer-tail headchar-capital above-line-space
+B-Body	The prior probability of tree decomposition is	page=5 xpos=0 ypos=7 left-column left-indent indented-line line-space headchar-capital
+I-Body	defined as: P ( D(T( f )) ) = ∏ <sub>f</sub> )) P( u )	page=5 xpos=0 ypos=7 left-column right-indent font-largest hanged-line shorter-tail headchar-lower
+E-Body	(7)	page=5 xpos=4 ypos=7 left-column left-indent right-indent indented-line longer-tail above-double-space above-line-space
+Figure	__Figure 7__	page=5 xpos=0 ypos=7 left-column left-indent right-indent box hanged-line shorter-tail line-double-space line-space figure-area
+B-Caption	Figure 7	page=5 xpos=3 ypos=7 left-column left-indent right-indent indented-line longer-tail string-figure headchar-capital
+I-Caption	Comparing to	page=5 xpos=2 ypos=7 left-column left-indent right-indent hanged-line longer-tail headchar-capital
+E-Caption	the HMM	page=5 xpos=3 ypos=8 left-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	An analogy between our model and a Hidden	page=5 xpos=0 ypos=8 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	Markov Model (Figure 7) may be helpful. In Eq.	page=5 xpos=0 ypos=8 left-column full-justified hanged-line headchar-capital tailchar-period
+I-Body	(4), P( u | v ) is analogous to the emission probably	page=5 xpos=0 ypos=8 left-column full-justified aligned-line above-line-space
+I-Body	P( o <sub>i</sub> | s i ) in an HMM. In Eq. (5), P( v | Parent( v )) is	page=5 xpos=0 ypos=8 left-column left-indent font-largest line-space headchar-capital above-line-space
+I-Body	analogous to the transition probability P( s <sub>i</sub> | s i <sub>−</sub> 1 ) in	page=5 xpos=0 ypos=9 left-column full-justified font-largest line-space headchar-lower above-blank-line above-double-space above-line-space
+Page	546	page=5 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	an HMM. While HMM is defined on a sequence	page=5 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+E-Body	our model is defined on the derivation tree of ETs.	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.3 Other Factors	page=5 xpos=5 ypos=0 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-BlockHeader	y Augmenting parallel ET pairs	page=5 xpos=5 ypos=0 right-column right-indent aligned-line longer-tail line-double-space line-space itemization headchar-lower above-line-space
+B-Body	In reality, the learned parallel ETs are unlikely to	page=5 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	cover all the structures that we may encounter in	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	decoding. As a unified approach, we augment the	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower above-line-space
+I-Body	SDIG by adding all the possible word pairs ( f <sub>j</sub> , e i )	page=5 xpos=5 ypos=1 right-column right-indent font-largest aligned-line line-space headchar-capital above-line-space
+I-Body	as a parallel ET pair and using the IBM Model 1	page=5 xpos=5 ypos=1 right-column full-justified aligned-line line-space headchar-lower
+I-Body	(Brown et al., 1993) word to word translation	page=5 xpos=5 ypos=2 right-column full-justified aligned-line year
+E-Body	probability as the ET translation probability.	page=5 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-BlockHeader	y Smoothing the ET translation probabilities.	page=5 xpos=5 ypos=2 right-column right-indent aligned-line longer-tail line-space itemization headchar-lower tailchar-period above-line-space
+B-Body	The LM probabilities P( v | Parent( v )) are simply	page=5 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-space headchar-capital above-line-space
+I-Body	estimated using the relative frequencies. In order to	page=5 xpos=5 ypos=2 right-column full-justified aligned-line line-space headchar-lower
+I-Body	handle possible noise from the ET pair learning	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower above-line-space
+I-Body	process, the ET translation probabilities P <sub>emp</sub> ( u | v )	page=5 xpos=5 ypos=3 right-column right-indent font-largest aligned-line line-space headchar-lower above-line-space
+I-Body	estimated by relative frequencies are smoothed	page=5 xpos=5 ypos=3 right-column full-justified aligned-line line-space headchar-lower
+I-Body	using a word level model. For each ET pair ( u , v ) ,	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma above-line-space
+I-Body	we interpolate the empirical probability with the	page=5 xpos=5 ypos=3 right-column full-justified aligned-line line-space headchar-lower
+I-Body	“bag of words” probability and then re-normalize:	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail tailchar-colon above-line-space
+B-Equation	P( u | v ) = 1 P ( u , v ) ⋅ 1 ∏ ∑ P( f | e ) (8)	page=5 xpos=5 ypos=4 right-column left-indent right-over font-largest longer-tail line-space headchar-capital
+I-Equation	Z <sup>emp</sup> size( u ) <sup>size(</sup> <sup>v</sup> ) <sub>f</sub> <sub>j</sub> ∈ u e i ∈ v <sup>j</sup> i	page=5 xpos=6 ypos=4 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-SubsectionHeader	4.4 Polynomial Time Decoding	page=5 xpos=5 ypos=4 right-column right-indent hanged-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	For efficiency reasons, we use maximum approxi-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	mation for (3). Instead of summing over all the	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	possible decompositions, we only search for the	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	best decomposition as follows:	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	e *, D * = arg max P( f | e , D ) P( e | D ) P( D ) (9)	page=5 xpos=5 ypos=5 right-column left-indent right-indent font-largest indented-line longer-tail itemization headchar-lower
+I-Equation	e , D	page=5 xpos=6 ypos=6 right-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower above-line-space
+B-Body	So bringing equations (4) to (9) together, the	page=5 xpos=5 ypos=6 right-column left-indent hanged-line longer-tail line-space headchar-capital
+I-Body	best translation would maximize:	page=5 xpos=5 ypos=6 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	∏ P( u | v ) ⋅ P ( Root( e ) ) ⋅    ∏ P( v | Parent( v ))    ⋅ ∏ P( u ) (10)	page=5 xpos=5 ypos=6 right-column left-indent right-over font-largest longer-tail line-space
+B-Body	Observing the similarity between our model	page=5 xpos=5 ypos=7 right-column left-indent indented-line headchar-capital
+I-Body	and a HMM, our dynamic programming decoding	page=5 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	algorithm is in spirit similar to the Viterbi algo-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rithm except that instead of being sequential the	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	decoding is done on trees in a top down fashion.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As to the relative orders of the ETs, we cur-	page=5 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	rently choose not to reorder the children ETs given	page=5 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	the parent ET because: (1) the permutation of the	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	ETs is computationally expensive (2) it is possible	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	that we can resort to simple linguistic treatments	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	on the output dependency tree to order the ETs.	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Currently, all the ETs are attached to each other	page=5 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital page-bottom
+E-Body	at their root nodes.	page=6 xpos=0 ypos=0 left-column right-indent page-top headchar-lower tailchar-period
+B-Body	In our implementation, the different decomposi-	page=6 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tions of the input dependency tree are stored in a	page=6 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	shared forest structure, utilizing the dynamic pro-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	gramming property of the tree structures explicitly.	page=6 xpos=0 ypos=0 left-column right-indent aligned-line headchar-lower tailchar-period
+B-Body	Suppose the input sentence has n words and	page=6 xpos=0 ypos=0 left-column left-indent font-larger indented-line headchar-capital
+I-Body	the shared forest representation has m nodes.	page=6 xpos=0 ypos=1 left-column full-justified font-larger hanged-line headchar-lower tailchar-period
+I-Body	Suppose for each word, there are maximally k	page=6 xpos=0 ypos=1 left-column right-indent font-larger aligned-line headchar-capital
+I-Body	different ETs containing it, we have m ≤ kn . Let	page=6 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	b be the max breadth factor in the packed forest, it	page=6 xpos=0 ypos=1 left-column centered left-indent font-larger itemization headchar-lower
+I-Body	can be shown that the decoder visits at most mb	page=6 xpos=0 ypos=1 left-column right-indent font-larger headchar-lower
+I-Body	nodes during execution. Hence, we have:	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	T ( decoding ) ≤ O ( kbn ) (11)	page=6 xpos=0 ypos=2 left-column left-indent right-indent font-largest indented-line longer-tail headchar-capital above-line-space
+I-Body	which is linear to the input size. Combined with a	page=6 xpos=0 ypos=2 left-column full-justified hanged-line line-space headchar-lower
+I-Body	polynomial time parsing algorithm, the whole	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	decoding process is polynomial time.	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Evaluation	page=6 xpos=0 ypos=3 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We implemented the above approach for a Chi-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	nese-English machine translation system. We used	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	an automatic syntactic parser (Bikel, 2002) to pro-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	duce the parallel parse trees. The parser was	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	trained using the Penn English/Chinese Treebanks.	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We then used the algorithm in (Xia 2001) to con-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	vert the phrasal structure trees to dependency trees	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	to acquire the parallel dependency trees. The statis-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tics of the datasets we used are shown as follows:	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+Figure	__Figure 8__	page=6 xpos=0 ypos=5 left-column centered left-indent right-indent box indented-line line-double-space line-space figure-area above-line-space
+B-Caption	Figure 8. Evaluation data details	page=6 xpos=0 ypos=6 left-column centered left-indent right-indent indented-line shorter-tail line-space string-figure headchar-capital above-line-space
+B-Body	The training set consists of Xinhua newswire	page=6 xpos=0 ypos=6 left-column left-indent hanged-line longer-tail line-space headchar-capital
+I-Body	data from LDC and the FBIS data (mostly news),	page=6 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	both filtered to ensure parallel sentence pair quality.	page=6 xpos=0 ypos=6 left-column right-over aligned-line headchar-lower tailchar-period
+I-Body	We used the development test data from the 2001	page=6 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-capital
+I-Body	NIST MT evaluation workshop as our test data for	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	the MT system performance. In the testing data,	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	each input Chinese sentence has 4 English transla-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions as references. Our MT system was evaluated	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	using the n-gram based Bleu (Papineni et al., 2002)	page=6 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	and NIST machine translation evaluation software.	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We used the NIST software package “mteval” ver-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	sion 11a, configured as case-insensitive.	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In comparison, we deployed the GIZA++ MT	page=6 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	modeling tool kit, which is an implementation of	page=6 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	the IBM Models 1 to 4 (Brown et al., 1993; Al-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	547	page=6 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	Onaizan et al., 1999; Och and Ney, 2003). The	page=6 xpos=5 ypos=0 right-column full-justified column-top year headchar-capital
+I-Body	IBM models were trained on the same training data	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital
+I-Body	as our system. We used the ISI Rewrite decoder	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	(Germann et al. 2001) to decode the IBM models.	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail year tailchar-period
+B-Body	The results are shown in Figure 9. The score	page=6 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	types “I” and “C” stand for individual and cumula-	page=6 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tive n-gram scores. The final NIST and Bleu scores	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	are marked with bold fonts.	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 9__	page=6 xpos=5 ypos=1 right-column centered left-over right-over box longer-tail line-double-space line-space figure-area
+B-Caption	Figure 9. Evaluation Results.	page=6 xpos=6 ypos=3 right-column left-indent right-indent indented-line shorter-tail string-figure headchar-capital tailchar-period above-double-space above-line-space
+B-Body	The evaluation results show that the NIST score	page=6 xpos=5 ypos=3 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	achieved a 97.3% increase, while the Bleu score	page=6 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+E-Body	increased by 21.1%.	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In terms of decoding speed, the Rewrite de-	page=6 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	coder took 8102 seconds to decode the test sen-	page=6 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tences on a Xeon 1.2GHz 2GB memory machine.	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	On the same machine, the SDIG decoder took 3	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	seconds to decode, excluding the parsing time. The	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	recent advances in parsing have achieved parsers	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower above-line-space
+I-Body	with O ( n <sup>3</sup> ) time complexity without the grammar	page=6 xpos=5 ypos=5 right-column full-justified font-larger aligned-line line-space headchar-lower above-line-space
+I-Body	constant (McDonald et al., 2005). It can be ex-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line line-space year headchar-lower tailchar-hiphen
+I-Body	pected that the total decoding time for SDIG can	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	be as short as 0.1 second per sentence.	page=6 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Neither of the two systems has any specific	page=6 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	translation components, which are usually present	page=6 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	in real world systems (E.g. components that trans-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	late numbers, dates, names, etc.) It is reasonable to	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	expect that the performance of SDIG can be further	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	improved with such specific optimizations.	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Discussions	page=6 xpos=5 ypos=7 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We noticed that the SDIG system outputs tend to	page=6 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	be longer than those of the IBM Model 4 system,	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	and are closer to human translations in length.	page=6 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 10__	page=6 xpos=5 ypos=8 right-column centered left-indent right-indent font-largest indented-line longer-tail line-double-space line-space figure-area
+B-Caption	Figure 10. Average Sentence Word Count	page=6 xpos=5 ypos=8 right-column centered left-indent right-indent indented-line shorter-tail string-figure headchar-capital above-line-space
+B-Body	This partly explains why the IBM Model 4 system	page=6 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Body	has slightly higher individual n-gram precision	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	scores (while the SDIG system outputs are still	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	better in terms of absolute matches).	page=6 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Body	The relative orders between the parent and child	page=7 xpos=0 ypos=0 left-column left-indent page-top headchar-capital
+I-Body	ETs in the output tree is currently kept the same as	page=7 xpos=0 ypos=0 left-column full-justified hanged-line headchar-capital
+I-Body	the orders in the input tree. Admittedly, we bene-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fited from the fact that both Chinese and English	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	are SVO languages, and that many of orderings	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	between the arguments and adjuncts can be kept	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	the same. However, we did notice that this simple	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	“ostrich” treatment caused outputs such as “foreign	page=7 xpos=0 ypos=1 left-column full-justified aligned-line
+E-Body	financial institutions the president of”.	page=7 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	While statistical modeling of children reorder-	page=7 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ing is one possible remedy for this problem, we	page=7 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	believe simple linguistic treatment is another, as	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the output of the SDIG system is an English	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	dependency tree rather than a string of words.	page=7 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	7 Conclusions and Future Work	page=7 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper we presented a syntax-based statisti-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	cal MT system based on a Synchronous Depend-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ency Insertion Grammar and a non-isomorphic	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	stochastic tree-to-tree transducer. A graphical	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	model for the transducer is defined and a polyno-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mial time decoding algorithm is introduced. The	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	results of our current implementation were evalu-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ated using the NIST and Bleu automatic MT	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	evaluation software. The evaluation shows that the	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	SDIG system outperforms an IBM Model 4 based	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+E-Body	system in both speed and quality.	page=7 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Future work includes a full-fledged version of	page=7 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	SDIG and a more sophisticated MT pipeline with	page=7 xpos=0 ypos=5 left-column full-justified hanged-line headchar-capital
+E-Body	possibly a tri-gram language model for decoding.	page=7 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=5 left-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Y. Al-Onaizan, J. Curin, M. Jahr, K. Knight, J. Lafferty,	page=7 xpos=0 ypos=6 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	I. D. Melamed, F. Och, D. Purdy, N. A. Smith, and D.	page=7 xpos=0 ypos=6 left-column left-indent right-over font-smallest indented-line headchar-capital tailchar-period
+I-Reference	Yarowsky. 1999. Statistical machine translation.	page=7 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line year headchar-capital tailchar-period
+I-Reference	Technical report, CLSP, Johns Hopkins University.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	H. Alshawi, S. Bangalore, S. Douglas. 2000. Learning	page=7 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	dependency translation models as collections of finite	page=7 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	state head transducers. Comp. Linguistics, 26(1):45-60.	page=7 xpos=0 ypos=7 left-column left-indent right-over font-smallest aligned-line headchar-lower tailchar-period
+B-Reference	Daniel M. Bikel. 2002. Design of a multi-lingual, paral-	page=7 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line year headchar-capital tailchar-hiphen
+I-Reference	lel-processing statistical parsing engine. In HLT 2002.	page=7 xpos=0 ypos=7 left-column left-indent right-indent font-smallest indented-line year headchar-lower tailchar-period
+B-Reference	Peter F. Brown, Stephen A. Della Pietra, Vincent J.	page=7 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line headchar-capital tailchar-period
+I-Reference	Della Pietra, and Robert Mercer. 1993. The mathe-	page=7 xpos=0 ypos=7 left-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	matics of statistical machine translation: parameter es-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	timation. Computational Linguistics, 19(2): 263-311.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Michael John Collins. 1999. Head-driven Statistical	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Models for Natural Language Parsing. Ph.D. thesis,	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-capital tailchar-comma
+I-Reference	University of Pennsylvania, Philadelphia.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Ding and Palmer. 2004a. Automatic Learning of Paral-	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	lel Dependency Treelet Pairs. In First International	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Joint Conference on NLP (IJCNLP-04).	page=7 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+Page	548	page=7 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Reference	Ding and Palmer. 2004b. Synchronous Dependency	page=7 xpos=5 ypos=0 right-column full-justified font-smallest column-top year headchar-capital
+I-Reference	Insertion Grammars: A Grammar Formalism for Syn-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	tax Based Statistical MT. Workshop on Recent Ad-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	vances in Dependency Grammars, COLING-04.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Bonnie J. Dorr. 1994. Machine translation divergences:	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-colon
+I-Reference	A formal description and proposed solution. Compu-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	tational Linguistics, 20(4): 597-633.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Jason Eisner. 2003. Learning non-isomorphic tree map-	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	pings for machine translation. In ACL-03. (compan-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ion volume), Sapporo, July.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Heidi J. Fox. 2002. Phrasal cohesion and statistical ma-	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	chine translation. In Proceedings of EMNLP-02.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period
+B-Reference	Ulrich Germann, Michael Jahr, Kevin Knight, Daniel	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	Marcu, and Kenji Yamada. 2001. Fast Decoding and	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	Optimal Decoding for Machine Translation. ACL-01.	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-capital tailchar-period
+B-Reference	Daniel Gildea. 2003. Loosely tree based alignment for	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line year headchar-capital
+I-Reference	machine translation. ACL-03, Japan.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period
+B-Reference	Jonathan Graehl and Kevin Knight. 2004. Training Tree	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Transducers. In NAACL/HLT-2004	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital
+B-Reference	Jan Hajic, et al. 2002. Natural language generation in	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	the context of machine translation. Summer workshop	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	final report, Center for Language and Speech Process-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ing, Johns Hopkins University, Baltimore.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Rebecca Hwa, Philip S. Resnik, Amy Weinberg, and	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	Okan Kolak. 2002. Evaluating translational corre-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	spondence using annotation projection. ACL-02	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower
+B-Reference	Ali Ibrahim, Boris Katz, and Jimmy Lin. 2003. Extract-	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ing Structural Paraphrases from Aligned Monolin-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	gual Corpora. In Proceedings of the Second	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	International Workshop on Paraphrasing (IWP 2003)	page=7 xpos=5 ypos=4 right-column left-indent right-over font-smallest aligned-line year headchar-capital
+B-Reference	Dan Melamed. 2004. Statistical Machine Translation by	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line year headchar-capital
+I-Reference	Parsing. In ACL-04, Barcelona, Spain.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period
+B-Reference	Dan Melamed. 2003. Multitext Grammars and Synchro-	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	nous Parsers, In NAACL/HLT-2003.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-lower tailchar-period
+B-Reference	K. Papineni, S. Roukos, T. Ward, and W. Zhu. 2002.	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	BLEU: a method for automatic evaluation of machine	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	translation. ACL-02, Philadelphia, USA.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Ryan McDonald, Koby Crammer and Fernando Pereira.	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-period
+I-Reference	2005. Online Large-Margin Training of Dependency	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line year
+I-Reference	Parsers. ACL-05.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Franz Josef Och and Hermann Ney. 2003. A Systematic	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Comparison of Various Statistical Alignment Models.	page=7 xpos=5 ypos=6 right-column left-indent right-over font-smallest indented-line headchar-capital tailchar-period
+I-Reference	Computational Linguistics, 29(1):19–51.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	S. M. Shieber and Y. Schabes. 1990. Synchronous Tree-	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	Adjoining Grammars, Proceedings of the 13th	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	COLING, pp. 253-258, August 1990.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	Dekai Wu. 1997. Stochastic inversion transduction	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	grammars and bilingual parsing of parallel corpora.	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	Computational Linguistics, 23(3):3-403.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Fei Xia. 2001. Automatic grammar generation from two	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	different perspectives. PhD thesis, U. of Pennsylvania.	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+B-Reference	Kenji Yamada and Kevin Knight. 2001. A syntax based	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line year headchar-capital
+I-Reference	statistical translation model. ACL-01, France.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period
+B-Reference	Kenji Yamada and Kevin Knight. 2002. A decoder for	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	syntax-based statistical MT. ACL-02, Philadelphi a.	page=7 xpos=5 ypos=9 right-column centered left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period

@@ -1,0 +1,733 @@
+Title	Extractive Summarization Using Supervised and Semi-supervised	page=0 xpos=0 ypos=0 single-column left-indent right-indent font-largest page-top headchar-capital above-line-space
+Title	Learning	page=0 xpos=4 ypos=0 single-column left-indent right-indent font-largest indented-line shorter-tail line-space headchar-capital column-bottom above-double-space above-line-space
+Author	Kam-Fai Wong <sup>*</sup> , Mingli Wu * † Wenjie Li <sup>†</sup>	page=0 xpos=1 ypos=0 left-column left-indent right-over font-largest column-top line-double-space line-space symbol-dagger headchar-capital column-bottom
+B-Affiliation	<sup>*</sup> Department of Systems Engineering and <sup>†</sup> Department of Computing	page=0 xpos=0 ypos=0 single-column left-indent right-indent font-largest column-top symbol-dagger headchar-super column-bottom above-line-space
+I-Affiliation	Engineering Management	page=0 xpos=1 ypos=1 left-column left-indent right-indent font-larger column-top line-space headchar-capital
+I-Affiliation	The Chinese University of Hong Kong	page=0 xpos=0 ypos=1 left-column left-indent font-larger hanged-line longer-tail headchar-capital
+Address	New Territories, Hong Kong	page=0 xpos=1 ypos=1 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital column-bottom
+B-Affiliation	The Hong Kong Polytechnic University	page=0 xpos=5 ypos=1 right-column left-indent right-indent font-larger column-top headchar-capital
+Address	Kowloon, Hong Kong	page=0 xpos=6 ypos=1 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-line-space
+Email	cswjli@comp.polyu.edu.hk	page=0 xpos=5 ypos=1 right-column left-indent right-indent font-smaller hanged-line longer-tail line-space symbol-atmark headchar-lower column-bottom above-line-space
+Email	{kfwong,mlwu}@se.cuhk.edu.hk	page=0 xpos=0 ypos=1 single-column left-indent right-indent font-smaller column-top line-space symbol-atmark column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	It is difficult to identify sentence impor-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	tance from a single point of view. In this	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	paper, we propose a learning-based ap-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	proach to combine various sentence fea-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tures. They are categorized as surface,	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-comma
+I-Abstract	content, relevance and event features.	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	Surface features are related to extrinsic	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	aspects of a sentence. Content features	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	measure a sentence based on content-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	conveying words. Event features repre-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sent sentences by events they contained.	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	Relevance features evaluate a sentence	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	from its relatedness with other sentences.	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	Experiments show that the combined fea-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	tures improved summarization perform-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ance significantly. Although the evalua-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion results are encouraging, supervised	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	learning approach requires much labeled	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	data. Therefore we investigate co-training	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	by combining labeled and unlabeled data.	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	Experiments show that this semi-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	supervised learning approach achieves	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	comparable performance to its supervised	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	counterpart and saves about half of the	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	labeling time cost.	page=0 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=7 left-column right-indent font-larger hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	<sup>1</sup> Automatic text summarization involves con-	page=0 xpos=0 ypos=7 left-column full-justified font-largest aligned-line longer-tail line-double-space line-space headchar-super tailchar-hiphen
+I-Body	densing a document or a document set to produce	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	a human comprehensible summary. Two kinds of	page=0 xpos=0 ypos=7 left-column full-justified aligned-line itemization headchar-lower
+I-Body	summarization approaches were suggested in the	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	past, i.e., extractive (Radev et al., 2004; Li et al.,	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2006) and abstractive summarization (Dejong,	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year tailchar-comma
+I-Body	1978). The abstractive approaches typically need	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year above-blank-line above-double-space above-line-space
+B-Footnote	© 2008. Licensed under the Creative Commons Attri-	page=0 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail line-blank-line line-double-space line-space year tailchar-hiphen
+I-Footnote	bution-Noncommercial-Share Alike 3.0 Unported	page=0 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower
+I-Footnote	license (http://creativecommons.org/licenses/by-nc-	page=0 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-hiphen
+I-Footnote	sa/3.0/). Some rights reserved.	page=0 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+I-Body	to “understand” and then paraphrase the salient	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower
+I-Body	concepts across documents. Due to the limita-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions in natural language processing technology,	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	abstractive approaches are restricted to specific	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	domains. In contrast, extractive approaches	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	commonly select sentences that contain the most	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	significant concepts in the documents. These ap-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	proaches tend to be more practical.	page=0 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Recently various effective sentence features	page=0 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	have been proposed for extractive summarization,	page=0 xpos=5 ypos=3 right-column right-over hanged-line headchar-lower tailchar-comma
+I-Body	such as signature word, event and sentence rele-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vance. Although encouraging results have been	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	reported, most of these features are investigated	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	individually. We argue that it is ineffective to	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	identify sentence importance from a single point	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of view. Each sentence feature has its unique	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	contribution, and combing them would be advan-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tageous. Therefore we investigate combined sen-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence features for extractive summarization. To	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	determine weights of different features, we em-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ploy a supervised learning framework to identify	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	how likely a sentence is important. Some re-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	searchers explored learning based summarization,	page=0 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower tailchar-comma
+I-Body	but the new emerging features are not concerned,	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	such as event features (Li et. al, 2006).	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	We investigate the effectiveness of different	page=0 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	sentence features with supervised learning to de-	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	cide which sentences are important for summari-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	zation. After feature vectors of sentences are ex-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	amined, a supervised learning classifier is then	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	employed. Particularly, considering the length of	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	final summaries is fixed, candidate sentences are	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	re-ranked. Finally, the top sentences are ex-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tracted to compile the final summaries. Experi-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments show that combined features improve	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	summarization performance significantly.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our supervised learning approach generates	page=0 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	promising results based on combined features.	page=0 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	However, it requires much labeled data. As this	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	procedure is time consuming and costly, we in-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vestigate semi-supervised learning to combine	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	labeled data and unlabeled data. A semi-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	985	page=0 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only above-line-space
+B-Footer	Proceedings of the 22nd International Conference on Computational Linguistics (Coling 2008), pages 985–992	page=0 xpos=0 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Footer	Manchester, August 2008	page=0 xpos=4 ypos=9 single-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital page-bottom
+I-Body	supervised learning classifier is used instead of a	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	supervised one in our extractive summarization	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	framework. Two classifiers are co-trained itera-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tively to exploit unlabeled data. In each iteration	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	step, the unlabeled training examples with top	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	classifying confidence are included in the labeled	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	training set, and the two classifiers are trained on	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the new training data. Experiments show that the	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	performance of our semi-supervised learning	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	approach is comparable to its supervised learning	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	counterpart and it can reduce the labeling time	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	cost by 50%.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The remainder of this paper is organized as	page=1 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	follows. Section 2 gives related work and Section	page=1 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	3 describes our learning-based extractive summa-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line numbered-heading1 tailchar-hiphen
+I-Body	rization framework. Section 4 outlines the vari-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ous sentence features and Section 5 describes	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	supervised/semi-supervised learning approaches.	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Section 6 presents experiments and results. Fi-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	nally, Section 7 concludes the paper.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Related Work	page=1 xpos=0 ypos=3 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Traditionally, features for summarization were	page=1 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	studied separately. Radev et al. (2004) reported	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	that position and length are useful surface fea-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures. They observed that sentences located at the	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	document head most likely contained important	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	information. Recently, content features were also	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	well studied, including centroid (Radev et al.,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2004), signature terms (Lin and Hovy, 2000) and	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year
+I-Body	high frequency words (Nenkova e t al., 2006).	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	Radev et al. (2004) defined centroid words as	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-capital
+I-Body	those whose average tf*idf score were higher	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	than a threshold. Lin and Hovy (2000) identified	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	signature terms that were strongly associated	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	with documents based on statistics measures.	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Nenkova et al. (2006) later reported that high	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-capital
+I-Body	frequency words were crucial in reflecting the	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	focus of the document.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Bag of words is somewhat loose and omits	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	structural information. Document structure is	page=1 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	another possible feature for summarization. Bar-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	zilay and Elhadad (1997) constructed lexical	page=1 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	chains and extracted strong chains in summaries.	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Marcu (1997) parsed documents as rhetorical	page=1 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-capital
+I-Body	trees and identified important sentences based on	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the trees. However, only moderate results were	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	reported. On the other hand, Dejong (1978) rep-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	resented documents using predefined templates.	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The procedure to create and fill the templates	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	was time consuming and it was hard to adapt the	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	method to different domains.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Recently, semi-structure events (Filatovia and	page=1 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	Hatzivassiloglou, 2004; Li et al., 2006; Wu, 2006)	page=1 xpos=0 ypos=9 left-column right-over hanged-line longer-tail year headchar-capital column-bottom
+I-Body	have been investigated by many researchers as	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	they balanced document representation with	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	words and structures. They defined events as	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	verbs (or action nouns) plus the associated	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	named entities. For instance, given the sentence	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	“Yasser Arafat on Tuesday accused the United	page=1 xpos=5 ypos=0 right-column full-justified aligned-line
+I-Body	States of threatening to kill PLO officials”, they	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	first identified “accused”, “threatening” and	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	“kill” as event terms; and “Yasser Arafat”,	page=1 xpos=5 ypos=1 right-column full-justified aligned-line tailchar-comma
+I-Body	“United States”, “PLO” and “Tuesday” as event	page=1 xpos=5 ypos=1 right-column full-justified aligned-line
+I-Body	elements. Encouraging results based on events	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	were reported for news stories.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	From another point of view, sentences in a	page=1 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	document are somehow connected. Sentence	page=1 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	relevance has been used as an alternative means	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	to identify important sentences. Erkan and Radev	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	(2004) and Yoshioka (2004) evaluate the rele-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	vance (similarity) between any two sentences	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	first. Then a web analysis approach, PageRank,	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	was used to select important sentences from a	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	sentence map built on relevance. Promising re-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults were reported. However, the combination of	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	these features is not well studied. Wu et al. (2007)	page=1 xpos=5 ypos=3 right-column right-over aligned-line longer-tail year headchar-lower
+I-Body	conducted preliminary research on this problem,	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	but event features were not considered.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Normally labeling procedure in supervised	page=1 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	learning is very time consuming. Blum and	page=1 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	Mitchell (1998) proposed co-training approach to	page=1 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-capital
+I-Body	exploit labeled and unlabeled data. Promising	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	results were reported from their experiments on	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	web page classification. A number of successful	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	studies emerged thereafter for other natural lan-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage processing tasks, such as text classification	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	(Denis and Gilleron, 2003), noun phrase chunk-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	ing (Pierce and Cardie, 2001), parsing (Sarkar,	page=1 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2001) and reference or relation resolution (Mul-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	ler et al., 2001; Li et al., 2004). To our knowl-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	edge, there is little research in the application of	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	co-training techniques to extractive summariza-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 The Framework for Extractive Sum-	page=1 xpos=5 ypos=7 right-column full-justified font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 tailchar-hiphen
+I-SectionHeader	marization	page=1 xpos=5 ypos=7 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Extractive summarization can be regarded as a	page=1 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	classification problem. Given the features of a	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	sentence, a machine-learning based classification	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	model will judge how likely the sentence is im-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	portant. The classification model can be super-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vised or semi-supervised learning. Supervised	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	approaches normally perform better, but require	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	more labeled training data. SVMs perform well	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	in many classification problems. Thus we em-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ploy it for supervised learning. For semi-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	supervised learning, we co-trained a probabilistic	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	986	page=1 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	SVM and a Naïve Bayesian classifier to exploit	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-capital
+E-Body	unlabeled data.	page=2 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+Figure	__Figure 1__	page=2 xpos=-1 ypos=0 left-column left-over box longer-tail figure-area
+B-Caption	Figure 1. Learning-based Extractive Summariza-	page=2 xpos=0 ypos=3 left-column centered left-indent right-indent string-figure headchar-capital tailchar-hiphen
+E-Caption	tion Framework	page=2 xpos=1 ypos=3 left-column centered left-indent right-indent indented-line shorter-tail headchar-lower
+B-Body	The automatic summarization procedure is	page=2 xpos=0 ypos=3 left-column left-indent hanged-line longer-tail headchar-capital
+I-Body	shown in Figure 1. First, each input sentence is	page=2 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	examined by going through the pre-specified fea-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture functions. The classification model will then	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	predict the importance of each sentence accord-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing to its feature values. A re-ranking algorithm	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	is then used to revise the order. Finally, the top	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	sentences are included in the summaries until the	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	length limitation is reached. The re-ranking algo-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rithm is crucial, as more important content are	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	expected to be contained in the final summary	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	with fixed length. Important sentences above a	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	threshold are regarded as candidates. The one	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	with less words and located at the beginning part	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	of a document is ranked first. The re-ranking al-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	gorithm is described as follows.	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Equation	Rank <sub>i</sub> = RankPos i + RankLength i	page=2 xpos=0 ypos=6 left-column left-indent right-indent font-larger indented-line longer-tail headchar-capital
+I-Body	where RankPos <sub>i</sub> is the rank of sentence i accord-	page=2 xpos=0 ypos=6 left-column full-justified font-larger hanged-line longer-tail headchar-lower tailchar-hiphen
+I-Body	ing to its position in a document (i.e. the sentence	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	no.) and RankLength <sub>i</sub> is rank of sentence i ac-	page=2 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+E-Body	cording to its length.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Sentence Features for Extractive	page=2 xpos=0 ypos=7 left-column full-justified font-larger aligned-line longer-tail line-double-space line-space numbered-heading1
+I-SectionHeader	Summarization	page=2 xpos=0 ypos=7 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	This section provides a detailed description on	page=2 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	the four types of sentence features, i.e., surface,	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	content, event and relevance features, which will	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	be examined systematically.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Surface Features	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Surface features are based on structure of	page=2 xpos=0 ypos=9 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	documents or sentences, including sentence	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	position in the document, the number of words in	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	the sentence, and the number of quoted words in	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	the sentence (see Table 1).	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+Table	__Table 1__	page=2 xpos=5 ypos=0 right-column centered left-indent right-indent box indented-line longer-tail line-space table-area
+B-Caption	Table 1. Types of surface features	page=2 xpos=5 ypos=2 right-column centered left-indent right-indent indented-line shorter-tail string-table headchar-capital above-double-space above-line-space
+B-Body	The intuition with respect to the importance of	page=2 xpos=5 ypos=2 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	a sentence stems from the following observations:	page=2 xpos=5 ypos=2 right-column right-over hanged-line itemization headchar-lower tailchar-colon
+I-Body	(1) the first sentence in a document or a para-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line itemization tailchar-hiphen
+I-Body	graph is important; (2) the sentences in the ear-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lier parts of a document is more important than	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	sentences in later parts; (3) a sentence is impor-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tant if the number of words (except stop words)	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	in it is within a certain range; (4) a sentence con-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	taining too many quoted words is unimportant.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Content Features	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We integrate three well-known sentence features	page=2 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	based on content-bearing words i.e., centroid	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	words, signature terms, and high frequency	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	words. Both unigram and bigram representations	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	have been investigated. Table 2 summarizes the	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	six content features we studied.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+Table	__Table 2__	page=2 xpos=5 ypos=5 right-column centered left-indent box longer-tail line-space table-area
+B-Caption	Table 2. Types of content features	page=2 xpos=6 ypos=7 right-column left-indent right-indent indented-line shorter-tail string-table headchar-capital above-double-space above-line-space
+B-SubsectionHeader	4.3 Event Features	page=2 xpos=5 ypos=7 right-column right-indent hanged-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	An event is comprised of an event term and asso-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ciated event elements. In this study, we choose	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	verbs (such as “elect and incorporate”) and ac-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion nouns (such as “election and incorporation”)	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	as event terms that can characterize actions. They	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	relate to “did what”. One or more associated	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	named entities are considered as event elements.	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Four types of named entities are currently under	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	987	page=2 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	consideration. The GATE system (Cunningham	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	et al., 2002) is used to tag named entities, which	page=3 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower
+I-Body	are categorized as <Person>, <Organization>,	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	<Location> and <Date>. They convey the infor-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line tailchar-hiphen
+I-Body	mation about “who”, “whom”, “when” and	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	“where”. A verb or an action noun is deemed an	page=3 xpos=0 ypos=0 left-column full-justified aligned-line
+I-Body	event term only when it appears at least once	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	between two named entities.	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Event summarization approaches based on in-	page=3 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	stances or concepts are investigated. An occur-	page=3 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	rence of an event term (or event element) in a	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	document is considered as an instance, while the	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	collection of the same event terms (or event ele-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments) is considered as a concept. Given a	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	document set, instances of event terms and event	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	elements are identified first. An event map is	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	then built based on event instances or concepts	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	(Wu , 2006; Li et al., 2006). PageRank algorithm	page=3 xpos=0 ypos=2 left-column full-justified aligned-line year
+I-Body	is used to assign weight to each node (an instance	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	or concept) in the event map. The final weight of	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	a sentence is the sum of weights of event in-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+E-Body	stances contained in the sentence.	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.4 Relevance Features	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Relevance features are incorporated to exploit	page=3 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	inter-sentence relationships. It is assumed that: (1)	page=3 xpos=0 ypos=4 left-column right-over aligned-line longer-tail headchar-lower
+I-Body	sentences related to important sentences are im-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line shorter-tail headchar-lower tailchar-hiphen
+I-Body	portant; (2) sentences related to many other sen-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences are important. The first sentence in a	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	document or a paragraph is important, and other	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	sentences in a document are compared with the	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	leading ones. Two types of sentence relevance,	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	FirstRel_Doc and FirstRel_Para (see Table 3),	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	are measured by comparing pairs of sentences	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	using word-based cosine similarity.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Another way to exploit sentence relevance is	page=3 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	to build a sentence map. Every two sentences are	page=3 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	regarded relevant if their similarity is above a	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	threshold. Every two relevant sentences are con-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nected with a unidirectional link. Based on this	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	map, PageRank algorithm is applied to evaluate	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the importance of a sentence. These relevance	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	features are shown in Table 3.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+Table	__Table 3__	page=3 xpos=0 ypos=7 left-column full-justified box aligned-line longer-tail line-space table-area above-double-space above-line-space
+B-Caption	Table 3. Types of relevance features	page=3 xpos=0 ypos=8 left-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital column-bottom
+B-SectionHeader	5 Supervised/Semi-supervised Learning	page=3 xpos=5 ypos=0 right-column full-justified font-larger column-top numbered-heading1
+I-SectionHeader	Approaches	page=3 xpos=5 ypos=0 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	To incorporate features described in Section 4,	page=3 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	we investigate supervised and semi-supervised	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	learning approaches. Probabilistic Support Vec-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tor Machine (PSVM) is employed as supervised	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	learning (Wu et al., 2004), while the co-training	page=3 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower
+I-Body	of PSVM and Naïve Bayesian Classifier (NBC)	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	is used for semi-supervised learning. The two	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	learning-based classification approaches, PSVM	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	and NBC, are described in following sections.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.1 Probabilistic Support Vector Machine	page=3 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	(PSVM)	page=3 xpos=5 ypos=2 right-column left-indent right-indent indented-line shorter-tail above-double-space above-line-space
+B-Body	For a set of training examples ( x <sub>i</sub> , y i ),	page=3 xpos=5 ypos=2 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	i = 1 ,..., l , where x <sub>i</sub> is an instance and y i the	page=3 xpos=5 ypos=2 right-column left-indent font-largest itemization headchar-lower above-line-space
+I-Body	corresponding label, basic SVM requires the so-	page=3 xpos=5 ypos=3 right-column full-justified line-space headchar-lower tailchar-hiphen
+E-Body	lution of the following optimization problem.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Equation	min w w + C ∑ <sub>i</sub> <sub>=</sub> <sup>l</sup> 1 ξ i	page=3 xpos=5 ypos=3 right-column left-indent right-indent box indented-line shorter-tail line-space headchar-lower
+I-Equation	1 <sub>T</sub>	page=3 xpos=6 ypos=3 right-column left-indent right-indent font-largest indented-line shorter-tail numbered-heading1
+I-Equation	w , b , ξ 2	page=3 xpos=5 ypos=3 right-column left-indent right-indent font-largest hanged-line shorter-tail itemization headchar-lower above-line-space
+I-Equation	y <sub>i</sub> ( w <sup>T</sup> φ ( x i ) + b ) ≥ 1 − ξ i ,	page=3 xpos=6 ypos=3 right-column left-indent right-indent font-largest indented-line longer-tail line-space itemization headchar-lower tailchar-comma
+I-Equation	<sup>subject</sup> <sup>to</sup> ξ <sub>i</sub> ≥ 0	page=3 xpos=5 ypos=4 right-column left-indent right-indent font-largest hanged-line shorter-tail headchar-super above-double-space above-line-space
+B-Body	Here the SVM classifier is expected to find a	page=3 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	hyper-plane to separate testing examples as posi-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive and negative. Wu et al. (2004) extend the	page=3 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	basic SVM to a probabilistic version. Its goal is	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	to estimate	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower above-line-space
+B-Equation	p <sub>i</sub> = p ( y = i | x ), i = 1 ,... k .	page=3 xpos=6 ypos=5 right-column left-indent right-indent font-largest indented-line longer-tail line-space itemization headchar-lower tailchar-period
+B-Body	First the pairwise (one-against-one) probabilities	page=3 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail headchar-capital
+I-Body	r <sub>ij</sub> ≈ p ( y = i | y = i or j , x ) is estimated using	page=3 xpos=5 ypos=5 right-column left-indent right-indent font-largest shorter-tail itemization headchar-lower above-double-space above-line-space
+B-Equation	1	page=3 xpos=7 ypos=6 right-column left-indent right-indent font-larger indented-line shorter-tail line-double-space line-space numeric-only
+I-Equation	r <sub>ij</sub> ≈	page=3 xpos=6 ypos=6 right-column left-indent right-indent font-largest hanged-line shorter-tail itemization headchar-lower
+I-Equation	1 + e Af <sup>+</sup> B	page=3 xpos=7 ypos=6 right-column left-indent right-indent font-largest indented-line longer-tail numbered-heading1
+I-Body	where A and B are estimated by minimizing the	page=3 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail headchar-lower
+I-Body	negative log-likelihood function using training	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower above-line-space
+I-Body	data and their decision values f. Then p <sub>i</sub> is ob-	page=3 xpos=5 ypos=6 right-column full-justified font-largest aligned-line line-space headchar-lower tailchar-hiphen
+I-Body	tained by solving the following optimization	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	problem	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower above-line-space
+B-Equation	1 <sup>k</sup>	page=3 xpos=6 ypos=7 right-column left-indent right-indent font-largest indented-line longer-tail line-space numbered-heading1
+I-Equation	min ∑∑ ( r ji p i − r ij p j ) 2	page=3 xpos=5 ypos=7 right-column left-indent right-indent font-largest hanged-line longer-tail headchar-lower
+I-Equation	p 2 <sub>i</sub> <sub>=</sub> 1 j : j ≠ i	page=3 xpos=6 ypos=7 right-column left-indent right-indent font-largest indented-line shorter-tail itemization headchar-lower above-double-space above-line-space
+I-Equation	y <sub>i</sub> ( w <sup>T</sup> φ ( x i ) + b ) ≥ 1 − ξ i ,	page=3 xpos=6 ypos=8 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space itemization headchar-lower tailchar-comma
+I-Equation	<sup>subject</sup> <sup>to</sup> ξ <sub>i</sub> ≥ 0	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-largest hanged-line shorter-tail headchar-super
+B-Body	The problem can be reformulated as	page=3 xpos=5 ypos=8 right-column right-indent hanged-line longer-tail headchar-capital above-line-space
+B-Equation	1 <sub>T</sub>	page=3 xpos=7 ypos=8 right-column left-indent right-indent font-largest indented-line shorter-tail line-space numbered-heading1
+I-Equation	min P QP	page=3 xpos=6 ypos=8 right-column left-indent right-indent hanged-line longer-tail headchar-lower
+I-Equation	P 2	page=3 xpos=6 ypos=8 right-column left-indent right-indent indented-line shorter-tail headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	988	page=3 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Equation	⎧ ∑	page=4 xpos=1 ypos=0 left-column left-indent right-indent font-largest page-top
+I-Equation	where Q <sub>ij</sub> = ⎪ ⎨ s : s ≠ i r si <sup>2</sup> <sub>if</sub> if i i ≠ = j j	page=4 xpos=0 ypos=0 left-column right-indent box hanged-line longer-tail headchar-lower
+I-Equation	⎪⎩ − r ji r ij	page=4 xpos=1 ypos=0 left-column left-indent right-indent font-largest indented-line shorter-tail
+B-Body	The problem is convex and the optimality condi-	page=4 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tions a scalar b such that	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Equation	⎡ Q e ⎤ ⎡ P ⎤ ⎡ z ⎤	page=4 xpos=1 ypos=0 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	⎢ T ⎥ ⎢ ⎥ = ⎢ ⎥	page=4 xpos=1 ypos=1 left-column left-indent right-indent font-largest aligned-line
+I-Equation	⎣ e 0 ⎦ ⎣ b ⎦ ⎣ 1 ⎦	page=4 xpos=1 ypos=1 left-column left-indent right-indent font-largest aligned-line
+I-Body	where e is the vector of all 1s and z is the vector	page=4 xpos=0 ypos=1 left-column full-justified hanged-line longer-tail headchar-lower
+I-Body	of all 0s, and b is the Lagrangian multiplier of the	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	equality constraint ∑ <sub>i</sub> <sup>k</sup> <sub>=</sub> 1 p i = 1.	page=4 xpos=0 ypos=1 left-column right-indent box aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.2 Naïve Bayesian Classier (NBC)	page=4 xpos=0 ypos=2 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Naïve Bayesian Classier assumes features are	page=4 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	independent. It learns prior probability and con-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ditional probability of each feature, and predicts	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the class label by highest posterior probability.	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Given a feature vector (F <sub>1</sub> , F 2 , F 3 ,…, F n ), the	page=4 xpos=0 ypos=3 left-column full-justified font-larger aligned-line headchar-capital
+I-Body	classifier need to decide the label c:	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	c = arg max P ( c | F <sub>1</sub> , F 2 , F 3 ,... F n )	page=4 xpos=0 ypos=3 left-column centered left-indent right-indent font-largest indented-line longer-tail line-space itemization headchar-lower
+I-Equation	c	page=4 xpos=1 ypos=3 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	By applying Bayesian rule, we have	page=4 xpos=0 ypos=4 left-column right-indent hanged-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Equation	P ( c | F <sub>1</sub> , F 2 , F 3 ,..., F n ) = <sup>P</sup> ( c ) P ( F 1 , F 2 , F 3 ,..., F n | c )	page=4 xpos=0 ypos=4 left-column left-indent right-over font-largest longer-tail line-double-space line-space headchar-capital
+I-Equation	P ( F <sub>1</sub> , F 2 , F 3 ,..., F n )	page=4 xpos=2 ypos=4 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	Since the denominator does not depend on c and	page=4 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	the values of F <sub>i</sub> are given, therefore the denomi-	page=4 xpos=0 ypos=5 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	nator is a constant and we are only interested in	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the numerator. As features are assumed inde-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pendent,	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-comma above-line-space
+B-Equation	P ( c | F <sub>1</sub> , F 2 , F 3 ,... F <sub>n</sub> ) = P ( c ) P ( F 1 , F 2 , F 3 ,... F n | c )	page=4 xpos=0 ypos=5 left-column centered left-indent right-indent font-largest longer-tail line-space headchar-capital above-line-space
+I-Equation	≈ P ( c ) ∏ <sub>i</sub> <sup>n</sup> <sub>=</sub> 1 P ( F i | c )	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-largest aligned-line shorter-tail line-space above-double-space above-line-space
+I-Body	where P ( F <sub>i</sub> | c ) is estimated with MLE from	page=4 xpos=0 ypos=6 left-column full-justified font-largest longer-tail line-double-space line-space headchar-lower above-line-space
+E-Body	training data with Laplace Smoothing.	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail line-space headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.3 Co-Training (COT)	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Supervised learning approaches require much	page=4 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	labeled data and the labeling procedure is very	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	time-consuming. Literature (Blum and Mitchell,	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1998; Collins, 1999) has suggested that unla-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	beled data can be exploited together with labeled	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	data by co-training two classifiers. (Blum and	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	Mitchell, 1998) trained two classifiers of same	page=4 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-capital
+I-Body	type on different features, and (Li et al., 2004)	page=4 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	trained two classifiers of different types. In this	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	paper, as the number of involved features is not	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	too many, we train two different classifiers,	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	PSVM and NBC, on the same feature spaces.	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	The co-training algorithm is described as follows.	page=4 xpos=0 ypos=9 left-column right-over aligned-line headchar-capital tailchar-period column-bottom
+B-Listitem	Given :	page=4 xpos=5 ypos=0 right-column right-indent column-top headchar-capital tailchar-colon
+B-Listitem	L is the set of labeled training examples	page=4 xpos=5 ypos=0 right-column left-indent right-indent indented-line longer-tail headchar-capital
+B-Listitem	U is the set of unlabeled training examples	page=4 xpos=5 ypos=0 right-column left-indent right-indent aligned-line longer-tail headchar-capital
+B-Listitem	Loop : until the unlabeled data is exhausted	page=4 xpos=5 ypos=0 right-column right-indent hanged-line shorter-tail headchar-capital
+B-Listitem	Train the first classifier C <sub>1</sub> (PSVM) on L	page=4 xpos=5 ypos=0 right-column left-indent right-indent font-larger indented-line longer-tail headchar-capital
+B-Listitem	Train the second classifier C <sub>2</sub> (NBC) on L	page=4 xpos=5 ypos=0 right-column left-indent right-indent font-larger aligned-line longer-tail headchar-capital
+B-Listitem	For each classifier C <sub>i</sub>	page=4 xpos=5 ypos=1 right-column left-indent right-indent font-larger aligned-line shorter-tail headchar-capital
+B-Listitem	C <sub>i</sub> labels examples from U	page=4 xpos=5 ypos=1 right-column left-indent right-indent font-larger indented-line longer-tail headchar-capital
+B-Listitem	C <sub>i</sub> chooses p positive and n negative ex-	page=4 xpos=5 ypos=1 right-column left-indent font-larger aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Listitem	amples E from U. These examples have	page=4 xpos=6 ypos=1 right-column left-indent indented-line headchar-lower
+I-Listitem	top classifying confidence.	page=4 xpos=6 ypos=1 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	C <sub>i</sub> removes examples E from U	page=4 xpos=5 ypos=2 right-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+B-Listitem	C <sub>i</sub> adds examples E with the correspond-	page=4 xpos=5 ypos=2 right-column left-indent font-larger aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Listitem	ing labels to L	page=4 xpos=6 ypos=2 right-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	End	page=4 xpos=5 ypos=2 right-column right-indent hanged-line shorter-tail headchar-capital
+B-Listitem	Output : label the test examples by the optimal	page=4 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail headchar-capital
+I-Listitem	classifier which is evaluated on training data ac-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	cording to the classification performance.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Experiments	page=4 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	DUC 2001 <sup>2</sup> has been used in our experiments. It	page=4 xpos=5 ypos=3 right-column full-justified font-largest aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Body	contains 30 clusters of relevant documents and	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	308 documents in total. Each cluster deals with a	page=4 xpos=5 ypos=4 right-column full-justified aligned-line
+I-Body	specific topic (e.g. a hurricane) and comes with	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	model summaries created by NIST assessors. 50,	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	100, 200 and 400 word summaries are provided.	page=4 xpos=5 ypos=4 right-column full-justified aligned-line tailchar-period
+I-Body	Twenty-five of the thirty document clusters are	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	used as training data and the remaining five are	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	used as testing. The training/testing configuration	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	is same in experiments of supervised learning	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	and semi-supervised learning, while the differ-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence is that some sentences in training data are	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	not tagged for semi-supervised learning.	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	An automatic evaluation package, i.e.,	page=4 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	ROUGE (Lin and Hovy, 2003) is employed to	page=4 xpos=5 ypos=6 right-column full-justified hanged-line year headchar-capital
+I-Body	evaluate the summarization performance. It	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	compares machine-generated summaries with	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	model summaries based on the overlap. Precision	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	and recall measures are used to evaluate the clas-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sification performance. For comparison, we	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	evaluate our approaches on DUC 2004 data set	page=4 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	also. It contains 50 clusters of documents. Only	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	665-character summaries are given by assessors	page=4 xpos=5 ypos=7 right-column full-justified aligned-line
+E-Body	for each cluster.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	6.1 Experiments on Supervised Learning	page=4 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	Approach	page=4 xpos=5 ypos=8 right-column left-indent right-indent indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	We use LibSVM <sup>3</sup> as our classification model for	page=4 xpos=5 ypos=8 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	SVM classifiers normally perform better. Types	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	of features presented in previous section are	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	evaluated individually first. Precision measures	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+B-Footnote	<sup>2</sup> http://duc.nist.gov/	page=4 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space headchar-super
+B-Footnote	<sup>3</sup> http://www.csie.ntu.edu.tw/~cjlin/libsvm/	page=4 xpos=5 ypos=9 right-column right-indent aligned-line longer-tail headchar-super column-bottom above-blank-line above-double-space above-line-space
+Page	989	page=4 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	the percentage of true important sentences	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	among all important sentences labeled by the	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	classifier. Recall measures the percentage of true	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	important sentences labeled by the classifier	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	among all true important sentences.	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Table 4 shows the precisions and recalls of	page=5 xpos=0 ypos=0 left-column left-indent indented-line longer-tail string-table headchar-capital
+I-Body	different feature groups under the PSVM classi-	page=5 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	fier. Table 5 records the ROUGE evaluation re-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults – ROUGE-1, ROUGE-2 and ROUGE-L.	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	They evaluate the overlap between machine-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	generated summaries and model summaries	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	based on unigram, bigram and long distance re-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	spectively. The summary length is limited to 200	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	words here.	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+Table	__Table 4__	page=5 xpos=0 ypos=2 left-column centered left-indent right-indent box indented-line longer-tail line-space table-area
+B-Caption	Table 4. Classification performance based on	page=5 xpos=0 ypos=5 left-column left-indent right-indent indented-line string-table headchar-capital
+Table	__Table 5__	page=5 xpos=0 ypos=5 left-column full-justified box hanged-line longer-tail table-area
+B-Caption	Table 5. ROUGE evaluation results for differ-	page=5 xpos=0 ypos=8 left-column left-indent right-indent indented-line string-table headchar-capital tailchar-hiphen
+E-Caption	ent feature groups	page=5 xpos=1 ypos=8 left-column centered left-indent right-indent indented-line shorter-tail headchar-lower above-line-space
+B-Body	From Table 4, we can see the most useful fea-	page=5 xpos=0 ypos=9 left-column left-indent hanged-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ture groups are “surface” and “relevance”, i.e.	page=5 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower tailchar-period column-bottom
+I-Body	the external characteristics of a sentence in the	page=5 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	document and the relationships of a sentence	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	with other sentences in a cluster. The evaluation	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	scores from surface features and relevance fea-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures are the same. We found that the reason is	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	that the dominating feature in each feature group	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	is about whether a sentence is the first sentence	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	in a document. The influence of event features is	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	not very positive. Based on our analysis the rea-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	son is that not all clusters contain enough event	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	terms/elements to build a good event map.	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	From Table 5, it can be seen that the combina-	page=5 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tion of multiple features or multiple feature	page=5 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	groups outperforms individual feature or feature	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	groups. When surface, content and relevance fea-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures are employed, the best performance is	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	achieved, i.e., ROUGE-1 and ROUGE-2 score	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	are 0.396 and 0.116 respectively. In our prelimi-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nary experiments, we find ROUGE-1 score of a	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	model summary is 0.422 (without stemming and	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	filtering stop words). Therefore summaries gen-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erated by our supervised learning approach re-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ceived comparable performance with model	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	summaries when evaluated by ROUGE. Al-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	though ROUGE is not perfect at this time, it is	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	automatic and good complement to subjective	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	evaluations.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We also find that the Rouge scores are similar	page=5 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	for variations on the feature set. Sentences from	page=5 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	original documents are selected to build the final	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	summaries. Normally, only four to six sentences	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	are contained in one 200-word summary in our	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	experiments, i.e., few sentences will be kept in a	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	summary. As variations of the feature set only	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	induce little change of the order of most impor-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tant sentences, the ROUGE scores change little.	page=5 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	6.2 Experiments on Semi-supervised Learn-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space numbered-heading2 tailchar-hiphen
+I-SubsectionHeader	ing Approach	page=5 xpos=5 ypos=6 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Supervised learning approaches normally	page=5 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	achieve good performance but require manually	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	labeled data. Recent literature (Blum and	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	Mitchell, 1998; Collins, 199) has suggested that	page=5 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital
+I-Body	co-training techniques reduce the amount of la-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	beled data. They trained two homogeneous clas-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sifiers based on different feature spaces. How-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ever this method is unsuitable for our application	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	as the number of required features in our case is	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	not too many. Therefore we develop a co-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	training approach to train different classifiers	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	based on same feature space. PSVM and NBC	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	are applied to the combination of surface, content	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	and relevance features.	page=5 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The capability of different learning approaches	page=5 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	to identify important sentences is shown in Fig-	page=5 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	990	page=5 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	ure 2. The “x” axis shows the number of labeled	page=6 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	sentences employed. The remained training sen-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences in DUC 2001 are employed as unlabeled	page=6 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower
+I-Body	training data. The y axis shows f-measures of	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	important sentences identified from the test set.	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The size of the training seed set is investigated.	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	For each size, three different seed sets which are	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	chose randomly are used. The average evaluation	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	scores are used as the final performance. This	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	procedure avoids the variance of the final evalua-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion results. The ROUGE evaluation results of	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	these supervised learning approaches and semi-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	supervised learning approaches are shown in Ta-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ble 6 (2000 labeled sentences). It can be seen that	page=6 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Body	the ROUGE performance of co-trained classifiers	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	is better than that of individual classifiers.	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+Figure	__Figure 2__	page=6 xpos=0 ypos=2 left-column centered left-indent right-indent box indented-line longer-tail figure-area
+B-Caption	Figure 2. Performance of supervised learning	page=6 xpos=0 ypos=4 left-column left-indent right-indent indented-line string-figure headchar-capital
+Table	__Table 6__	page=6 xpos=-1 ypos=4 left-column centered right-over box hanged-line longer-tail table-area
+B-Caption	Table 6. ROUGE evaluation results of supervised	page=6 xpos=0 ypos=5 left-column full-justified aligned-line string-table headchar-capital
+E-Caption	learning and semi-supervised learning	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-SubsectionHeader	6.3 Experiments on Summary Length	page=6 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In DUC 2001 dataset, 50, 100, 200 and 400-word	page=6 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Body	summaries are provided to evaluate summaries	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	with different length. Our supervised approach,	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which generates the best performance in previous	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	experiments, is employed. The ROUGE scores of	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	evaluations on different summary length are	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	shown in Table 7. Our summaries consist of ex-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tracted sentences. It can be seen that these sum-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	maries achieve lower ROUGE scores when the	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	length of summary is reduced. The reason is that	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	when people try to write a more concise sum-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mary, condensed contents are included in the	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	summaries, which may not use the original con-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tents directly. Therefore the word-overlapping	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	test tool in ROUGE generates lower scores.	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We then tested the same classifier and same	page=6 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	features on DUC 2004. The length of summaries	page=6 xpos=0 ypos=9 left-column full-justified hanged-line year headchar-lower
+I-Body	is only 665 characters (about 100 words).	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period column-bottom
+I-Body	ROUGE-1 and ROUGE-2 are 0.329 and 0.073	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-capital
+I-Body	respectively. It confirms that the performance of	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	our approach is sensitive to the length of the	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	summary.	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+Table	__Table 7__	page=6 xpos=5 ypos=0 right-column full-justified box aligned-line longer-tail table-area
+B-Caption	Table 7. ROUGE evaluation results for differ-	page=6 xpos=5 ypos=1 right-column left-indent right-indent indented-line string-table headchar-capital tailchar-hiphen
+E-Caption	ent summary length	page=6 xpos=6 ypos=1 right-column centered left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-SectionHeader	7 Conclusions and Future Work	page=6 xpos=5 ypos=2 right-column right-indent font-larger hanged-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We explore surface, content, event, relevance	page=6 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	features and their combinations for extractive	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	summarization with supervised learning ap-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach. Experiments show that the combination	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	of surface, content and relevance features per-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	form best. The highest ROUGE-1, ROUGE-2	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	scores are 0.396 and 0.116 respectively. The	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	Rouge-1 score of manually generated summaries	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	is 0.422. This shows the ROUGE performance of	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	our supervised learning approach is comparable	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	to that of manually generated summaries. The	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	ROUGE-1 scores of extractive summarization	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	based on centroid, signature word, high fre-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quency word and event individually are 0.319,	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	0.356, 0.371 and 0.374 respectively. It can be	page=6 xpos=5 ypos=4 right-column full-justified aligned-line
+I-Body	seen that our summarization approach based on	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	combination of features improves the perform-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ance obviously.	page=6 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Although the results of supervised learning	page=6 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	approach are encouraging, it required much la-	page=6 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	beled data. To reduce labeling cost, we apply co-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	training to combine labeled and unlabeled data.	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Experiments show that compare with supervised	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	learning, semi-supervised learning approach	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	saves half of the labeling cost and maintains	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	comparable performance (0.366 vs 0.396). We	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	also find that our extractive summarization is	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	sensitive to length of the summary. When the	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	length is extended, the ROUGE scores of same	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	summarization method are improved. In the fu-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture, we plan to investigate sentence compression	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	to improve performance of our summarization	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	approaches on short summaries.	page=6 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgement	page=6 xpos=5 ypos=8 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	The research described in this paper is partially	page=6 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Acknowledgement	supported by Research Grants Council of Hong	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Acknowledgement	Kong (RGC: PolyU5217/07E), CUHK Strategic	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Acknowledgement	Grant Scheme (No: 4410001) and Direct Grant	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital
+E-Acknowledgement	Scheme (No: 2050417).	page=6 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	991	page=6 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+ReferenceHeader	References	page=7 xpos=0 ypos=0 left-column right-indent font-larger page-top string-reference headchar-capital above-double-space above-line-space
+B-Reference	Regina Barzilay, and Michael Elhadad. 1997. Using	page=7 xpos=0 ypos=0 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	lexical chains for text summarization. In Proceed-	page=7 xpos=0 ypos=0 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ings of the 35th Annual Meeting of the Association	page=7 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	for Computational Linguistics Workshop on Intel-	page=7 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ligent Scalable Text Summarization, pages 10-17.	page=7 xpos=0 ypos=0 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Avrim Blum and Tom Mitchell. 1998. Combining	page=7 xpos=0 ypos=1 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	labeled and unlabeled data with co-training. In	page=7 xpos=0 ypos=1 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Proceedings of the 11th Annual Conference on	page=7 xpos=0 ypos=1 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Computational Learning Theory, pages 92-100.	page=7 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Hamish Cunningham, Diana Maynard, Kalina	page=7 xpos=0 ypos=1 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Bontcheva, Valentin Tablan. 2002. GATE: a	page=7 xpos=0 ypos=2 left-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	framework and graphical development environ-	page=7 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ment for robust NLP tools and applications. In	page=7 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Proceedings of the 40th Annual Meeting of the As-	page=7 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	sociation for computational Linguistics.	page=7 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Francois Denis and Remi Gilleron. 2003. Text classi-	page=7 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	fication and co-training from positive and unla-	page=7 xpos=0 ypos=3 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	beled examples. In Proceedings of the 20th Inter-	page=7 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	national Conference on Machine Learning Work-	page=7 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	shop: the Continuum from Labeled Data to Unla-	page=7 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	beled Data in Machine Learning and Data Mining.	page=7 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Gunes Erkan and Dragomir R. Radev. 2004. LexPag-	page=7 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	eRank: prestige in multi-document text summariza-	page=7 xpos=0 ypos=4 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tion. In Proceedings of the 2004 Conference on	page=7 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line year headchar-lower
+I-Reference	Empirical Methods in Natural Language Process-	page=7 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	ing, pages 365-371.	page=7 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Elena Filatova and Vasileios Hatzivassiloglou. Event-	page=7 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	based extractive summarization. 2004. In Proceed-	page=7 xpos=0 ypos=4 left-column left-indent font-smallest indented-line year headchar-lower tailchar-hiphen
+I-Reference	ings of the 42nd Annual Meeting of the Association	page=7 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	for Computational Linguistics Workshop, pages	page=7 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	104-111.	page=7 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Gerald Francis DeJong. 1978. Fast skimming of news	page=7 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	stories: the FRUMP system. Ph.D. thesis, Yale	page=7 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	University.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Wenjie Li, Guihong Cao, Kam-Fai Wong and Chunfa	page=7 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Yuan. 2004. Applying machine learning to Chinese	page=7 xpos=0 ypos=6 left-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	temporal relation resolution. In Proceedings of the	page=7 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	42nd Annual Meeting of the Association for Com-	page=7 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line tailchar-hiphen
+I-Reference	putational Linguistics, pages 583-589.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Wenjie Li, Wei Xu, Mingli Wu, Chunfa Yuan, Qin Lu.	page=7 xpos=0 ypos=7 left-column right-over font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2006. Extractive summarization using inter- and in-	page=7 xpos=0 ypos=7 left-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	tra- event relevance. In proceedings of Proceedings	page=7 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	of the 21st International Conference on Computa-	page=7 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tional Linguistics and 44th Annual Meeting of the	page=7 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Association for Computational Linguistics, pages	page=7 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	369-376.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Chin-Yew Lin; Eduard Hovy. 2000. The automated	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	acquisition of topic signatures for text summariza-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tion. In Proceedings of the 18th International Con-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ference on Computational Linguistics, pages 495-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	501.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Chin-Yew Lin and Eduard Hovy. 2003. Automatic	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	evaluation of summaries using n-gram co-	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen column-bottom
+I-Reference	occurrence statistics. In Proceedings of the 2003	page=7 xpos=5 ypos=0 right-column left-indent font-smallest column-top year headchar-lower
+I-Reference	Human Language Technology Conference of the	page=7 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	North American Chapter of the Association for	page=7 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Computational Linguistics, Edmonton, Canada.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Daniel Marcu. 1997. The rhetorical parsing of natural	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	language texts. In Proceedings of the 35th Annual	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Meeting of the Association for computational Lin-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	guistics, pages 96-103.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Christoph Muller, Stefan Rapp and Michael Strube.	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2001. Applying co-training to reference resolution.	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line year tailchar-period
+I-Reference	In Proceedings of the 40th Annual Meeting on As-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	sociation for Computational Linguistics.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Ani Nenkova, Lucy Vanderwende and Kathleen	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	McKeown. 2006. A compositional context sensi-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	tive multi-document summarizer: exploring the	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	factors that influence summarization. In Proceed-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ings of the 29th Annual International ACM SIGIR	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Conference on Research and Development in In-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	formation Retrieval.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	David Pierce and Claire Cardie. 2001. Limitations of	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	co-training for natural language learning from large	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	datasets. In Proceedings of the 2001 Conference on	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line year headchar-lower
+I-Reference	Empirical Methods in Natural Language Process-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	ing, pages 1-9.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Dragomir R. Radev, Timothy Allison, et al. 2004.	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	MEAD - a platform for multidocument multilin-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	gual text summarization. In Proceedings of 4th In-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ternational Conference on Language Resources	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	and Evaluation.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Anoop Sarkar. 2001. Applying co-training methods to	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	statistical parsing. In Proceedings of 2nd Meeting	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of the North American Chapter of the Association	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	for Computational Linguistics on Language Tech-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	nologies.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Mingli Wu. 2006. Investigations on event-based	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	summarization. In proceedings of the 21st Interna-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tional Conference on Computational Linguistics	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	and 44th Annual Meeting of the Association for	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Computational Linguistics Student Research Work-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	shop, pages 37-42.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Mingli Wu, Wenjie Li, Furu Wei, Qin Lu and Kam-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	Fai Wong. 2007. Exploiting surface, content and	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	relevance features for learning-based extractive	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	summarization. In Proceedings of 2007 IEEE In-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-hiphen
+I-Reference	ternational Conference on Natural Language	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Processing and Knowledge Engineering.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Ting-Fan Wu, Chih-Jen Lin and Ruby C. Weng. 2004.	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Probability estimates for multi-class classification	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	by pairwise coupling. Journal of Machine Learning	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Research, 5:975-1005.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Masaharu Yoshioka and Makoto Haraguchi. 2004.	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Multiple news articles summarization based on	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	event reference information. In Working Notes of	page=7 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	the Fourth NTCIR Workshop Meeting, National In-	page=7 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	stitute of Informatics.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	992	page=7 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only

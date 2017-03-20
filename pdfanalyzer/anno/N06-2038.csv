@@ -1,0 +1,312 @@
+Title	A Comparison of Tagging Strategies for	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital
+Title	Statistical Information Extraction	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+Author	Christian Siefkes	page=0 xpos=3 ypos=0 single-column left-indent right-indent font-largest indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Database and Information Systems Group, Freie Universität Berlin	page=0 xpos=1 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+I-Affiliation	Berlin-Brandenburg Graduate School in Distributed Information Systems	page=0 xpos=0 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+Address	Takustr. 9, 14195 Berlin, Germany	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-line-space
+Email	siefkes@mi.fu-berlin.de	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-smaller indented-line shorter-tail line-space symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-blank-line above-double-space above-line-space
+B-Abstract	There are several approaches that	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Abstract	model information extraction as a to-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ken classification task, using various	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	tagging strategies to combine multiple	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	tokens. We describe the tagging strate-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	gies that can be found in the litera-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ture and evaluate their relative perfor-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	mances. We also introduce a new strat-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	egy, called Begin/After tagging or BIA,	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-comma
+I-Abstract	and show that it is competitive to the	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	best other strategies.	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-largest hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The purpose of information extraction (IE) is to	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	find desired pieces of information in natural lan-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage texts and store them in a form that is	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	suitable for automatic querying and processing.	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	IE requires a predefined output representation	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	(target structure) and only searches for facts	page=0 xpos=0 ypos=6 left-column full-justified aligned-line
+I-Body	that fit this representation. Simple target struc-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures define just a number of slots to be filled	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	with a string extracted from a text (slot filler ).	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For this simple kind of information extraction,	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	statistical approaches that model IE as a token	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	classification task have proved very successful.	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	These systems split a text into a series of to-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	kens and invoke a trainable classifier to decide	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	for each token whether or not it is part of a slot	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	filler of a certain type. To re-assemble the clas-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sified tokens into multi-token slot fillers, various	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	tagging strategies can be used.	page=0 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	149	page=0 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Body	So far, each classification-based IE approach	page=0 xpos=5 ypos=2 right-column left-indent column-top headchar-capital
+I-Body	combines a specific tagging strategy with a spe-	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	cific classification algorithm and specific other	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	parameter settings, making it hard to detect	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	how each of these choices influences the results.	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	To allow systematic research into these choices,	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	we have designed a generalized IE system that	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	allows utilizing any tagging strategy with any	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	classification algorithm. This makes it possible	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to compare strategies or algorithms in an iden-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tical setting. In this paper, we describe the tag-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ging strategies that can be found in the liter-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ature and evaluate them in the context of our	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	framework. We also introduce a new strategy,	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	called Begin/After tagging or BIA, and show	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	that it is competitive to the best other strate-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gies. While there are various approaches that	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	employ a classification algorithm with one of the	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	tagging strategies described below, there are no	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	other comparative analyses of tagging strategies	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	yet, to the best of our knowledge.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the next section, we describe how IE can	page=0 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	be modeled as a token classification task and ex-	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	plain the tagging strategies that can be used for	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	this purpose. In Sec. 3 we describe the IE frame-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	work and the experimental setup used for com-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	paring the various tagging strategies. In Sec. 4	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	we list and analyze the results of the compari-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	son.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Modeling Information Extraction	page=0 xpos=5 ypos=8 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1
+I-SectionHeader	as a Token Classification Task	page=0 xpos=5 ypos=8 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	There are multiple approaches that model IE as	page=0 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	a token classification task, employing standard	page=0 xpos=5 ypos=9 right-column full-justified aligned-line itemization headchar-lower column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of the Human Language Technology Conference of the North American Chapter of the ACL, pages 149–152,	page=0 xpos=0 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Footer	New York, June 2006.  2006 c Association for Computational Linguistics	page=0 xpos=2 ypos=9 single-column centered left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital page-bottom
+Table	__Table 1__	page=1 xpos=1 ypos=-2 single-column left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: Properties of Tagging Strategies	page=1 xpos=2 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Body	classification algorithms. These systems split a	page=1 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower
+I-Body	text into a series of tokens and invoke a trainable	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	classifier to decide for each token whether or not	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	it is part of a slot filler of a certain type. To re-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	assemble the classified tokens into multi-token	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	slot fillers, various tagging strategies can be used.	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period above-line-space
+B-Body	The trivial (Triv ) strategy would be to use	page=1 xpos=0 ypos=2 left-column left-indent indented-line line-space headchar-capital
+I-Body	a single class for each slot type and an addi-	page=1 xpos=0 ypos=2 left-column full-justified hanged-line itemization headchar-lower tailchar-hiphen
+I-Body	tional “O” class for all other tokens. However,	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	this causes problems if two entities of the same	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	type immediately follow each other, e.g. if the	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	names of two speakers are separated by a line-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	break only. In such a case, both names would	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	be collapsed into a single entity, since the trivial	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	strategy lacks a way to mark the begin of the	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	second entity.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	For this reason (as well as for improved classi-	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	fication accuracy), various more complex strate-	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	gies are employed that use distinct classes to	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	mark the first and/or last token of a slot filler.	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The two variations of IOB tagging are proba-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	bly most common: the variant usually called	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	IOB2 classifies each token as the begin of a slot	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	filler of a certain type (B-type), as a continua-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of the previously started slot filler, if any	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	(I-type), or as not belonging to any slot filler	page=1 xpos=0 ypos=6 left-column full-justified aligned-line
+I-Body	(O). The IOB1 strategy differs from IOB2 in us-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line tailchar-hiphen
+I-Body	ing B-type only if necessary to avoid ambiguity	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	(i.e. if two same-type entities immediately follow	page=1 xpos=0 ypos=7 left-column full-justified aligned-line
+I-Body	each other); otherwise I-type is used even at the	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	beginning of slot fillers. While the Triv strat-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	egy uses only n + 1 classes for n slot types, IOB	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	tagging requires 2n + 1 classes.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	BIE tagging differs from IOB in using an ad-	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ditional class for the last token of each slot filler.	page=1 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	One class is used for the first token of a slot filler	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	(B-type), one for inner tokens (I-type) and an-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line tailchar-hiphen
+I-Body	other one for the last token (E-type). A fourth	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	150	page=1 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	class BE-type is used to mark slot fillers consist-	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	ing of a single token (which is thus both begin	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	and end). BIE requires 4n + 1 classes.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	A disadvantage of the BIE strategy is the	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	high number of classes it uses (twice as many	page=1 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	as IOB1|2 ). This can be addressed by introduc-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing a new strategy, BIA (or Begin/After tag-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ging). Instead of using a separate class for the	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	last token of a slot filler, BIA marks the first to-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ken after a slot filler as A-type (unless it is the	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	begin of a new slot filler). Begin (B-type) and	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	continuation (I-type) of slot fillers are marked in	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the same way as by IOB2. BIA requires 3n + 1	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	classes, n less than BIE since no special treat-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ment of single-token slot fillers is necessary.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The strategies discussed so far require only a	page=1 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	single classification decision for each token. An-	page=1 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	other option is to use two separate classifiers,	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	one for finding the begin and another one for	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	finding the end of slot fillers. Begin/End (BE )	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	tagging requires n + 1 classes for each of the	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	two classifiers (B-type + O for the first, E-type	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	+ O for the second). In this case, there is no	page=1 xpos=5 ypos=5 right-column full-justified aligned-line
+I-Body	distinction between inner and outer (other) to-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	kens. Complete slot fillers are found by com-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bining the most suitable begin/end pairs of the	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	same type, e.g. by taking the length distribution	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of slots into account. Table 1 lists the properties	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	of all strategies side by side.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Classification Algorithm and	page=1 xpos=5 ypos=7 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1
+I-SectionHeader	Experimental Setup	page=1 xpos=5 ypos=7 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	Our generalized IE system allows employing any	page=1 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	classification algorithm with any tagging strat-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	egy and any context representation, provided	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	that a suitable implementation or adapter ex-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ists. For this paper, we have used the Winnow	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	(Littlestone, 1988) classification algorithm and	page=1 xpos=5 ypos=9 right-column full-justified aligned-line year page-bottom
+Table	__Table 2__	page=2 xpos=0 ypos=-3 left-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 2: F Percentages for Batch Training	page=2 xpos=0 ypos=1 left-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-blank-line above-double-space above-line-space
+I-Body	the context representation described in (Siefkes,	page=2 xpos=0 ypos=1 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-comma
+I-Body	2005), varying only the tagging strategy. An ad-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	vantage of Winnow is its supporting incremen-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tal training as well as batch training. For	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	many “real-life” applications, automatic extrac-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions will be checked and corrected by a human	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	revisor, as automatically extracted data will al-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ways contain errors and gaps that can be de-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tected by human judgment only. This correction	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	process continually provides additional training	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	data, but the usual batch-trainable algorithms	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	are not very suited to integrate new data, since	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	full retraining takes a long time.	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We have compared the described tagging	page=2 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	strategies on two corpora that are used very of-	page=2 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ten to evaluate IE systems, CMU Seminar An-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nouncements and Corporate Acquisitions. <sup>1</sup> For	page=2 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	both corpora, we used the standard setup: 50/50	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	training/evaluation split, averaging results over	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	five (Seminar) or ten (Acquisitions) random	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	splits, “one answer per slot” (cf. Lavelli et al.	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	(2004)). Extraction results are evaluated in the	page=2 xpos=0 ypos=6 left-column full-justified aligned-line year
+I-Body	usual way by calculating precision P and re-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	call R of the extracted slot fillers and combin-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing them in the F-measure, the harmonic mean	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of precision and recall: F = <sup>2×P</sup> <sub>P</sub> +R <sup>×R</sup> . 2 For sig-	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	nificance testing, we applied a paired two-tailed	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> Both available from the RISE Repository	page=2 xpos=0 ypos=8 left-column left-indent right-indent indented-line shorter-tail line-double-space line-space headchar-super
+I-Footnote	<http://www.isi.edu/info-agents/RISE/>.	page=2 xpos=0 ypos=8 left-column right-indent font-smallest hanged-line longer-tail tailchar-period
+B-Footnote	<sup>2</sup> This is more appropriate than measuring raw token	page=2 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-super
+I-Footnote	classification accuracy due to the very unbalanced class	page=2 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	distribution among tokens. In the Seminar Announce-	page=2 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	ments corpus, our tokenization schema yields 139,021 to-	page=2 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	151	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Table	__Table 3__	page=2 xpos=5 ypos=-3 right-column right-over box column-top table-area above-double-space above-line-space
+B-Caption	Table 3: Incremental Training: Significance of	page=2 xpos=5 ypos=0 right-column full-justified aligned-line shorter-tail line-double-space line-space string-table headchar-capital
+E-Caption	Changes Compared to IOB2	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-capital above-double-space above-line-space
+Table	__Table 4__	page=2 xpos=5 ypos=0 right-column right-over box aligned-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 4: Batch Training: Significance of	page=2 xpos=5 ypos=2 right-column full-justified aligned-line shorter-tail line-double-space line-space string-table headchar-capital
+E-Caption	Changes Compared to IOB2	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+I-Body	Student’s T-test on the F-measure results, with-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	out assuming the variance of the two samples to	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	be equal.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Comparison Results	page=2 xpos=5 ypos=4 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Table 2 list the F-measure results (in percent)	page=2 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space string-table headchar-capital
+I-Body	reached for both corpora using batch training.	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Incremental results have been omitted due to	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	lack of space—they are generally slightly worse	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	than batch results, but in many cases the dif-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ference is small. For the Corporate Acquisitions,	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the batch results of the best strategies (IOB2	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	and BIA) are better than any other published	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	results we are aware of; for the Seminar An-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nouncements, they are only beaten by the ELIE	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	system (Finn and Kushmerick, 2004). <sup>3</sup>	page=2 xpos=5 ypos=7 right-column right-indent font-largest aligned-line shorter-tail year headchar-lower
+B-Body	Tables 3 and 4 analyze the performance of	page=2 xpos=5 ypos=7 right-column left-indent indented-line longer-tail string-table headchar-capital
+I-Body	each tagging strategy for both training regimes,	page=2 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-comma above-double-space above-line-space
+B-Footnote	kens, only 9820 of which are part of slot fillers. Thus most	page=2 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line line-double-space line-space headchar-lower
+I-Footnote	strategies could already reach an accuracy of 93% by al-	page=2 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	ways predicting the O class. Also, correctly extracting	page=2 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	slot fillers is the goal of IE—a higher token classification	page=2 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	accuracy won’t be of any use if information extraction	page=2 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	performance suffers.	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>3</sup> cf. (Siefkes and Siniakov, 2005, Sec. 6.5)	page=2 xpos=5 ypos=9 right-column left-indent right-indent indented-line longer-tail year headchar-super page-bottom
+I-Body	using the popular IOB2 strategy as a baseline.	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-period
+I-Body	The first item in each cell indicates whether	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	the strategy performs significantly better (“+”)	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	or worse (“–”) than IOB2 or whether the per-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance difference is not significant at the 95%	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	level (“o”). In brackets, we show the significance	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	of the comparison and whether the results are	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	better or worse when significance is ignored.	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Considering these results, we see that the	page=3 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	IOB2 and BIA strategies are best. No strategy	page=3 xpos=0 ypos=1 left-column full-justified hanged-line headchar-capital
+I-Body	is able to significantly beat the IOB2 strategy	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	on any slot, neither with incremental nor batch	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	training. The newly introduced BIA strategy	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	is the only one that is able to compete with	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	IOB2 on all slots. The IOB1 and Triv strategies	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	come close, being significantly worse than IOB2	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	only for one or two slots. The two-classifier BE	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	strategy is weaker, being significantly outper-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formed on three (incremental) or four (batch)	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	slots. Worst results are reached by the BIE	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	strategy, where the difference is significant in	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	about half of all cases. The good performance of	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	BIA is interesting, since this strategy is new and	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	has never been used before (to our knowledge).	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The Triv strategy would have supposed to be	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+E-Body	weaker, considering how simple this strategy is.	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusion	page=3 xpos=0 ypos=5 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Previously, classification-based approaches to IE	page=3 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	have combined a specific tagging strategy with	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	a specific classification algorithm and specific	page=3 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower
+I-Body	other parameter settings, making it hard to de-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tect how each of these choices influences the re-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults. We have designed a generalized IE sys-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem that allows exploring each of these choices	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	in isolation. For this paper, we have tested the	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	tagging strategies that can be found in the lit-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erature. We have also introduced a new tagging	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	strategy, BIA (Begin/After tagging).	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Our results indicate that the choice of a tag-	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ging strategy, while not crucial, should not be	page=3 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	neglected when implementing a statistical IE	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	system. The IOB2 strategy, which is very	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	popular, having been used in public challenges	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	such as those of CoNLL (Tjong Kim Sang and	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	De Meulder, 2003) and JNLPBA (Kim et al.,	page=3 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-capital tailchar-comma
+I-Body	2004), has been found to be indeed the best	page=3 xpos=0 ypos=9 left-column full-justified aligned-line year above-blank-line above-double-space above-line-space
+Page	152	page=3 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	of all established tagging strategies. It is ri-	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	valed by the new BIA strategy. In typical sit-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	uations, using one of those strategies should be	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	a good choice—since BIA requires more classes,	page=3 xpos=5 ypos=0 right-column full-justified aligned-line itemization headchar-lower tailchar-comma
+E-Body	it makes sense to prefer IOB2 when in doubt.	page=3 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Considering that it is not much worse, the	page=3 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	Triv strategy which requires only a single class	page=3 xpos=5 ypos=1 right-column full-justified hanged-line headchar-capital
+I-Body	per slot type might be useful in situations where	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	the number of available classes is limited or the	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	space or time overhead of additional classes is	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	high. The two-classifier BE strategy is still in-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	teresting if used as part of a more refined ap-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach, as done by the ELIE system (Finn and	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	Kushmerick, 2004). <sup>4</sup> Future work will be to ob-	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line year headchar-capital tailchar-hiphen
+I-Body	serve how well these results generalize in the	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	context of other classifiers and other corpora.	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	To combine the strengths of different tagging	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	strategies, ensemble meta-strategies utilizing the	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	results of multiple strategies could be explored.	page=3 xpos=5 ypos=3 right-column centered right-indent aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=3 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Aidan Finn and Nicholas Kushmerick. 2004. Multi-	page=3 xpos=5 ypos=4 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	level boundary classification for information ex-	page=3 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	traction. In ECML 2004, pages 111–122.	page=3 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Jin-Dong Kim, Tomoko Ohta, Yoshimasa Tsuruoka,	page=3 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	Yuka Tateisi, and Nigel Collier. 2004. Introduc-	page=3 xpos=5 ypos=5 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	tion to the bio-entity recognition task at JNLPBA.	page=3 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	In BioNLP/NLPBA 2004.	page=3 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	A. Lavelli, M. Califf, F. Ciravegna, D. Freitag,	page=3 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	C. Giuliano, N. Kushmerick, and L. Romano.	page=3 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-capital tailchar-period
+I-Reference	2004. A critical survey of the methodology for	page=3 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line year
+I-Reference	IE evaluation. In LREC.	page=3 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Nick Littlestone. 1988. Learning quickly when irrel-	page=3 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	evant attributes abound. Machine Learning, 2.	page=3 xpos=5 ypos=6 right-column centered left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Christian Siefkes and Peter Siniakov. 2005. An	page=3 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	overview and classification of adaptive approaches	page=3 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	to information extraction. Journal on Data Se-	page=3 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	mantics, IV:172–212. LNCS 3730.	page=3 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Christian Siefkes. 2005. Incremental information ex-	page=3 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	traction using tree-based context representations.	page=3 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In CICLing 2005, LNCS 3406. Springer.	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Erik F. Tjong Kim Sang and Fien De Meulder.	page=3 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2003. Introduction to the CoNLL-2003 shared	page=3 xpos=5 ypos=8 right-column left-indent font-smallest indented-line year
+I-Reference	task: Language-independent named entity recog-	page=3 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	nition. In CoNLL-2003.	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>4</sup> They augment the BE strategy with a second level	page=3 xpos=5 ypos=9 right-column left-indent longer-tail line-double-space line-space headchar-super
+I-Footnote	of begin/end classifiers for finding suitable tags matching	page=3 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	left-over tags from the level-1 classifiers.	page=3 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period

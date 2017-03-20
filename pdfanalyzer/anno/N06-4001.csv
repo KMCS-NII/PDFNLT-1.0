@@ -1,0 +1,334 @@
+Title	AUTOMATED QUALITY MONITORING FOR CALL CENTERS USING SPEECH AND NLP	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital
+Title	TECHNOLOGIES	page=0 xpos=4 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+Author	G. Zweig, O. Siohan, G. Saon, B. Ramabhadran, D. Povey, L. Mangu and B. Kingsbury	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+B-Affiliation	IBM T.J. Watson Research Center, Yorktown Heights, NY 10598	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	ABSTRACT	page=0 xpos=1 ypos=1 left-column centered left-indent right-indent column-top line-blank-line line-double-space line-space headchar-capital above-double-space above-line-space
+B-Abstract	This paper describes an automated system for assigning qual-	page=0 xpos=0 ypos=1 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	ity scores to recorded call center conversations. The system com-	page=0 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Abstract	bines speech recognition, pattern matching, and maximum entropy	page=0 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Abstract	classification to rank calls according to their measured quality.	page=0 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Abstract	Calls at both ends of the spectrum are flagged as “interesting” and	page=0 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Abstract	made available for further human monitoring. In this process, the	page=0 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Abstract	ASR transcript is used to answer a set of standard quality control	page=0 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Abstract	questions such as “did the agent use courteous words and phrases,”	page=0 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Abstract	and to generate a question-based score. This is interpolated with	page=0 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Abstract	the probability of a call being “bad,” as determined by maximum	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	entropy operating on a set of ASR-derived features such as “max-	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Abstract	imum silence length” and the occurrence of selected n-gram word	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	sequences. The system is trained on a set of calls with associated	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	manual evaluation forms. We present precision and recall results	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	from IBM’s North American Help Desk indicating that for a given	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	amount of listening effort, this system triples the number of bad	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	calls that are identified, over the current policy of randomly sam-	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Abstract	pling calls. The application that will be demonstrated is a research	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Abstract	prototype that was built in conjunction with IBM’s North Ameri-	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Abstract	can call centers.	page=0 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1. INTRODUCTION	page=0 xpos=1 ypos=4 left-column centered left-indent right-indent indented-line longer-tail line-blank-line line-double-space line-space itemization above-double-space above-line-space
+B-Body	Every day, tens of millions of help-desk calls are recorded at call	page=0 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	centers around the world. As part of a typical call center operation	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	a random sample of these calls is normally re-played to human	page=0 xpos=0 ypos=5 left-column full-justified aligned-line itemization headchar-lower
+I-Body	monitors who score the calls with respect to a variety of quality	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	related questions, e.g.	page=0 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• Was the account successfully identified by the agent?	page=0 xpos=0 ypos=6 left-column left-indent right-indent font-largest indented-line longer-tail line-space itemization above-line-space
+B-Listitem	• Did the agent request error codes/messages to help deter-	page=0 xpos=0 ypos=6 left-column left-indent font-largest aligned-line longer-tail line-space itemization tailchar-hiphen
+I-Listitem	mine the problem?	page=0 xpos=0 ypos=6 left-column left-indent right-indent indented-line shorter-tail headchar-lower above-line-space
+B-Listitem	• Was the problem resolved?	page=0 xpos=0 ypos=6 left-column left-indent right-indent font-largest hanged-line longer-tail line-space itemization above-line-space
+B-Listitem	• Did the agent maintain appropriate tone, pitch, volume and	page=0 xpos=0 ypos=6 left-column left-indent font-largest aligned-line longer-tail line-space itemization
+I-Listitem	pace?	page=0 xpos=0 ypos=6 left-column left-indent right-indent indented-line shorter-tail headchar-lower above-line-space
+B-Body	This process suffers from a number of important problems: first,	page=0 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-space headchar-capital tailchar-comma
+I-Body	the monitoring at least doubles the cost of each call (first an opera-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tor is paid to take it, then a monitor to evaluate it). This causes the	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	second problem, which is that therefore only a very small sample	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of calls, e.g. a fraction of a percent, is typically evaluated. The	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	third problem arises from the fact that most calls are ordinary and	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	uninteresting; with random sampling, the human monitors spend	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	most of their time listening to uninteresting calls.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	This work describes an automated quality-monitoring system	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	that addresses these problems. Automatic speech recognition is	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	used to transcribe 100% of the calls coming in to a call center,	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and default quality scores are assigned based on features such as	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	292	page=0 xpos=4 ypos=9 left-column left-indent right-over font-largest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	key-words, key-phrases, the number and type of hesitations, and	page=0 xpos=5 ypos=1 right-column full-justified column-top headchar-lower
+I-Body	the average silence durations. The default score is used to rank	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	the calls from worst-to-best, and this sorted list is made available	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	to the human evaluators, who can thus spend their time listening	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	only to calls for which there is some a-priori reason to expect that	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	there is something interesting.	page=0 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The automatic quality-monitoring problem is interesting in	page=0 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	part because of the variability in how hard it is to answer the ques-	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tions. Some questions, for example, “Did the agent use courteous	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	words and phrases?” are relatively straightforward to answer by	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	looking for key words and phrases. Others, however, require es-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sentially human-level knowledge to answer; for example one com-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pany’s monitors are asked to answer the question “Did the agent	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	take ownership of the problem?” Our work focuses on calls from	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	IBM’s North American call centers, where there is a set of 31 ques-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tions that are used to evaluate call-quality. Because of the high de-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gree of variability found in these calls, we have investigated two	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	approaches:	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Listitem	1. Use a partial score based only on the subset of questions	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space itemization
+I-Listitem	that can be reliably answered.	page=0 xpos=5 ypos=4 right-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	2. Use a maximum entropy classifier to map directly from	page=0 xpos=5 ypos=4 right-column left-indent hanged-line longer-tail line-space itemization
+I-Listitem	ASR-generated features to the probability that a call is bad	page=0 xpos=5 ypos=4 right-column left-indent indented-line headchar-capital
+I-Listitem	(defined as belonging to the bottom 20% of calls).	page=0 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail tailchar-period above-line-space
+B-Body	We have found that both approaches are workable, and we present	page=0 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Body	final results based on an interpolation between the two scores.	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	These results indicate that for a fixed amount of listening effort,	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	the number of bad calls that are identified approximately triples	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	with our call-ranking approach. Surprisingly, while there has been	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	significant previous scholarly research in automated call-routing	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	and classification in the call center , e.g. [1, 2, 3, 4, 5], there has	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	been much less in automated quality monitoring per se.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	2. ASR FOR CALL CENTER TRANSCRIPTION	page=0 xpos=5 ypos=6 right-column centered left-indent right-indent indented-line longer-tail line-blank-line line-double-space line-space itemization above-double-space above-line-space
+B-SubsectionHeader	2.1. Data	page=0 xpos=5 ypos=6 right-column right-indent hanged-line shorter-tail line-double-space line-space above-double-space above-line-space
+B-Body	The speech recognition systems were trained on approximately	page=0 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	300 hours of 6kHz, mono audio data collected at one of the IBM	page=0 xpos=5 ypos=7 right-column full-justified aligned-line
+I-Body	call centers located in Raleigh, NC. The audio was manually tran-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scribed and speaker turns were explicitly marked in the word tran-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scriptions but not the corresponding times. In order to detect	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	speaker changes in the training data, we did a forced-alignment of	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the data and chopped it at speaker boundaries. The test set consists	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	of 50 calls with 113 speakers totaling about 3 hours of speech.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	2.2. Speaker Independent System	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space above-double-space above-line-space
+B-Body	The raw acoustic features used for segmentation and recognition	page=0 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	are perceptual linear prediction (PLP) features. The features are	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of the Human Language Technology Conference of the NAACL, Companion Volume, pages 292–295,	page=0 xpos=0 ypos=9 single-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Footer	New York City, June 2006.  2006 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column centered left-indent right-indent font-largest indented-line shorter-tail year headchar-capital page-bottom
+Table	__Table 1__	page=1 xpos=0 ypos=-1 left-column centered left-indent right-indent box page-top table-area above-blank-line above-double-space above-line-space
+B-Caption	Table 1. ASR results depending on segmentation/clustering and	page=1 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital
+E-Caption	adaptation type.	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 2__	page=1 xpos=0 ypos=1 left-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 2. Accuracy for the Question Answering system.	page=1 xpos=0 ypos=1 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+I-Body	mean-normalized 40-dimensional LDA+MLLT features. The SI	page=1 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	acoustic model consists of 50K Gaussians trained with MPE and	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	uses a quinphone cross-word acoustic context. The techniques are	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	the same as those described in [6].	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	2.3. Incremental Speaker Adaptation	page=1 xpos=0 ypos=3 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space above-double-space above-line-space
+B-Body	In the context of speaker-adaptive training, we use two forms	page=1 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	of feature-space normalization: vocal tract length normalization	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	(VTLN) and feature-space MLLR (fMLLR, also known as con-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line tailchar-hiphen
+I-Body	strained MLLR) to produce canonical acoustic models in which	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	some of the non-linguistic sources of speech variability have been	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	reduced. To this canonical feature space, we then apply a discrim-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	inatively trained transform called fMPE [7]. The speaker adapted	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	recognition model is trained in this resulting feature space using	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	MPE.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	We distinguish between two forms of adaptation: off-line and	page=1 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	incremental adaptation. For the former, the transformations are	page=1 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	computed per conversation-side using the full output of a speaker	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	independent system. For the latter, the transformations are updated	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	incrementally using the decoded output of the speaker adapted sys-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem up to the current time. The speaker adaptive transforms are	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	then applied to the future sentences. The advantage of incremental	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	adaptation is that it only requires a single decoding pass (as op-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	posed to two passes for off-line adaptation) resulting in a decoding	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	process which is twice as fast. In Table 1, we compare the per-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance of the two approaches. Most of the gain of full offline	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	adaptation is retained in the incremental version.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsubsectionHeader	2.3.1. Segmentation and Speaker Clustering	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space above-double-space above-line-space
+B-Body	We use an HMM-based segmentation procedure for segmenting	page=1 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the audio into speech and non-speech prior to decoding. The rea-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	son is that we want to eliminate the non-speech segments in order	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	to reduce the computational load during recognition. The speech	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	segments are clustered together in order to identify segments com-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing from the same speaker which is crucial for speaker adaptation.	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The clustering is done via k-means, each segment being modeled	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	by a single diagonal covariance Gaussian. The metric is given by	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the symmetric K-L divergence between two Gaussians. The im-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pact of the automatic segmentation and clustering on the error rate	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	is indicated in Table 1.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	293	page=1 xpos=4 ypos=9 left-column left-indent right-over font-largest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Table	__Table 3__	page=1 xpos=6 ypos=-1 right-column centered left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 3. Accuracy for the Maximum Entropy system.	page=1 xpos=5 ypos=0 right-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-period above-double-space above-line-space
+Table	__Table 4__	page=1 xpos=6 ypos=0 right-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 4. Accuracy for the combined system.	page=1 xpos=6 ypos=1 right-column centered left-indent right-indent line-double-space line-space string-table headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	3. CALL RANKING	page=1 xpos=6 ypos=1 right-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space itemization above-double-space above-line-space
+B-SubsectionHeader	3.1. Question Answering	page=1 xpos=5 ypos=2 right-column right-indent hanged-line shorter-tail line-double-space line-space above-double-space above-line-space
+B-Body	This section presents automated techniques for evaluating call	page=1 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	quality. These techniques were developed using a train-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing/development set of 676 calls with associated manually gen-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	erated quality evaluations. The test set consists of 195 calls.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The quality of the service provided by the help-desk represen-	page=1 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tatives is commonly assessed by having human monitors listen to	page=1 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	a random sample of the calls and then fill in evaluation forms. The	page=1 xpos=5 ypos=3 right-column full-justified aligned-line itemization headchar-lower
+I-Body	form for IBM’s North American Help Desk contains 31 questions.	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	A subset of the questions can be answered easily using automatic	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	methods, among those the ones that check that the agent followed	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	the guidelines e.g.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• Did the agent follow the appropriate closing script?	page=1 xpos=5 ypos=4 right-column left-indent right-indent font-largest indented-line longer-tail line-space itemization above-line-space
+B-Listitem	• Did the agent identify herself to the customer?	page=1 xpos=5 ypos=4 right-column left-indent right-indent font-largest aligned-line shorter-tail line-space itemization above-line-space
+B-Body	But some of the questions require human-level knowledge of the	page=1 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Body	world to answer, e.g.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• Did the agent ask pertinent questions to gain clarity of the	page=1 xpos=5 ypos=4 right-column left-indent font-largest indented-line longer-tail line-space itemization
+I-Listitem	problem?	page=1 xpos=5 ypos=5 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-line-space
+B-Listitem	• Were all available resources used to solve the problem?	page=1 xpos=5 ypos=5 right-column left-indent right-indent font-largest hanged-line longer-tail line-space itemization above-line-space
+B-Body	We were able to answer 21 out of the 31 questions using pat-	page=1 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tern matching techniques. For example, if the question is “Did	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the agent follow the appropriate closing script?”, we search for	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	“THANK YOU FOR CALLING”, “ANYTHING ELSE” and	page=1 xpos=5 ypos=5 right-column full-justified aligned-line
+I-Body	“SERVICE REQUEST”. Any of these is a good partial match for	page=1 xpos=5 ypos=6 right-column full-justified aligned-line
+I-Body	the full script, “Thank you for calling, is there anything else I can	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	help you with before closing this service request?” Based on the	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	answer to each of the 21 questions, we compute a score for each	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	call and use it to rank them. We label a call in the test set as being	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	bad/good if it has been placed in the bottom/top 20% by human	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	evaluators. We report the accuracy of our scoring system on the	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	test set by computing the number of bad calls that occur in the	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	bottom 20% of our sorted list and the number of good calls found	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in the top 20% of our list. The accuracy numbers can be found in	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	Table 2.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail string-table headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.2. Maximum Entropy Ranking	page=1 xpos=5 ypos=8 right-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space above-double-space above-line-space
+B-Body	Another alternative for scoring calls is to find arbitrary features in	page=1 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the speech recognition output that correlate with the outcome of a	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	call being in the bottom 20% or not. The goal is to estimate the	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	probability of a call being bad based on features extracted from	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the automatic transcription. To achieve this we build a maximum	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower page-bottom
+Figure	__Figure 1__	page=2 xpos=0 ypos=-4 left-column left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Fig. 1. Display of selected calls.	page=2 xpos=1 ypos=0 left-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+I-Body	entropy based system which is trained on a set of calls with asso-	page=2 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ciated transcriptions and manual evaluations. The following equa-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion is used to determine the score of a call C using a set of N	page=2 xpos=0 ypos=0 left-column centered right-indent font-largest aligned-line headchar-lower
+I-Body	predefined features:	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	1 <sup>N</sup>	page=2 xpos=2 ypos=1 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space numbered-heading1
+I-Equation	P (class/C) = exp( X λ i f i (class, C)) (1)	page=2 xpos=0 ypos=1 left-column left-indent font-largest hanged-line longer-tail headchar-capital
+I-Equation	Z <sub>i=1</sub>	page=2 xpos=1 ypos=1 left-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-double-space above-line-space
+I-Body	where class ∈ {bad, not − bad}, Z is a normalizing factor, f i ()	page=2 xpos=0 ypos=2 left-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	are indicator functions and {λ i } <sub>{i=1,N</sub> } are the parameters of the	page=2 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	model estimated via iterative scaling [8].	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Due to the fact that our training set contained under 700 calls,	page=2 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	we used a hand-guided method for defining features. Specifi-	page=2 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	cally, we generated a list of VIP phrases as candidate features,	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	e.g. “THANK YOU FOR CALLING”, and “HELP YOU”. We	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	also created a pool of generic ASR features, e.g. “number of hes-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	itations”, “total silence duration”, and “longest silence duration”.	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	A decision tree was then used to select the most relevant features	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	and the threshold associated with each feature. The final set of fea-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures contained 5 generic features and 25 VIP phrases. If we take a	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	look at the weights learned for different features, we can see that if	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	a call has many hesitations and long silences then most likely the	page=2 xpos=0 ypos=4 left-column full-justified aligned-line itemization headchar-lower
+E-Body	call is bad.	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We use P (bad|C) as shown in Equation 1 to rank all the calls.	page=2 xpos=0 ypos=5 left-column left-indent font-largest indented-line longer-tail headchar-capital tailchar-period
+I-Body	Table 3 shows the accuracy of this system for the bottom and top	page=2 xpos=0 ypos=5 left-column full-justified hanged-line string-table headchar-capital
+E-Body	20% of the test calls.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	At this point we have two scoring mechanisms for each call:	page=2 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital tailchar-colon
+I-Body	one that relies on answering a fixed number of evaluation ques-	page=2 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tions and a more global one that looks across the entire call for	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	hints. These two scores are both between 0 and 1, and therefore	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	can be interpolated to generate one unique score. After optimizing	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the interpolation weights on a held-out set we obtained a slightly	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	higher weight (0.6) for the maximum entropy model. It can be	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	seen in Table 4 that the accuracy of the combined system is greater	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	that the accuracy of each individual system, suggesting the com-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	plementarity of the two initial systems.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	4. END-TO-END SYSTEM PERFORMANCE	page=2 xpos=0 ypos=7 left-column centered left-indent right-indent indented-line longer-tail line-blank-line line-double-space line-space itemization above-double-space above-line-space
+B-SubsectionHeader	4.1. Application	page=2 xpos=0 ypos=8 left-column right-indent hanged-line shorter-tail line-double-space line-space above-double-space above-line-space
+B-Body	This section describes the user interface of the automated quality	page=2 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	monitoring application. As explained in Section 1, the evalua-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	294	page=2 xpos=4 ypos=9 left-column left-indent right-over font-largest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 2__	page=2 xpos=5 ypos=-4 right-column left-indent right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Fig. 2. Interface to listen to audio and update the evaluation form.	page=2 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+I-Body	tor scores calls with respect to a set of quality-related questions	page=2 xpos=5 ypos=0 right-column full-justified aligned-line line-blank-line line-double-space line-space headchar-lower
+I-Body	after listening to the calls. To aid this process, the user interface	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	provides an efficient mechanism for the human evaluator to select	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	calls, e.g.	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	• All calls from a specific agent sorted by score	page=2 xpos=5 ypos=1 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space itemization above-line-space
+B-Listitem	• The top 20% or the bottom 20% of the calls from a specific	page=2 xpos=5 ypos=1 right-column left-indent font-largest aligned-line longer-tail line-space itemization
+I-Listitem	agent ranked by score	page=2 xpos=5 ypos=1 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	• The top 20% or the bottom 20% of all calls from all agents	page=2 xpos=5 ypos=2 right-column left-indent font-largest hanged-line longer-tail line-double-space line-space itemization above-double-space above-line-space
+B-Body	The automated quality monitoring user interface is a J2EE web	page=2 xpos=5 ypos=2 right-column full-justified hanged-line line-double-space line-space headchar-capital
+I-Body	application that is supported by back-end databases and content	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	management systems <sup>1</sup> The displayed list of calls provides a link	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	to the audio, the automatically filled evaluation form, the overall	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	score for this call, the agent’s name, server location, call id, date	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	and duration of the call (see Figure 1). This interface now gives	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the agent the ability to listen to interesting calls and update the	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	answers in the evaluation form if necessary (audio and evaluation	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	form illustrated in 2). In addition, this interface provides the eval-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	uator with the ability to view summary statistics (average score)	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	and additional information about the quality of the calls. The over-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	all system is designed to automatically download calls from mul-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tiple locations on a daily-basis, transcribe and index them, thereby	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	making them available to the supervisors for monitoring. Calls	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	spanning a month are available at any given time for monitoring	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	purposes.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	4.2. Precision and Recall	page=2 xpos=5 ypos=5 right-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space above-double-space above-line-space
+B-Body	This section presents precision and recall numbers for the	page=2 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	identification of “bad” calls. The test set consists of 195 calls that	page=2 xpos=5 ypos=6 right-column full-justified font-largest hanged-line headchar-lower
+I-Body	were manually evaluated by call center personnel. Based on these	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	manual scores, the calls were ordered by quality, and the bottom	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	20% were deemed to be “bad.” To retrieve calls for monitoring,	page=2 xpos=5 ypos=7 right-column full-justified aligned-line tailchar-comma
+I-Body	we sort the calls based on the automatically assigned quality score	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	and return the worst. In our summary figures, precision and recall	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	are plotted as a function of the number of calls that are selected	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	for monitoring. This is important because in reality only a small	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	number of calls can receive human attention. Precision is the ratio	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> In our case, the backend consists of DB2 and IBM’s Websphere Infor-	page=2 xpos=5 ypos=8 right-column left-indent font-larger indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	mation Integrator for Content and the application is hosted on Websphere	page=2 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	5.1.)	page=2 xpos=5 ypos=8 right-column right-indent font-smallest aligned-line shorter-tail page-bottom
+Figure	__Figure 3__	page=3 xpos=0 ypos=-3 left-column left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Fig. 3. Precision for the bottom 20% of the calls as a function of	page=3 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+E-Caption	the number of calls retrieved.	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 4__	page=3 xpos=0 ypos=0 left-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Body	Fig. 4. Recall for the bottom 20% of the calls.	page=3 xpos=0 ypos=2 left-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+I-Body	of bad calls retrieved to the total number of calls monitored, and	page=3 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	recall is the ratio of the number of bad calls retrieved to the total	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	number of bad calls in the test set. Three curves are shown in each	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	plot: the actually observed performance, performance of random	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	selection, and oracle or ideal performance. Oracle performance	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	shows what would happen if a perfect automatic ordering of the	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	calls was achieved.	page=3 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Figure 3 shows precision performance. We see that in the	page=3 xpos=0 ypos=4 left-column left-indent indented-line longer-tail string-figure headchar-capital
+I-Body	monitoring regime where only a small fraction of the calls are	page=3 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	monitored, we achieve over 60% precision. (Further, if 20% of	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	the calls are monitored, we still attain over 40% precision.)	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Body	Figure 4 shows the recall performance. In the regime of low-	page=3 xpos=0 ypos=5 left-column left-indent indented-line longer-tail string-figure headchar-capital tailchar-hiphen
+I-Body	volume monitoring, the recall is midway between what could be	page=3 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+E-Body	achieved with an oracle, and the performance of random-selection.	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	Figure 5 shows the ratio of the number of bad calls found with	page=3 xpos=0 ypos=5 left-column left-indent indented-line string-figure headchar-capital
+I-Body	our automated ranking to the number found with random selection.	page=3 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	This indicates that in the low-monitoring regime, our automated	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+E-Body	technique triples efficiency.	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	4.3. Human vs. Computer Rankings	page=3 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space
+B-Body	As a final measure of performance, in Figure 6 we present a	page=3 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	scatterplot comparing human to computer rankings. We do not	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	have calls that are scored by two humans, so we cannot present a	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	human-human scatterplot for comparison.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-SectionHeader	5. CONCLUSION	page=3 xpos=1 ypos=7 left-column centered left-indent right-indent indented-line longer-tail line-space itemization above-line-space
+B-Body	This paper has presented an automated system for quality moni-	page=3 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	toring in the call center. We propose a combination of maximum-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	entropy classification based on ASR-derived features, and question	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	answering based on simple pattern-matching. The system can ei-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ther be used to replace human monitors, or to make them more	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	295	page=3 xpos=4 ypos=9 left-column left-indent right-over font-largest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 5__	page=3 xpos=5 ypos=-3 right-column left-indent right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Fig. 5. Ratio of bad calls found with QTM to Random selection as	page=3 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+E-Caption	a function of the number of bad calls retrieved.	page=3 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 6__	page=3 xpos=5 ypos=0 right-column left-indent right-indent box indented-line longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Fig. 6. Scatter plot of Human vs. Computer Rank.	page=3 xpos=5 ypos=2 right-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+I-Body	efficient. Our results show that we can triple the efficiency of hu-	page=3 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	man monitors in the sense of identifying three times as many bad	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	calls for the same amount of listening effort.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6. REFERENCES	page=3 xpos=6 ypos=4 right-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space itemization above-double-space above-line-space
+B-Reference	[1] J. Chu-Carroll and B. Carpenter, “Vector-based natural lan-	page=3 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-double-space line-space tailchar-hiphen
+I-Reference	guage call routing,” Computational Linguistics, 1999.	page=3 xpos=5 ypos=4 right-column left-indent right-indent indented-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Reference	[2] P. Haffner, G. Tur, and J. Wright, “Optimizing svms for com-	page=3 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-space tailchar-hiphen
+I-Reference	plex call classification,” 2003.	page=3 xpos=5 ypos=4 right-column left-indent right-indent indented-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Reference	[3] M. Tang, B. Pellom, and K. Hacioglu, “Call-type classifica-	page=3 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-space tailchar-hiphen
+I-Reference	tion and unsupervised training for the call center domain,” in	page=3 xpos=5 ypos=5 right-column left-indent indented-line headchar-lower
+I-Reference	ARSU-2003, 2003.	page=3 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-line-space
+B-Reference	[4] D. Hakkani-Tur, G. Tur, M. Rahim, and G. Riccardi, “Unsu-	page=3 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-space tailchar-hiphen
+I-Reference	pervised and active learning in automatic speech recognition	page=3 xpos=5 ypos=5 right-column left-indent indented-line headchar-lower
+I-Reference	for call classification,” in ICASSP-04, 2004.	page=3 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Reference	[5] C. Wu, J. Kuo, E.E. Jan, V. Goel, and D. Lubensky, “Improv-	page=3 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-space tailchar-hiphen
+I-Reference	ing end-to-end performance of call classification through data	page=3 xpos=5 ypos=6 right-column left-indent indented-line headchar-lower
+I-Reference	confusion reduction and model tolerance enhancement,” in	page=3 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower
+I-Reference	Interspeech-05, 2005.	page=3 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-line-space
+B-Reference	[6] H. Soltau, B. Kingsbury, L. Mangu, D. Povey, G. Saon, and	page=3 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-space
+I-Reference	G. Zweig, “The ibm 2004 conversational telephony system	page=3 xpos=5 ypos=7 right-column left-indent indented-line year headchar-capital
+I-Reference	for rich transcription,” in Eurospeech-2005, 2005.	page=3 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Reference	[7] D. Povey, B. Kingsbury, L. Mangu, G. Saon, H. Soltau,	page=3 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-space tailchar-comma
+I-Reference	and G. Zweig, “fMPE: Discriminatively trained features for	page=3 xpos=5 ypos=7 right-column left-indent indented-line headchar-lower
+I-Reference	speech recognition,” in ICASSP-2005, 2004.	page=3 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Reference	[8] A. Berger, S. Della Pietra, and V. Della Pietra, “A maximum	page=3 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-space
+I-Reference	entropy approach to natural language processing,” Computa-	page=3 xpos=5 ypos=8 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	tional Linguistics, vol. 22, no. 1, 1996.	page=3 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period

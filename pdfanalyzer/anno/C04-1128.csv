@@ -1,0 +1,607 @@
+Title	Detection of Question-Answer Pairs in Email Conversations	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital column-bottom above-double-space above-line-space
+Author	Lokesh Shrestha and Kathleen McKeown	page=0 xpos=2 ypos=0 left-column left-indent right-over font-largest column-top line-double-space line-space headchar-capital column-bottom
+B-Affiliation	Columbia University	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-larger column-top headchar-capital
+I-Affiliation	Computer Science Deparment	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Address	New York, NY 10027,	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital tailchar-comma
+Address	USA,	page=0 xpos=4 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital tailchar-comma
+Email	lokesh@cs.columbia.edu, kathy@cs.columbia.edu	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-line-space
+B-Abstract	While sentence extraction as an approach to	page=0 xpos=0 ypos=2 left-column left-indent right-indent font-smallest hanged-line longer-tail line-space headchar-capital
+I-Abstract	summarization has been shown to work in docu-	page=0 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ments of certain genres, because of the conver-	page=0 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sational nature of email communication where	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	utterances are made in relation to one made	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	previously, sentence extraction may not capture	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	the necessary segments of dialogue that would	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	make a summary coherent. In this paper, we	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	present our work on the detection of question-	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	answer pairs in an email conversation for the	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	task of email summarization. We show that var-	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ious features based on the structure of email-	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	threads can be used to improve upon lexical	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	similarity of discourse segments for question-	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	answer pairing.	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-largest hanged-line line-double-space line-space numbered-heading1 above-line-space
+B-Body	In this paper, we discuss work on the detection of	page=0 xpos=0 ypos=5 left-column right-indent aligned-line longer-tail line-space headchar-capital
+I-Body	question and answer pairs in email threads, i.e., co-	page=0 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	herent exchanges of email messages among several	page=0 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	participants. Email is a written medium of asyn-	page=0 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	chronous multi-party communication. This means	page=0 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	that, as in face-to-face spoken dialog, the email	page=0 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	thread as a whole is a collaborative effort with inter-	page=0 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	action among the discourse participants. However,	page=0 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower tailchar-comma
+I-Body	unlike spoken dialog, the discourse participants are	page=0 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower
+I-Body	not physically co-present, so that the written word is	page=0 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower
+I-Body	the only channel of communication. Furthermore,	page=0 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower tailchar-comma
+I-Body	replies do not happen immediately, so that respon-	page=0 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	ders need to take special precautions to identify rel-	page=0 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	evant elements of the discourse context (for exam-	page=0 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	ple, by quoting previous messages). Thus, email is	page=0 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	a distinct linguistic genre that poses its own chal-	page=0 xpos=0 ypos=8 left-column right-indent aligned-line itemization headchar-lower tailchar-hiphen
+E-Body	lenges to summarization.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	With the increasing popularity of email as a	page=0 xpos=0 ypos=8 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	means of communication, an increasing number of	page=0 xpos=0 ypos=9 left-column right-indent hanged-line headchar-lower
+I-Body	meetings are scheduled, events planned, issues re-	page=0 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	solved, and questions answered through emails. As	page=0 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower
+I-Body	the number of emails in one’s mailbox increases, in-	page=0 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	__Figure 1__	page=0 xpos=5 ypos=2 right-column left-over right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 1: Sample summary obtained with sentence	page=0 xpos=5 ypos=5 right-column full-justified longer-tail line-double-space line-space string-figure headchar-capital
+E-Caption	extraction	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	formation from past conversations becomes increas-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ingly inaccessible and difficult to manage. For ex-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ample, a number of emails can be used in schedul-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing a meeting, and a search for information on the	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	meeting may retrieve all the intermediate emails,	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	thus hindering one’s access to the required informa-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. Access to required information could be dra-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	matically improved by querying summaries of email	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	conversations	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Body	While summarization of email conversations	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	seems a natural way to improve upon current	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	methods of email management, research on email	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	summarization is in early stages. Consider an	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	example summary of a thread of email conver-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sation produced by a sentence extraction based	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	email thread summarization system developed at	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	Columbia (Rambow et al., 2004) shown in Figure 1.	page=0 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-capital tailchar-period
+I-Body	While this summary does include an answer to the	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital
+I-Body	first question, it does not include answers to the	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	two questions posed subsequently even though the	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	answers are present in the thread. This example	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	demonstrates one of the inadequacies of sentence	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	extraction based summarization modules: namely,	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the absence of discourse segments that would have	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	made the summaries more readable and complete.	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	A summarization module that includes answers to	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	questions posed in extractive summaries, then, be-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	comes very useful.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Further, questions are a natural means of resolv-	page=1 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ing any issue. This is especially so of email conver-	page=1 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sations through which most of our issues, whether	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	professional or personal, get resolved. And, the	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	asynchronous nature of email conversation makes it	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	possible for users to pursue several questions in par-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	allel. In fact, in our corpus of email exchanges, we	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	found that about 20% of all email threads focus pri-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	marily on a question-answer exchange, whether one	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	question is posed and multiple people respond or	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	whether multiple questions are posed and multiple	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	responses given. For these type of email exchanges,	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	a summary that can highlight the main question(s)	page=1 xpos=0 ypos=3 left-column full-justified aligned-line itemization headchar-lower
+I-Body	asked and the response(s) given would be useful.	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Being able to distinguish questions pertaining to dif-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ferent issues in an email thread and being able to	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	associate the answers with their questions is a ne-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cessity in order to generate this type of summary.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In this paper, we present our work on the detec-	page=1 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tion of question and answer pairs in email conver-	page=1 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sations. The question-answer detection system we	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	present will ultimately serve as one component of a	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	full email summarization system, providing a por-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of summary content. We developed one ap-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach for the detection of questions in email mes-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sages, and a separate approach to detect the corre-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sponding answers. These are described in turn be-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	low.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Previous and Related Work	page=1 xpos=0 ypos=7 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-line-space
+B-Body	(Muresan et al., 2001) describe work on summariz-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-space year tailchar-hiphen
+I-Body	ing individual email messages using machine learn-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing approaches to learn rules for salient noun phrase	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	extraction. In contrast, our work aims at summariz-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing whole threads and at capturing the interactive	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	nature of email.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	(Nenkova and Bagga, 2003) present work on gen-	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail year tailchar-hiphen
+I-Body	erating extractive summaries of threads in archived	page=1 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	discussions. A sentence from the root message and	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	from each response to the root is extracted using	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	ad-hoc algorithms crafted by hand. This approach	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	works best when the subject of the root email best	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	describes the “issue” of the thread, and when the	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	root email does not discuss more than one issue. In	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	our work, we do not make any assumptions about	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	the nature of the email, and try to learn strategies to	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	link question and answer segments for summariza-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion.	page=1 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	(Newman and Blitzer, 2003) also address the	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-space year
+I-Body	problem of summarizing archived discussion lists.	page=1 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	They cluster messages into topic groups, and then	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	extract summaries for each cluster. The summary of	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	a cluster is extracted using a scoring metric based on	page=1 xpos=5 ypos=2 right-column full-justified aligned-line itemization headchar-lower
+I-Body	sentence position, lexical similarity of a sentence to	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	cluster centroid, and a feature based on quotation,	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	among others. Because the summaries are extrac-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive in nature, this approach still suffers from the	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	possibility of incomplete summaries.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	(Lam et al., 2002) present work on email summa-	page=1 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space year tailchar-hiphen
+I-Body	rization by exploiting the thread structure of email	page=1 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	conversation and common features such as named	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	entities and dates. They summarize the message	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	only, though the content of the message to be sum-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	marized is “expanded” using the content from its an-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cestor messages. The expanded message is passed	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to a document summarizer which is used as a black	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	box to generate summaries. Our work, in contrast,	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	aims at summarizing the whole thread, and we are	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	precisely interested in changing the summarization	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	algorithm itself, not in using a black box summa-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	rizer.	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In addition, there has been some work on summa-	page=1 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	rizing meetings. As discussed in Section 1, email is	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	different in important respects from multi-party di-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	alog. However, some important aspects are related.	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	(Zechner and Lavie, 2001), for example, presents	page=1 xpos=5 ypos=6 right-column full-justified aligned-line year
+I-Body	a spoken dialogue summarization system that takes	page=1 xpos=5 ypos=6 right-column full-justified aligned-line itemization headchar-lower
+I-Body	into consideration local cross-speaker coherence by	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	linking question answer pairs, and uses this infor-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation to generate extract based summaries with	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	complete question-answer regions. While we have	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	used a similar question detection approach, our ap-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach to answer detection is different. We get back	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	to this in Section 4.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	(Rambow et al., 2004) show that sentence ex-	page=1 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space year tailchar-hiphen
+I-Body	traction techniques can work for summarizing email	page=1 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	threads, but profit from email-specific features. In	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	addition, they show that the presentation of the sum-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mary should take into account the dialogic structure	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	of email communication. However, since their ap-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach does not try to detect question and answer	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	pairs, the extractive summaries suffer from the pos-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+E-Body	sibility of incomplete summaries.	page=2 xpos=0 ypos=0 left-column right-indent page-top headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Automatic Question Detection	page=2 xpos=0 ypos=0 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	While the detection of questions in email messages	page=2 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	is not as difficult a problem as in speech conversa-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions where features such as the question mark char-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	acter are absent, relying on the use of question mark	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	character for identifying questions in email mes-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sages is not adequate. The need for special attention	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	in detecting questions in email messages arises due	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	to three reasons. First, the use of informal language	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	means users might use the question mark character	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	in cases other than questions (for example, to de-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	note uncertainty) and may overlook using a question	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	mark after a question. Second, a question may be	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	stated in a declarative form, as in, “I was wondering	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	if you are free at 5pm today.” Third, not every ques-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, whether in an interrogative form or in a declar-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ative form, is meant to be answered. For example,	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	rhetorical questions are used for purposes other than	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	to obtain the information the question asked, and are	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	not required to be associated with answer segments.	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	We used supervised rule induction for the de-	page=2 xpos=0 ypos=4 left-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Body	tection of interrogative questions. Training exam-	page=2 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ples were extracted from the transcribed SWITCH-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	BOARD corpus annotated with DAMSL tags. <sup>1</sup>	page=2 xpos=0 ypos=4 left-column full-justified font-larger aligned-line headchar-capital
+I-Body	This particular corpus was chosen not only be-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	cause an adequate number of training examples	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	could be extracted from the manual annotations,	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	but also because of the use of informal language	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	in speech that is also characteristic of email con-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	versation. Utterances with DAMSL tags “sv”	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	(speech act “statement-opinion”) and “sd” (speech	page=2 xpos=0 ypos=6 left-column full-justified aligned-line
+I-Body	act “statement-non-opinion”) were used to extract	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	5,000 negative examples. Similarly, utterances	page=2 xpos=0 ypos=6 left-column full-justified aligned-line
+I-Body	with tags “qy” (“yes-no-question”), “qw” (“Wh-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	question”), and “qh” (“rhetorical-question”) were	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	used to extract 5,000 positive examples. Each utter-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ance was then represented by a feature vector which	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	included the following features:	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	• POS tags for the first five terms (shorter utter-	page=2 xpos=0 ypos=8 left-column left-indent font-larger indented-line longer-tail line-double-space line-space itemization tailchar-hiphen
+I-Listitem	ances were padded with dummies)	page=2 xpos=0 ypos=8 left-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	• POS tags for the last five terms (shorter utter-	page=2 xpos=0 ypos=8 left-column left-indent font-larger hanged-line longer-tail line-double-space line-space itemization tailchar-hiphen
+I-Listitem	ances were padded with dummies)	page=2 xpos=0 ypos=8 left-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	• length of the utterance	page=2 xpos=0 ypos=9 left-column left-indent right-indent font-larger hanged-line shorter-tail line-double-space line-space itemization above-double-space above-line-space
+B-Footnote	<sup>1</sup> From the Johns Hopkins University LVCSR	page=2 xpos=0 ypos=9 left-column left-indent font-smallest longer-tail line-double-space line-space headchar-super
+I-Footnote	Summer Workshop 1997, available from	page=2 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line year headchar-capital
+I-Footnote	http://www.colorado.edu/ling/jurafsky/ws97/	page=2 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower column-bottom
+Table	__Table 1__	page=2 xpos=5 ypos=-1 right-column centered left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 1: Test results for detection of questions in	page=2 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	interrogative form	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-Listitem	• POS-bigrams from a list of 100 most discrimi-	page=2 xpos=5 ypos=1 right-column left-indent font-larger indented-line longer-tail line-blank-line line-double-space line-space itemization tailchar-hiphen
+I-Listitem	nating POS-bigrams list.	page=2 xpos=5 ypos=2 right-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The list of most discriminating POS-bigrams was	page=2 xpos=5 ypos=2 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	obtained from the training data by following the	page=2 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	same procedure that (Zechner and Lavie, 2001)	page=2 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower
+E-Body	used.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We then used Ripper (Cohen, 1996) to learn	page=2 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space year headchar-capital
+I-Body	rules for question detection. Like many learning	page=2 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	programs, Ripper takes as input the classes to be	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	learned, a set of feature names and possible values,	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and training data specifying the class and feature	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	values for each training example. In our case, the	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	training examples are the speech acts extracted from	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the SWITCHBOARD corpus as described above.	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Ripper outputs a classification model for predicting	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	the class (i.e., whether a speech act is a question	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	or not) of future examples; the model is expressed	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	as an ordered set of if-then rules. For testing, we	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	manually extracted 300 questions in interrogative	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	form and 300 statements in declarative form from	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the ACM corpus. <sup>2</sup> We show our test results with re-	page=2 xpos=5 ypos=5 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	call, precision and F <sub>1</sub> -score <sup>3</sup> in Table 1 on the first	page=2 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	column.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	While the test results show that the precision was	page=2 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	very good, the recall score could be further im-	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	proved. Upon further investigation on why the re-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	call was so low, we found that unlike the positive	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	examples we used in our training data, most of the	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	questions in the test data that were missed by the	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	rules learned by Ripper started with a declarative	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	phrase. For example, both “I know its on 108th, but	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	after that not sure, how exactly do we get there?”,	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and “By the way, are we shutting down clic?” be-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gin with declarative phrases and were missed by the	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	Ripper learned rules. Following this observation,	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-comma above-double-space above-line-space
+B-Footnote	<sup>2</sup> More information on the ACM corpus will be provided in	page=2 xpos=5 ypos=9 right-column left-indent font-smallest indented-line line-double-space line-space headchar-super
+I-Footnote	Section 4.1. At the time of the development of the question	page=2 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-capital
+I-Footnote	detection module the annotations were not available to us, so	page=2 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	we had to manually extract the required test speech acts.	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	3 F 1 -score = <sub>P</sub> 2P +R R , where P=Precision and R=Recall	page=2 xpos=5 ypos=9 right-column left-indent right-indent font-larger indented-line numbered-heading1 page-bottom
+I-Body	we manually updated our question detection mod-	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	ule to break a speech act that was not initially pre-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dicted as question into phrases separated by comma	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	characters. Then we applied the rules on the first	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	phrase of the speech act and if that failed on the last	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	phrase. For example, the rules would fail on the	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	phrase “I know its on 108th”, but would be able to	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	classify the phrase “how exactly do we get there”	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	as a question. In doing this we were able to increase	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the recall score to 0.72, leading to a F <sub>1</sub> -score of 0.82	page=3 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	as shown in Table 1 in the second column.	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Automatic Answer Detection	page=3 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	While the automatic detection of questions in email	page=3 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	messages is relatively easier than the detection of	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the same in speech conversations, the asynchronous	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	nature of email conversations makes detection and	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	pairing of question and answer pairs a more diffi-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cult task. Whereas in speech a set of heuristics can	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	be used to identify answers as shown by (Zechner	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	and Lavie, 2001), such heuristics cannot be readily	page=3 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	applied to the task of question and answer pairing in	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	email conversations. First, more than one topic can	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	be discussed in parallel in an email thread, which	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	implies that questions relating to more than a single	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	topic can be pursued in parallel. Second, even when	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	an email thread starts with the discussion of a single	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	topic, the thread may eventually be used to initiate a	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	different topic just because the previous topic’s list	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	of recipients closely matched those required for the	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	newly initiated topic. Third, because of the use of	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	“Reply” and “ReplyAll” functions in email clients,	page=3 xpos=0 ypos=6 left-column full-justified aligned-line tailchar-comma
+I-Body	a user may be responding to an issue posed earlier	page=3 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower
+I-Body	in the thread while using one of the email messages	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	subsequent to the message posing the issue to “reply	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	back” to that issue. So, while it may seem from the	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	structure of the email thread that a person is reply-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing back to a certain email, the person may actually	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	be replying back to an email earlier in the thread.	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This implies that when several persons answer a	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	question, there may be answers which appear sev-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eral emails after the email posing the question. Fi-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nally, the fact that the question and its correspond-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing answers may have few words in common fur-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ther complicates answer detection. This is possible	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	when a person uses the context of the email conver-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sation to ask questions and make answers, and the	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	semantics of such questions and answers have to be	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	interpreted with respect to the context they appear	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	in. Such context is readily available for a reader	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	through the use of quoted material from past email	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	messages. All of these make the task of detecting	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	and linking question and answer pairs in email con-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	versations a complicated task. However, this task	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	is not as complicated a task as automatic question	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	answering where the search space for candidate an-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	swers is much wider and more sophisticated mea-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sures than those based on lexical similarity have to	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	be employed.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Our approach to automatic answer detection in	page=3 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	email conversations is based on the observation that	page=3 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	while a number of issues may be pursued in paral-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lel, users tend to use separate paragraphs to address	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	separate issues in the same email message. While	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	a more complicated approach to segmentation of	page=3 xpos=5 ypos=2 right-column full-justified aligned-line itemization headchar-lower
+I-Body	email messages could be possible, we have used this	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	basic observation to delineate discourse segments in	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	email messages. Further, because discourse seg-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments contain more lexical context than their in-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dividual sentences, our approach detects associa-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions between pairs of discourse segments rather	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	than pairs of sentences.	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We now present our machine learning approach	page=3 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+E-Body	to automatic detection of question and answer pairs.	page=3 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Corpus	page=3 xpos=5 ypos=4 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Our corpus consists of approximately 300 threads of	page=3 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	about 1000 individual email messages sent during	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	one academic year among the members of the board	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of the student organization of the ACM at Columbia	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	University. The emails dealt mainly with planning	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	events of various types, though other issues were	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	also addressed. On average, each thread contained	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	3.25 email messages, with all threads containing at	page=3 xpos=5 ypos=6 right-column full-justified aligned-line numbered-heading2
+I-Body	least two messages, and the longest thread contain-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing 18 messages. Threads were constructed from	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the individual email messages using the “In-Reply-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	To” header information to link parent and child	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+E-Body	email messages.	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Two annotators (DB and GR) each were asked	page=3 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	to highlight and link question and answer pairs in	page=3 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	the corpus. Our work presented here is based on	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the work these annotators had completed at the time	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	of this writing. GR has completed work on 200	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	threads of which there are 81 QA threads (threads	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	with question and answer pairs), 98 question seg-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments, and 142 question and answer pairs. DB has	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	completed work on 138 threads of which there are	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	62 QA threads, 72 question segments, and 92 ques-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line numbered-heading1 tailchar-hiphen
+I-Body	tion and answer pairs. We consider a segment to	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	be a question segment if a sentence in that segment	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	has been highlighted as a question. Similarly, we	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	consider a segment to be an answer segment if a	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	sentence in that segment has been paired with a	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	question to form a question and answer pair. The	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	kappa statistic (Carletta, 1996) for identifying ques-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tion segments is 0.68, and for linking question and	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	answer segments given a question segment is 0.81.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Features	page=4 xpos=0 ypos=1 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	For each question segment in an email message,	page=4 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-comma
+I-Body	we make a list of candidate answer segments.	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This is basically just a list of original (content	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	that is not quoted from past emails) <sup>4</sup> segments in	page=4 xpos=0 ypos=2 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	all the messages in the thread subsequent to the	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	message of the question segment. Let the thread in	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	consideration be called t, the container message of	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the question segment be called mq, the container	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	message of the candidate answer segment be called	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	ma, the question segment be called q, and the	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	candidate answer segment be called a. For each	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	question and candidate answer pair, we compute	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	the following sets of features:	page=4 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-blank-line above-double-space above-line-space
+B-SubsubsectionHeader	4.2.1 Some Standard Features	page=4 xpos=0 ypos=4 left-column right-indent font-larger aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading3 above-line-space
+B-Listitem	(a) number of non stop words in segment q and seg-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-space itemization tailchar-hiphen
+I-Listitem	ment a;	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-semicolon
+B-Listitem	(b) cosine similarity <sup>5</sup> and euclidean distance 6 be-	page=4 xpos=0 ypos=5 left-column full-justified font-larger aligned-line longer-tail itemization tailchar-hiphen
+I-Listitem	tween segment q and a;	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-semicolon above-double-space above-line-space
+B-SubsubsectionHeader	4.2.2 Features derived from the structure of	page=4 xpos=0 ypos=5 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading3
+I-SubsubsectionHeader	the thread t	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-lower above-line-space
+B-Listitem	(c) the number of intermediate messages between	page=4 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-space itemization
+I-Listitem	mq and ma in t;	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-semicolon
+B-Listitem	(d) the ratio of the number of messages in t sent ear-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail itemization tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>4</sup> While people do use quoted material to respond to specific	page=4 xpos=0 ypos=7 left-column left-indent font-smallest indented-line line-double-space line-space headchar-super
+I-Footnote	segments of past emails, a phenomenon more common is dis-	page=4 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line headchar-lower tailchar-hiphen
+I-Footnote	cussion lists, because the occurrence of such is rare in the ACM	page=4 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	corpus we decided not to use them as a feature.	page=4 xpos=0 ypos=7 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	5	page=4 xpos=0 ypos=7 left-column left-indent right-indent font-smallest indented-line shorter-tail numeric-only above-double-space above-line-space
+I-Footnote	P N i=1 (c x i ∗ c y i )	page=4 xpos=2 ypos=7 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital
+I-Footnote	cosine sim(x, y) = qP N j=1 c 2 x j ∗ P N j=1 c x 2 j	page=4 xpos=0 ypos=8 left-column left-indent right-indent font-largest hanged-line longer-tail headchar-lower
+I-Footnote	where c <sub>x</sub> i is the count of word i in segment x, and c y i is the	page=4 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail headchar-lower
+I-Footnote	count of word i in segment y.	page=4 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	6	page=4 xpos=0 ypos=8 left-column left-indent right-indent font-smallest indented-line shorter-tail numeric-only
+I-Footnote	v N 2 2	page=4 xpos=2 ypos=9 left-column left-indent right-indent font-largest indented-line longer-tail itemization headchar-lower
+I-Footnote	euclidean dis(x, y) = t u u X i=1 (c x i − c y i )	page=4 xpos=0 ypos=9 left-column centered left-indent right-indent box hanged-line longer-tail headchar-lower
+I-Footnote	where c <sub>x</sub> i is the count of word i in segment x, and c <sub>y</sub> i is the	page=4 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail headchar-lower
+I-Footnote	count of word i in segment y.	page=4 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+I-Listitem	lier than mq and all the messages in t, and similarly	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Listitem	for ma;	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-semicolon
+B-Listitem	(e) whether a is the first segment in the list of candi-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail itemization tailchar-hiphen
+I-Listitem	date answer segments of q (this is true if a segment	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Listitem	is the first segment in the first message sent in reply	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Listitem	to mq);	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-semicolon above-double-space above-line-space
+B-SubsubsectionHeader	4.2.3 Features based on the other candidate	page=4 xpos=5 ypos=1 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading3
+I-SubsubsectionHeader	answer segments of q	page=4 xpos=5 ypos=1 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-lower above-line-space
+B-Listitem	(f) number of candidate answer segments of q and	page=4 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-space itemization
+I-Listitem	the number of candidate answer segments of q after	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Listitem	a (a segment x is considered to be after another seg-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Listitem	ment y if x is from a message sent later than that of	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Listitem	y, or if x appears after y in the same message);	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-semicolon
+B-Listitem	(g) the ratio of the number of candidate answer seg-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail itemization tailchar-hiphen
+I-Listitem	ments before a and the number of all candidate an-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	swer segments (a segment x is considered to be be-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	fore another segment y if x is from a message sent	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Listitem	earlier than that of y, or if x appears before y in the	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Listitem	same message); and	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(h) whether q is the most similar segment of a	page=4 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail itemization
+I-Listitem	among all segments from ancestor messages of ma	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Listitem	based on cosine similarity (the list of ancestor mes-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	sages of a message is computed by recursively fol-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	lowing the “In-Reply-To” header information that	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Listitem	points to the parent message of a message).	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	While the contribution of a single feature to the	page=4 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	classification task may not be intuitively apparent,	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	we hope that a combination of a subset of these	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	features, in some way, would help us in detecting	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	question-answer pairs. For example, when the num-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ber of candidate answer segments for a question	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	segment is less than or equal to two, feature (e) may	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	be the best contributor to the classification task. But,	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	when the number of candidate answer segments is	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	high, a collection of some features may be the best	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	contributor.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We categorized each feature vector for the pair q	page=4 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	and a as a positive example if a has been marked as	page=4 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+E-Body	an answer and linked with q.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.3 Training Data	page=4 xpos=5 ypos=7 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	We computed four sets of training data. Two for	page=4 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	each of the annotators separately, which we call DB	page=4 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	and GR according to the label of their respective	page=4 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	annotator. One taking the union of the annotators,	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which we call Union, and another taking the inter-	page=4 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	section, which we call Inter. For the first two sets,	page=4 xpos=5 ypos=9 right-column full-justified font-larger aligned-line headchar-lower tailchar-comma
+I-Body	we collected the threads that had at least one ques-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion and answer pair marked by the respective anno-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tator. For each question that has an answer marked	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Table	__Table 2__	page=5 xpos=0 ypos=-2 left-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 2: Summary of training data: number of in-	page=5 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+E-Caption	stances	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+Table	__Table 3__	page=5 xpos=0 ypos=0 left-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 3: Baseline results	page=5 xpos=1 ypos=2 left-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-blank-line above-double-space above-line-space
+I-Body	(some of the highlighted questions do not have cor-	page=5 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space tailchar-hiphen
+I-Body	responding answers in the thread), we computed a	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	list of feature vectors as described above with all of	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	its candidate answer segments. For the union set,	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we collected all the threads that had question and	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	answer pairs marked by either annotator, and com-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	puted the feature vectors for each such question seg-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment. A feature vector was categorized positive if	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	any of the two annotators have marked the respec-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive candidate answer segment as an answer. For	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the intersection set, we collected all the threads that	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	had question and answer pairs marked by both an-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	notators. Here, a feature vector was labelled posi-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive only if both the annotators marked the respec-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive candidate answer segment as an answer. Ta-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ble 2 summarizes the information on the four sets	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	of training data.	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.4 Experiments and Results	page=5 xpos=0 ypos=6 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	This section describes experiments using Ripper to	page=5 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	automatically induce question and candidate answer	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	pair classifiers, using the features described in Se-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cion 4.2. We obtained the results presented here us-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ing five-fold cross-validation.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Table 3 shows the precision, recall and F <sub>1</sub> -score	page=5 xpos=0 ypos=8 left-column left-indent font-largest indented-line longer-tail string-table headchar-capital
+I-Body	for the four datasets using the cosine similarity fea-	page=5 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ture only. We use these results as the baseline	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	against which we compare the results for the full	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	set of features shown in Table 4. While precision	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	using the full feature set is comparable to that of	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the baseline measure, we get a significant improve-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment on recall with the full feature set. The base-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+Table	__Table 4__	page=5 xpos=5 ypos=-2 right-column centered left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 4: Summary of results	page=5 xpos=6 ypos=0 right-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-blank-line above-double-space above-line-space
+I-Body	line measure predicts that the candidate answer seg-	page=5 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ment whose similarity with the question segment is	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	above a certain threshold will be an actual answer	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	segment. Our results suggest that lexical similarity	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	cannot alone capture the rules associated with ques-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion and answer pairing, and that the use of various	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	features based on the structure of the thread of email	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	conversations can be used to improve upon lexical	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	similarity of discourse segments. Further, while the	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	results do not seem to suggest a clear preference for	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the data set DB over the data set GR (this could be	page=5 xpos=5 ypos=3 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	explained by their high kappa score of 0.81), taking	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the union of the two datasets does seem to be bet-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ter than taking the intersection of the two datasets.	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This could be because the intersection greatly re-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	duces the number of positive data points from what	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	is available in the union, and hence makes the learn-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ing of rules more difficult with Inter.	page=5 xpos=5 ypos=4 right-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Finally, on observing that some questions had at	page=5 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	most 2 candidate answers, and others had quite a	page=5 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	few, we investigated what happens when we divide	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the data set Union into two data sets, one for ques-	page=5 xpos=5 ypos=5 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	tion segments with 2 or less candidate answer seg-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments which we call the data set Union a, and the	page=5 xpos=5 ypos=5 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	other with the rest of the data set which we call the	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	data set Union b. Union a has, on average, 1.5 can-	page=5 xpos=5 ypos=6 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	didate answer segments, while Union b has 5.7. We	page=5 xpos=5 ypos=6 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	show the results of this experiment with the full fea-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture set in Table 5. Our results show that it is much	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	easier to learn rules for questions with the data set	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	Union a, which we show in the first row, than other-	page=5 xpos=5 ypos=7 right-column full-justified font-larger aligned-line headchar-capital tailchar-hiphen
+I-Body	wise. We compare our results for the baseline mea-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sure of predicting the majority class, which we show	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in the second row, to demonstrate that the results	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	obtained with the dataset Union a were not due to	page=5 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	majority class prediction. While the results for the	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	other subset, Union b, which we show in the third	page=5 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	row, compare well with the results for Union, when	page=5 xpos=5 ypos=9 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	the results for the data sets Union a and Union b	page=5 xpos=5 ypos=9 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	are combined, which we show in the fourth row,	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we achieve better results than without the splitting,	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma page-bottom
+Table	__Table 5__	page=6 xpos=0 ypos=-2 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 5: Summary of results with the split data set compared with a baseline and the unsplit data set	page=6 xpos=0 ypos=0 single-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+E-Body	shown in the last row.	page=6 xpos=0 ypos=0 left-column right-indent column-top line-blank-line line-double-space line-space headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusion and Future Work	page=6 xpos=0 ypos=1 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We have presented an approach to detect question-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	answer pairs with good results. Our approach is	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the first step towards a system which can highlight	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	question-answer pairs in a generated summary. Our	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	approach works well with interrogative questions,	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	but we have not addressed the automatic detection	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	of questions in the declarative form and rhetorical	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	questions. People often pose their requests in a	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	declarative form in order to be polite among other	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	reasons. Such requests could be detected with their	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	use of certain key phrases some of which include	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	“Please let me know...”, “I was wondering if...”, and	page=6 xpos=0 ypos=4 left-column full-justified aligned-line
+I-Body	“If you could....that would be great.”. And, because	page=6 xpos=0 ypos=4 left-column full-justified aligned-line
+I-Body	rhetorical questions are used for purposes other than	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	to obtain the information the question asked, such	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	questions do not require to be paired with answers.	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The automatic detection of these question types are	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+E-Body	still under investigation.	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Further, while the approach to the detection of	page=6 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	question-answer pairs in threads of email conver-	page=6 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sation we have presented here is quite effective, as	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	shown by our results, the use of such pairs of dis-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	course segments for use in summarization of email	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	conversations is an area of open research to us.	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	As we discussed in Section 1, generation of sum-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	maries for email conversations that are devoted to	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	question-answer exchanges and that integrate iden-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tified question-answer pairs as part of a full sum-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mary is also needed.	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Acknowledgements	page=6 xpos=0 ypos=8 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space string-acknowledgement numbered-heading1 above-double-space above-line-space
+B-Body	We are grateful to Owen Rambow for his helpful ad-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	vice. We also thank Andrew Rosenberg for his dis-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cussion on kappa statistic as it relates to the ACM	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	corpus. This work was supported by the National	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	Science Foundation under the KDD program. Any	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital column-bottom
+I-Body	opinions, findings, and conclusions or recommen-	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	dations expressed in this paper are those of the au-	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	thors and do not necessarily reflect the views of the	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	National Science Foundation.	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=6 xpos=5 ypos=1 right-column right-indent font-largest aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Jean Carletta. 1996. Assessing agreement on clas-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	sification tasks: The kappa statistic. Computa-	page=6 xpos=5 ypos=2 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	tional Linguistics, 22(2):249–254.	page=6 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	William Cohen. 1996. Learning trees and rules	page=6 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-space year headchar-capital
+I-Reference	with set-valued features. In Fourteenth Confer-	page=6 xpos=5 ypos=3 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	ence of the American Association of Artificial In-	page=6 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	telligence. AAAI.	page=6 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Derek Lam, Steven L. Rohall, Chris Schmandt, and	page=6 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Reference	Mia K. Stern. 2002. Exploiting e-mail structure	page=6 xpos=5 ypos=4 right-column left-indent indented-line year headchar-capital
+I-Reference	to improve summarization. In ACM 2002 Confer-	page=6 xpos=5 ypos=4 right-column left-indent aligned-line year headchar-lower tailchar-hiphen
+I-Reference	ence on Computer Supported Cooperative Work	page=6 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower
+I-Reference	(CSCW2002), Interactive Posters, New Orleans,	page=6 xpos=5 ypos=4 right-column left-indent aligned-line year tailchar-comma
+I-Reference	LA.	page=6 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Smaranda Muresan, Evelyne Tzoukermann, and Ju-	page=6 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Reference	dith Klavans. 2001. Combining Linguistic and	page=6 xpos=5 ypos=5 right-column left-indent indented-line year headchar-lower
+I-Reference	Machine Learning Techniques for Email Sum-	page=6 xpos=5 ypos=5 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	marization. In Proceedings of the CoNLL 2001	page=6 xpos=5 ypos=5 right-column left-indent aligned-line year headchar-lower
+I-Reference	Workshop at the ACL/EACL 2001 Conference.	page=6 xpos=5 ypos=6 right-column centered left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-line-space
+B-Reference	Ani Nenkova and Amit Bagga. 2003. Facilitating	page=6 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-space year headchar-capital
+I-Reference	email thread access by extractive summary gen-	page=6 xpos=5 ypos=6 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	eration. In Proceedings of RANLP, Bulgaria.	page=6 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Paula Newman and John Blitzer. 2003. Summariz-	page=6 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	ing archived discussions: a beginning. In Pro-	page=6 xpos=5 ypos=7 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	ceedings of Intelligent User Interfaces.	page=6 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Owen Rambow, Lokesh Shrestha, John Chen, and	page=6 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Reference	Christy Lauridsen. 2004. Summarizaing email	page=6 xpos=5 ypos=8 right-column left-indent indented-line year headchar-capital
+I-Reference	threads. In Proceedings of HLT-NAACL 2004:	page=6 xpos=5 ypos=8 right-column left-indent aligned-line year headchar-lower tailchar-colon
+I-Reference	Short Papers.	page=6 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Klaus Zechner and Alon Lavie. 2001. Increasing	page=6 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-space year headchar-capital
+I-Reference	the coherence of spoken dialogue summaries by	page=6 xpos=5 ypos=9 right-column left-indent indented-line headchar-lower
+I-Reference	cross-speaker information linking. In Proceed-	page=6 xpos=5 ypos=9 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ings of the NAACL-01 Workshop on Automatic	page=6 xpos=5 ypos=9 right-column left-indent aligned-line headchar-lower
+I-Reference	Summarization, Pittsburgh, PA.	page=6 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period

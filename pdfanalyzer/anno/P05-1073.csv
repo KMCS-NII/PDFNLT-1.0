@@ -1,0 +1,664 @@
+Title	Joint Learning Improves Semantic Role Labeling	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Kristina Toutanova Aria Haghighi Christopher D. Manning	page=0 xpos=0 ypos=0 single-column left-indent right-indent font-larger hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Dept of Computer Science Dept of Computer Science Dept of Computer Science	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-larger hanged-line headchar-capital
+I-Affiliation	Stanford University Stanford University Stanford University	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Address	Stanford, CA, 94305 Stanford, CA, 94305 Stanford, CA, 94305	page=0 xpos=0 ypos=1 single-column centered left-indent right-indent font-larger headchar-capital above-line-space
+Email	kristina@cs.stanford.edu aria42@stanford.edu manning@cs.stanford.edu	page=0 xpos=0 ypos=1 single-column left-indent right-indent font-smallest hanged-line longer-tail line-space symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=1 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-blank-line above-double-space above-line-space
+B-Abstract	Despite much recent progress on accu-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	rate semantic role labeling, previous work	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	has largely used independent classifiers,	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-comma
+I-Abstract	possibly combined with separate label se-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	quence models via Viterbi decoding. This	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	stands in stark contrast to the linguistic	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	observation that a core argument frame is	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	a joint structure, with strong dependen-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line itemization headchar-lower tailchar-hiphen
+I-Abstract	cies between arguments. We show how to	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	build a joint model of argument frames,	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-comma
+I-Abstract	incorporating novel features that model	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	these interactions into discriminative log-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	linear models. This system achieves an	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	error reduction of 22% on all arguments	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-largest aligned-line headchar-lower
+I-Abstract	and 32% on core arguments over a state-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent font-largest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	of-the art independent classifier for gold-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	standard parse trees on PropBank.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The release of semantically annotated corpora such	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	as FrameNet (Baker et al., 1998) and PropBank	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Body	(Palmer et al., 2003) has made it possible to develop	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year
+I-Body	high-accuracy statistical models for automated se-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantic role labeling (Gildea and Jurafsky, 2002;	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Pradhan et al., 2004; Xue and Palmer, 2004). Such	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-capital
+I-Body	systems have identified several linguistically mo-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tivated features for discriminating arguments and	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	their labels (see Table 1). These features usually	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	characterize aspects of individual arguments and the	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	predicate.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	It is evident that the labels and the features of ar-	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	guments are highly correlated. For example, there	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	are hard constraints – that arguments cannot overlap	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	with each other or the predicate, and also soft con-	page=0 xpos=5 ypos=1 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	straints – for example, is it unlikely that a predicate	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	will have two or more AGENT arguments, or that a	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	predicate used in the active voice will have a THEME	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	argument prior to an AGENT argument. Several sys-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems have incorporated such dependencies, for ex-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ample, (Gildea and Jurafsky, 2002; Pradhan et al.,	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2004; Thompson et al., 2003) and several systems	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year
+I-Body	submitted in the CoNLL-2004 shared task (Carreras	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	and Màrquez, 2004). However, we show that there	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	are greater gains to be had by modeling joint infor-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mation about a verb’s argument structure.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We propose a discriminative log-linear joint	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	model for semantic role labeling, which incorpo-	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	rates more global features and achieves superior	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	performance in comparison to state-of-the-art mod-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els. To deal with the computational complexity of	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the task, we employ dynamic programming and re-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ranking approaches. We present performance re-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults on the February 2004 version of PropBank on	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower
+I-Body	gold-standard parse trees as well as results on auto-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	matic parses generated by Charniak’s parser (Char-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	niak, 2000).	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Semantic Role Labeling: Task Definition	page=0 xpos=5 ypos=6 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1
+I-SectionHeader	and Architectures	page=0 xpos=5 ypos=6 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Consider the pair of sentences,	page=0 xpos=5 ypos=7 right-column right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma above-double-space above-line-space
+B-Listitem	• [The GM-Jaguar pact] <sub>AGENT</sub> gives	page=0 xpos=5 ypos=7 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space itemization
+I-Listitem	[the car market] <sub>RECIPIENT</sub>	page=0 xpos=5 ypos=7 right-column left-indent right-indent font-larger indented-line shorter-tail
+I-Listitem	[a much-needed boost] <sub>THEME</sub>	page=0 xpos=5 ypos=7 right-column left-indent right-indent font-larger aligned-line longer-tail above-line-space
+B-Listitem	• [A much-needed boost] <sub>THEME</sub> was given to	page=0 xpos=5 ypos=8 right-column left-indent right-indent font-largest hanged-line longer-tail line-space itemization
+I-Listitem	[the car market] <sub>RECIPIENT</sub>	page=0 xpos=5 ypos=8 right-column left-indent right-indent font-larger indented-line shorter-tail
+I-Listitem	by [the GM-Jaguar pact] <sub>AGENT</sub>	page=0 xpos=5 ypos=8 right-column left-indent right-indent font-larger aligned-line longer-tail headchar-lower above-double-space above-line-space
+B-Body	Despite the different syntactic positions of the la-	page=0 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	beled phrases, we recognize that each plays the same	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	589	page=0 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only
+B-Footer	Proceedings of the 43rd Annual Meeting of the ACL, pages 589–596,	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail headchar-capital tailchar-comma
+I-Footer	Ann Arbor, June 2005.  2005 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail year headchar-capital page-bottom
+I-Body	role – indicated by the label – in the meaning of	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	this sense of the verb give. We call such phrases	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	fillers of semantic roles and our task is, given a sen-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence and a target verb, to return all such phrases	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	along with their correct labels. Therefore one sub-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	task is to group the words of a sentence into phrases	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	or constituents. As in most previous work on se-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantic role labeling, we assume the existence of a	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	separate parsing model that can assign a parse tree t	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	to each sentence, and the task then is to label each	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	node in the parse tree with the semantic role of the	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	phrase it dominates, or NONE , if the phrase does not	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	fill any role. We do stress however that the joint	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	framework and features proposed here can also be	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	used when only a shallow parse (chunked) represen-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tation is available as in the CoNLL-2004 shared task	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+E-Body	(Carreras and Màrquez, 2004).	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail year tailchar-period above-line-space
+B-Body	In the February 2004 version of the PropBank cor-	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Body	pus, annotations are done on top of the Penn Tree-	page=1 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	Bank II parse trees (Marcus et al., 1993). Possi-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	ble labels of arguments in this corpus are the core	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	argument labels ARG [0-5], and the modifier argu-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment labels. The core arguments ARG [3-5] do not	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	have consistent global roles and tend to be verb spe-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cific. There are about 14 modifier labels such as	page=1 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	ARGM - LOC and ARGM - TMP , for location and tem-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	poral modifiers respectively. <sup>1</sup> Figure 1 shows an ex-	page=1 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	ample parse tree annotated with semantic roles.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We distinguish between models that learn to la-	page=1 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	bel nodes in the parse tree independently, called lo-	page=1 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	cal models, and models that incorporate dependen-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cies among the labels of multiple nodes, called joint	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	models. We build both local and joint models for se-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantic role labeling, and evaluate the gains achiev-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	able by incorporating joint information. We start	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	by introducing our local models, and later build on	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	them to define joint models.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Local Classifiers	page=1 xpos=0 ypos=7 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In the context of role labeling, we call a classifier	page=1 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	local if it assigns a probability (or score) to the label	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	of an individual parse tree node n <sub>i</sub> independently of	page=1 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	the labels of other nodes.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We use the standard separation of the task of se-	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	mantic role labeling into identification and classifi-	page=1 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>1</sup> For a full listing of PropBank argument labels see (Palmer	page=1 xpos=0 ypos=9 left-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	et al., 2003)	page=1 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail year headchar-lower column-bottom
+I-Body	cation phases. In identification, our task is to clas-	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	sify nodes of t as either ARG , an argument (includ-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing modifiers), or NONE , a non-argument. In clas-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sification, we are given a set of arguments in t and	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	must label each one with its appropriate semantic	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	role. Formally, let L denote a mapping of the nodes	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	in t to a label set of semantic roles (including NONE )	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	and let Id(L) be the mapping which collapses L’s	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	non- NONE values into ARG . Then we can decom-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pose the probability of a labeling L into probabili-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ties according to an identification model P <sub>ID</sub> and a	page=1 xpos=5 ypos=1 right-column centered right-over font-largest aligned-line headchar-lower
+E-Body	classification model P <sub>CLS</sub> .	page=1 xpos=5 ypos=2 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	P <sub>SRL</sub> (L|t, v) = P ID (Id(L)|t, v) ×	page=1 xpos=5 ypos=2 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital above-line-space
+I-Equation	P <sub>CLS</sub> (L|t, v, Id(L)) (1)	page=1 xpos=7 ypos=2 right-column left-indent font-largest indented-line longer-tail line-space headchar-capital above-double-space above-line-space
+B-Body	This decomposition does not encode any indepen-	page=1 xpos=5 ypos=2 right-column full-justified hanged-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	dence assumptions, but is a useful way of thinking	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	about the problem. Our local models for semantic	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	role labeling use this decomposition. Previous work	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	has also made this distinction because, for example,	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	different features have been found to be more effec-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive for the two tasks, and it has been a good way	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to make training and search during testing more ef-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ficient.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Here we use the same features for local identifi-	page=1 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	cation and classification models, but use the decom-	page=1 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	position for efficiency of training. The identification	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	models are trained to classify each node in a parse	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	tree as ARG or NONE , and the classification models	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	are trained to label each argument node in the train-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing set with its specific label. In this way the train-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing set for the classification models is smaller. Note	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	that we don’t do any hard pruning at the identifica-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion stage in testing and can find the exact labeling	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of the complete parse tree, which is the maximizer	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of Equation 1. Thus we do not have accuracy loss	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	as in the two-pass hard prune strategy described in	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	(Pradhan et al., 2005).	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail year tailchar-period above-line-space
+B-Body	In previous work, various machine learning meth-	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ods have been used to learn local classifiers for role	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	labeling. Examples are linearly interpolated rela-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive frequency models (Gildea and Jurafsky, 2002),	page=1 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	SVMs (Pradhan et al., 2004), decision trees (Sur-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	deanu et al., 2003), and log-linear models (Xue and	page=1 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	Palmer, 2004). In this work we use log-linear mod-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	els for multi-class classification. One advantage of	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	log-linear models over SVMs for us is that they pro-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	duce probability distributions and thus identification	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	590	page=1 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-Table	Standard Features (Gildea and Jurafsky, 2002)	page=2 xpos=0 ypos=0 left-column right-indent font-smallest page-top year headchar-capital
+I-Table	P HRASE T YPE : Syntactic Category of node	page=2 xpos=0 ypos=0 left-column right-indent font-smallest aligned-line shorter-tail headchar-capital
+I-Table	P REDICATE L EMMA : Stemmed Verb	page=2 xpos=0 ypos=0 left-column right-indent font-smallest aligned-line shorter-tail headchar-capital
+I-Table	P ATH : Path from node to predicate	page=2 xpos=0 ypos=0 left-column right-indent font-smallest aligned-line shorter-tail headchar-capital
+I-Table	P OSITION : Before or after predicate?	page=2 xpos=0 ypos=0 left-column right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Table	V OICE : Active or passive relative to predicate	page=2 xpos=0 ypos=0 left-column right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Table	H EAD W ORD OF P HRASE	page=2 xpos=0 ypos=0 left-column right-indent font-smallest aligned-line shorter-tail headchar-capital
+I-Table	S UB -C AT : CFG expansion of predicate’s parent	page=2 xpos=0 ypos=1 left-column right-indent font-smallest aligned-line longer-tail headchar-capital above-line-space
+I-Table	Additional Features (Pradhan et al., 2004)	page=2 xpos=0 ypos=1 left-column right-indent font-smallest aligned-line shorter-tail line-space year headchar-capital
+I-Table	F IRST /L AST W ORD	page=2 xpos=0 ypos=1 left-column right-indent font-smallest aligned-line shorter-tail headchar-capital
+I-Table	L EFT /R IGHT S ISTER P HRASE -T YPE	page=2 xpos=0 ypos=1 left-column right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Table	L EFT /R IGHT S ISTER H EAD W ORD /POS	page=2 xpos=0 ypos=1 left-column right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Table	P ARENT P HRASE -T YPE	page=2 xpos=0 ypos=1 left-column right-indent font-smallest aligned-line shorter-tail headchar-capital
+I-Table	P ARENT POS/H EAD -W ORD	page=2 xpos=0 ypos=1 left-column right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Figure	O RDINAL T REE D ISTANCE : Phrase Type with	page=2 xpos=0 ypos=2 left-column right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Figure	appended length of P ATH feature	page=2 xpos=0 ypos=2 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower
+I-Figure	N ODE -LCA P ARTIAL P ATH Path from constituent	page=2 xpos=0 ypos=2 left-column right-indent font-smallest hanged-line longer-tail headchar-capital
+I-Figure	to Lowest Common Ancestor with predicate node	page=2 xpos=0 ypos=2 left-column left-indent right-indent font-smallest indented-line longer-tail headchar-lower
+I-Figure	PP P ARENT H EAD W ORD If parent is a PP	page=2 xpos=0 ypos=2 left-column right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Figure	return parent’s head word	page=2 xpos=0 ypos=2 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower
+I-Figure	PP NP H EAD W ORD /POS For a PP, retrieve	page=2 xpos=0 ypos=2 left-column right-indent font-smallest hanged-line longer-tail headchar-capital
+I-Figure	the head Word / POS of its rightmost NP	page=2 xpos=0 ypos=3 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-line-space
+I-Figure	Selected Pairs (Xue and Palmer, 2004)	page=2 xpos=0 ypos=3 left-column right-indent font-smallest hanged-line shorter-tail line-space year headchar-capital
+I-Figure	P REDICATE L EMMA & P ATH	page=2 xpos=0 ypos=3 left-column right-indent font-smallest aligned-line shorter-tail headchar-capital
+I-Figure	P REDICATE L EMMA & H EAD W ORD	page=2 xpos=0 ypos=3 left-column right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Figure	P REDICATE L EMMA & P HRASE T YPE	page=2 xpos=0 ypos=3 left-column right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Figure	V OICE & P OSITION	page=2 xpos=0 ypos=3 left-column right-indent font-smallest aligned-line shorter-tail headchar-capital
+E-Figure	P REDICATE L EMMA & PP P ARENT H EAD W ORD	page=2 xpos=0 ypos=4 left-column right-indent font-smallest aligned-line longer-tail headchar-capital above-double-space above-line-space
+B-Caption	Table 1: Baseline Features	page=2 xpos=1 ypos=4 left-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-blank-line above-double-space above-line-space
+I-Body	and classification models can be chained in a princi-	page=2 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+E-Body	pled way, as in Equation 1.	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The features we used for local identification and	page=2 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	classification models are outlined in Table 1. These	page=2 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	features are a subset of features used in previous	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	work. The standard features at the top of the table	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	were defined by (Gildea and Jurafsky, 2002), and	page=2 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Body	the rest are other useful lexical and structural fea-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures identified in more recent work (Pradhan et al.,	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	2004; Surdeanu et al., 2003; Xue and Palmer, 2004).	page=2 xpos=0 ypos=6 left-column full-justified aligned-line year tailchar-period above-line-space
+B-Body	The most direct way to use trained local identifi-	page=2 xpos=0 ypos=6 left-column left-indent indented-line line-space headchar-capital tailchar-hiphen
+I-Body	cation and classification models in testing is to se-	page=2 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	lect a labeling L of the parse tree that maximizes	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the product of the probabilities according to the two	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	models as in Equation 1. Since these models are lo-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cal, this is equivalent to independently maximizing	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the product of the probabilities of the two models	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	for the label l <sub>i</sub> of each parse tree node n i as shown	page=2 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	below in Equation 2.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Equation	P <sub>SRL</sub> <sup>`</sup> (L|t, v) = Y P ID (Id(l i )|t, v) (2)	page=2 xpos=0 ypos=8 left-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	n <sub>i</sub> ∈t	page=2 xpos=2 ypos=9 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower
+I-Equation	× Y P CLS (l i |t, v, Id(l i ))	page=2 xpos=1 ypos=9 left-column left-indent right-indent font-largest hanged-line longer-tail
+I-Equation	n <sub>i</sub> ∈t	page=2 xpos=2 ypos=9 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower column-bottom
+B-Body	A problem with this approach is that a maximizing	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-capital
+I-Body	labeling of the nodes could possibly violate the con-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	straint that argument nodes should not overlap with	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	each other. Therefore, to produce a consistent set of	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	arguments with local classifiers, we must have a way	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	of enforcing the non-overlapping constraint.	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 Enforcing the Non-overlapping Constraint	page=2 xpos=5 ypos=1 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Here we describe a fast exact dynamic programming	page=2 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	algorithm to find the most likely non-overlapping	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	(consistent) labeling of all nodes in the parse tree,	page=2 xpos=5 ypos=2 right-column full-justified aligned-line tailchar-comma
+I-Body	according to a product of probabilities from local	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	models, as in Equation 2. For simplicity, we de-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scribe the dynamic program for the case where only	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	two classes are possible – ARG and NONE . The gen-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eralization to more classes is straightforward. In-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tuitively, the algorithm is similar to the Viterbi al-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gorithm for context-free grammars, because we can	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	describe the non-overlapping constraint by a “gram-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mar” that disallows ARG nodes to have ARG descen-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	dants.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Below we will talk about maximizing the sum of	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	the logs of local probabilities rather than the prod-	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	uct of local probabilities, which is equivalent. The	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	dynamic program works from the leaves of the tree	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	up and finds a best assignment for each tree, using	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	already computed assignments for its children. Sup-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pose we want the most likely consistent assignment	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	for subtree t with children trees t 1 , . . . , t k each stor-	page=2 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the most likely consistent assignment of nodes	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	it dominates as well as the log-probability of the as-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	signment of all nodes it dominates to NONE . The	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	most likely assignment for t is the one that corre-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sponds to the maximum of:	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	• The sum of the log-probabilities of the most	page=2 xpos=5 ypos=7 right-column left-indent font-largest indented-line longer-tail line-double-space line-space itemization
+I-Listitem	likely assignments of the children subtrees	page=2 xpos=5 ypos=7 right-column left-indent indented-line headchar-lower
+I-Listitem	t 1 , . . . , t k plus the log-probability for assigning	page=2 xpos=5 ypos=7 right-column left-indent font-largest aligned-line itemization headchar-lower
+I-Listitem	the node t to NONE	page=2 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	• The sum of the log-probabilities for assign-	page=2 xpos=5 ypos=7 right-column left-indent font-largest hanged-line longer-tail line-double-space line-space itemization tailchar-hiphen
+I-Listitem	ing all of t <sub>i</sub> ’s nodes to NONE plus the log-	page=2 xpos=5 ypos=8 right-column left-indent font-largest indented-line headchar-lower tailchar-hiphen
+I-Listitem	probability for assigning the node t to ARG .	page=2 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Propagating this procedure from the leaves to the	page=2 xpos=5 ypos=8 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	root of t, we have our most likely non-overlapping	page=2 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	assignment. By slightly modifying this procedure,	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we obtain the most likely assignment according to	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	591	page=2 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	a product of local identification and classification	page=3 xpos=0 ypos=0 left-column full-justified page-top itemization headchar-lower
+I-Body	models. We use the local models in conjunction with	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	this search procedure to select a most likely labeling	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	in testing. Test set results for our local model P <sub>SRL</sub> <sup>`</sup>	page=3 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	are given in Table 2.	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Joint Classifiers	page=3 xpos=0 ypos=1 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	As discussed in previous work, there are strong de-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	pendencies among the labels of the semantic argu-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment nodes of a verb. A drawback of local models	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	is that, when they decide the label of a parse tree	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	node, they cannot use information about the labels	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	and features of other nodes in the tree.	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Furthermore, these dependencies are highly non-	page=3 xpos=0 ypos=2 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	local. For instance, to avoid repeating argument la-	page=3 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	bels in a frame, we need to add a dependency from	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	each node label to the labels of all other nodes.	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	A factorized sequence model that assumes a finite	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	Markov horizon, such as a chain Conditional Ran-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	dom Field (Lafferty et al., 2001), would not be able	page=3 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower
+E-Body	to encode such dependencies.	page=3 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-BlockHeader	The need for Re-ranking	page=3 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	For argument identification, the number of possi-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ble assignments for a parse tree with n nodes is	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	2 <sup>n</sup> . This number can run into the hundreds of bil-	page=3 xpos=0 ypos=5 left-column full-justified font-largest aligned-line numbered-heading1 tailchar-hiphen
+I-Body	lions for a normal-sized tree. For argument label-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing, the number of possible assignments is ≈ 20 <sup>m</sup> ,	page=3 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	if m is the number of arguments of a verb (typi-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cally between 2 and 5), and 20 is the approximate	page=3 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	number of possible labels if considering both core	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	and modifying arguments. Training a model which	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	has such huge number of classes is infeasible if the	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	model does not factorize due to strong independence	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	assumptions. Therefore, in order to be able to in-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	corporate long-range dependencies in our models,	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we chose to adopt a re-ranking approach (Collins,	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2000), which selects from likely assignments gener-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	ated by a model which makes stronger independence	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	assumptions. We utilize the top N assignments of	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	our local semantic role labeling model P <sub>SRL</sub> <sup>`</sup> to gen-	page=3 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	erate likely assignments. As can be seen from Table	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	3, for relatively small values of N , our re-ranking	page=3 xpos=0 ypos=8 left-column full-justified aligned-line
+I-Body	approach does not present a serious bottleneck to	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	performance. We used a value of N = 20 for train-	page=3 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ing. In Table 3 we can see that if we could pick, us-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing an oracle, the best assignment out for the top 20	page=3 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower column-bottom
+I-Body	assignments according to the local model, we would	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	achieve an F-Measure of 98.8 on all arguments. In-	page=3 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	creasing the number of N to 30 results in a very	page=3 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	small gain in the upper bound on performance and	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	a large increase in memory requirements. We there-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+E-Body	fore selected N = 20 as a good compromise.	page=3 xpos=5 ypos=0 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-BlockHeader	Generation of top N most likely joint	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail line-double-space line-space headchar-capital
+I-BlockHeader	assignments	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	We generate the top N most likely non-	page=3 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	overlapping joint assignments of labels to nodes in	page=3 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	a parse tree according to a local model P <sub>SRL</sub> <sup>`</sup> , by	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	an exact dynamic programming algorithm, which	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	is a generalization of the algorithm for finding the	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	top non-overlapping assignment described in section	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	3.1.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-BlockHeader	Parametric Models	page=3 xpos=5 ypos=3 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	We learn log-linear re-ranking models for joint se-	page=3 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	mantic role labeling, which use feature maps from a	page=3 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	parse tree and label sequence to a vector space. The	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	form of the models is as follows. Let Φ(t, v, L) ∈	page=3 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	R <sup>s</sup> denote a feature map from a tree t, target verb	page=3 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-capital
+I-Body	v, and joint assignment L of the nodes of the tree,	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	to the vector space R <sup>s</sup> . Let L 1 , L 2 , · · · , L N denote	page=3 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	top N possible joint assignments. We learn a log-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	linear model with a parameter vector W , with one	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	weight for each of the s dimensions of the feature	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	vector. The probability (or score) of an assignment	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	L according to this re-ranking model is defined as:	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-colon above-double-space above-line-space
+B-Equation	P <sub>SRL</sub> <sup>r</sup> (L|t, v) = P N j=1 <sup>e</sup> <sup>hΦ(t,v,L),W</sup> e hΦ(t,v,L j i ).W i (3)	page=3 xpos=5 ypos=6 right-column left-indent box indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	The score of an assignment L not in the top N	page=3 xpos=5 ypos=6 right-column centered right-indent hanged-line line-double-space line-space headchar-capital
+I-Body	is zero. We train the model to maximize the sum	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	of log-likelihoods of the best assignments minus a	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	quadratic regularization term.	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In this framework, we can define arbitrary fea-	page=3 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tures of labeled trees that capture general properties	page=3 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+E-Body	of predicate-argument structure.	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-BlockHeader	Joint Model Features	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	We will introduce the features of the joint re-	page=3 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ranking model in the context of the example parse	page=3 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	tree shown in Figure 1. We model dependencies not	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	only between the label of a node and the labels of	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	592	page=3 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Figure	__Figure 1__	page=4 xpos=1 ypos=-2 single-column left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 1: An example tree from the PropBank with Semantic Role Annotations.	page=4 xpos=1 ypos=0 single-column centered left-indent right-indent indented-line line-double-space line-space string-figure headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	other nodes, but also dependencies between the la-	page=4 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	bel of a node and input features of other argument	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	nodes. The features are specified by instantiation of	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	templates and the value of a feature is the number of	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	times a particular pattern occurs in the labeled tree.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower tailchar-period above-line-space
+B-BlockHeader	Templates	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail line-space headchar-capital above-line-space
+B-Body	For a tree t, predicate v, and joint assignment L	page=4 xpos=0 ypos=2 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	of labels to the nodes of the tree, we define the can-	page=4 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	didate argument sequence as the sequence of non-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	NONE labeled nodes [n <sub>1</sub> , l 1 , . . . , v P RED , n m , l m ] (l i	page=4 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-capital
+I-Body	is the label of node n <sub>i</sub> ). A reasonable candidate ar-	page=4 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	gument sequence usually contains very few of the	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	nodes in the tree – about 2 to 7 nodes, as this is the	page=4 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	typical number of arguments for a verb. To make	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	it more convenient to express our feature templates,	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we include the predicate node v in the sequence.	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This sequence of labeled nodes is defined with re-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	spect to the left-to-right order of constituents in the	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	parse tree. Since non- NONE labeled nodes do not	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	overlap, there is a strict left-to-right order among	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	these nodes. The candidate argument sequence that	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	corresponds to the correct assignment in Figure 1	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	will be:	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Quote	[ NP 1 - ARG 1,VBD 1 - PRED ,PP 1 - ARG 4,NP 3 - ARGM - TMP ]	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-largest indented-line longer-tail line-space above-line-space
+B-Body	Features from Local Models: All features included	page=4 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Body	in the local models are also included in our joint	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	models. In particular, each template for local fea-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures is included as a joint template that concatenates	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the local template and the node label. For exam-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ple, for the local feature PATH , we define a joint fea-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture template, that extracts PATH from every node in	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the candidate argument sequence and concatenates	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	it with the label of the node. Both a feature with	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the specific argument label is created and a feature	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	with the generic back-off ARG label. This is similar	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	to adding features from identification and classifi-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cation models. In the case of the example candidate	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	argument sequence above, for the node NP 1 we have	page=4 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower column-bottom
+I-Body	the features:	page=4 xpos=5 ypos=0 right-column right-indent column-top headchar-lower tailchar-colon above-double-space above-line-space
+B-Quote	(NP↑S↓)- ARG 1 , (NP↑S↓)- ARG	page=4 xpos=5 ypos=0 right-column left-indent right-indent indented-line longer-tail line-double-space line-space above-double-space above-line-space
+B-Body	When comparing a local and a joint model, we use	page=4 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	the same set of local feature templates in the two	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	models.	page=4 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Whole Label Sequence: As observed in previous	page=4 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	work (Gildea and Jurafsky, 2002; Pradhan et al.,	page=4 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2004), including information about the set or se-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	quence of labels assigned to argument nodes should	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	be very helpful for disambiguation. For example, in-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cluding such information will make the model less	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	likely to pick multiple fillers for the same role or	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	to come up with a labeling that does not contain an	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	obligatory argument. We added a whole label se-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quence feature template that extracts the labels of	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	all argument nodes, and preserves information about	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the position of the predicate. The template also	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	includes information about the voice of the predi-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cate. For example, this template will be instantiated	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	as follows for the example candidate argument se-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quence:	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Quote	[ voice:active ARG 1 , PRED , ARG 4 , ARGM - TMP ]	page=4 xpos=5 ypos=5 right-column left-indent right-indent font-largest indented-line longer-tail above-line-space
+B-Body	We also add a variant of this feature which uses a	page=4 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Body	generic ARG label instead of specific labels. This	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	feature template has the effect of counting the num-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ber of arguments to the left and right of the predi-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cate, which provides useful global information about	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	argument structure. As previously observed (Prad-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	han et al., 2004), including modifying arguments in	page=4 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	sequence features is not helpful. This was confirmed	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in our experiments and we redefined the whole label	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	sequence features to exclude modifying arguments.	page=4 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower tailchar-period above-line-space
+B-Body	One important variation of this feature uses the	page=4 xpos=5 ypos=8 right-column left-indent indented-line line-space headchar-capital
+I-Body	actual predicate lemma in addition to “voice:active”.	page=4 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	Additionally, we define variations of these feature	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	templates that concatenate the label sequence with	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	features of individual nodes. We experimented with	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	593	page=4 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	variations, and found that including the phrase type	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	and the head of a directly dominating PP – if one	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	exists – was most helpful. We also add a feature that	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	detects repetitions of the same label in a candidate	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	argument sequence, together with the phrase types	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	of the nodes labeled with that label. For example,	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	( NP- ARG 0,WHNP- ARG 0 ) is a common pattern of this	page=5 xpos=0 ypos=1 left-column full-justified aligned-line
+E-Body	form.	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Frame Features: Another very effective class of fea-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tures we defined are features that look at the label of	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	a single argument node and internal features of other	page=5 xpos=0 ypos=2 left-column full-justified aligned-line itemization headchar-lower
+I-Body	argument nodes. The idea of these features is to cap-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture knowledge about the label of a constituent given	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the syntactic realization of all arguments of the verb.	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This is helpful to capture syntactic alternations, such	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	as the dative alternation. For example, consider	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the sentence (i) “[Shaw Publishing] <sub>ARG</sub> 0 offered [Mr.	page=5 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	Smith] <sub>ARG</sub> <sub>2</sub> [a reimbursement] ARG 1 ” and the alterna-	page=5 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	tive realization (ii) “[Shaw Publishing] <sub>ARG</sub> 0 offered	page=5 xpos=0 ypos=3 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	[a reimbursement] <sub>ARG</sub> 1 [to Mr. Smith] <sub>ARG</sub> 2 ”. When	page=5 xpos=0 ypos=3 left-column full-justified font-largest aligned-line
+I-Body	classifying the NP in object position, it is useful to	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	know whether the following argument is a PP. If	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	yes, the NP will more likely be an ARG 1 , and if not,	page=5 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	it will more likely be an ARG 2 . A feature template	page=5 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	that captures such information extracts, for each ar-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gument node, its phrase type and label in the con-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	text of the phrase types for all other arguments. For	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	example, the instantiation of such a template for [a	page=5 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	reimbursement] in (ii) would be	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Quote	[ voice:active NP , PRED , NP - ARG <sub>1</sub> , PP ]	page=5 xpos=0 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail
+B-Body	We also add a template that concatenates the identity	page=5 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail headchar-capital
+E-Body	of the predicate lemma itself.	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We should note that Xue and Palmer (2004) define	page=5 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-double-space line-space year headchar-capital
+I-Body	a similar feature template, called syntactic frame,	page=5 xpos=0 ypos=6 left-column full-justified hanged-line itemization headchar-lower tailchar-comma
+I-Body	which often captures similar information. The im-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	portant difference is that their template extracts con-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	textual information from noun phrases surrounding	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the predicate, rather than from the sequence of ar-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gument nodes. Because our model is joint, we are	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	able to use information about other argument nodes	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	when labeling a node.	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-BlockHeader	Final Pipeline	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	Here we describe the application in testing of a	page=5 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	joint model for semantic role labeling, using a local	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	model P <sub>SRL</sub> <sup>`</sup> , and a joint re-ranking model P SRL r .	page=5 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	P <sub>SRL</sub> <sup>`</sup> is used to generate top N non-overlapping	page=5 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-capital column-bottom
+E-Body	joint assignments L 1 , . . . , L N .	page=5 xpos=5 ypos=0 right-column right-indent font-largest column-top headchar-lower tailchar-period above-line-space
+B-Body	One option is to select the best L <sub>i</sub> according to	page=5 xpos=5 ypos=0 right-column left-indent font-largest indented-line longer-tail line-space headchar-capital
+I-Body	P <sub>SRL</sub> <sup>r</sup> , as in Equation 3, ignoring the score from	page=5 xpos=5 ypos=0 right-column full-justified font-largest hanged-line headchar-capital
+I-Body	the local model. In our experiments, we noticed that	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	for larger values of N , the performance of our re-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ranking model P <sub>SRL</sub> <sup>r</sup> decreased. This was probably	page=5 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	due to the fact that at test time the local classifier	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	produces very poor argument frames near the bot-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tom of the top N for large N . Since the re-ranking	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	model is trained on relatively few good argument	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	frames, it cannot easily rule out very bad frames. It	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	makes sense then to incorporate the local model into	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	our final score. Our final score is given by:	page=5 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	P <sub>SRL</sub> (L|t, v) = (P <sub>SRL</sub> <sup>`</sup> (L|t, v)) α P SRL r (L|t, v)	page=5 xpos=5 ypos=2 right-column centered left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+I-Body	where α is a tunable parameter <sup>2</sup> for how much in-	page=5 xpos=5 ypos=3 right-column left-indent font-largest longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	fluence the local score has in the final score. Such in-	page=5 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	terpolation with a score from a first-pass model was	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	also used for parse re-ranking in (Collins, 2000).	page=5 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	Given this score, at test time we choose among the	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	top N local assignments L 1 , . . . , L N according to:	page=5 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	arg max α log P <sub>SRL</sub> <sup>`</sup> (L|t, v) + log P SRL r (L|t, v)	page=5 xpos=5 ypos=4 right-column left-indent right-over font-largest indented-line longer-tail line-double-space line-space headchar-lower
+I-Equation	L∈{L 1 ,...,L <sub>N</sub> }	page=5 xpos=5 ypos=4 right-column right-indent font-smallest hanged-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+B-SectionHeader	5 Experiments and Results	page=5 xpos=5 ypos=5 right-column right-indent font-larger aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	For our experiments we used the February 2004 re-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Body	lease of PropBank. <sup>3</sup> As is standard, we used the	page=5 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	annotations from sections 02–21 for training, 24 for	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	development, and 23 for testing. As is done in	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	some previous work on semantic role labeling, we	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	discard the relatively infrequent discontinuous argu-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments from both the training and test sets. In addi-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion to reporting the standard results on individual	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	argument F-Measure, we also report Frame Accu-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	racy (Acc.), the fraction of sentences for which we	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	successfully label all nodes. There are reasons to	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	prefer Frame Accuracy as a measure of performance	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	over individual-argument statistics. Foremost, po-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tential applications of role labeling may require cor-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rect labeling of all (or at least the core) arguments	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	in a sentence in order to be effective, and partially	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	correct labelings may not be very useful.	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>2</sup> We found α = 0.5 to work best	page=5 xpos=5 ypos=9 right-column left-indent right-indent indented-line shorter-tail line-double-space line-space headchar-super
+B-Footnote	<sup>3</sup> Although the first official release of PropBank was recently	page=5 xpos=5 ypos=9 right-column left-indent right-over aligned-line longer-tail headchar-super
+I-Footnote	released, we have not had time to test on it.	page=5 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	594	page=5 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 2__	page=6 xpos=2 ypos=-2 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 2: Performance of local classifiers on identification, classification, and identification+classification on	page=6 xpos=0 ypos=0 single-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	section 23, using gold-standard parse trees.	page=6 xpos=0 ypos=0 single-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 3__	page=6 xpos=3 ypos=0 single-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 3: Oracle upper bounds for performance on the complete identification+classification task, using	page=6 xpos=0 ypos=1 single-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	varying numbers of top N joint labelings according to local classifiers.	page=6 xpos=0 ypos=1 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 4__	page=6 xpos=2 ypos=2 single-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 4: Performance of local and joint models on identification+classification on section 23, using gold-	page=6 xpos=0 ypos=3 single-column full-justified font-largest hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+E-Caption	standard parse trees.	page=6 xpos=0 ypos=3 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-Body	We report results for two variations of the seman-	page=6 xpos=0 ypos=3 left-column left-indent column-top line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tic role labeling task. For CORE , we identify and	page=6 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	label only core arguments. For ARGM , we identify	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	and label core as well as modifier arguments. We	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	report results for local and joint models on argu-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment identification, argument classification, and the	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	complete identification and classification pipeline.	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Our local models use the features listed in Table 1	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	and the technique for enforcing the non-overlapping	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	constraint discussed in Section 3.1.	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The labeling of the tree in Figure 1 is a specific	page=6 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	example of the kind of errors fixed by the joint mod-	page=6 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	els. The local classifier labeled the first argument in	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the tree as ARG 0 instead of ARG 1 , probably because	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	an ARG 0 label is more likely for the subject position.	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Body	All joint models for these experiments used the	page=6 xpos=0 ypos=7 left-column left-indent indented-line line-double-space line-space headchar-capital
+I-Body	whole sequence and frame features. As can be seen	page=6 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	from Table 4, our joint models achieve error reduc-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions of 32% and 22% over our local models in F-	page=6 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	Measure on CORE and ARGM respectively. With re-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	spect to the Frame Accuracy metric, the joint error	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	reduction is 38% and 26% for CORE and ARGM re-	page=6 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	spectively.	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We also report results on automatic parses (see	page=6 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	Table 5). We trained and tested on automatic parse	page=6 xpos=0 ypos=9 left-column full-justified hanged-line string-table headchar-capital column-bottom
+I-Body	trees from Charniak’s parser (Charniak, 2000). For	page=6 xpos=5 ypos=3 right-column full-justified column-top year headchar-lower
+I-Body	approximately 5.6% of the argument constituents	page=6 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	in the test set, we could not find exact matches in	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the automatic parses. Instead of discarding these	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	arguments, we took the largest constituent in the	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	automatic parse having the same head-word as the	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	gold-standard argument constituent. Also, 19 of the	page=6 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	propositions in the test set were discarded because	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	Charniak’s parser altered the tokenization of the in-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	put sentence and tokens could not be aligned. As our	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	results show, the error reduction of our joint model	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	with respect to the local model is more modest in this	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	setting. One reason for this is the lower upper bound,	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	due largely to the the much poorer performance of	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the identification model on automatic parses. For	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	ARGM , the local identification model achieves 85.9	page=6 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-capital
+I-Body	F-Measure and 59.4 Frame Accuracy; the local clas-	page=6 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	sification model achieves 92.3 F-Measure and 83.1	page=6 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	Frame Accuracy. It seems that the largest boost	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	would come from features that can identify argu-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments in the presence of parser errors, rather than	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the features of our joint model, which ensure global	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	coherence of the argument frame. We still achieve	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	10.7% and 18.5% error reduction for CORE argu-	page=6 xpos=5 ypos=8 right-column full-justified font-largest aligned-line tailchar-hiphen
+I-Body	ments in F-Measure and Frame Accuracy respec-	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tively.	page=6 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	595	page=6 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 5__	page=7 xpos=2 ypos=-1 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 5: Performance of local and joint models on identification+classification on section 23, using Charniak	page=7 xpos=0 ypos=0 single-column centered right-indent font-largest hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	automatically generated parse trees.	page=7 xpos=0 ypos=0 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-SectionHeader	6 Related Work	page=7 xpos=0 ypos=0 left-column right-indent font-larger column-top line-blank-line line-double-space line-space numbered-heading1 above-blank-line above-double-space above-line-space
+B-Body	Several semantic role labeling systems have success-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	fully utilized joint information. (Gildea and Juraf-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sky, 2002) used the empirical probability of the set	page=7 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower
+I-Body	of proposed arguments as a prior distribution. (Prad-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	han et al., 2004) train a language model over label	page=7 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Body	sequences. (Punyakanok et al., 2004) use a linear	page=7 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Body	programming framework to ensure that the only ar-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gument frames which get probability mass are ones	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	that respect global constraints on argument labels.	page=7 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The key differences of our approach compared	page=7 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	to previous work are that our model has all of the	page=7 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	following properties: (i) we do not assume a finite	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	Markov horizon for dependencies among node la-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	bels, (ii) we include features looking at the labels	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	of multiple argument nodes and internal features of	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	these nodes, and (iii) we train a discriminative model	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	capable of incorporating these long-distance depen-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	dencies.	page=7 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	7 Conclusions	page=7 xpos=0 ypos=5 left-column right-indent font-larger aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading1 above-blank-line above-double-space above-line-space
+B-Body	Reflecting linguistic intuition and in line with cur-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	rent work, we have shown that there are substantial	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	gains to be had by jointly modeling the argument	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	frames of verbs. This is especially true when we	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	model the dependencies with discriminative models	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	capable of incorporating long-distance features.	page=7 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	8 Acknowledgements	page=7 xpos=0 ypos=7 left-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-acknowledgement numbered-heading1 above-blank-line above-double-space above-line-space
+B-Body	The authors would like to thank the review-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ers for their helpful comments and Dan Juraf-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sky for his insightful suggestions and useful dis-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cussions. This work was supported in part by	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the Advanced Research and Development Activity	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	(ARDA)’s Advanced Question Answering for Intel-	page=7 xpos=0 ypos=9 left-column full-justified aligned-line tailchar-hiphen
+E-Body	ligence (AQUAINT) Program.	page=7 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+ReferenceHeader	References	page=7 xpos=5 ypos=0 right-column right-indent font-larger column-top string-reference headchar-capital above-double-space above-line-space
+B-Reference	Collin Baker, Charles Fillmore, and John Lowe. 1998. The	page=7 xpos=5 ypos=1 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Berkeley Framenet project. In Proceedings of COLING-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	ACL-1998.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	Xavier Carreras and Luı́s M`arquez. 2004. Introduction to the	page=7 xpos=5 ypos=1 right-column right-over font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	CoNLL-2004 shared task: Semantic role labeling. In Pro-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	ceedings of CoNLL-2004.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period
+B-Reference	Eugene Charniak. 2000. A maximum-entropy-inspired parser.	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	In Proceedings of NAACL, pages 132–139.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period
+B-Reference	Michael Collins. 2000. Discriminative reranking for natural	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	language parsing. In Proceedings of ICML-2000.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-lower tailchar-period
+B-Reference	Daniel Gildea and Daniel Jurafsky. 2002. Automatic labeling of	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	semantic roles. Computational Linguistics, 28(3):245–288.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest indented-line headchar-lower tailchar-period
+B-Reference	John Lafferty, Andrew McCallum, and Fernando Pereira. 2001.	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line year headchar-capital tailchar-period
+I-Reference	Conditional random fields: Probabilistic models for seg-	page=7 xpos=5 ypos=3 right-column left-indent right-over font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	menting and labeling sequence data. In Proceedings of	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	ICML-2001.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	Mitchell P. Marcus, Beatrice Santorini, and Mary Ann	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	Marcinkiewicz. 1993. Building a large annotated corpus	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	of English: The Penn Treebank. Computational Linguistics,	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	19(2):313–330.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Martha Palmer, Dan Gildea, and Paul Kingsbury. 2003. The	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	proposition bank: An annotated corpus of semantic roles.	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	Computational Linguistics.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Sameer Pradhan, Wayne Ward, Kadri Hacioglu, James Martin,	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-comma
+I-Reference	and Dan Jurafsky. 2004. Shallow semantic parsing using	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line year headchar-lower
+I-Reference	support vector machines. In Proceedings of HLT/NAACL-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	2004.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail year tailchar-period
+B-Reference	Sameer Pradhan, Kadri Hacioglu, Valerie Krugler, Wayne	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	Ward, James Martin, and Dan Jurafsky. 2005. Support vec-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	tor learning for semantic argument classification. Machine	page=7 xpos=5 ypos=5 right-column left-indent right-over font-smallest aligned-line headchar-lower
+I-Reference	Learning Journal.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Vasin Punyakanok, Dan Roth, Wen tau Yih, Dav Zimak, and	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	Yuancheng Tu. 2004. Semantic role labeling via generalized	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	inference over classifiers. In Proceedings of CoNLL-2004.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period
+B-Reference	Mihai Surdeanu, Sanda Harabagiu, John Williams, and Paul	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	Aarseth. 2003. Using predicate-argument structures for in-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	formation extraction. In Proceedings of ACL-2003.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period
+B-Reference	Cynthia A. Thompson, Roger Levy, and Christopher D. Man-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Reference	ning. 2003. A generative model for semantic role labeling.	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line year headchar-lower tailchar-period
+I-Reference	In Proceedings of ECML-2003.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	Nianwen Xue and Martha Palmer. 2004. Calibrating features	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	for semantic role labeling. In Proceedings of EMNLP-2004.	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line year headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	596	page=7 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only

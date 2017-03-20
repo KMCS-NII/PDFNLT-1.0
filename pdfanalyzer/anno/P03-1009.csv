@@ -1,0 +1,637 @@
+Title	Clustering Polysemic Subcategorization Frame Distributions Semantically	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Anna Korhonen <sup>∗</sup> Yuval Krymolowski Zvika Marx	page=0 xpos=0 ypos=0 single-column left-indent right-indent font-largest indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Computer Laboratory Division of Informatics Interdisciplinary Center	page=0 xpos=0 ypos=0 single-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Affiliation	University of Cambridge University of Edinburgh for Neural Computation,	page=0 xpos=0 ypos=1 single-column centered left-indent right-indent font-larger hanged-line headchar-capital tailchar-comma
+Address	15 JJ Thomson Avenue 2 Buccleuch Place The Hebrew University	page=0 xpos=0 ypos=1 single-column centered left-indent right-indent font-larger indented-line numbered-heading1
+Address	Cambridge CB3 0FD, UK Edinburgh EH8 9LW Jerusalem, Israel	page=0 xpos=0 ypos=1 single-column left-indent right-indent font-larger hanged-line shorter-tail headchar-capital
+Email	alk23@cl.cam.ac.uk Scotland, UK zvim@cs.huji.ac.il	page=0 xpos=0 ypos=1 single-column centered left-indent right-indent font-larger longer-tail symbol-atmark headchar-lower
+Email	ykrymolo@inf.ed.ac.uk	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-smaller indented-line shorter-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-blank-line above-double-space above-line-space
+B-Abstract	Previous research has demonstrated the	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Abstract	utility of clustering in inducing semantic	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	verb classes from undisambiguated cor-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	pus data. We describe a new approach	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	which involves clustering subcategoriza-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion frame ( SCF ) distributions using the	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	Information Bottleneck and nearest neigh-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	bour methods. In contrast to previous	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	work, we particularly focus on cluster-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing polysemic verbs. A novel evaluation	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	scheme is proposed which accounts for	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	the effect of polysemy on the clusters, of-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	fering us a good insight into the potential	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	and limitations of semantically classifying	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	undisambiguated SCF data.	page=0 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Classifications which aim to capture the close rela-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tion between the syntax and semantics of verbs have	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	attracted a considerable research interest in both lin-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guistics and computational linguistics (e.g. (Jack-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	endoff, 1990; Levin, 1993; Pinker, 1989; Dang et	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	al., 1998; Dorr, 1997; Merlo and Stevenson, 2001)).	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	While such classifications may not provide a means	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	for full semantic inferencing, they can capture gen-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eralizations over a range of linguistic properties, and	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	can therefore be used as a means of reducing redun-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dancy in the lexicon and for filling gaps in lexical	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	knowledge.	page=0 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	∗	page=0 xpos=0 ypos=9 left-column left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space
+I-Footnote	This work was partly supported by UK EPSRC project	page=0 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line longer-tail headchar-capital
+I-Footnote	GR/N36462/93: ‘Robust Accurate Statistical Parsing (RASP)’.	page=0 xpos=0 ypos=9 left-column centered right-indent font-smallest hanged-line headchar-capital tailchar-period column-bottom
+B-Body	Verb classifications have, in fact, been used to	page=0 xpos=5 ypos=2 right-column left-indent column-top headchar-capital
+I-Body	support many natural language processing ( NLP )	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	tasks, such as language generation, machine transla-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion (Dorr, 1997), document classification (Klavans	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	and Kan, 1998), word sense disambiguation (Dorr	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	and Jones, 1996) and subcategorization acquisition	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+E-Body	(Korhonen, 2002).	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail year tailchar-period above-line-space
+B-Body	One attractive property of these classifications is	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	that they make it possible, to a certain extent, to in-	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	fer the semantics of a verb on the basis of its syn-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tactic behaviour. In recent years several attempts	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	have been made to automatically induce semantic	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	verb classes from (mainly) syntactic information	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	in corpus data (Joanis, 2002; Merlo et al., 2002;	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-semicolon
+E-Body	Schulte im Walde and Brew, 2002).	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-line-space
+B-Body	In this paper, we focus on the particular task	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	of classifying subcategorization frame ( SCF ) distri-	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	butions in a semantically motivated manner. Pre-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vious research has demonstrated that clustering	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	can be useful in inferring Levin-style semantic	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	classes (Levin, 1993) from both English and Ger-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	man verb subcategorization information (Brew and	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	Schulte im Walde, 2002; Schulte im Walde, 2000;	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital tailchar-semicolon
+E-Body	Schulte im Walde and Brew, 2002).	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-line-space
+B-Body	We propose a novel approach, which involves: (i)	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	obtaining SCF frequency information from a lexi-	page=0 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	con extracted automatically using the comprehen-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sive system of Briscoe and Carroll (1997) and (ii)	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	applying a clustering mechanism to this informa-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. We use clustering methods that process raw	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	distributional data directly, avoiding complex pre-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	processing steps required by many advanced meth-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ods (e.g. Brew and Schulte im Walde (2002)).	page=0 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Body	In contrast to earlier work, we give special empha-	page=0 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen page-bottom
+I-Body	sis to polysemy. Earlier work has largely ignored	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	this issue by assuming a single gold standard class	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	for each verb (whether polysemic or not). The rel-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	atively good clustering results obtained suggest that	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	many polysemic verbs do have some predominating	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	sense in corpus data. However, this sense can vary	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	across corpora (Roland et al., 2000), and assuming a	page=1 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower
+I-Body	single sense is inadequate for an important group of	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	medium and high frequency verbs whose distribu-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of senses in balanced corpus data is flat rather	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	than zipfian (Preiss and Korhonen, 2002).	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	To allow for sense variation, we introduce a new	page=1 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	evaluation scheme against a polysemic gold stan-	page=1 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	dard. This helps to explain the results and offers	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	a better insight into the potential and limitations of	page=1 xpos=0 ypos=2 left-column full-justified aligned-line itemization headchar-lower
+E-Body	clustering undisambiguated SCF data semantically.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We discuss our gold standards and the choice of	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	test verbs in section 2. Section 3 describes the	page=1 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	method for subcategorization acquisition and sec-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion 4 presents the approach to clustering. Details	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	of the experimental evaluation are supplied in sec-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion 5. Section 6 concludes with directions for future	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	work.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Semantic Verb Classes and Test Verbs	page=1 xpos=0 ypos=5 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Levin’s taxonomy of verbs and their classes (Levin,	page=1 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	1993) is the largest syntactic-semantic verb classifi-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	cation in English, employed widely in evaluation of	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	automatic classifications. It provides a classification	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	of 3,024 verbs (4,186 senses) into 48 broad / 192	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	fine grained classes. Although it is quite extensive,	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	it is not exhaustive. As it primarily concentrates on	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	verbs taking NP and PP complements and does not	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	provide a comprehensive set of senses for verbs, it	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	is not suitable for evaluation of polysemic classifi-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cations.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We employed as a gold standard a substan-	page=1 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tially extended version of Levin’s classification	page=1 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	constructed by Korhonen (2003). This incorpo-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	rates Levin’s classes, 26 additional classes by	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	Dorr (1997) <sup>1</sup> , and 57 new classes for verb types not	page=1 xpos=0 ypos=8 left-column full-justified font-largest aligned-line year headchar-capital
+E-Body	covered comprehensively by Levin or Dorr.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	110 test verbs were chosen from this gold stan-	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail tailchar-hiphen
+I-Body	dard, 78 polysemic and 32 monosemous ones. Some	page=1 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower
+I-Body	low frequency verbs were included to investigate the	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> These classes are incorporated in the ’ LCS database’	page=1 xpos=0 ypos=9 left-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	(http://www.umiacs.umd.edu/∼bonnie/verbs-English.lcs).	page=1 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail tailchar-period column-bottom
+I-Body	effect of sparse data on clustering performance. To	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	ensure that our gold standard covers all (or most)	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	senses of these verbs, we looked into WordNet	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	(Miller, 1990) and assigned all the WordNet senses	page=1 xpos=5 ypos=0 right-column full-justified aligned-line year
+E-Body	of the verbs to gold standard classes. <sup>2</sup>	page=1 xpos=5 ypos=0 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+B-Body	Two versions of the gold standard were created:	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-colon
+I-Body	monosemous and polysemic. The monosemous one	page=1 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	lists only a single sense for each test verb, that cor-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	responding to its predominant (most frequent) sense	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	in WordNet. The polysemic one provides a compre-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	hensive list of senses for each verb. The test verbs	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	and their classes are shown in table 1. The classes	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	are indicated by number codes from the classifica-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions of Levin, Dorr (the classes starting with 0) and	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	Korhonen (the classes starting with A). <sup>3</sup> The pre-	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+E-Body	dominant sense is indicated by bold font.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Subcategorization Information	page=1 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We obtain our SCF data using the subcategorization	page=1 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	acquisition system of Briscoe and Carroll (1997).	page=1 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	We expect the use of this system to be benefi-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	cial: it employs a robust statistical parser (Briscoe	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	and Carroll, 2002) which yields complete though	page=1 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	shallow parses, and a comprehensive SCF classifier,	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which incorporates 163 SCF distinctions, a super-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	set of those found in the ANLT (Boguraev et al.,	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1987) and COMLEX (Grishman et al., 1994) dictio-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	naries. The SCF s abstract over specific lexically-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	governed particles and prepositions and specific	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	predicate selectional preferences but include some	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	derived semi-predictable bounded dependency con-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	structions, such as particle and dative movement.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	78 of these ‘coarse-grained’ SCF s appeared in our	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail numbered-heading1
+I-Body	data. In addition, a set of 160 fine grained frames	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	were employed. These were obtained by parameter-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	izing two high frequency SCF s for prepositions: the	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	simple PP and NP + PP frames. The scope was re-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stricted to these two frames to prevent sparse data	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	problems in clustering.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	A SCF lexicon was acquired using this system	page=1 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	from the British National Corpus (Leech, 1992,	page=1 xpos=5 ypos=8 right-column full-justified hanged-line year headchar-lower tailchar-comma
+I-Body	BNC ) so that the maximum of 7000 citations were	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital above-double-space above-line-space
+B-Footnote	<sup>2</sup> As WordNet incorporates particularly fine grained sense	page=1 xpos=5 ypos=8 right-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	distinctions, some senses were found which did not appear in	page=1 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	our gold standard. As many of them appeared marginal and/or	page=1 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	low in frequency, we did not consider these additional senses in	page=1 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	our experiment.	page=1 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>3</sup> The gold standard assumes Levin’s broad classes (e.g. class	page=1 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-super
+I-Footnote	10) instead of possible fine-grained ones (e.g. class 10.1).	page=1 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail tailchar-period page-bottom
+Table	__Table 1__	page=2 xpos=0 ypos=-7 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: Test verbs and their monosemous/polysemic gold standard senses	page=2 xpos=2 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Body	used per test verb. The lexicon was evaluated against	page=2 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower
+I-Body	manually analysed corpus data after an empirically	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	defined threshold of 0.025 was set on relative fre-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quencies of SCF s to remove noisy SCF s. The method	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	yielded 71.8% precision and 34.5% recall. When we	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	removed the filtering threshold, and evaluated the	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	noisy distribution, F-measure <sup>4</sup> dropped from 44.9 to	page=2 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	38.51. <sup>5</sup>	page=2 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail above-double-space above-line-space
+B-SectionHeader	4 Clustering Method	page=2 xpos=0 ypos=3 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Data clustering is a process which aims to partition a	page=2 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	given set into subsets (clusters) of elements that are	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	similar to one another, while ensuring that elements	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	that are not similar are assigned to different clusters.	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We use clustering for partitioning a set of verbs. Our	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	hypothesis is that information about SCF s and their	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	associated frequencies is relevant for identifying se-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantically related verbs. Hence, we use SCF s as rel-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	evance features to guide the clustering process. <sup>6</sup>	page=2 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Footnote	<sup>4</sup> F = <sup>2·precision·recall</sup> <sub>precision+recall</sub>	page=2 xpos=0 ypos=7 left-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space headchar-super
+B-Footnote	<sup>5</sup> These figures are not particularly impressive because our	page=2 xpos=0 ypos=7 left-column left-indent aligned-line longer-tail headchar-super
+I-Footnote	evaluation is exceptionally hard. We use 1) highly polysemic	page=2 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	test verbs, 2) a high number of SCF s and 3) evaluate against	page=2 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	manually analysed data rather than dictionaries (the latter have	page=2 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	high precision but low recall).	page=2 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>6</sup> The relevance of the features to the task is evident when	page=2 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-super
+I-Footnote	comparing the probability of a randomly chosen pair of verbs	page=2 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	verb <sub>i</sub> and verb j to share the same predominant sense (4.5%)	page=2 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	with the probability obtained when verb <sub>j</sub> is the JS-divergence	page=2 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower column-bottom
+B-Body	We chose two clustering methods which do not in-	page=2 xpos=5 ypos=0 right-column left-indent column-top headchar-capital tailchar-hiphen
+I-Body	volve task-oriented tuning (such as pre-fixed thresh-	page=2 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	olds or restricted cluster sizes) and which approach	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	data straightforwardly, in its distributional form: (i)	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	a simple hard method that collects the nearest neigh-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	bours ( NN ) of each verb (figure 1), and (ii) the In-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation Bottleneck ( IB ), an iterative soft method	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	(Tishby et al., 1999) based on information-theoretic	page=2 xpos=5 ypos=3 right-column full-justified aligned-line year
+E-Body	grounds.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The NN method is very simple, but it has some	page=2 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	disadvantages. It outputs only one clustering config-	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	uration, and therefore does not allow examination	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of different cluster granularities. It is also highly	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	sensitive to noise. Few exceptional neighbourhood	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	relations contradicting the typical trends in the data	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	are enough to cause the formation of a single cluster	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	which encompasses all elements.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Therefore we employed the more sophisticated	page=2 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	IB method as well. The IB quantifies the rele-	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-capital tailchar-hiphen
+I-Body	vance information of a SCF distribution with re-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	spect to output clusters, through their mutual infor-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation I(Clusters; SCF s). The relevance informa-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion is maximized, while the compression informa-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion I(Clusters; V erbs) is minimized. This en-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sures optimal compression of data through clusters.	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The tradeoff between the two constraints is realized	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital above-double-space above-line-space
+B-Footnote	nearest neighbour of verb <sub>i</sub> (36%).	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail line-double-space line-space headchar-lower tailchar-period page-bottom
+Figure	__Figure 1__	page=3 xpos=0 ypos=-3 left-column full-justified box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 1: Connected components nearest neighbour ( NN )	page=3 xpos=0 ypos=0 left-column full-justified aligned-line line-double-space line-space string-figure headchar-capital
+E-Caption	clustering. D is the Kullback-Leibler distance.	page=3 xpos=0 ypos=0 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	through minimizing the cost term:	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	L = I(Clusters; V erbs) − βI(Clusters; SCF s) ,	page=3 xpos=0 ypos=1 left-column centered left-indent right-indent font-larger longer-tail line-double-space line-space headchar-capital tailchar-comma above-double-space above-line-space
+E-Body	where β is a parameter that balances the constraints.	page=3 xpos=0 ypos=1 left-column full-justified line-double-space line-space headchar-lower tailchar-period
+B-Body	The IB iterative algorithm finds a local minimum	page=3 xpos=0 ypos=2 left-column left-indent indented-line headchar-capital
+I-Body	of the above cost term. It takes three inputs: (i) SCF -	page=3 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	verb distributions, (ii) the desired number of clusters	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	K, and (iii) the value of β.	page=3 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	Starting from a random configuration, the algo-	page=3 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	rithm repeatedly calculates, for each cluster K, verb	page=3 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	V and SCF S, the following probabilities: (i) the	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	marginal proportion of the cluster p(K); (ii) the	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	probability p(S|K) for a SCF to occur with mem-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bers of the cluster; and (iii) the probability p(K|V )	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	for a verb to be assigned to the cluster. These prob-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	abilities are used, each in its turn, for calculating the	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	other probabilities (figure 2). The collection of all	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	p(S|K)’s for a fixed cluster K can be regarded as a	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	probabilistic center (centroid) of that cluster in the	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	SCF space.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	The IB method gives an indication of the	page=3 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	most informative values of K. <sup>7</sup> Intensifying the	page=3 xpos=0 ypos=6 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	weight β attached to the relevance information	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	I(Clusters; SCF s) allows us to increase the num-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ber K of distinct clusters being produced (while too	page=3 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	small β would cause some of the output clusters to	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	be identical to one another). Hence, the relevance in-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation grows with K. Accordingly, we consider	page=3 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	as the most informative output configurations those	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	for which the relevance information increases more	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	sharply between K − 1 and K clusters than between	page=3 xpos=0 ypos=8 left-column full-justified font-larger aligned-line headchar-lower
+E-Body	K and K + 1.	page=3 xpos=0 ypos=8 left-column right-indent font-larger aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Footnote	<sup>7</sup> Most works on clustering ignore this issue and refer to an	page=3 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-double-space line-space headchar-super
+I-Footnote	arbitrarily chosen number of clusters, or to the number of gold	page=3 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	standard classes, which cannot be assumed in realistic applica-	page=3 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	tions.	page=3 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+Figure	__Figure 2__	page=3 xpos=5 ypos=-3 right-column full-justified box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 2: Information Bottleneck ( IB ) iterative clustering. D	page=3 xpos=5 ypos=0 right-column full-justified aligned-line line-double-space line-space string-figure headchar-capital
+E-Caption	is the Kullback-Leibler distance.	page=3 xpos=5 ypos=0 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Body	When the weight of relevance grows, the assign-	page=3 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ment to clusters is more constrained and p(K|V ) be-	page=3 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	comes more similar to hard clustering. Let	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Equation	K(V ) = argmax p(K|V )	page=3 xpos=6 ypos=2 right-column left-indent right-indent indented-line shorter-tail line-double-space line-space headchar-capital
+I-Equation	K	page=3 xpos=7 ypos=2 right-column centered left-indent right-indent font-smallest indented-line shorter-tail headchar-capital above-double-space above-line-space
+I-Body	denote the most probable cluster of a verb V .	page=3 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower tailchar-period
+I-Body	For K ≥ 30, more than 85% of the verbs have	page=3 xpos=5 ypos=2 right-column full-justified font-larger aligned-line headchar-capital
+I-Body	p(K(V )|V ) > 90% which makes the output cluster-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing approximately hard. For this reason, we decided	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	to use only K(V ) as output and defer a further ex-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ploration of the soft output to future work.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Experimental Evaluation	page=3 xpos=5 ypos=4 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	5.1 Data	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The input data to clustering was obtained from the	page=3 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	automatically acquired SCF lexicon for our 110 test	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	verbs (section 2). The counts were extracted from	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	unfiltered (noisy) SCF distributions in this lexicon. <sup>8</sup>	page=3 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	The NN algorithm produced 24 clusters on this in-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	put. From the IB algorithm, we requested K = 2	page=3 xpos=5 ypos=6 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	to 60 clusters. The upper limit was chosen so as	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	to slightly exceed the case when the average clus-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ter size 110/K = 2. We chose for evaluation the	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	IB results for K = 25, 35 and 42. For these val-	page=3 xpos=5 ypos=7 right-column full-justified font-larger aligned-line headchar-capital tailchar-hiphen
+I-Body	ues, the SCF relevance satisfies our criterion for a	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	notable improvement in cluster quality (section 4).	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The value K = 35 is very close to the actual number	page=3 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-capital
+I-Body	(34) of predominant senses in the gold standard. In	page=3 xpos=5 ypos=8 right-column full-justified aligned-line itemization
+I-Body	this way, the IB yields structural information beyond	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	clustering.	page=3 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>8</sup> This yielded better results, which might indicate that the	page=3 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-double-space line-space headchar-super
+I-Footnote	unfiltered “noisy” SCF s contain information which is valuable	page=3 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	for the task.	page=3 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-SubsectionHeader	5.2 Method	page=4 xpos=0 ypos=0 left-column right-indent page-top numbered-heading2 above-double-space above-line-space
+B-Body	A number of different strategies have been proposed	page=4 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	for evaluation of clustering. We concentrate here on	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	those which deliver a numerical value which is easy	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	to interpret, and do not introduce biases towards spe-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cific numbers of classes or class sizes. As we cur-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rently assign a single sense to each polysemic verb	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	(sec. 5.4) the measures we use are also applicable	page=4 xpos=0 ypos=1 left-column full-justified aligned-line
+E-Body	for evaluation against a polysemous gold standard.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our first measure, the adjusted pairwise preci-	page=4 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	sion ( APP ), evaluates clusters in terms of verb pairs	page=4 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	(Schulte im Walde and Brew, 2002) <sup>9</sup> :	page=4 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail year tailchar-colon above-double-space above-line-space
+B-Equation	APP = K <sup>1</sup> <sub>i=1</sub> P <sup>K</sup> num. num. of correct of pairs pairs in k i in k i · |k |k i i |−1 |+1 .	page=4 xpos=0 ypos=2 left-column centered left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Body	APP is the average proportion of all within-cluster	page=4 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	pairs that are correctly co-assigned. It is multiplied	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	by a factor that increases with cluster size. This fac-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tor compensates for a bias towards small clusters.	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our second measure is derived from purity, a	page=4 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	global measure which evaluates the mean precision	page=4 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	of the clusters, weighted according to the cluster size	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	(Stevenson and Joanis, 2003). We associate with	page=4 xpos=0 ypos=4 left-column full-justified aligned-line year
+I-Body	each cluster its most prevalent semantic class, and	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	denote the number of verbs in a cluster K that take	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	its prevalent class by n <sub>prevalent</sub> (K). Verbs that do	page=4 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	not take this class are considered as errors. Given	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	our task, we are only interested in classes which con-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tain two or more verbs. We therefore disregard those	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	clusters where n <sub>prevalent</sub> (K) = 1. This leads us to	page=4 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	define modified purity:	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-blank-line above-double-space above-line-space
+B-Equation	P	page=4 xpos=2 ypos=7 left-column left-indent right-indent font-smallest indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Equation	n <sub>prevalent</sub> (k i )	page=4 xpos=2 ypos=7 left-column left-indent right-indent font-smallest indented-line longer-tail itemization headchar-lower
+I-Equation	m PUR = <sup>n</sup> prevalent <sub>number</sub> (ki )≥2 of verbs .	page=4 xpos=0 ypos=7 left-column centered left-indent right-indent font-largest hanged-line longer-tail itemization headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The modification we introduce to purity removes the	page=4 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	bias towards the trivial configuration comprised of	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	only singletons.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.3 Evaluation Against the Predominant Sense	page=4 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We first evaluated the clusters against the predom-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	inant sense, i.e. using the monosemous gold stan-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dard. The results, shown in Table 2, demonstrate	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	that both clustering methods perform significantly	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>9</sup> Our definition differs by a factor of 2 from that of	page=4 xpos=0 ypos=9 left-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	Schulte im Walde and Brew (2002).	page=4 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail year headchar-capital tailchar-period column-bottom
+Table	__Table 2__	page=4 xpos=5 ypos=-1 right-column centered left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 2: Clustering performance on the predominant senses,	page=4 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-comma
+I-Caption	with and without prepositions. The last entry presents the per-	page=4 xpos=5 ypos=1 right-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Caption	formance of random clustering with K = 25, which yielded the	page=4 xpos=5 ypos=1 right-column full-justified font-smallest aligned-line headchar-lower
+E-Caption	best results among the three values K=25, 35 and 42.	page=4 xpos=5 ypos=1 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	better on the task than our random clustering base-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	line. Both methods show clearly better performance	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	with fine-grained SCF s (with prepositions, + PP ) than	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	with coarse-grained ones (- PP ).	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Surprisingly, the simple NN method performs	page=4 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	very similarly to the more sophisticated IB . Being	page=4 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	based on pairwise similarities, it shows better per-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance than IB on the pairwise measure. The IB	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	is, however, slightly better according to the global	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	measure (2% with K = 42). The fact that the NN	page=4 xpos=5 ypos=4 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	method performs better than the IB with similar K	page=4 xpos=5 ypos=4 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	values ( NN K = 24 vs. IB K = 25) seems to suggest	page=4 xpos=5 ypos=4 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	that the JS divergence provides a better model for	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the predominant class than the compression model	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of the IB . However, it is likely that the IB perfor-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mance suffered due to our choice of test data. As the	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	method is global, it performs better when the target	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	classes are represented by a high number of verbs.	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In our experiment, many semantic classes were rep-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	resented by two verbs only (section 2).	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Nevertheless, the IB method has the clear advan-	page=4 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tage that it allows for more clusters to be produced.	page=4 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	At best it classified half of the verbs correctly ac-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	cording to their predominant sense (m PUR = 50%).	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Although this leaves room for improvement, the re-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	sult compares favourably to previously published re-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults <sup>10</sup> . We argue, however, that evaluation against a	page=4 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	monosemous gold standard reveals only part of the	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	picture.	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Footnote	<sup>10</sup> Due to differences in task definition and experimental	page=4 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-super
+I-Footnote	setup, a direct comparison with earlier results is impossible.	page=4 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower tailchar-period
+I-Footnote	For example, Stevenson and Joanis (2003) report an accuracy	page=4 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line year headchar-capital
+I-Footnote	of 29% (which implies m PUR ≤ 29%), but their task involves	page=4 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	classifying 841 verbs to 14 classes based on differences in the	page=4 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	predicate-argument structure.	page=4 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Table	__Table 3__	page=5 xpos=0 ypos=-2 left-column full-justified box page-top table-area above-double-space above-line-space
+B-Caption	Table 3: Evaluation against the monosemous (Pred.) and pol-	page=5 xpos=0 ypos=0 left-column full-justified aligned-line line-double-space line-space string-table headchar-capital tailchar-hiphen
+I-Caption	ysemous (Multiple) gold standards. The figures in parentheses	page=5 xpos=0 ypos=0 left-column full-justified font-smallest aligned-line headchar-lower
+I-Caption	are results of evaluation on randomly polysemous data + sig-	page=5 xpos=0 ypos=0 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Caption	nificance of the actual figure. Results were obtained with fine-	page=5 xpos=0 ypos=0 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+E-Caption	grained SCF s (including prepositions).	page=5 xpos=0 ypos=1 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	5.4 Evaluation Against Multiple Senses	page=5 xpos=0 ypos=1 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In evaluation against the polysemic gold standard,	page=5 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	we assume that a verb which is polysemous in our	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	corpus data may appear in a cluster with verbs that	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	share any of its senses. In order to evaluate the clus-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ters against polysemous data, we assigned each pol-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ysemic verb V a single sense: the one it shares with	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	the highest number of verbs in the cluster K(V ).	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Table 3 shows the results against polysemic and	page=5 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space string-table headchar-capital
+I-Body	monosemous gold standards. The former are notice-	page=5 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ably better than the latter (e.g. IB with K = 42 is 9%	page=5 xpos=0 ypos=4 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	better). Clearly, allowing for multiple gold standard	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	classes makes it easier to obtain better results with	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	evaluation.	page=5 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In order to show that polysemy makes a non-	page=5 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	trivial contribution in shaping the clusters, we mea-	page=5 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sured the improvement that can be due to pure	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	chance by creating randomly polysemous gold stan-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dards. We constructed 100 sets of random gold stan-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dards. In each iteration, the verbs kept their original	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	predominant senses, but the set of additional senses	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	was taken entirely from another verb - chosen at ran-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dom. By doing so, we preserved the dominant sense	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of each verb, the total frequency of all senses and the	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	correlations between the additional senses.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The results included in table 3 indicate, with	page=5 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	99.5% confidence (3σ and above), that the improve-	page=5 xpos=0 ypos=8 left-column full-justified hanged-line tailchar-hiphen
+I-Body	ment obtained with the polysemous gold standard is	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	not artificial (except in two cases with 95% confi-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	dence).	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.5 Qualitative Analysis of Polysemy	page=5 xpos=0 ypos=9 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We performed qualitative analysis to further inves-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tigate the effect of polysemy on clustering perfor-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+Table	__Table 4__	page=5 xpos=6 ypos=-2 right-column centered left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 4: The fraction of verb pairs clustered together, as a	page=5 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+I-Caption	function of the number of different senses between pair mem-	page=5 xpos=5 ypos=0 right-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+E-Caption	bers (results of the NN algorithm)	page=5 xpos=5 ypos=0 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower above-double-space above-line-space
+Table	__Table 5__	page=5 xpos=5 ypos=0 right-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 5: The fraction of verb pairs clustered together, as a	page=5 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+I-Caption	function of the number of shared senses (results of the NN algo-	page=5 xpos=5 ypos=2 right-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+E-Caption	rithm)	page=5 xpos=5 ypos=2 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	mance. The results in table 4 demonstrate that the	page=5 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	more two verbs differ in their senses, the lower their	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	chance of ending up in the same cluster. From the	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	figures in table 5 we see that the probability of two	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	verbs to appear in the same cluster increases with	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the number of senses they share. Interestingly, it is	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	not only the degree of polysemy which influences	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the results, but also the type. For verb pairs where at	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	least one of the members displays ‘irregular’ poly-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	semy (i.e. it does not share its full set of senses with	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	any other verb), the probability of co-occurrence in	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the same cluster is far lower than for verbs which are	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	polysemic in a ‘regular’ manner (Table 5).	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Manual cluster analysis against the polysemic	page=5 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	gold standard revealed a yet more comprehensive	page=5 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	picture. Consider the following clusters (the IB out-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put with K = 42):	page=5 xpos=5 ypos=6 right-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	A1: talk (37), speak (37)	page=5 xpos=5 ypos=7 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital above-line-space
+B-Listitem	A2: look (30, 35), stare (30)	page=5 xpos=5 ypos=7 right-column right-indent aligned-line longer-tail line-space headchar-capital above-line-space
+B-Listitem	A3: focus (31, 45), concentrate (31, 45)	page=5 xpos=5 ypos=7 right-column right-indent aligned-line longer-tail line-space headchar-capital above-line-space
+B-Listitem	A4: add (22, 37, A56)	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail line-space headchar-capital above-double-space above-line-space
+B-Body	We identified a close relation between the clus-	page=5 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tering performance and the following patterns of se-	page=5 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	mantic behaviour:	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	1) Monosemy: We had 32 monosemous test	page=5 xpos=5 ypos=8 right-column left-indent indented-line longer-tail
+I-Listitem	verbs. 10 gold standard classes included 2 or more	page=5 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Listitem	or these. 7 classes were correctly acquired us-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ing clustering (e.g. A1), indicating that clustering	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Listitem	monosemous verbs is fairly ‘easy’.	page=5 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Listitem	2) Predominant sense: 10 clusters were exam-	page=6 xpos=0 ypos=0 left-column left-indent page-top tailchar-hiphen
+I-Listitem	ined by hand whose members got correctly classi-	page=6 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Listitem	fied together, despite one of them being polysemous	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Listitem	(e.g. A2). In 8 cases there was a clear indication in	page=6 xpos=0 ypos=0 left-column full-justified aligned-line
+I-Listitem	the data (when examining SCF s and the selectional	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Listitem	preferences on argument heads) that the polysemous	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Listitem	verb indeed had its predominant sense in the rele-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	vant class and that the co-occurrence was not due to	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Listitem	noise.	page=6 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	3) Regular Polysemy: Several clusters were pro-	page=6 xpos=0 ypos=1 left-column left-indent indented-line longer-tail tailchar-hiphen
+I-Listitem	duced which represent linguistically plausible inter-	page=6 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Listitem	sective classes (e.g. A3) (Dang et al., 1998) rather	page=6 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Listitem	than single classes.	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	4) Irregular Polysemy: Verbs with irregular pol-	page=6 xpos=0 ypos=2 left-column left-indent indented-line longer-tail tailchar-hiphen
+I-Listitem	ysemy <sup>11</sup> were frequently assigned to singleton clus-	page=6 xpos=0 ypos=2 left-column full-justified font-largest hanged-line headchar-lower tailchar-hiphen
+I-Listitem	ters. For example, add (A4) has a ‘combining and	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Listitem	attaching’ sense in class 22 which involves NP and	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Listitem	PP SCF s and another ‘communication’ sense in 37	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Listitem	which takes sentential SCF s. Irregular polysemy was	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Listitem	not a marginal phenomenon: it explains 5 of the 10	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Listitem	singletons in our data.	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	These observations confirm that evaluation	page=6 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	against a polysemic gold standard is necessary in	page=6 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+E-Body	order to fully explain the results from clustering.	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.6 Qualitative Analysis of Errors	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Finally, to provide feedback for further development	page=6 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	of our verb classification approach, we performed a	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	qualitative analysis of errors not resulting from poly-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	semy. Consider the following clusters (the IB output	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	for K = 42):	page=6 xpos=0 ypos=6 left-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	B1: place (9), build (26, 45),	page=6 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Listitem	publish (26, 25), carve (21, 25, 26)	page=6 xpos=0 ypos=6 left-column left-indent right-indent indented-line longer-tail headchar-lower above-line-space
+B-Listitem	B2: sin (003), rain (57), snow (57, 002)	page=6 xpos=0 ypos=7 left-column right-indent hanged-line line-space headchar-capital above-line-space
+B-Listitem	B3: agree (36, 22, A42), appear (020, 48, 29),	page=6 xpos=0 ypos=7 left-column right-indent aligned-line longer-tail line-space headchar-capital tailchar-comma
+I-Listitem	begin (55), continue (55, 47, 51)	page=6 xpos=0 ypos=7 left-column left-indent right-indent indented-line shorter-tail headchar-lower above-line-space
+B-Listitem	B4: beg (015, 32)	page=6 xpos=0 ypos=7 left-column right-indent hanged-line shorter-tail line-space headchar-capital above-double-space above-line-space
+B-Body	Three main error types were identified:	page=6 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-colon
+B-Listitem	1) Syntactic idiosyncracy: This was the most fre-	page=6 xpos=0 ypos=8 left-column left-indent indented-line longer-tail tailchar-hiphen
+I-Listitem	quent error type, exemplified in B1, where place is	page=6 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Listitem	incorrectly clustered with build, publish and carve	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Listitem	merely because it takes similar prepositions to these	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Listitem	verbs (e.g. in, on, into).	page=6 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	2) Sparse data: Many of the low frequency verbs	page=6 xpos=0 ypos=9 left-column left-indent indented-line longer-tail
+I-Listitem	(we had 12 with frequency less than 300) performed	page=6 xpos=0 ypos=9 left-column full-justified hanged-line above-double-space above-line-space
+B-Footnote	<sup>11</sup> Recall our definition of irregular polysemy, section 5.4.	page=6 xpos=0 ypos=9 left-column left-indent right-indent indented-line shorter-tail line-double-space line-space headchar-super tailchar-period column-bottom
+I-Listitem	poorly. In B2, sin (which had 53 occurrences) is	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Listitem	classified with rain and snow because it does not	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Listitem	occur in our data with the preposition against -	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	the ‘hallmark’ of its gold standard class (’Conspire	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Listitem	Verbs’).	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Listitem	3) Problems in SCF acquisition: These were not	page=6 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-space
+I-Listitem	numerous but occurred e.g. when the system could	page=6 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Listitem	not distinguish between different control (e.g. sub-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ject/object equi/raising) constructions (B3).	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Discussion and Conclusions	page=6 xpos=5 ypos=2 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	This paper has presented a novel approach to auto-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	matic semantic classification of verbs. This involved	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	applying the NN and IB methods to cluster polysemic	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	SCF distributions extracted from corpus data using	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	Briscoe and Carroll’s (1997) system. A principled	page=6 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-capital
+I-Body	evaluation scheme was introduced which enabled us	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	to investigate the effect of polysemy on the resulting	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	classification.	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Our investigation revealed that polysemy has a	page=6 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	considerable impact on the clusters formed: pol-	page=6 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ysemic verbs with a clear predominant sense and	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	those with similar regular polysemy are frequently	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	classified together. Homonymic verbs or verbs with	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	strong irregular polysemy tend to resist any classifi-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cation.	page=6 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	While it is clear that evaluation should account	page=6 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	for these cases rather than ignore them, the issue of	page=6 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	polysemy is related to another, bigger issue: the po-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tential and limitations of clustering in inducing se-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantic information from polysemic SCF data. Our	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	results show that it is unrealistic to expect that the	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	‘important’ (high frequency) verbs in language fall	page=6 xpos=5 ypos=6 right-column full-justified aligned-line
+I-Body	into classes corresponding to single senses. How-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ever, they also suggest that clustering can be used	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	for novel, previously unexplored purposes: to de-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tect from corpus data general patterns of seman-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic behaviour (monosemy, predominant sense, reg-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ular/irregular polysemy).	page=6 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In the future, we plan to investigate the use of soft	page=6 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	clustering (without hardening the output) and de-	page=6 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	velop methods for evaluating the soft output against	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	polysemous gold standards. We also plan to work	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	on improving the accuracy of subcategorization ac-	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quisition, investigating the role of noise (irregular /	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	regular) in clustering, examining whether different	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	syntactic/semantic verb types require different ap-	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+I-Body	proaches in clustering, developing our gold standard	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	classification further, and extending our experiments	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	to a larger number of verbs and verb classes.	page=7 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=0 left-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	B. Boguraev, E. J. Briscoe, J. Carroll, D. Carter, and	page=7 xpos=0 ypos=1 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Reference	C. Grover. 1987. The derivation of a grammatically-	page=7 xpos=0 ypos=1 left-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	indexed lexicon from the longman dictionary of con-	page=7 xpos=0 ypos=1 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	temporary english. In Proc. of the 25 <sup>th</sup> ACL, pages	page=7 xpos=0 ypos=1 left-column left-indent font-larger aligned-line headchar-lower
+I-Reference	193–200, Stanford, CA.	page=7 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	C. Brew and S. Schulte im Walde. 2002. Spectral clus-	page=7 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tering for german verbs. In Conference on Empirical	page=7 xpos=0 ypos=2 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Methods in Natural Language Processing, Philadel-	page=7 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	phia, USA.	page=7 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	E. J. Briscoe and J. Carroll. 1997. Automatic extraction	page=7 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	of subcategorization from corpora. In 5 <sup>th</sup> ACL Confer-	page=7 xpos=0 ypos=3 left-column left-indent font-larger indented-line headchar-lower tailchar-hiphen
+I-Reference	ence on Applied Natural Language Processing, pages	page=7 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	356–363, Washington DC.	page=7 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	E. J. Briscoe and J. Carroll. 2002. Robust accurate sta-	page=7 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tistical annotation of general text. In 3 <sup>rd</sup> International	page=7 xpos=0 ypos=4 left-column left-indent font-larger indented-line headchar-lower
+I-Reference	Conference on Language Resources and Evaluation,	page=7 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	pages 1499–1504, Las Palmas, Gran Canaria.	page=7 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	H. T. Dang, K. Kipper, M. Palmer, and J. Rosenzweig.	page=7 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	1998. Investigating regular sense extensions based on	page=7 xpos=0 ypos=4 left-column left-indent font-smallest indented-line year
+I-Reference	intersective Levin classes. In Proc. of COLING/ACL,	page=7 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	pages 293–299, Montreal, Canada.	page=7 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	B. Dorr and D. Jones. 1996. Role of word sense disam-	page=7 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	biguation in lexical acquisition: predicting semantics	page=7 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	from syntactic cues. In 16 <sup>th</sup> International Conference	page=7 xpos=0 ypos=5 left-column left-indent font-larger aligned-line headchar-lower
+I-Reference	on Computational Linguistics, pages 322–333, Copen-	page=7 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	hagen, Denmark.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	B. Dorr. 1997. Large-scale dictionary construction	page=7 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	for foreign language tutoring and interlingual machine	page=7 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	translation. Machine Translation, 12(4):271–325.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	R. Grishman, C. Macleod, and A. Meyers. 1994. Com-	page=7 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	lex syntax: building a computational lexicon. In In-	page=7 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ternational Conference on Computational Linguistics,	page=7 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	pages 268–272, Kyoto, Japan.	page=7 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	R. Jackendoff. 1990. Semantic Structures. MIT Press,	page=7 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-comma
+I-Reference	Cambridge, Massachusetts.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	E. Joanis. 2002. Automatic verb classification using a	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	general feature space. Master’s thesis, University of	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Toronto.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	J. L. Klavans and M. Kan. 1998. Role of verbs in docu-	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ment analysis. In Proc. of COLING/ACL, pages 680–	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	686, Montreal, Canada.	page=7 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	A. Korhonen. 2002. Subcategorization Acquisition.	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Ph.D. thesis, University of Cambridge, UK.	page=7 xpos=0 ypos=9 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period column-bottom
+B-Reference	A. Korhonen. 2003. Extending Levin’s Classification	page=7 xpos=5 ypos=0 right-column full-justified font-smallest column-top year headchar-capital
+I-Reference	with New Verb Classes. Unpublished manuscript, Uni-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	versity of Cambridge Computer Laboratory.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	G. Leech. 1992. 100 million words of english: the british	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	national corpus. Language Research, 28(1):1–13.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	B. Levin. 1993. English Verb Classes and Alternations.	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Chicago University Press, Chicago.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	P. Merlo and S. Stevenson. 2001. Automatic verb clas-	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	sification based on statistical distributions of argument	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	structure. Computational Linguistics, 27(3):373–408.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	P. Merlo, S. Stevenson, V. Tsang, and G. Allaria. 2002.	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line line-double-space line-space year headchar-capital tailchar-period
+I-Reference	A multilingual paradigm for automatic verb classifica-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	tion. In Proc. of the 40 <sup>th</sup> ACL, Pennsylvania, USA.	page=7 xpos=5 ypos=2 right-column centered left-indent right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	G. A. Miller. 1990. WordNet: An on-line lexi-	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	cal database. International Journal of Lexicography,	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	3(4):235–312.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	S. Pinker. 1989. Learnability and Cognition: The Acqui-	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	sition of Argument Structure. MIT Press, Cambridge,	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	Massachusetts.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	J. Preiss and A. Korhonen. 2002. Improving subcate-	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	gorization acquisition with WSD. In ACL Workshop	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	on Word Sense Disambiguation: Recent Successes and	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Future Directions, Philadelphia, USA.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	D. Roland, D. Jurafsky, L. Menn, S. Gahl, E. Elder, and	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	C. Riddoch. 2000. Verb subcatecorization frequency	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	differences between business-news and balanced cor-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	pora. In ACL Workshop on Comparing Corpora, pages	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	28–34.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	S. Schulte im Walde and C. Brew. 2002. Inducing ger-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	man semantic verb classes from purely syntactic sub-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	categorisation information. In Proc. of the 40 <sup>th</sup> ACL,	page=7 xpos=5 ypos=6 right-column left-indent font-larger aligned-line headchar-lower tailchar-comma
+I-Reference	Philadephia, USA.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	S. Schulte im Walde. 2000. Clustering verbs seman-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tically according to their alternation behaviour. In	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Proc. of COLING-2000, pages 747–753, Saarbrücken,	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line year headchar-capital tailchar-comma
+I-Reference	Germany.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	S. Stevenson and E. Joanis. 2003. Semi-supervised	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	verb-class discovery using noisy features. In Proc. of	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	CoNLL-2003, Edmonton, Canada.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	N. Tishby, F. C. Pereira, and W. Bialek. 1999. The infor-	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	mation bottleneck method. In Proc. of the 37 <sup>th</sup> Annual	page=7 xpos=5 ypos=8 right-column left-indent font-larger indented-line headchar-lower
+I-Reference	Allerton Conference on Communication, Control and	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Computing, pages 368–377.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period

@@ -1,0 +1,499 @@
+Title	Part of Speech Tagging in Context	page=0 xpos=2 ypos=0 single-column left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Michele BANKO and Robert C. MOORE	page=0 xpos=2 ypos=0 single-column left-indent right-indent shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Microsoft Research	page=0 xpos=4 ypos=0 single-column left-indent right-indent indented-line shorter-tail headchar-capital above-line-space
+Address	One Microsoft Way	page=0 xpos=4 ypos=0 single-column left-indent right-indent line-space headchar-capital above-line-space
+Address	Redmond, WA 98052 USA	page=0 xpos=3 ypos=0 single-column left-indent right-indent hanged-line longer-tail line-space headchar-capital above-line-space
+Email	{mbanko, bobmoore}@microsoft.com	page=0 xpos=3 ypos=1 single-column left-indent right-indent hanged-line longer-tail line-space symbol-atmark column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=1 left-column centered left-indent right-indent column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	We present a new HMM tagger that exploits	page=0 xpos=0 ypos=1 left-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	context on both sides of a word to be tagged, and	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	evaluate it in both the unsupervised and supervised	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	case. Along the way, we present the first	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	comprehensive comparison of unsupervised	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	methods for part-of-speech tagging, noting that	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	published results to date have not been comparable	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	across corpora or lexicons. Observing that the	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	quality of the lexicon greatly impacts the accuracy	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	that can be achieved by the algorithms, we present	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	a method of HMM training that improves accuracy	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line itemization headchar-lower
+I-Abstract	when training of lexical probabilities is unstable.	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Abstract	Finally, we show how this new tagger achieves	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-capital
+I-Abstract	state-of-the-art results in a supervised, non-training	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	intensive framework.	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=4 left-column right-indent hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The empiricist revolution in computational	page=0 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	linguistics has dramatically shifted the accepted	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	boundary between what kinds of knowledge are	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	best supplied by humans and what kinds are best	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	learned from data, with much of the human-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	supplied knowledge now being in the form of	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	annotations of data. As we look to the future, we	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	expect that relatively unsupervised methods will	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	grow in applicability, reducing the need for	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	expensive human annotation of data.	page=0 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	With respect to part-of-speech tagging, we	page=0 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	believe that the way forward from the relatively	page=0 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	small number of languages for which we can	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	currently identify parts of speech in context with	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	reasonable accuracy will make use of unsupervised	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	methods that require only an untagged corpus and	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	a lexicon of words and their possible parts of	page=0 xpos=0 ypos=7 left-column full-justified aligned-line itemization headchar-lower
+I-Body	speech. We believe this based on the fact that such	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	lexicons exist for many more languages (in the	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	form of conventional dictionaries) than extensive	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	human-tagged training corpora exist for.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Unsupervised part-of-speech tagging, as defined	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	above, has been attempted using a variety of	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	learning algorithms (Brill 1995, Church, 1988,	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	Cutting et. al. 1992, Elworthy, 1994 Kupiec 1992,	page=0 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-capital tailchar-comma
+I-Body	Merialdo 1991). While this makes unsupervised	page=0 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-capital
+I-Body	part-of-speech tagging a relatively well-studied	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	problem, published results to date have not been	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	comparable with respect to the training and test	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	data used, or the lexicons which have been made	page=0 xpos=5 ypos=1 right-column full-justified column-top headchar-lower
+E-Body	available to the learners.	page=0 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In this paper, we provide the first comprehensive	page=0 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	comparison of methods for unsupervised part-of-	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	speech tagging. In addition, we explore two new	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	ideas for improving tagging accuracy. First, we	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	explore an HMM approach to tagging that uses	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	context on both sides of the word to be tagged,	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	inspired by previous work on building	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	bidirectionality into graphical models (Lafferty et.	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	al. 2001, Toutanova et. al. 2003). Second we	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	describe a method for sequential unsupervised	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	training of tag sequence and lexical probabilities in	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	an HMM, which we observe leads to improved	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	accuracy over simultaneous training with certain	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	types of models.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In section 2, we provide a brief description of	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	the methods we evaluate and review published	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	results. Section 3 describes the contextualized	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	variation on HMM tagging that we have explored.	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In Section 4 we provide a direct comparison of	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	several unsupervised part-of-speech taggers, which	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	is followed by Section 5, in which we present a	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	new method for training with suboptimal lexicons.	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In section 6, we revisit our new approach to HMM	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+E-Body	tagging, this time, in the supervised framework.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Previous Work	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	A common formulation of an unsupervised part-of-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	speech tagger takes the form of a hidden Markov	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	model (HMM), where the states correspond to	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	part-of-speech tags, t <sub>i</sub> , and words, w i , are emitted	page=0 xpos=5 ypos=7 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	each time a state is visited. The training of HMM–	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	based taggers involves estimating lexical	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	probabilities, P(w <sub>i</sub> |t i ), and tag sequence	page=0 xpos=5 ypos=7 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	probabilities, P(t <sub>i</sub> | t i-1 ... t i-n ). The ultimate goal of	page=0 xpos=5 ypos=7 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	HMM training is to find the model that maximizes	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	the probability of a given training text, which can	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	be done easily using the forward-backward, or	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	Baum-Welch algorithm (Baum et al 1970, Bahl,	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-capital tailchar-comma
+I-Body	Jelinek and Mercer, 1983). These model	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-capital
+I-Body	probabilities are then used in conjunction with the	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	Viterbi algorithm (Viterbi, 1967) to find the most	page=0 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-capital
+I-Body	probable sequence of part-of-speech tags for a	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	given sentence.	page=0 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	When estimating tag sequence probabilities, an	page=0 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	HMM tagger, such as that described in Merialdo	page=0 xpos=5 ypos=9 right-column full-justified hanged-line headchar-capital page-bottom
+I-Body	(1991), typically takes into account a history	page=1 xpos=0 ypos=0 left-column full-justified page-top year
+I-Body	consisting of the previous two tags -- e.g. we	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	compute P(t <sub>i</sub> | t i-1 , t i-2 ). Kupiec (1992) describes a	page=1 xpos=0 ypos=0 left-column full-justified font-larger aligned-line year headchar-lower
+I-Body	modified trigram HMM tagger in which he	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	computes word classes for which lexical	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	probabilities are then estimated, instead of	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	computing probabilities for individual words.	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Words contained within the same equivalence	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	classes are those which possess the same set of	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	possible parts of speech.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Another highly-accurate method for part-of-	page=1 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	speech tagging from unlabelled data is Brill’s	page=1 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	unsupervised transformation-based learner (UTBL)	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	(Brill, 1995). Derived from his supervised	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year
+I-Body	transformation-based tagger (Brill, 1992), UTBL	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Body	uses information from the distribution of	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	unambiguously tagged data to make informed	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	labeling decisions in ambiguous contexts. In	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	contrast to the HMM taggers previously described,	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which make use of contextual information coming	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	from the left side only, UTBL considers both left	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	and right contexts.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Reported tagging accuracies for these methods	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	range from 87% to 96%, but are not directly	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	comparable. Kupiec’s HMM class-based tagger,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	when trained on a sample of 440,000 words of the	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	original Brown corpus, obtained a test set accuracy	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	of 95.7%. Brill assessed his UTBL tagger using	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	350,000 words of the Brown corpus for training,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line tailchar-comma
+I-Body	and found that 96% of words in a separate	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	200,000-word test set could be tagged correctly.	page=1 xpos=0 ypos=5 left-column full-justified aligned-line tailchar-period
+I-Body	Furthermore, he reported test set accuracy of	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	95.1% for the UTBL tagger trained on 120,000	page=1 xpos=0 ypos=5 left-column full-justified aligned-line
+I-Body	words of Penn Treebank and tested on a separate	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	test set of 200,000 words taken from the same	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	corpus. Finally, using 1 million words from the	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	Associated Press for training, Merialdo’s trigram	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	tagger was reported to have an accuracy of 86.6%.	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This tagger was assessed using a tag set other than	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+E-Body	that which is employed by the Penn Treebank.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Unfortunately none of these results can be	page=1 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	directly compared to the others, as they have used	page=1 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	different, randomized and irreproducible splits of	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	training and test data (Brill and Kupiec), different	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	tag sets (Merialdo) or different corpora altogether.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The HMM taggers we have discussed so far are	page=1 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	similar in that they use condition only on left	page=1 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	context when estimating probabilities of tag	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	sequences. Recently, Toutanova et al. (2003)	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	presented a supervised conditional Markov Model	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	part-of-speech tagger (CMM) which exploited	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	information coming from both left and right	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	contexts. Accuracy on the Penn Treebank using	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	two tags to the left as features in addition to the	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	current tag was 96.10%. When using tag to the left	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	and tag to the right as features in addition to the	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	current tag, accuracy improved to 96.55%.	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	Lafferty et al. (2001) also compared the	page=1 xpos=5 ypos=0 right-column left-indent column-top year headchar-capital
+I-Body	accuracies of several supervised part-of-speech	page=1 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	tagging models, while examining the effect of	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	directionality in graphical models. Using a 50%-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	50% train-test split of the Penn Treebank to assess	page=1 xpos=5 ypos=0 right-column full-justified aligned-line
+I-Body	HMMs, maximum entropy Markov models	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital
+I-Body	(MEMMs) and conditional random fields (CRFs),	page=1 xpos=5 ypos=1 right-column full-justified aligned-line tailchar-comma
+I-Body	they found that CRFs, which make use of	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	observation features from both the past and future,	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	outperformed HMMs which in turn outperformed	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	MEMMs.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Building More Context into HMM Tagging	page=1 xpos=5 ypos=2 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In a traditional HMM tagger, the probability of	page=1 xpos=5 ypos=2 right-column full-justified aligned-line line-double-space line-space headchar-capital
+I-Body	transitioning into a state representing tag t <sub>i</sub> is	page=1 xpos=5 ypos=2 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	computed based on the previous two tags t <sub>i-1</sub> and t i-	page=1 xpos=5 ypos=2 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	2 , and the probability of a word w i is conditioned	page=1 xpos=5 ypos=2 right-column full-justified font-larger aligned-line numbered-heading1
+I-Body	only on the current tag t <sub>i</sub> . This formulation ignores	page=1 xpos=5 ypos=3 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	dependencies that may exist between a word and	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the part-of-speech tags of the words which precede	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	and follow it. For example, verbs which	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	subcategorize strongly for a particular part-of-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	speech but can also be tagged as nouns or	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	pronouns (e.g. “thinking that”) may benefit from	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	modeling dependencies on future tags.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To model this relationship, we now estimate the	page=1 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	probability of a word w <sub>i</sub> based on tags t i-1 and t i-+1 .	page=1 xpos=5 ypos=4 right-column full-justified font-larger hanged-line headchar-lower tailchar-period
+I-Body	This change in structure, which we will call a	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	contextualized HMM, is depicted in Figure 1. This	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	type of structure is analogous to context-dependent	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	phone models used in acoustic modeling for	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	speech recognition (e.g.Young, 1999, Section 4.3).	page=1 xpos=5 ypos=5 right-column right-indent aligned-line year headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.1 Model Definition	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In order to build both left and right-context into an	page=1 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	HMM part-of-speech tagger, we reformulate the	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-capital above-double-space above-line-space
+Figure	__Figure 1__	page=1 xpos=5 ypos=6 right-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 1: Graphical Structure of Traditional	page=1 xpos=5 ypos=9 right-column left-indent right-indent hanged-line longer-tail line-double-space line-space string-figure headchar-capital
+I-Caption	HMM Tagger (top) and Contextualized HMM	page=1 xpos=5 ypos=9 right-column centered left-indent right-indent hanged-line headchar-capital
+E-Caption	Tagger (bottom)	page=1 xpos=6 ypos=9 right-column centered left-indent right-indent indented-line shorter-tail headchar-capital page-bottom
+I-Body	trigram HMM model traditionally described as	page=2 xpos=0 ypos=0 left-column right-indent page-top headchar-lower
+B-Equation	p ( W , T ) = ∏ <sub>i</sub> <sub>=</sub> <sup>n</sup> 1 p ( w i | w 1 t 1 ... w i − 1 t i − 1 t i ) × p ( t i | w i t i .. w i − 1 t i − 1 )	page=2 xpos=0 ypos=0 left-column left-indent right-over box indented-line longer-tail itemization headchar-lower above-double-space above-line-space
+I-Body	by replacing the approximation:	page=2 xpos=0 ypos=0 left-column right-indent hanged-line shorter-tail line-double-space line-space headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	p ( w i | w 1 t 1 ... w i − 1 t i − 1 ) = p ( w i | t i )	page=2 xpos=1 ypos=1 left-column centered left-indent right-indent font-largest indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Equation	p ( t i | w i t i .. w i − 1 t i − 1 ) = p ( t i | t i − 2 t i − 1 )	page=2 xpos=1 ypos=1 left-column left-indent right-indent font-largest aligned-line longer-tail itemization headchar-lower above-blank-line above-double-space above-line-space
+I-Body	with the approximation:	page=2 xpos=0 ypos=1 left-column right-indent hanged-line shorter-tail line-blank-line line-double-space line-space headchar-lower tailchar-colon
+B-Equation	p ( w i | w 1 t 1 ... w i − 1 t i − 1 ) = p ( w i | t i − 1 t i t i + 1 )	page=2 xpos=0 ypos=1 left-column left-indent right-indent font-largest indented-line longer-tail itemization headchar-lower
+I-Equation	p ( t i | w i t i .. w i − 1 t i − 1 ) = p ( t i | t i − 2 t i − 1 )	page=2 xpos=0 ypos=2 left-column left-indent right-indent font-largest aligned-line shorter-tail itemization headchar-lower above-blank-line above-double-space above-line-space
+B-Body	Given that we are using an increased context size	page=2 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	during the estimation of lexical probabilities, thus	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	fragmenting the data, we have found it desirable to	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	smooth these estimates, for which we use a	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	standard absolute discounting scheme (Ney, Essen	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	and Knesser, 1994).	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Unsupervised Tagging: A Comparison	page=2 xpos=0 ypos=3 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	4.1 Corpora and Lexicon Construction	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	For our comparison of unsupervised tagging	page=2 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	methods, we implemented the HMM taggers	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	described in Merialdo (1991) and Kupiec (1992),	page=2 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	as well as the UTBL tagger described in Brill	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	(1995). We also implemented a version of the	page=2 xpos=0 ypos=5 left-column full-justified aligned-line year
+I-Body	contextualized HMM using the type of word	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	classes utilized in the Kupiec model. The	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	algorithms were trained and tested using version 3	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	of the Penn Treebank, using the training,	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	development, and test split described in Collins	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	(2002) and also employed by Toutanova et al.	page=2 xpos=0 ypos=6 left-column full-justified aligned-line year tailchar-period
+I-Body	(2003) in testing their supervised tagging	page=2 xpos=0 ypos=6 left-column full-justified aligned-line year
+I-Body	algorithm. Specifically, we allocated sections 00-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	18 for training, 19-21 for development, and 22-24	page=2 xpos=0 ypos=6 left-column full-justified aligned-line numbered-heading1
+I-Body	for testing. To avoid the problem of unknown	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	words, each learner was provided with a lexicon	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	constructed from tagged versions of the full	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	Treebank. We did not begin with any estimates of	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	the likelihoods of tags for words, but only the	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	knowledge of what tags are possible for each word	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	in the lexicon, i.e., something we could obtain	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	from a manually-constructed dictionary.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 The Effect of Lexicon Construction on	page=2 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space numbered-heading2
+B-Body	Tagging Accuracy	page=2 xpos=0 ypos=8 left-column left-indent right-indent indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	To our surprise, we found initial tag accuracies of	page=2 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	all methods using the full lexicon extracted from	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the Penn Treebank to be significantly lower than	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	previously reported. We discovered this was due to	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	several factors.	page=2 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	One issue we noticed which impacted tagging	page=2 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	accuracy was that of a frequently occurring word	page=2 xpos=0 ypos=9 left-column right-indent hanged-line shorter-tail headchar-lower column-bottom
+Figure	__Figure 2__	page=2 xpos=5 ypos=-1 right-column centered left-over right-over box column-top figure-area above-line-space
+B-Caption	Figure 2: Manually-Tagged Examples	page=2 xpos=5 ypos=1 right-column left-indent right-indent indented-line shorter-tail line-space string-figure headchar-capital above-double-space above-line-space
+I-Body	being mistagged during Treebank construction, as	page=2 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	shown in the example in Figure 2a. Since we are	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	not starting out with any known estimates for	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	probabilities of tags given a word, the learner	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	considers this tag to be just as likely as the word’s	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	other, more probable, possibilities. In another,	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	more frequently occurring scenario, human	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	annotators have chosen to tag all words in multi-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	word names, such as titles, with the proper-noun	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	tag, NNP (Figure 2b). This has the effect of adding	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	noise to the set of tags for many closed-class	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	words.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Finally, we noticed that a certain number of	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	frequently occurring words (e.g. a, to, of) are	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	sometimes labeled with infrequently occurring tags	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	(e.g. SYM, RB), as exemplified in Figure 2c. In the	page=2 xpos=5 ypos=4 right-column full-justified aligned-line
+I-Body	case of the HMM taggers, where we begin with	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	uniform estimates of both the state transition	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	probabilities and the lexical probabilities, the	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	learner finds it difficult to distinguish between	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	more and less probable tag assignments.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We later discovered that previous	page=2 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	implementations of UTBL involved limiting which	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	possible part of speech assignments were placed	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	into the lexicon <sup>1</sup> , which was not explicitly detailed	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	in the published reports. We then simulated, in a	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	similar fashion, the construction of higher quality	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	lexicons by using relative frequencies of tags for	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	each word from the tagged Treebank to limit	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	allowable word-tag assignments. That is, tags that	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	appeared the tag of a particular word less than X%	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	of the time were omitted from the set of possible	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	tags for that word. We varied this threshold until	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	accuracy did not significantly change on our set of	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	heldout data. The effect of thresholding tags based	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	on relative frequency in the training set is shown	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	for our set of part-of-speech taggers in the curve in	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	Figure 3. As shown in Table 1, the elimination of	page=2 xpos=5 ypos=8 right-column full-justified aligned-line string-figure headchar-capital
+I-Body	noisy possible part-of-speech assignments raised	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	accuracy back into the realm of previously	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	published results. The best test set accuracies for	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	the learners in the class of HMM taggers are	page=2 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-Footnote	<sup>1</sup> Eric Brill, Personal Communication	page=2 xpos=5 ypos=9 right-column left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space headchar-super page-bottom
+Figure	__Figure 3__	page=3 xpos=0 ypos=-3 left-column left-indent right-over box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 3: The effect of lexicon construction on	page=3 xpos=0 ypos=0 left-column left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital
+Figure	__Figure 4__	page=3 xpos=0 ypos=0 left-column left-indent right-over box longer-tail figure-area above-double-space above-line-space
+B-Caption	Figure 4: Test Accuracy of HMMs using	page=3 xpos=0 ypos=4 left-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital
+E-Caption	Optimzed Lexicons	page=3 xpos=1 ypos=4 left-column centered left-indent right-indent indented-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+I-Body	plotted against the number of training iterations in	page=3 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+E-Body	Figure 4.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail string-figure headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Unsupervised Training With Noisy	page=3 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space numbered-heading1
+I-SectionHeader	Lexicons	page=3 xpos=0 ypos=6 left-column left-indent right-indent indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	While placing informed limitations on the tags that	page=3 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	can be included in a lexicon can dramatically	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	improve results, it is dependent on some form of	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	supervision – either from manually tagged data or	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	by a human editor who post-filters an	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	automatically constructed list. In the interest of	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	being as unsupervised as possible, we sought to	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	find a way to cope with the noisy aspects of the	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower
+I-Body	unfiltered lexicon described in the previous	page=3 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail headchar-lower
+E-Body	section.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We suspected that in order to better control the	page=3 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	training of lexical probabilities, having a stable	page=3 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower
+I-Body	model of state transition probabilities would be of	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	help. We stabilized this model in two ways.	page=3 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+Table	__Table 1__	page=3 xpos=5 ypos=-3 right-column left-over box column-top table-area above-double-space above-line-space
+B-Caption	Table 1: Tag Accuracy of Unsupervised POS	page=3 xpos=5 ypos=0 right-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital
+E-Caption	Taggers	page=3 xpos=7 ypos=0 right-column centered left-indent right-indent indented-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+B-SubsectionHeader	5.1 Using Unambiguous Tag Sequences To	page=3 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space numbered-heading2
+I-SubsectionHeader	Initialize Contextual Probabilities	page=3 xpos=5 ypos=1 right-column left-indent right-indent indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	First, we used our unfiltered lexicon along with our	page=3 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	tagged corpus to extract non-ambiguous tag	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	sequences. Specifically, we looked for trigrams in	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	which all words contained at most one possible	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	part-of-speech tag. We then used these n-grams	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	and their counts to bias the initial estimates of state	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	transitions in the HMM taggers. This approach is	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	similar to that described in Ratnaparhki (1998),	page=3 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	who used unambiguous phrasal attachments to	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	train an unsupervised prepositional phrase	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	attachment model.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.2 HMM Model Training Revised	page=3 xpos=5 ypos=4 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Second, we revised the training paradigm for	page=3 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	HMMs, in which lexical and transition	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	probabilities are typically estimated	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	simultaneously. We decided to train the transition	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	model probabilities first, keeping the lexical	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	probabilities constant and uniform. Using the	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	estimates initially biased by the method previously	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	mentioned, we train the transition model until it	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	reaches convergence on a heldout set. We then use	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	this model, keeping it fixed, to train the lexical	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	probabilities, until they eventually converge on	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	heldout data.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.3 Results	page=3 xpos=5 ypos=7 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We implemented this technique for the Kupiec,	page=3 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	Merialdo and Contextualized HMM taggers. From	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	our training data, we were able to extract data for	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	on the order of 10,000 unique unambiguous tag	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	sequences which were then be used for better	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	initializing the state transition probabilities. As	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	shown in Table 2, this method improved tagging	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	accuracy of the Merialdo and contextual taggers	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	over traditional simultaneous HMM training,	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	reducing error by 0.4 in the case of Merialdo and	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	0.7 for the contextual HMM part-of-speech tagger.	page=3 xpos=5 ypos=9 right-column right-indent aligned-line numbered-heading2 tailchar-period page-bottom
+Table	__Table 2__	page=4 xpos=-1 ypos=-2 left-column left-over right-over box page-top table-area above-line-space
+B-Caption	Table 2: Effects of HMM Training on Tagger	page=4 xpos=0 ypos=0 left-column left-indent right-indent indented-line shorter-tail line-space string-table headchar-capital
+E-Caption	Accuracy	page=4 xpos=1 ypos=0 left-column centered left-indent right-indent indented-line shorter-tail headchar-capital above-double-space above-line-space
+I-Body	In this paradigm, tagging accuracy of the Kupiec	page=4 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+E-Body	HMM did not change.	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Contextualized Tagging with Supervision	page=4 xpos=0 ypos=1 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	As one more way to assess the potential benefit	page=4 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	from using left and right context in an HMM	page=4 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	tagger, we tested our tagging model in the	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	supervised framework, using the same sections of	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the Treebank previously allocated for unsupervised	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	training, development and testing. In addition to	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	comparing against a baseline tagger, which always	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	chooses a word‘s most frequent tag, we	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	implemented and trained a version of a standard	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	HMM trigram tagger. For further comparison, we	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	evaluated these part of speech taggers against	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	Toutanova et al’s supervised dependency-network	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	based tagger, which currently achieves the highest	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	accuracy on this dataset to date. The best result for	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	this tagger, at 97.24%, makes use of both lexical	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	and tag features coming from the left and right	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	sides of the target. We also chose to examine this	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	tagger’s results when using only <t <sub>i</sub> , t i-1 , t i+1 > as	page=4 xpos=0 ypos=5 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	feature templates, which represents the same	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	amount of context built into our contextualized	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	tagger.	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As shown in Table 3, incorporating more	page=4 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	context into an HMM when estimating lexical	page=4 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	probabilities improved accuracy from 95.87% to	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	96.59%, relatively reducing error rate by 17.4%.	page=4 xpos=0 ypos=6 left-column full-justified aligned-line tailchar-period
+I-Body	With the contextualized tagger we witness a small	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	improvement in accuracy over the current state of	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the art when using the same amount of context. It	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	is important to note that this accuracy can be	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	obtained without the intensive training required by	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	Toutanova et. al’s log-linear models. This result	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	falls only slightly below the full-blown training-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	intensive dependency-based conditional model.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	7 Conclusions	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We have presented a comprehensive evaluation of	page=4 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	several methods for unsupervised part-of-speech	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	tagging, comparing several variations of hidden	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	Markov model taggers and unsupervised	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	transformation-based learning using the same	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	corpus and same lexicons. We discovered that the	page=4 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower column-bottom
+Table	__Table 3__	page=4 xpos=5 ypos=-2 right-column centered left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 3: Comparison of Supervised Taggers	page=4 xpos=5 ypos=0 right-column left-indent right-indent longer-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+I-Body	quality of the lexicon made available to	page=4 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	unsupervised learner made the greatest difference	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	to tagging accuracy. Filtering the possible part-of-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	speech assignments contained in a basic lexicon	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	automatically constructed from the commonly-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	used Penn Treebank improved results by as much	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	as 22%. This finding highlights the importance of	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the need for clean dictionaries whether they are	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	constructed by hand or automatically when we	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	seek to be fully unsupervised.	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In addition, we presented a variation on HMM	page=4 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	model training in which the tag sequence and	page=4 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	lexical probabilities are estimated in sequence.	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This helped stabilize training when estimation of	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+E-Body	lexical probabilities can be noisy.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Finally, we experimented with using left and	page=4 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	right context in the estimation of lexical	page=4 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	probabilities, which we refer to as a contextualized	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	HMM. Without supervision, this new HMM	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	structure improved results slightly compared to a	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	simple trigram tagger as described in Merialdo,	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which takes into account only the current tag in	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	predicting the lexical item. With supervision, this	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	model achieves state of the art results without the	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	lengthy training procedure involved in other high-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	performing models. In the future, we will consider	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	making an increase the context-size, which helped	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	Toutanova et al. (2003).	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	8 Acknowledgements	page=4 xpos=5 ypos=6 right-column right-indent aligned-line longer-tail line-double-space line-space string-acknowledgement numbered-heading1 above-double-space above-line-space
+B-Body	The authors wish to thank Gideon Mann for	page=4 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	performing some initial experiments with a	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	publicly available implementation of UTBL, and	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	Eric Brill for discussions regarding his work on	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+E-Body	unsupervised transformation based learning.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	L.R. Bahl, F. Jelinek, and R. Mercer. 1983. A	page=4 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	maximum likelihood approach to continuous	page=4 xpos=5 ypos=9 right-column left-indent indented-line headchar-lower
+I-Reference	speech recognition. IEEE Transactions on	page=4 xpos=5 ypos=9 right-column left-indent aligned-line headchar-lower
+I-Reference	Pattern Analysis and Machine Intelligence,	page=4 xpos=5 ypos=9 right-column left-indent aligned-line headchar-capital tailchar-comma
+I-Reference	5(2):179--190.	page=4 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail tailchar-period page-bottom
+B-Reference	L.E. Baum, T. Petrie, G. Soules, and N. Weiss. A	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-capital
+I-Reference	maximization technique in the statistical analysis	page=5 xpos=0 ypos=0 left-column left-indent indented-line headchar-lower
+I-Reference	of probabilistic functions of Markov chains.	page=5 xpos=0 ypos=0 left-column left-indent aligned-line headchar-lower tailchar-period
+I-Reference	Annals of Mathematical Statistics, 41:164-171.	page=5 xpos=0 ypos=0 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	E. Brill. 1992. A simple rule-based part of speech	page=5 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-space year headchar-capital
+I-Reference	tagger. In Proceedings of the Third Conference	page=5 xpos=0 ypos=0 left-column left-indent indented-line headchar-lower
+I-Reference	on Applied Natural Language Processing, ACL.	page=5 xpos=0 ypos=1 left-column left-indent aligned-line headchar-lower tailchar-period
+I-Reference	Trento, Italy.	page=5 xpos=0 ypos=1 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	E. Brill. 1995. Unsupervised learning of	page=5 xpos=0 ypos=1 left-column full-justified hanged-line longer-tail line-space year headchar-capital
+I-Reference	disambiguation rules for part of speech tagging.	page=5 xpos=0 ypos=1 left-column left-indent indented-line headchar-lower tailchar-period
+I-Reference	In Proceedings of the Third Workshop on Very	page=5 xpos=0 ypos=1 left-column left-indent aligned-line headchar-capital
+I-Reference	Large Corpora, Cambridge, MA.	page=5 xpos=0 ypos=2 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	K. Church. 1998. A stochastic parts program and	page=5 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-space year headchar-capital
+I-Reference	noun phrase parser for unrestricted text. In	page=5 xpos=0 ypos=2 left-column left-indent indented-line headchar-lower
+I-Reference	Second Conference on Applied Natural	page=5 xpos=0 ypos=2 left-column left-indent aligned-line headchar-capital
+I-Reference	Language Processing, ACL.	page=5 xpos=0 ypos=2 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	M. Collins. 2002. Discriminative training methods	page=5 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-space year headchar-capital
+I-Reference	for hidden Markov models: theory and	page=5 xpos=0 ypos=3 left-column left-indent indented-line headchar-lower
+I-Reference	experiments with perceptron algorithms. In	page=5 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower
+I-Reference	Proceedings of the Conference on Empirical	page=5 xpos=0 ypos=3 left-column left-indent aligned-line headchar-capital
+I-Reference	Methods in Natural Language Processing,	page=5 xpos=0 ypos=3 left-column left-indent aligned-line headchar-capital tailchar-comma
+I-Reference	Philadelphia, PA.	page=5 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	D. Cutting, J. Kupiec, J. Pedersen and P. Sibun.	page=5 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail line-space headchar-capital tailchar-period
+I-Reference	1992. A practical part-of-speech tagger. In Third	page=5 xpos=0 ypos=4 left-column left-indent indented-line year
+I-Reference	Conference on Applied Natural Language	page=5 xpos=0 ypos=4 left-column left-indent aligned-line headchar-capital
+I-Reference	Processing. ACL.	page=5 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	D. Elworthy. 1994. Does Baum-Welch re-	page=5 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	estimation help taggers. In Proceedings of the	page=5 xpos=0 ypos=5 left-column left-indent indented-line headchar-lower
+I-Reference	Fourth Conference on Applied Natural	page=5 xpos=0 ypos=5 left-column left-indent aligned-line headchar-capital
+I-Reference	Language Processing, ACL.	page=5 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	J. Kupiec. 1992. Robust part-of-speech tagging	page=5 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-space year headchar-capital
+I-Reference	using a hidden Markov model. Computer Speech	page=5 xpos=0 ypos=5 left-column left-indent indented-line headchar-lower
+I-Reference	and Language 6.	page=5 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	J. Lafferty, A. McCallum, and F. Pereira. 2001.	page=5 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-space year headchar-capital tailchar-period
+I-Reference	Conditional random fields: Probabilistic models	page=5 xpos=0 ypos=6 left-column left-indent indented-line headchar-capital
+I-Reference	for segmenting and labeling sequence data. In	page=5 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Reference	Proceedings of ICML-01, pages 282-289.	page=5 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	B. Merialdo. 1991. Tagging English text with a	page=5 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-space year headchar-capital
+I-Reference	probabilistic model. In Proceedings of ICASSP.	page=5 xpos=0 ypos=7 left-column left-indent indented-line headchar-lower tailchar-period
+I-Reference	Toronto, pp. 809-812.	page=5 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	H. Ney, U. Essen and R. Kneser. 1994. On	page=5 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-space year headchar-capital
+I-Reference	structuring probabilistic dependencies in	page=5 xpos=0 ypos=7 left-column left-indent indented-line headchar-lower
+I-Reference	stochastic language modeling. Computer, Speech	page=5 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Reference	and Language, 8:1-38.	page=5 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	A. Ratnaparkhi. 1998. Unsupervised statistical	page=5 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-space year headchar-capital
+I-Reference	models for prepositional phrase attachment. In	page=5 xpos=0 ypos=8 left-column left-indent indented-line headchar-lower
+I-Reference	Proceedings of the Seventeenth International	page=5 xpos=0 ypos=8 left-column left-indent aligned-line headchar-capital
+I-Reference	Conference on Computational Linguistics.	page=5 xpos=0 ypos=8 left-column left-indent aligned-line headchar-capital tailchar-period
+I-Reference	Montreal, Canada.	page=5 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	K. Toutanova, D. Klein, C. Manning, and Y.	page=5 xpos=0 ypos=9 left-column full-justified hanged-line longer-tail line-space headchar-capital tailchar-period
+I-Reference	Singer. 2003. Feature-Rich Part-of-Speech	page=5 xpos=0 ypos=9 left-column left-indent indented-line year headchar-capital
+I-Reference	Tagging with a Cyclic Dependency Network. In	page=5 xpos=0 ypos=9 left-column left-indent aligned-line headchar-capital
+I-Reference	Proceedings of HLT-NAACL. pp. 252-259.	page=5 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period column-bottom
+B-Reference	A.J. Viterbi. 1967. Error bounds for convolutional	page=5 xpos=5 ypos=0 right-column left-over column-top year headchar-capital
+I-Reference	codes and an asymptotically optimal decoding	page=5 xpos=5 ypos=0 right-column full-justified indented-line headchar-lower
+I-Reference	algorithm. IEEE Transactions on Information	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Reference	Theory, 13:260--269.	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	S. Young. 1999. Acoustic modelling for large	page=5 xpos=5 ypos=0 right-column left-over hanged-line longer-tail line-space year headchar-capital
+I-Reference	vocabulary continuous speech recognition.	page=5 xpos=5 ypos=0 right-column full-justified indented-line headchar-lower tailchar-period
+I-Reference	Computational Models of Speech Pattern	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Reference	Processing: Proc NATO Advance Study Institute.	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-period
+I-Reference	K. Ponting, Springer-Verlag: 18-38.	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period

@@ -1,0 +1,623 @@
+Title	A Machine Learning Approach to Pronoun Resolution in Spoken Dialogue	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Michael Strube and Christoph Müller	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	European Media Laboratory GmbH	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+I-Affiliation	Villa Bosch	page=0 xpos=4 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Address	Schloß-Wolfsbrunnenweg 33	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Address	69118 Heidelberg, Germany	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger above-line-space
+Email	michael.strube|christoph.mueller  @eml.villa-bosch.de	page=0 xpos=2 ypos=1 single-column left-indent right-indent font-smallest hanged-line longer-tail line-space symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-blank-line above-double-space above-line-space
+B-Abstract	We apply a decision tree based approach	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Abstract	to pronoun resolution in spoken dialogue.	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	Our system deals with pronouns with NP-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	and non-NP-antecedents. We present a set	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	of features designed for pronoun resolu-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion in spoken dialogue and determine the	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	most promising features. We evaluate the	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	system on twenty Switchboard dialogues	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	and show that it compares well to Byron’s	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	(2002) manually tuned system.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail year tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Corpus-based methods and machine learning tech-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	niques have been applied to anaphora resolution in	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	written text with considerable success (Soon et al.,	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2001; Ng & Cardie, 2002, among others). It has	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year
+I-Body	been demonstrated that systems based on these ap-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proaches achieve a performance that is comparable	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	to hand-crafted systems. Since they can easily be	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	applied to new domains it seems also feasible to	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	port a given corpus-based anaphora resolution sys-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem from written text to spoken dialogue. This pa-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	per describes the extensions and adaptations needed	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	for applying our anaphora resolution system (Müller	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	et al., 2002; Strube et al., 2002) to pronoun resolu-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+E-Body	tion in spoken dialogue.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	There are important differences between written	page=0 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	text and spoken dialogue which have to be accounted	page=0 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower
+I-Body	for. The most obvious difference is that in spo-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ken dialogue there is an abundance of (personal and	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	demonstrative) pronouns with non-NP-antecedents	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	or no antecedents at all. Corpus studies have shown	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower
+I-Body	that a significant amount of pronouns in spoken di-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	alogue have non-NP-antecedents: Byron & Allen	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	(1998) report that about 50% of the pronouns in the	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year
+I-Body	TRAINS93 corpus have non-NP-antecedents. Eck-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ert & Strube (2000) note that only about 45% of	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	the pronouns in a set of Switchboard dialogues have	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	NP-antecedents. The remainder consists of 22%	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	which have non-NP-antecedents and 33% without	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	antecedents. These studies suggest that the perfor-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mance of a pronoun resolution algorithm can be im-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proved considerably by enabling it to resolve also	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	pronouns with non-NP-antecedents.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Because of the difficulties a pronoun resolution	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	algorithm encounters in spoken dialogue, previous	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	approaches were applied only to tiny domains, they	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	needed deep semantic analysis and discourse pro-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cessing and relied on hand-crafted knowledge bases.	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In contrast, we build on our existing anaphora res-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	olution system and incrementally add new features	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	specifically devised for spoken dialogue. That way	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	we are able to determine relatively powerful yet	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	computationally cheap features. To our knowledge	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the work presented here describes the first imple-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mented system for corpus-based anaphora resolution	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	dealing also with non-NP-antecedents.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 NP- vs. Non-NP-Antecedents	page=0 xpos=5 ypos=8 right-column right-indent font-larger aligned-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Spoken dialogue contains more pronouns with non-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	NP-antecedents than written text does. However,	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	pronouns with NP-antecedents (like 3rd pers. mas-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	culine/feminine pronouns, cf. he in the example be-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	low) still constitute the largest fraction of all coref-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	erential pronouns in the Switchboard corpus.	page=0 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Body	In spoken dialogue there are considerable num-	page=1 xpos=0 ypos=0 left-column left-indent page-top headchar-capital tailchar-hiphen
+I-Body	bers of pronouns that pick up different kinds of	page=1 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	abstract objects from the previous discourse, e.g.	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	events, states, concepts, propositions or facts (Web-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ber, 1991; Asher, 1993). These anaphors then have	page=1 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower
+I-Body	VP-antecedents (“it ” in (B6) below) or sentential	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+E-Body	antecedents (“that  ” in (B5)).	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	A1: . . . [he]  ’s nine months old. . . .	page=1 xpos=0 ypos=1 left-column left-indent right-indent font-smallest line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Listitem	A2: [He]  likes to dig around a little bit.	page=1 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Listitem	A3: [His]  mother comes in and says, why did you let [him] 	page=1 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Listitem	[play in the dirt]  ,	page=1 xpos=0 ypos=2 left-column left-indent right-indent font-smallest indented-line shorter-tail tailchar-comma above-double-space above-line-space
+B-Listitem	A:4 I guess [[he]  ’s enjoying himself]  .	page=1 xpos=0 ypos=2 left-column left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Listitem	B5: [That]  ’s right.	page=1 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Listitem	B6: [It]  ’s healthy, . . .	page=1 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Body	A major problem for pronoun resolution in spo-	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ken dialogue is the large number of personal and	page=1 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	demonstrative pronouns which are either not refer-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ential at all (e.g. expletive pronouns) or for which a	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	particular antecedent cannot easily be determined by	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	humans (called vague anaphors by Eckert & Strube	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	(2000)).	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail year tailchar-period
+B-Body	In the following example, the “that  ” in utter-	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ance (A3) refers back to utterance (A1). As for	page=1 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	the first two pronouns in (B4), following Eckert &	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	Strube (2000) and Byron (2002) we assume that re-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	ferring expressions in disfluencies, abandoned utter-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ances etc. are excluded from the resolution. The	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	third pronoun in (B4) is an expletive. The pronoun	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	in (A5) is different in that it is indeed referential: it	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	refers back to“that  ” from (A3).	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	A1: . . . [There is a lot of theft, a lot of assault dealing with, uh,	page=1 xpos=0 ypos=6 left-column left-indent font-smallest longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Listitem	people trying to get money for drugs.  ]	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	B2: Yeah.	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-smallest hanged-line shorter-tail line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Listitem	A3: And, uh, I think [that  ]’s a national problem, though.	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Listitem	B4: It, it, it’s pretty bad here, too.	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Listitem	A5: [It  ]’s not unique . . .	page=1 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Body	Pronoun resolution in spoken dialogue also has	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	to deal with the whole range of difficulties that	page=1 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	come with processing spoken language: disfluen-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cies, hesitations, abandoned utterances, interrup-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions, backchannels, etc. These phenomena have to	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	be taken into account when formulating constraints	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	on e.g. the search space in which an anaphor looks	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	for its antecedent. E.g., utterance (B2) in the previ-	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	ous example does not contain any referring expres-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sions. So the demonstrative pronoun in (A3) has to	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	have access not only to (B2) but also to (A1).	page=1 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Data	page=1 xpos=5 ypos=1 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	3.1 Corpus	page=1 xpos=5 ypos=1 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Our work is based on twenty randomly chosen	page=1 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	Switchboard dialogues. Taken together, the dia-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	logues contain 30810 tokens (words and punctua-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion) in 3275 sentences / 1771 turns. The annotation	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	consists of 16601 markables, i.e. sequences of words	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	and attributes associated with them. On the top level,	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	different types of markables are distinguished: NP-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	markables identify referring expressions like noun	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	phrases, pronouns and proper names. Some of	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the attributes for these markables are derived from	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the Penn Treebank version of the Switchboard dia-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	logues, e.g. grammatical function, NP form, gram-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	matical case and depth of embedding in the syn-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tactical structure. VP-markables are verb phrases,	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	S-markables sentences. Disfluency-markables are	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	noun phrases or pronouns which occur in unfin-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ished or abandoned utterances. Among other (type-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dependent) attributes, markables contain a member	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	attribute with the ID of the coreference class they	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	are part of (if any). If an expression is used to re-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fer to an entity that is not referred to by any other	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	expression, it is considered a singleton.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Table 1 gives the distribution of the npform at-	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail string-table headchar-capital tailchar-hiphen
+I-Body	tribute for NP-markables. The second and third row	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	give the number of non-singletons and singletons re-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	spectively that add up to the total number given in	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	the first row.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Table 2 shows the distribution of the agreement	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail string-table headchar-capital
+I-Body	attribute (i.e. person, gender, and number) for the	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	pronominal expressions in our corpus. The left fig-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ure in each cell gives the total number of expres-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sions, the right figure gives the number of non-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	singletons. Note the relatively high number of sin-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gletons among the personal and demonstrative pro-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nouns (223 for it, 60 for they and 82 for that). These	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	pronouns are either expletive or vague, and cause	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	the most trouble for a pronoun resolution algorithm,	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which will usually attempt to find an antecedent	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	nonetheless. Singleton they pronouns, in particu-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lar, are typical for spoken language (as opposed to	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Table	__Table 1__	page=2 xpos=1 ypos=-1 single-column left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: Distribution of npform Feature on Markables (w/o 1st and 2nd Persons)	page=2 xpos=1 ypos=0 single-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+Table	__Table 2__	page=2 xpos=2 ypos=0 single-column left-indent right-indent box indented-line shorter-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 2: Distribution of Agreement Feature on Pronominal Expressions	page=2 xpos=1 ypos=1 single-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Body	written text). The same is true for anaphors with	page=2 xpos=0 ypos=2 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower
+I-Body	non-NP-antecedents. However, while they are far	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	more frequent in spoken language than in written	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	text, they still constitute only a fraction of all coref-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erential expressions in our corpus. This defines an	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	upper limit for what the resolution of these kinds of	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	anaphors can contribute at all. These facts have to be	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	kept in mind when comparing our results to results	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	of coreference resolution in written text.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Data Generation	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Training and test data instances were generated from	page=2 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	our corpus as follows. All markables were sorted	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	in document order, and markables for first and sec-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ond person pronouns were removed. The resulting	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	list was then processed from top to bottom. If the	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	list contained an NP-markable at the current posi-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion and if this markable was not an indefinite noun	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	phrase, it was considered a potential anaphor. In	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	that case, pairs of potentially coreferring expressions	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	were generated by combining the potential anaphor	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	with each compatible <sup>1</sup> NP-markable preceding 2 it	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	in the list. The resulting pairs were labelled P if	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	both markables had the same (non-empty) value in	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	their member attribute, N otherwise. For anaphors	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	with non-NP-antecedents, additional training and	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	test data instances had to be generated. This process	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	was triggered by the markable at the current position	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	being it or that. In that case, a small set of poten-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tial non-NP-antecedents was generated by selecting	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	S- and VP-markables from the last two valid sen-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tences preceding the potential anaphor. The choice	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> Markables are considered compatible if they do not mis-	page=2 xpos=0 ypos=9 left-column left-indent indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	match in terms of agreement.	page=2 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>2</sup> We disregard the phenomenon of cataphor here.	page=2 xpos=0 ypos=9 left-column left-indent right-indent indented-line longer-tail headchar-super tailchar-period column-bottom
+I-Body	of the last two sentences was motivated pragmat-	page=2 xpos=5 ypos=2 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	ically by considerations to keep the search space	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	(and the number of instances) small. A sentence	page=2 xpos=5 ypos=2 right-column full-justified aligned-line
+I-Body	was considered valid if it was neither unfinished	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	nor a backchannel utterance (like e.g. ”Uh-huh”,	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	”Yeah”, etc.). From the selected markables, inac-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line tailchar-hiphen
+I-Body	cessible non-NP-expressions were automatically re-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	moved. We considered an expression inaccessible	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	if it ended before the sentence in which it was con-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tained. This was intended to be a rough approxi-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation of the concept of the right frontier (Webber,	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1991). The remaining expressions were then com-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	bined with the potential anaphor. Finally, the result-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing pairs were labelled P or N and added to the in-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	stances generated with NP-antecedents.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	4 Features	page=2 xpos=5 ypos=5 right-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We distinguish two classes of features: NP-level	page=2 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	features specify e.g. the grammatical function, NP	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	form, morpho-syntax, grammatical case and the	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	depth of embedding in the syntactical structure.	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For these features, each instance contains one	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	value for the antecedent and one for the anaphor.	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Coreference-level features, on the other hand, de-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	scribe the relation between antecedent and anaphor	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in terms of e.g. distance (in words, markables and	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	sentences), compatibility in terms of agreement and	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	identity of syntactic function. For these features,	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	each instance contains only one value.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In addition, we introduce a set of features which	page=2 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	is partly tailored to the processing of spoken dia-	page=2 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	logue. The feature ante exp type (17) is a rather	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	obvious yet useful feature to distinguish NP- from	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	non-NP-antecedents. The features ana np , vp and	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Table	__Table 3__	page=3 xpos=1 ypos=-9 single-column left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 3: Our Features	page=3 xpos=3 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Body	s pref (18, 19, 20) describe a verb’s preference for	page=3 xpos=0 ypos=1 left-column full-justified column-top line-blank-line line-double-space line-space itemization headchar-lower
+I-Body	arguments of a particular type. Inspired by the	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	work of Eckert & Strube (2000) and Byron (2002),	page=3 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	these features capture preferences for NP- or non-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	NP-antecedents by taking a pronoun’s predicative	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	context into account. The underlying assumption is	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	that if a verb preceding a personal or demonstrative	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	pronoun preferentially subcategorizes sentences or	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	VPs, then the pronoun will be likely to have a non-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	NP-antecedent. The features are based on a verb list	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	compiled from 553 Switchboard dialogues. <sup>3</sup> For ev-	page=3 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ery verb occurring in the corpus, this list contains	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	up to three entries giving the absolute count of cases	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	where the verb has a direct argument of type NP, VP	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	or S. When the verb list was produced, pronominal	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	arguments were ignored. The features mdist 3mf3p	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	and mdist 3n (21, 22) are refinements of the mdist	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	feature. They measure the distance in markables be-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tween antecedent and anaphor, but in doing so they	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	take the agreement value of the anaphor into ac-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	count. For anaphors with an agreement value of 3mf	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	or 3p, mdist 3mf3p is measured as D = 1 + the num-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>3</sup> It seemed preferable to compile our own list instead of us-	page=3 xpos=0 ypos=9 left-column left-indent indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	ing existing ones like Briscoe & Carroll (1997).	page=3 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail year headchar-lower tailchar-period column-bottom
+I-Body	ber of NP-markables between anaphor and potential	page=3 xpos=5 ypos=1 right-column full-justified column-top headchar-lower
+I-Body	antecedent. Anaphors with an agreement value of	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	3n, (i.e. it or that), on the other hand, potentially	page=3 xpos=5 ypos=1 right-column full-justified aligned-line
+I-Body	have non-NP-antecedents, so mdist 3n is measured	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	as D + the number of anaphorically accessible <sup>4</sup> S-	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	and VP-markables between anaphor and potential	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	antecedent.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The feature ante tfifd (23) is supposed to capture	page=3 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	the relative importance of an expression for a dia-	page=3 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	logue. The underlying assumption is that the higher	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the importance of a non-NP expression, the higher	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the probability of its being referred back to. For	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	our purposes, we calculated TF for every word by	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	counting its frequency in each of our twenty Switch-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	board dialogues separately. The calculation of IDF	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	was based on a set of 553 Switchboard dialogues.	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For every word, we calculated IDF as log(553/N ),	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	with N =number of documents containing the word.	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For every non-NP-markable, an average TF*IDF	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	value was calculated as the TF*IDF sum of all words	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	comprising the markable, divided by the number of	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>4</sup> As mentioned earlier, the definition of accessibility of non-	page=3 xpos=5 ypos=9 right-column left-indent indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	NP-antecedents is inspired by the concept of the right frontier	page=3 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-capital
+I-Footnote	(Webber, 1991).	page=3 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail year tailchar-period page-bottom
+I-Body	words in the markable. The feature ante ic (24) as	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	an alternative to ante tfidf is based on the same as-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sumptions as the former. The information content of	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	a non-NP-markable is calculated as follows, based	page=4 xpos=0 ypos=0 left-column full-justified aligned-line itemization headchar-lower
+I-Body	on a set of 553 Switchboard dialogues: For each	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	word in the markable, the IC value was calculated	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	as the negative log of the total frequency of the word	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	divided by the total number of words in all 553 dia-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	logues. The average IC value was then calculated as	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the IC sum of all words in the markable, divided by	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the number of words in the markable. Finally, the	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	feature wdist ic (25) measures the word-based dis-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tance between two expressions. It does so in terms	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	of the sum of the individual words’ IC. The calcula-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of the IC was done as described for the ante ic	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	feature.	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Experiments and Results	page=4 xpos=0 ypos=3 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	5.1 Experimental Setup	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	All experiments were performed using the decision	page=4 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	tree learner RPART (Therneau & Atkinson, 1997),	page=4 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	which is a CART (Breiman et al., 1984) reimple-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	mentation for the S-Plus and R statistical comput-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing environments (we use R, Ihaka & Gentleman	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	(1996), see http://www.r-project.org). We used the	page=4 xpos=0 ypos=5 left-column full-justified aligned-line year
+I-Body	standard pruning and control settings for RPART	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	(cp=0.0001, minsplit=20, minbucket=7). All results	page=4 xpos=0 ypos=5 left-column full-justified aligned-line
+I-Body	reported were obtained by performing 20-fold cross-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	validation.	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the prediction phase, the trained classifier is ex-	page=4 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	posed to unlabeled instances of test data. The classi-	page=4 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	fier’s task is to label each instance. When an instance	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	is labeled as coreferring, the IDs of the anaphor and	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	antecedent are kept in a response list for the evalua-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion according to Vilain et al. (1995).	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	For determining the relevant feature set we fol-	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	lowed an iterative procedure similar to the wrap-	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	per approach for feature selection (Kohavi & John,	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1997). We start with a model based on a set of prede-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	fined baseline features. Then we train models com-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bining the baseline with all additional features sep-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	arately. We choose the best performing feature (f-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	measure according to Vilain et al. (1995)), adding	page=4 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower
+I-Body	it to the model. We then train classifiers combining	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the enhanced model with each of the remaining fea-	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures separately. We again choose the best perform-	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing classifier and add the corresponding new feature	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	to the model. This process is repeated as long as	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+E-Body	significant improvement can be observed.	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.2 Results	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In our experiments we split the data in three sets ac-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	cording to the agreement of the anaphor: third per-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	son masculine and feminine pronouns (3mf), third	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	person neuter pronouns (3n), and third person plural	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	pronouns (3p). Since only 3n-pronouns have non-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	NP-antecedents, we were mainly interested in im-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	provements in this data set.	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We used the same baseline model for each data	page=4 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	set. The baseline model corresponds to a pronoun	page=4 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	resolution algorithm commonly applied to written	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	text, i.e., it uses only the features in the first two	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	parts of Table 3. For the baseline model we gener-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ated training and test data which included only NP-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	antecedents.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Then we performed experiments using the fea-	page=4 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tures introduced for spoken dialogue. The training	page=4 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	and test data for the models using additional features	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	included NP- and non-NP-antecedents. For each	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	data set we followed the iterative procedure outlined	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	in Section 5.1.	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the following tables we present the results of	page=4 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	our experiments. The first column gives the number	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	of coreference links correctly found by the classifier,	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the second column gives the number of all corefer-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence links found. The third column gives the total	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	number of coreference links (1250) in the corpus.	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	During evaluation, the list of all correct links is used	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	as the key list against which the response list pro-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	duced by the classifier (cf. above) is compared. The	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	remaining three columns show precision, recall and	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	f-measure, respectively.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Table 4 gives the results for 3mf pronouns. The	page=4 xpos=5 ypos=7 right-column left-indent indented-line longer-tail string-table headchar-capital
+I-Body	baseline model performs very well on this data set	page=4 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	(the low recall figure is due to the fact that the 3mf	page=4 xpos=5 ypos=7 right-column full-justified aligned-line
+I-Body	data set contains only a small subset of the coref-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erence links expected by the evaluation). The re-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults are comparable to any pronoun resolution al-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gorithm dealing with written text. This shows that	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	our pronoun resolution system could be ported to the	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	spoken dialogue domain without sacrificing perfor-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mance.	page=4 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Table 5 shows the results for 3n pronouns. The	page=4 xpos=5 ypos=9 right-column left-indent indented-line longer-tail string-table headchar-capital
+I-Body	baseline model does not perform very well. As men-	page=4 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tioned above, for evaluating the performance of the	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Table	__Table 4__	page=5 xpos=0 ypos=-1 single-column left-indent right-over box page-top table-area above-double-space above-line-space
+B-Caption	Table 4: Results for Third Person Masculine and Feminine Pronouns (3mf)	page=5 xpos=1 ypos=0 single-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+Table	__Table 5__	page=5 xpos=0 ypos=0 single-column left-indent right-over box hanged-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 5: Results for Third Person Neuter Pronouns (3n)	page=5 xpos=2 ypos=1 single-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Body	baseline model we removed all potential non-NP-	page=5 xpos=0 ypos=2 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	antecedents from the data. This corresponds to a	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	naive application of a model developed for written	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	text to spoken dialogue.	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	First, we applied the same model to the data set	page=5 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	containing all kinds of antecedents. The perfor-	page=5 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	mance drops somewhat as the classifier is exposed	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	to non-NP-antecedents without being able to differ-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	entiate between NP- and non-NP-antecedents. By	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	adding the feature ante exp type the classifier is en-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	abled to address NP- and non-NP-antecedents dif-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferently, which results in a considerable gain in per-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance. Substituting the wdist feature with the	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	wdist ic feature also improves the performance con-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	siderably. The ante tfidf feature only contributes	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	marginally to the overall performance. – These re-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults show that it pays off to consider features par-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ticularly designed for spoken dialogue.	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Table 6 presents the results for 3p pronouns,	page=5 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-space string-table headchar-capital tailchar-comma
+I-Body	which do not have non-NP-antecedents. Many of	page=5 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	these pronouns do not have an antecedent at all. Oth-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ers are vague in that human annotators felt them	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	to be referential, but could not determine an an-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tecedent. Since we did not address that issue in	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	depth, the classifier tries to find antecedents for these	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	pronouns indiscriminately, which results in rather	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	low precision figures, as compared to e.g. those for	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	3mf. Only the feature wdist ic leads to an improve-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line tailchar-hiphen
+E-Body	ment over the baseline.	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Table 7 shows the results for the combined clas-	page=5 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space string-table headchar-capital tailchar-hiphen
+I-Body	sifiers. The improvement in f-measure is due to the	page=5 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	increase in recall while the precision shows only a	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	slight decrease.	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Though some of the features of the baseline	page=5 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	model (features 1-16) still occur in the decision	page=5 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower column-bottom
+I-Body	tree learned, the feature ante exp type divides ma-	page=5 xpos=5 ypos=2 right-column right-over column-top headchar-lower tailchar-hiphen
+I-Body	jor parts of the tree quite nicely (see Figure 1). Be-	page=5 xpos=5 ypos=2 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	low that node the feature ana npform is used to dis-	page=5 xpos=5 ypos=2 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	tinguish between negative (personal pronouns) and	page=5 xpos=5 ypos=2 right-column right-over aligned-line headchar-lower
+I-Body	potential positive cases (demonstrative pronouns).	page=5 xpos=5 ypos=2 right-column right-over aligned-line headchar-lower tailchar-period
+I-Body	This confirms the hypothesis by Eckert & Strube	page=5 xpos=5 ypos=3 right-column right-over aligned-line headchar-capital
+I-Body	(2000) and Byron (2002) to give high priority to	page=5 xpos=5 ypos=3 right-column right-over aligned-line year
+I-Body	these features. The decision tree fragment in Figure	page=5 xpos=5 ypos=3 right-column right-over aligned-line headchar-lower
+I-Body	1 correctly assigns the P label to 23-7=16 sentential	page=5 xpos=5 ypos=3 right-column right-over aligned-line numbered-heading1
+E-Body	antecedents.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Figure	split, n, loss, yval	page=5 xpos=5 ypos=4 right-column right-indent font-smallest aligned-line longer-tail line-double-space line-space headchar-lower
+I-Figure	* denotes terminal node	page=5 xpos=5 ypos=4 right-column left-indent right-indent font-smallest indented-line longer-tail above-double-space above-line-space
+I-Figure	...	page=5 xpos=5 ypos=4 right-column right-indent font-smallest hanged-line shorter-tail line-double-space line-space tailchar-period
+I-Figure	anteexptype=s,vp 1110 55 N	page=5 xpos=5 ypos=5 right-column left-indent right-indent font-smallest indented-line longer-tail headchar-lower
+I-Figure	ananpform=prp 747,11 N *	page=5 xpos=5 ypos=5 right-column left-indent right-indent font-smallest indented-line headchar-lower
+I-Figure	ananpform=dtpro 363 44 N	page=5 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Figure	anteexptype=vp 177 3 N *	page=5 xpos=5 ypos=5 right-column left-indent right-indent font-smallest indented-line longer-tail headchar-lower
+I-Figure	anteexptype=s 186 41 N	page=5 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower
+I-Figure	udist>=1.5 95 14 N *	page=5 xpos=6 ypos=5 right-column left-indent right-indent font-smallest indented-line headchar-lower
+I-Figure	udist<1.5 91 27 N	page=5 xpos=6 ypos=6 right-column centered left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower
+I-Figure	wdistic<43.32 33 4 N *	page=5 xpos=6 ypos=6 right-column left-indent right-indent font-smallest indented-line longer-tail headchar-lower
+I-Figure	wdistic>=43.32 58 23 N	page=5 xpos=6 ypos=6 right-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Figure	anasdepth>=2.5 23 4 N *	page=5 xpos=6 ypos=6 right-column left-indent right-over font-smallest indented-line longer-tail headchar-lower
+I-Figure	anasdepth<2.5 35 16 N	page=5 xpos=6 ypos=6 right-column left-indent font-smallest aligned-line shorter-tail headchar-lower
+I-Figure	wdistic>=63.62 24 11 N	page=5 xpos=6 ypos=6 right-column left-indent right-over font-smallest indented-line longer-tail headchar-lower
+I-Figure	wdistic<80.60 12 3 N *	page=5 xpos=6 ypos=7 right-column left-indent right-over font-smallest indented-line longer-tail headchar-lower
+I-Figure	wdistic>=80.60 12 4 P *	page=5 xpos=6 ypos=7 right-column left-indent right-over font-smallest aligned-line longer-tail headchar-lower
+E-Figure	wdistic<63.62 11 3 P *	page=5 xpos=6 ypos=7 right-column left-indent right-over font-smallest hanged-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: Decision Tree Fragment	page=5 xpos=5 ypos=7 right-column left-indent right-over hanged-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-Body	However, the most important problem is the large	page=5 xpos=5 ypos=8 right-column left-indent right-over hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	amount of pronouns without antecedents. The	page=5 xpos=5 ypos=8 right-column right-over hanged-line headchar-lower
+I-Body	model does find (wrong) antecedents for a lot of pro-	page=5 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	nouns which should not have one. Only a small frac-	page=5 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of these pronouns are true expletives (i.e., they	page=5 xpos=5 ypos=9 right-column right-over aligned-line headchar-lower
+I-Body	precede a “weather” verb or are in constructions like	page=5 xpos=5 ypos=9 right-column right-over aligned-line headchar-lower
+I-Body	“It seems that . . . ”. The majority of these cases are	page=5 xpos=5 ypos=9 right-column right-over aligned-line
+I-Body	referential, but have no antecedent in the data (i.e.,	page=5 xpos=5 ypos=9 right-column right-over aligned-line headchar-lower tailchar-comma page-bottom
+Table	__Table 6__	page=6 xpos=0 ypos=-1 single-column left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 6: Results for Third Person Plural Pronouns (3p)	page=6 xpos=2 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+Table	__Table 7__	page=6 xpos=0 ypos=0 single-column left-indent right-indent box hanged-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 7: Combined Results for All Pronouns	page=6 xpos=2 ypos=1 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+E-Body	they are vague pronouns).	page=6 xpos=0 ypos=1 left-column right-indent column-top line-blank-line line-double-space line-space headchar-lower tailchar-period
+B-Body	The overall numbers for precision, recall and f-	page=6 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	measure are fairly low. One reason is that we did not	page=6 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	attempt to resolve anaphoric definite NPs and proper	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	names though these coreference links are contained	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	in the evaluation key list. If we removed them from	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	there, the recall of our experiments would approach	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the 51% Byron (2002) mentioned for her system us-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+E-Body	ing only domain-independent semantic restrictions.	page=6 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Comparison to Related Work	page=6 xpos=0 ypos=3 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Our approach for determining the feature set for pro-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	noun resolution resembles the so-called wrapper ap-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach for feature selection (Kohavi & John, 1997).	page=6 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	This is in contrast to the majority of other work on	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	feature selection for anaphora resolution, which was	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	hardly ever done systematically. E.g. Soon et al.	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	(2001) only compared baseline systems consisting	page=6 xpos=0 ypos=5 left-column full-justified aligned-line year
+I-Body	of one feature each, only three of which yielded an	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	f-measure greater than zero. Then they combined	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	these features and achieved results which were close	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	to the best overall results they report. While this tells	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	us which features contribute a lot, it does not give	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	any information about potential (positive or nega-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive) influence of the rest. Ng & Cardie (2002) select	page=6 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Body	the set of features by hand, giving a preference to	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	high precision features. They admit that this method	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	is quite subjective.	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Corpus-based work about pronoun resolution in	page=6 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	spoken dialogue is almost non-existent. However,	page=6 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	there are a few papers dealing with neuter pronouns	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	with NP-antecedents. E.g., Dagan & Itai (1991) pre-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	sented a corpus-based approach to the resolution of	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the pronoun it, but they use a written text corpus and	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	do not mention non-NP-antecedents at all. Paul et al.	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	(1999) presented a corpus-based anaphora resolu-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	tion algorithm for spoken dialogue. For their exper-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	iments, however, they restricted anaphoric relations	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+E-Body	to those with NP-antecedents.	page=6 xpos=5 ypos=1 right-column right-indent column-top headchar-lower tailchar-period
+B-Body	Byron (2002) presented a symbolic approach	page=6 xpos=5 ypos=1 right-column left-indent indented-line longer-tail year headchar-capital
+I-Body	which resolves pronouns with NP- and non-NP-	page=6 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	antecedents in spoken dialogue in the TRAINS do-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	main. Byron extends a pronoun resolution al-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gorithm (Tetrault, 2001) with semantic filtering,	page=6 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	thus enabling it to resolve anaphors with non-NP-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	antecedents as well. Semantic filtering relies on	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	knowledge about semantic restrictions associated	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	with verbs, like semantic compatibility between sub-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ject and predicative noun or predicative adjective.	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	An evaluation on ten TRAINS93 dialogues with	page=6 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	80 3rd person pronouns and 100 demonstrative pro-	page=6 xpos=5 ypos=4 right-column full-justified hanged-line numbered-heading1 tailchar-hiphen
+I-Body	nouns shows that semantic filtering and the im-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plementation of different search strategies for per-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sonal and demonstrative pronouns yields a suc-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cess rate of 72%. As Byron admits, the ma-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	jor limitation of her algorithm is its dependence	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	on domain-dependent resources which cover the	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	domain entirely. When evaluating her algorithm	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	with only domain-independent semantics, Byron	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	achieved 51% success rate. What is problematic	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	with her approach is that she assumes the input to	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	her algorithm to be only referential pronouns. This	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	simplifies the task considerably.	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	7 Conclusions and Future Work	page=6 xpos=5 ypos=7 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We presented a machine learning approach to pro-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	noun resolution in spoken dialogue. We built upon	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	a system we used for anaphora resolution in writ-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	ten text and extended it with a set of features de-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	signed for spoken dialogue. We refined distance	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	features and used metrics from information retrieval	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	for determining non-NP-antecedents. Inspired by	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the more linguistically oriented work by Eckert &	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	Strube (2000) and Byron (2002) we also evaluated	page=6 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-capital
+I-Body	the contribution of features which used the predica-	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive context of the pronoun to be resolved. However,	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma page-bottom
+I-Body	these features did not show up in the final models	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	since they did not lead to an improvement. Instead,	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	rather simple distance metrics were preferred. While	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	we were (almost) satisfied with the performance of	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	these features, the major problem for a spoken dia-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	logue pronoun resolution algorithm is the abundance	page=7 xpos=0 ypos=1 left-column centered right-indent aligned-line headchar-lower
+I-Body	of pronouns without antecedents. Previous research	page=7 xpos=0 ypos=1 left-column centered right-indent aligned-line headchar-lower
+I-Body	could avoid dealing with this phenomenon by either	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	applying the algorithm by hand (Eckert & Strube,	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2000) or excluding these cases (Byron, 2002) from	page=7 xpos=0 ypos=1 left-column full-justified aligned-line year
+I-Body	the evaluation. Because we included these cases	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	in our evaluation we consider our approach at least	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	comparable to Byron’s system when she uses only	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	domain-independent semantics. We believe that our	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	system is more robust than hers and that it can more	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	easily be ported to new domains.	page=7 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Acknowledgement	Acknowledgements. The work presented here has	page=7 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space string-acknowledgement headchar-capital
+I-Acknowledgement	been partially funded by the German Ministry of	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	Research and Technology as part of the E MBASSI	page=7 xpos=0 ypos=3 left-column centered right-indent aligned-line headchar-capital
+I-Acknowledgement	project (01 IL 904 D/2) and by the Klaus Tschira	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	Foundation. We would like to thank Susanne	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Acknowledgement	Wilhelm and Lutz Wind for doing the annota-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Acknowledgement	tions, Kerstin Schürmann, Torben Pastuch and Klaus	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	Rothenhäusler for helping with the data prepara-	page=7 xpos=0 ypos=5 left-column centered right-indent aligned-line headchar-capital tailchar-hiphen
+E-Acknowledgement	tion.	page=7 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=5 left-column right-indent font-larger aligned-line longer-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Asher, Nicholas (1993). Reference to Abstract Objects in Dis-	page=7 xpos=0 ypos=6 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space string-abstract string-reference year headchar-capital tailchar-hiphen
+I-Reference	course. Dordrecht, The Netherlands: Kluwer.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period
+B-Reference	Breiman, Leo, Jerome H. Friedman, Charles J. Stone & R.A.	page=7 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-period
+I-Reference	Olshen (1984). Classification and Regression Trees. Bel-	page=7 xpos=0 ypos=6 left-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	mont, Cal.: Wadsworth and Brooks/Cole.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Briscoe, Ted & John Carroll (1997). Automatic extraction	page=7 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	of subcategorization from corpora. In Proceedings of the	page=7 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	5th Conference on Applied Natural Language Processing,	page=7 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line tailchar-comma
+I-Reference	Washington, D.C., 31 March – 3 April 1997, pp. 356–363.	page=7 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	Byron, Donna K. (2002). Resolving pronominal reference to	page=7 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	abstract entities. In Proceedings of the 40th Annual Meeting	page=7 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of the Association for Computational Linguistics, Philadel-	page=7 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	phia, Penn., 7–12 July 2002, pp. 80–87.	page=7 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period
+B-Reference	Byron, Donna K. & James F. Allen (1998). Resolving demon-	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	strative pronouns in the TRAINS93 corpus. In New Ap-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	proaches to Discourse Anaphora: Proceedings of the Sec-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ond Colloquium on Discourse Anaphora and Anaphor Res-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	olution (DAARC2), pp. 68–81.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Dagan, Ido & Alon Itai (1991). A statistical filter for resolv-	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ing pronoun references. In Y.A. Feldman & A. Bruckstein	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	(Eds.), Artificial Intelligence and Computer Vision, pp. 125–	page=7 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line
+I-Reference	135. Amsterdam: Elsevier.	page=7 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Eckert, Miriam & Michael Strube (2000). Dialogue acts, syn-	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	chronising units and anaphora resolution. Journal of Seman-	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tics, 17(1):51–89.	page=7 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Ihaka, Ross & Robert Gentleman (1996). R: A language for	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital column-bottom
+I-Reference	data analysis and graphics. Journal of Computational and	page=7 xpos=5 ypos=0 right-column left-indent font-smallest column-top headchar-lower
+I-Reference	Graphical Statistics, 5:299–314.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Kohavi, Ron & George H. John (1997). Wrappers for fea-	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ture subset selection. Artificial Intelligence Journal, 97(1-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	2):273–324.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Müller, Christoph, Stefan Rapp & Michael Strube (2002). Ap-	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	plying Co-Training to reference resolution. In Proceedings	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of the 40th Annual Meeting of the Association for Computa-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tional Linguistics, Philadelphia, Penn., 7–12 July 2002, pp.	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-period
+I-Reference	352–359.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Ng, Vincent & Claire Cardie (2002). Improving machine learn-	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ing approaches to coreference resolution. In Proceedings of	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	the 40th Annual Meeting of the Association for Computa-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tional Linguistics, Philadelphia, Penn., 7–12 July 2002, pp.	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-period
+I-Reference	104–111.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Paul, Michael, Kazuhide Yamamoto & Eiichiro Sumita (1999).	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Corpus-based anaphora resolution towards antecedent pref-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	erence. In Proc. of the 37th ACL, Workshop Coreference and	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Its Applications, College Park, Md., 1999, pp. 47–52.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	Soon, Wee Meng, Hwee Tou Ng & Daniel Chung Yong Lim	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	(2001). A machine learning approach to coreference resolu-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	tion of noun phrases. Computational Linguistics, 27(4):521–	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	544.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Strube, Michael, Stefan Rapp & Christoph Müller (2002). The	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	influence of minimum edit distance on reference resolution.	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In Proceedings of the 2002 Conference on Empirical Meth-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line year headchar-capital tailchar-hiphen
+I-Reference	ods in Natural Language Processing, Philadelphia, Pa., 6–7	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	July 2002, pp. 312–319.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	Tetrault, Joel R. (2001). A corpus-based evaluation of cen-	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tering and pronoun resolution. Computational Linguistics,	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	27(4):507–520.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Therneau, Terry M. & Elizabeth J. Atkinson (1997). An intro-	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	duction to recursive partitioning using the RPART routines.	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	Technical Report: Mayo Foundation. Distributed with the	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	RPART package.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Vilain, Marc, John Burger, John Aberdeen, Dennis Connolly &	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	Lynette Hirschman (1995). A model-theoretic coreference	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	scoring scheme. In Proceedings of the 6th Message Under-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	standing Conference (MUC-6), pp. 45–52. San Mateo, Cal.:	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-colon
+I-Reference	Morgan Kaufmann.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Webber, Bonnie L. (1991). Structure and ostension in the inter-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	pretation of discourse deixis. Language and Cognitive Pro-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	cesses, 6(2):107–135.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period

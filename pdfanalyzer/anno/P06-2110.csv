@@ -1,0 +1,702 @@
+Title	Word Vectors and Two Kinds of Similarity	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Akira Utsumi and Daisuke Suzuki	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Department of Systems Engineering	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+I-Affiliation	The University of Electro-Communications	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Address	1-5-1 Chofugaoka, Chofushi, Tokyo 182-8585, Japan	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail
+Email	utsumi@se.uec.ac.jp, dajie@utm.se.uec.ac.jp	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=1 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	This paper examines what kind of similar-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	ity between words can be represented by	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	what kind of word vectors in the vector	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	space model. Through two experiments,	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-comma
+I-Abstract	three methods for constructing word vec-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tors, i.e., LSA-based, cooccurrence-based	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	and dictionary-based methods, were com-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	pared in terms of the ability to represent	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	two kinds of similarity, i.e., taxonomic	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	similarity and associative similarity. The	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	result of the comparison was that the	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	dictionary-based word vectors better re-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	flect taxonomic similarity, while the LSA-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	based and the cooccurrence-based word	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	vectors better reflect associative similarity.	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-larger hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Recently, geometric models have been used to rep-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	resent words and their meanings, and proven to	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	be highly useful both for many NLP applications	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	associated with semantic processing (Widdows,	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2004) and for human modeling in cognitive sci-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	ence (Gärdenfors, 2000; Landauer and Dumais,	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	1997). There are also good reasons for studying	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year
+I-Body	geometric models in the field of computational lin-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guistics. First, geometric models are cost-effective	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	in that it takes much less time and less effort to	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	construct large-scale geometric representation of	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	word meanings than it would take to construct dic-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tionaries or thesauri. Second, they can represent	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the implicit knowledge of word meanings that dic-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tionaries and thesauri cannot do. Finally, geomet-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ric representation is easy to revise and extend.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	A vector space model is the most commonly	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	used geometric model for the meanings of words.	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	The basic idea of a vector space model is that	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	words are represented by high-dimensional vec-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tors, i.e., word vectors, and the degree of seman-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic similarity between any two words can be easily	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	computed as a cosine of the angle formed by their	page=0 xpos=5 ypos=1 right-column full-justified column-top headchar-lower
+E-Body	vectors.	page=0 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	A number of methods have been proposed for	page=0 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	constructing word vectors. Latent semantic anal-	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ysis (LSA) is the most well-known method that	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	uses the frequency of words in a fraction of doc-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	uments to assess the coordinates of word vectors	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	and singular value decomposition (SVD) to reduce	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the dimension. LSA was originally put forward as	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	a document indexing technique for automatic in-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	formation retrieval (Deerwester et al., 1990), but	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	several studies (Landauer and Dumais, 1997) have	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	shown that LSA successfully mimics many hu-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	man behaviors associated with semantic process-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing. Other methods use a variety of other informa-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion: cooccurrence of two words (Burgess, 1998;	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Schütze, 1998), occurrence of a word in the sense	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-capital
+I-Body	definitions of a dictionary (Kasahara et al., 1997;	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Niwa and Nitta, 1994) or word association norms	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-capital
+E-Body	(Steyvers et al., 2004).	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail year tailchar-period above-line-space
+B-Body	However, despite the fact that there are differ-	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ent kinds of similarity between words, or differ-	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ent relations underlying word similarity such as a	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	synonymous relation and an associative relation,	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	no studies have ever examined the relationship be-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tween methods for constructing word vectors and	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the type of similarity involved in word vectors in	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	a systematic way. Some studies on word vec-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	tors have compared the performance among dif-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent methods on some specific tasks such as se-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantic disambiguation (Niwa and Nitta, 1994) and	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	cued/free recall (Steyvers et al., 2004), but it is not	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	at all clear whether there are essential differences	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in the quality of similarity among word vectors	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	constructed by different methods, and if so, what	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	kind of similarity is involved in what kind of word	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	vectors. Even in the field of cognitive psychol-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ogy, although geometric models of similarity such	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	as multidimensional scaling have long been stud-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ied and debated (Nosofsky, 1992), the possibility	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	that different methods for word vectors may cap-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	858	page=0 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only above-double-space above-line-space
+B-Footer	Proceedings of the COLING/ACL 2006 Main Conference Poster Sessions, pages 858–865,	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-comma
+I-Footer	Sydney, July 2006.  2006 c Association for Computational Linguistics	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital page-bottom
+I-Body	ture different kinds of word similarity has never	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+E-Body	been addressed.	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	This study, therefore, aims to examine the re-	page=1 xpos=0 ypos=0 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	lationship between the methods for constructing	page=1 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	word vectors and the type of similarity in a sys-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tematic way. Especially this study addresses three	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	methods, LSA-based, cooccurrence-based, and	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	dictionary-based methods, and two kinds of sim-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ilarity, taxonomic similarity and associative sim-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ilarity. Word vectors constructed by these meth-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ods are compared in the performance of two tasks,	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	i.e., multiple-choice synonym test and word asso-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ciation, which measure the degree to which they	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	reflect these two kinds of similarity.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Two Kinds of Similarity	page=1 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this study, we divide word similarity into two	page=1 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	categories: taxonomic similarity and associative	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	similarity. Taxonomic similarity, or categorical	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	similarity, is a kind of semantic similarity between	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	words in the same level of categories or clusters of	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the thesaurus, in particular synonyms, antonyms,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and other coordinates. Associative similarity, on	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the other hand, is a similarity between words that	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	are associated with each other by virtue of seman-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic relations other than taxonomic one such as a	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	collocational relation and a proximity relation. For	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	example, the word writer and the word author are	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	taxonomically similar because they are synonyms,	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	while the word writer and the word book are as-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sociatively similar because they are associated by	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	virtue of an agent-subject relation.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	This dichotomy of similarity is practically im-	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	portant. Some tasks such as automatic thesaurus	page=1 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	updating and paraphrasing need assessing taxo-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nomic similarity, while some other tasks such as	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	affective Web search and semantic disambiguation	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	require assessing associative similarity rather than	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	taxonomic similarity. This dichotomy is also psy-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	chologically motivated. Many empirical studies	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	on word searches and speech disorders have re-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vealed that words in the mind (i.e., mental lex-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	icon) are organized by these two kinds of simi-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	larity (Aitchison, 2003). This dichotomy is also	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	essential to some cognitive processes. For ex-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ample, metaphors are perceived as being more	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	apt when their constituent words are associatively	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	more similar but categorically dissimilar (Utsumi	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	et al., 1998). These psychological findings suggest	page=1 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower
+I-Body	that people distinguish between these two kinds of	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	similarity in certain cognitive processes.	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-SectionHeader	3 Constructing Word Vectors	page=1 xpos=5 ypos=0 right-column right-indent font-larger column-top numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	3.1 Overview	page=1 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In this study, word vectors (or word spaces) are	page=1 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	constructed in the following way. First, all con-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tent words t <sub>i</sub> in a corpus are represented as m-	page=1 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	dimensional feature vectors w <sub>i</sub> .	page=1 xpos=5 ypos=1 right-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	<sup>w</sup> i = (w i1 , w i2 , · · · , w im ) (1)	page=1 xpos=6 ypos=1 right-column left-indent font-largest indented-line longer-tail line-double-space line-space headchar-super above-double-space above-line-space
+B-Body	Each element w <sub>ij</sub> is determined by statistical anal-	page=1 xpos=5 ypos=1 right-column full-justified font-largest hanged-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ysis of the corpus, whose methods will be de-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scribed in Section 3.3. A matrix M is then con-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	structed using n feature vectors as rows.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	M = .. <sub>.</sub> !	page=1 xpos=6 ypos=2 right-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space headchar-capital
+I-Equation	<sup>w</sup> 1	page=1 xpos=7 ypos=2 right-column left-indent right-indent font-smaller indented-line shorter-tail headchar-super
+I-Equation	(2)	page=1 xpos=9 ypos=2 right-column left-indent indented-line longer-tail
+I-Equation	<sup>w</sup> n	page=1 xpos=7 ypos=2 right-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-super above-double-space above-line-space
+B-Body	Finally, the dimension of row vectors w <sub>i</sub> is re-	page=1 xpos=5 ypos=3 right-column full-justified font-larger hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	duced from m to k by means of a SVD tech-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nique. As a result, any words are represented as	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	k-dimensional vectors.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Corpus	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In this study, we employ three kinds of Japanese	page=1 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	corpora: newspaper articles, novels and a dictio-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nary. As a newspaper corpus, we use 4 months’	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	worth of Mainichi newspaper articles published	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	in 1999. They consist of 500,182 sentences in	page=1 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	251,287 paragraphs, and words vectors are con-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line tailchar-hiphen
+I-Body	structed for 53,512 words that occur three times	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	or more in these articles. Concerning a corpus of	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	novels, we use a collection of 100 Japanese nov-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els “Shincho Bunko No 100 Satsu” consisting of	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	475,782 sentences and 230,392 paragraphs. Word	page=1 xpos=5 ypos=6 right-column full-justified aligned-line
+I-Body	vectors are constructed for 46,666 words that oc-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cur at least three times. As a Japanese dictionary,	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we use “Super Nihongo Daijiten” published by	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	Gakken, from which 89,007 words are extracted	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+E-Body	for word vectors.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.3 Methods for Computing Vector Elements	page=1 xpos=5 ypos=7 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-BlockHeader	LSA-based method (LSA)	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail line-double-space line-space headchar-capital above-line-space
+B-Body	In the LSA-based method, a vector element w <sub>ij</sub>	page=1 xpos=5 ypos=7 right-column left-indent right-indent font-largest indented-line longer-tail line-space headchar-capital
+I-Body	is assessed as a tf-idf score of a word t <sub>i</sub> in a piece	page=1 xpos=5 ypos=7 right-column full-justified font-largest hanged-line headchar-lower
+E-Body	s <sub>j</sub> of document.	page=1 xpos=5 ypos=8 right-column right-indent font-largest aligned-line shorter-tail itemization headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	w <sub>ij</sub> = tf ij ×  log df m i +1 	page=1 xpos=6 ypos=8 right-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Equation	(3)	page=1 xpos=9 ypos=8 right-column left-indent indented-line longer-tail above-blank-line above-double-space above-line-space
+B-Body	In this formula, tf <sub>ij</sub> denotes the number of times	page=1 xpos=5 ypos=8 right-column full-justified font-largest hanged-line line-blank-line line-double-space line-space headchar-capital
+I-Body	the word t <sub>i</sub> occurs in a piece of text s j , and df i	page=1 xpos=5 ypos=9 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	denotes the number of pieces in which the word	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	t <sub>i</sub> occurs. As a unit of text piece s j , we consider	page=1 xpos=5 ypos=9 right-column full-justified font-largest aligned-line itemization headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	859	page=1 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	a sentence and a paragraph. Hence, for example,	page=2 xpos=0 ypos=0 left-column full-justified page-top itemization headchar-lower tailchar-comma
+I-Body	when a sentence is used as a unit, the dimension of	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	feature vectors w <sub>i</sub> is equal to the number of sen-	page=2 xpos=0 ypos=0 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	tences in a corpus. We also use two corpora, i.e.,	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	newspapers and novels, and thus we obtain four	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	different word spaces by the LSA-based method.	page=2 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-BlockHeader	Cooccurrence-based method (COO)	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail line-double-space line-space headchar-capital above-line-space
+B-Body	In the cooccurrence-based method, a vector ele-	page=2 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ment w <sub>ij</sub> is assessed as the number of times words	page=2 xpos=0 ypos=1 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	t <sub>i</sub> and t j occur in the same piece of text, and thus	page=2 xpos=0 ypos=1 left-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	M is an n × n symmetric matrix. As in the case	page=2 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-capital
+I-Body	of the LSA-based method, we use two units of text	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	piece (i.e., a sentence or a paragraph) and two cor-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pora (i.e., newspapers or novels), thus resulting in	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	four different word spaces.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Note that this method is similar to Schütze’s	page=2 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	(1998) method for constructing a semantic space	page=2 xpos=0 ypos=3 left-column full-justified hanged-line year
+I-Body	in that both are based on the word cooccurrence,	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	not on the word frequency. However they are dif-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent in that Schütze’s method uses the cooccur-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rence with frequent content words chosen as in-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dicators of primitive meanings. Burgess’s (1998)	page=2 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	“Hyperspace Analogue to Language (HAL)” is	page=2 xpos=0 ypos=4 left-column full-justified aligned-line
+I-Body	also based on the word cooccurrence but does not	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	use any technique of dimensionality reduction.	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-BlockHeader	Dictionary-based method (DIC)	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail line-double-space line-space headchar-capital above-line-space
+B-Body	In the dictionary-based method, a vector ele-	page=2 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ment w <sub>ij</sub> is assessed by the following formula:	page=2 xpos=0 ypos=5 left-column right-indent font-largest hanged-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	w <sub>ij</sub> =  f ij + α sX k f ik f kj + βf ji  × log df n <sub>(4)</sub> j  	page=2 xpos=0 ypos=5 left-column left-indent box longer-tail line-double-space line-space itemization headchar-lower
+I-Body	where f <sub>ij</sub> denotes the number of times the word	page=2 xpos=0 ypos=6 left-column full-justified font-largest headchar-lower
+I-Body	t <sub>j</sub> occurs in the sense definitions of the word t i ,	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line itemization headchar-lower tailchar-comma
+I-Body	and df <sub>j</sub> denotes the number of words whose sense	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	definitions contain the word t <sub>j</sub> . The second term	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	in parentheses in Equation (4) means the square	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	root of the number of times the word t <sub>j</sub> occurs in	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	a collection of sense definitions for any words that	page=2 xpos=0 ypos=7 left-column full-justified aligned-line itemization headchar-lower
+I-Body	are included in the sense definitions of the word t <sub>i</sub> ,	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	while the third term means the number of times t <sub>i</sub>	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	occurs in the sense definitions of t <sub>j</sub> . The param-	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	eters α and β are positive real constants express-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the weights for these information. (Following	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	Kasahara et al. (1997), these parameters are set to	page=2 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-capital
+E-Body	0.2 in this paper.)	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail numbered-heading2
+B-Body	Equation (4) was originally put forward by	page=2 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	Kasahara et al. (1997), but our dictionary-based	page=2 xpos=0 ypos=9 left-column full-justified hanged-line year headchar-capital
+I-Body	method differs from their method in terms of how	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the dimensions are reduced. Their method groups	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	together the dimensions for words in the same cat-	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	egory of a thesaurus, but our method uses SVD as	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	we will described next.	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.4 Reducing Dimensions	page=2 xpos=5 ypos=0 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Using a SVD technique, a matrix M is factorized	page=2 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	as the product of three matrices U ΣV <sup>T</sup> , where	page=2 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	the diagonal matrix Σ consists of r singular val-	page=2 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ues that are arranged in nonincreasing order such	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	that r is the rank of M . When we use a k × k ma-	page=2 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	trix Σ <sub>k</sub> consisting of the largest k singular values,	page=2 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	the matrix M is approximated by U <sub>k</sub> Σ k V <sub>k</sub> <sup>T</sup> , where	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	the i-th row of U <sub>k</sub> corresponds to a k-dimensional	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	“reduced word vector” for the word t <sub>i</sub> .	page=2 xpos=5 ypos=2 right-column right-indent font-largest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Experiment 1: Synonym Judgment	page=2 xpos=5 ypos=2 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	4.1 Method	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In order to compare different word vectors in	page=2 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	terms of the ability to judge taxonomic similar-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity between words, we conducted a synonym judg-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment experiment using a standard multiple-choice	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	synonym test. Each item of a synonym test con-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sisted of a stem word and five alternative words	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	from which the test-taker was asked to choose one	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	with the most similar meaning to the stem word.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the experiment, we used 32 items from the	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	synonym portions of Synthetic Personality In-	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ventory (SPI) test, which has been widely used	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	for employment selection in Japanese companies.	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	These items were selected so that all the vector	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	spaces could contain the stem word and at least	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	four of the five alternative words. For comparison	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	purpose, we also used 38 antonym test items cho-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sen from the same SPI test. Furthermore, in order	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	to obtain a more reliable, unbiased result, we auto-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	matically constructed 200 test items in such a way	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	that we chose the stem word randomly, one correct	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	alternative word randomly from words in the same	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	deepest category of a Japanese thesaurus as the	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	stem word, and other four alternatives from words	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in other categories. As a Japanese thesaurus, we	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	used “Goi-Taikei” (Ikehara et al., 1999).	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	In the computer simulation, the computer’s	page=2 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	choices were determined by computing cosine	page=2 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	similarity between the stem word and each of the	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	five alternative words using the vector spaces and	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	choosing the word with the highest similarity.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Results and Discussion	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	For each of the nine vector spaces, the synonym	page=2 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	judgment simulation described above was con-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	860	page=2 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Figure	__Figure 1__	page=3 xpos=-1 ypos=-3 left-column left-over right-indent box page-top figure-area above-line-space
+B-Caption	Figure 1: Correct rates of synonym tests	page=3 xpos=0 ypos=2 left-column centered left-indent right-indent indented-line shorter-tail line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+I-Body	ducted and the percentage of correct choices was	page=3 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	calculated. This process was repeated using 20	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	numbers of dimensions, i.e., every 50 dimensions	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	between 50 and 1000.	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Figure 1 shows the percentage of correct	page=3 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space string-figure headchar-capital
+I-Body	choices for the three methods of matrix construc-	page=3 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tion. Concerning the LSA-based method (denoted	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	by LSA) and the cooccurrence-based method (de-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	noted by COO), Figure 1 plots the correct rates for	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the word vectors derived from the paragraphs of	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the newspaper corpus. (Such combination of cor-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pus and text unit was optimal among all combi-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nations, which will be justified later in this sec-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion.) The most important result shown in Figure 1	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	is that, regardless of the number of dimensions, the	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	dictionary-based word vectors outperformed the	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	other kinds of vectors on both SPI and computer-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	generated test items. This result thus suggests	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	that the dictionary-based vector space reflects tax-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	onomic similarity between words better than the	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	LSA-based and the correlation-based spaces.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Body	Another interesting finding is that there was no	page=3 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	clear peak in the graphs of Figure 1. For SPI test	page=3 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	items, correct rates of the three methods increased	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	linearly as the number of dimensions increased,	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	r = .86 for the LSA-based method, r = .72 for	page=3 xpos=0 ypos=8 left-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	the correlation-based method and r = .93 for the	page=3 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	dictionary-based method (all ps < .0001), while	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	correct rates for computer-generated test items	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+Figure	__Figure 2__	page=3 xpos=5 ypos=-3 right-column left-over right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 2: Synonym versus antonym judgment	page=3 xpos=5 ypos=0 right-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+I-Body	were steady. Our finding of the absence of any	page=3 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	obvious optimal dimensions is in a sharp contrast	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	to Landauer and Dumais’s (1997) finding that the	page=3 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower
+I-Body	LSA word vectors with 300 dimensions achieved	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	the maximum performance of 53% correct rate	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	in a similar multiple-choice synonym test. Note	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	that their maximum performance was a little bet-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ter than that of our LSA vectors, but still worse	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	than that of our dictionary-based vectors.	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Figure 2 shows the performance of the LSA-	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space string-figure headchar-capital tailchar-hiphen
+I-Body	based and the dictionary-based methods in anto-	page=3 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	nym judgment, together with the result of syn-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	onym judgment. (Since the performance of the	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	cooccurrence-based method did not differ from	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	that of the LSA-based method, the correct rates	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	of the cooccurrence-based method are not plotted	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	in this figure.) The dictionary-based method also	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	outperformed the LSA-based method in antonym	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	judgment but their difference was much smaller	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	than that of synonym judgment; at 200 or lower	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	dimensions LSA-based method was better than	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the dictionary-based method. Interestingly, the	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	dictionary-based word vectors yielded better per-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance in synonym judgment than in antonym	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	judgment, while the LSA-based vectors showed	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	better performance in antonym judgment. These	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	contrasting results may be attributed to the differ-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence of corpus characteristics. Dictionary’s defi-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nitions for antonymous words are likely to involve	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	different words so that the differences between	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	their meanings can be made clear. On the other	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	hand, in newspaper articles (or literary texts), con-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	text words with which antonymous words occur	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	are likely to overlap because their meanings are	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	about the same domain.	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Finally, we show the results of comparison	page=3 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	among four combinations of corpora and text units	page=3 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Body	for the LSA-based and the cooccurrence-based	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	861	page=3 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-Caption	Table 1: Comparison of mean correct rate among	page=4 xpos=0 ypos=0 left-column full-justified page-top string-table headchar-capital
+I-Caption	the combinations of two corpora and two text units	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Caption	__Table 1__	page=4 xpos=0 ypos=0 left-column left-indent right-indent box indented-line shorter-tail table-area above-blank-line above-double-space above-line-space
+I-Body	methods. Table 1 lists mean correct rates of SPI	page=4 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	test and computer-generated test averaged over all	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the numbers of dimensions. Regardless of con-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	struction methods and test items, the word vectors	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	constructed using newspaper paragraphs achieved	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the best performance, which are denoted by bold-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	faces. Concerning an effect of corpus difference,	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the newspaper corpus was superior to the literary	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	corpus. The difference of text units did not have a	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	clear influence on the performance of word spaces.	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Experiment 2: Word Association	page=4 xpos=0 ypos=4 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	5.1 Method	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In order to compare the ability of the word	page=4 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	spaces to judge associative similarity, we con-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ducted a word association experiment using a	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	Japanese word association norm “Renso Kijun-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	hyo” (Umemoto, 1969). This free-association	page=4 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Body	database was developed based on the responses of	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	1,000 students to 210 stimulus words. For exam-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line tailchar-hiphen
+I-Body	ple, when given the word writer as a stimulus, stu-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dents listed the words shown in Table 2. (Table 2	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	also shows the original words in Japanese.)	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower above-line-space
+B-Body	For the simulation experiment, we selected 176	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	stimulus words that all the three corpora con-	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tained. These stimuli had 27 associate words on	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	average. We then removed any associate words	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	that were synonymous with the stimulus word	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	(e.g., author in Table 2), since the purpose of this	page=4 xpos=0 ypos=8 left-column full-justified aligned-line
+I-Body	experiment was to examine the ability to assess	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	associative similarity between words. Whether or	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	not each associate is synonymous with the stimu-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lus was determined according to whether they be-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	long to the same deepest category of a Japanese	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	thesaurus “Goi-Taikei” (Ikehara et al., 1999).	page=4 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Body	In the computer simulation, cosine similarity	page=4 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-space headchar-capital column-bottom
+B-Caption	Table 2: Associates for the stimulus word writer	page=4 xpos=5 ypos=0 right-column centered left-indent right-indent column-top string-table headchar-capital above-line-space
+Table	__Table 2__	page=4 xpos=5 ypos=0 right-column centered left-over right-over box hanged-line longer-tail line-space table-area above-blank-line above-double-space above-line-space
+I-Body	between the stimulus word and each of all the	page=4 xpos=5 ypos=3 right-column full-justified line-blank-line line-double-space line-space headchar-lower
+I-Body	other words included in the vector space was com-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	puted, and all the words were sorted in descending	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	order of similarity. The top i words were then cho-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sen as associates.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The ability of word spaces to mimic human	page=4 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	word association was evaluated on mean preci-	page=4 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sion. Precision is the ratio of the number of	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	human-produced associates chosen by computer	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to the number i of computer-chosen associates. A	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	precision score was calculated every time a new	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	human-produced associate was found in the top i	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	words when i was incremented by 1, and after that	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	mean precision was calculated as the average of all	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	these precision scores. It must be noted here that,	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	in order to eliminate the bias caused by the dif-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ference in the number of contained words among	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	word spaces, we conducted the simulation using	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	46,000 words that we randomly chose for each	page=4 xpos=5 ypos=6 right-column full-justified aligned-line
+I-Body	corpus so that they could include all the human-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	produced associates.	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Although this computational method of produc-	page=4 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ing associates is sufficient for the present purpose,	page=4 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	it may be inadequate to model the psychological	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	process of free association. Some empirical stud-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ies of word association (Nelson et al., 1998) re-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	vealed that frequent or familiar words were highly	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	likely to be produced as associates, but our meth-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ods for constructing word vectors may not directly	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	address such frequency effect on word association.	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Hence, we conducted an additional experiment in	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	which only familiar words were used for comput-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing similarity to a given stimulus word, i.e., less	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	familiar words were not used as candidates of as-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	862	page=4 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Figure	__Figure 3__	page=5 xpos=-1 ypos=-3 left-column left-over box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 3: Mean precision of word association	page=5 xpos=0 ypos=0 left-column full-justified indented-line line-double-space line-space string-figure headchar-capital
+E-Caption	judgment	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	sociates. For a measure of word familiarity, we	page=5 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	used word familiarity scores (ranging from 1 to 7)	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	provided by “Nihongo no Goitaikei” (Amano and	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	Kondo, 2003). Using this data, we selected the	page=5 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-capital
+I-Body	words whose familiarity score is 5 or higher as fa-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	miliar ones.	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.2 Results and Discussion	page=5 xpos=0 ypos=2 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	For each of the nine vector spaces, the association	page=5 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	judgment simulation was conducted and the mean	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	precision was calculated. As in the synonym judg-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment experiment, this process was repeated by ev-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ery 50 dimensions between 50 and 1000.	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Figure 3 shows the result of word association	page=5 xpos=0 ypos=4 left-column left-indent indented-line longer-tail string-figure headchar-capital
+I-Body	experiment. For the LSA-based and the cooccur-	page=5 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	rence-based methods, two kinds of mean precision	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	were plotted: the average of mean precision scores	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	for the four word vectors and the maximum score	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	among them. (As we will show in Table 3, the	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	LSA-based method achieved the maximum preci-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	sion when sentences of the newspaper corpus were	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	used, while the performance of the cooccurrence-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based method was maximal when paragraphs of	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the newspaper corpus were used.) The overall	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	result was that the dictionary-based word vectors	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	yielded the worst performance, as opposed to the	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	result of synonym judgment. There was no big	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	difference in performance between the LSA-based	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	method and the cooccurrence-based method, but	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the maximal cooccurrence-based vectors (con-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structed from newspaper paragraphs) considerably	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	outperformed the other kinds of word vectors. <sup>1</sup>	page=5 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	These results clearly show that the LSA-based and	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital above-double-space above-line-space
+B-Footnote	<sup>1</sup> These results were replicated even when all the human-	page=5 xpos=0 ypos=8 left-column left-indent indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	produced associates including synonymous ones were used	page=5 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	for assessing the precision scores.	page=5 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+Figure	__Figure 4__	page=5 xpos=5 ypos=-3 right-column left-over right-over box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 4: Average precision of word association	page=5 xpos=5 ypos=0 right-column full-justified shorter-tail line-double-space line-space string-figure headchar-capital
+E-Caption	judgment for familiar words	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	the cooccurrence-based vector spaces reflect as-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	sociative similarity between words more than the	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	dictionary-based space.	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The relation between the number of dimen-	page=5 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	sions and the performance in association judgment	page=5 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	was quite different from the relation observed in	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the synonym judgment experiment. Although the	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	score of the dictionary-based vectors increased as	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the dimension of the vectors increased as in the	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	case of synonym judgment, the scores of both	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	LSA-based and cooccurrence-based vectors had	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	a peak around 200 dimensions, as Landauer and	page=5 xpos=5 ypos=3 right-column full-justified aligned-line itemization headchar-lower
+I-Body	Dumais (1997) demonstrated. This finding seems	page=5 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-capital
+I-Body	to suggest that some hundred dimensions may be	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	enough to represent the knowledge of associative	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	similarity.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Figure 4 shows the result of the additional ex-	page=5 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space string-figure headchar-capital tailchar-hiphen
+I-Body	periment in which familiarity effects were taken	page=5 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	into account. As compared to the result without	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	familiarity filtering, there was a remarkable im-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	provement of the performance of the dictionary-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based method; the dictionary-based method out-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	performed the LSA-based method at 350 or higher	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	dimensions and the cooccurrence-based method at	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	800 or higher dimensions. This may be because	page=5 xpos=5 ypos=6 right-column full-justified aligned-line
+I-Body	word occurrence in the sense definitions of a dic-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tionary does not reflect the actual frequency or fa-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	miliarity of words, and thus the dictionary-based	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	method may possibly overestimate the similarity	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	of infrequent or unfamiliar words. On the other	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	hand, since the corpus of newspaper articles or	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	novels is likely to reflect actual word frequency,	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the vector spaces derived from these corpora rep-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resent the similarity of infrequent words as appro-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	priately as that of familiar words. <sup>2</sup>	page=5 xpos=5 ypos=8 right-column right-indent font-largest aligned-line shorter-tail headchar-lower above-line-space
+B-Body	The result that the cooccurrence-based word	page=5 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-space headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	863	page=5 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-Caption	Table 3: Comparison of mean precision among the	page=6 xpos=0 ypos=0 left-column full-justified page-top string-table headchar-capital
+E-Caption	combinations of two corpora and two text units	page=6 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower
+Table	__Table 3__	page=6 xpos=-1 ypos=0 left-column left-over box longer-tail table-area above-blank-line above-double-space above-line-space
+I-Body	vectors constructed from newspaper paragraphs	page=6 xpos=0 ypos=2 left-column full-justified line-blank-line line-double-space line-space headchar-lower
+I-Body	achieved the best performance was again obtained	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	in the additional experiment. This consistent result	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	indicates that the cooccurrence-based method is	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	particularly useful for representing the knowledge	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	of associative similarity between words. The rela-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion between the number of dimensions and mean	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	precision was unchanged even if a familiarity ef-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	fect was considered.	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Finally, Table 3 shows the comparison result	page=6 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	among four kinds of word vectors constructed	page=6 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	from different corpora and text units in the exper-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	iment with and without familiarity filtering. The	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	listed values are mean precisions averaged over all	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the 20 numbers of dimensions. As in the case of	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	synonym judgment experiment, word vectors con-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structed from newspaper paragraphs achieved the	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	best performance, although only the LSA-based	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	vectors had the highest precision when they were	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	derived from sentences of newspaper articles. As	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	in the case of synonym judgment, the newspa-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	per corpus showed better performance than the	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	novel corpus, and especially the cooccurrence-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based method showed a fairly large difference	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	in performance between two corpora. This find-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing seems to suggest that word cooccurrence in a	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	newspaper corpus is more likely to reflect associa-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tive similarity.	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Semantic Network and Similarity	page=6 xpos=0 ypos=8 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	As related work, Steyvers and Tenenbaum (2005)	page=6 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Body	examined the properties of semantic network, an-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>2</sup> Indeed, the dictionary-based vector spaces contained a	page=6 xpos=0 ypos=8 left-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	larger number of unfamiliar words than the other spaces; 63%	page=6 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	of words in the dictionary were judged as unfamiliar, while	page=6 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	only 42% and 50% of words in the newspapers and the novels	page=6 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	were judged as unfamiliar.	page=6 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+I-Body	other important geometric model for word mean-	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	ings. They found that three kinds of semantic net-	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	works — WordNet, Roget’s thesaurus, and word	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	associations — had a small-world structure and	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	a scale-free pattern of connectivity, but semantic	page=6 xpos=5 ypos=0 right-column full-justified aligned-line itemization headchar-lower
+I-Body	networks constructed from the LSA-based vector	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	spaces did not have these properties. They inter-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	preted this finding as indicating a limitation of the	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	vector space model such as LSA to model human	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	knowledge of word meanings.	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	However, we can interpret their finding in a dif-	page=6 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ferent way by considering a possibility that dif-	page=6 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ferent semantic networks may capture different	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	kinds of word similarity. Scale-free networks have	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	a common characteristic that a small number of	page=6 xpos=5 ypos=2 right-column full-justified aligned-line itemization headchar-lower
+I-Body	nodes are connected to a very large number of	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	other nodes (Barabási and Albert, 1999). In the se-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	mantic networks, such “hub” nodes correspond to	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	basic and highly polysemous words such as make	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	and money, and these words are likely to be tax-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	onomically similar to many other words. Hence	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	if semantic networks reflect in large part taxo-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nomic similarity between words, they are likely	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to have a scale-free structure. On the other hand,	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	since it is less likely to assume that only a few	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	words are associatively similar to a large number	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of other words, semantic networks reflecting asso-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ciative similarity may not have a scale-free struc-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture. Taken together, Steyvers and Tenenbaum’s	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	(2005) finding can be reinterpreted as suggesting	page=6 xpos=5 ypos=5 right-column full-justified aligned-line year
+I-Body	that WordNet and Roget’s thesaurus better reflect	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	taxonomic similarity, while the LSA-based word	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	vectors better reflect associative similarity, which	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	is consistent with our finding.	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	7 Conclusion	page=6 xpos=5 ypos=6 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Through two simulation experiments, we obtained	page=6 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the following findings:	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	• The dictionary-based word vectors better re-	page=6 xpos=5 ypos=7 right-column left-indent font-largest indented-line longer-tail line-double-space line-space itemization tailchar-hiphen
+I-Listitem	flect the knowledge of taxonomic similarity,	page=6 xpos=5 ypos=7 right-column left-indent indented-line headchar-lower tailchar-comma
+I-Listitem	while the LSA-based and the cooccurrence-	page=6 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	based word vectors better reflect the knowl-	page=6 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	edge of associative similarity. In particular,	page=6 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Listitem	the cooccurrence-based vectors are useful for	page=6 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower
+I-Listitem	representing associative similarity.	page=6 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• The dictionary-based vectors yielded bet-	page=6 xpos=5 ypos=8 right-column left-indent font-largest hanged-line longer-tail line-space itemization tailchar-hiphen
+I-Listitem	ter performance in synonym judgment, but	page=6 xpos=5 ypos=8 right-column left-indent indented-line headchar-lower
+I-Listitem	the LSA-based vectors showed better perfor-	page=6 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	mance in antonym judgment.	page=6 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	• These kinds of word vectors showed the dis-	page=6 xpos=5 ypos=9 right-column left-indent font-largest hanged-line longer-tail line-space itemization tailchar-hiphen
+I-Listitem	tinctive patterns of the relationship between	page=6 xpos=5 ypos=9 right-column left-indent indented-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	864	page=6 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Listitem	the number of dimensions of word vectors	page=7 xpos=0 ypos=0 left-column left-indent page-top headchar-lower
+I-Listitem	and their performance.	page=7 xpos=0 ypos=0 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We are now extending this work to examine in	page=7 xpos=0 ypos=0 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	more detail the relationship between various kinds	page=7 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	of word vectors and the quality of word similarity	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	involved in these vectors. It would be interesting	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	for further work to develop a method for extract-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the knowledge of a specific similarity from	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the word space, e.g., extracting the knowledge	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	of taxonomic similarity from the dictionary-based	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	word space. Vector negation (Widdows, 2003)	page=7 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower
+I-Body	may be a useful technique for this purpose. At the	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	same time we are also interested in a method for	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	combining different word spaces into one space,	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	e.g., combining the dictionary-based and the LSA-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based spaces into one coherent word space. Addi-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tionally we are trying to simulate cognitive pro-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cesses such as metaphor comprehension (Utsumi,	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	2006).	page=7 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgment	page=7 xpos=0 ypos=3 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	This research was supported in part by Grant-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Acknowledgement	in-Aid for Scientific Research(C) (No.17500171)	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Acknowledgement	from Japan Society for the Promotion of Science.	page=7 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=4 left-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Jean Aitchison. 2003. Words in the Mind: An Intro-	page=7 xpos=0 ypos=5 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	duction to the Mental Lexicon, 3rd Edition. Oxford,	page=7 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	Basil Blackwell.	page=7 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Shigeaki Amano and Kimihisa Kondo, editors. 2003.	page=7 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Nihongo-no Goitokusei CD-ROM (Lexical proper-	page=7 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	ties of Japanese). Sanseido, Tokyo.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Albert-László Barabási and Réka Albert. 1999. Emer-	page=7 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	gence of scaling in random networks. Science,	page=7 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	286:509–512.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Curt Burgess. 1998. From simple associations to the	page=7 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	building blocks of language: Modeling meaning in	page=7 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	memory with the HAL model. Behavior Research	page=7 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Methods, Instruments, & Computers, 30(2):188–	page=7 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	198.	page=7 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Scott Deerwester, Susan T. Dumais, George W. Fur-	page=7 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	nas, Thomas L. Landauer, and Richard Harshman.	page=7 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	1990. Indexing by latent semantic analysis. Journal	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line year
+I-Reference	of the American Society For Information Science,	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	41(6):391–407.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Peter Gärdenfors. 2000. Conceptual Spaces: The Ge-	page=7 xpos=0 ypos=8 left-column right-over font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ometry of Thought. MIT Press.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Satoru Ikehara, Masahiro Miyazaki, Satoshi Shirai,	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	Akio Yokoo, Hiromi Nakaiwa, Kentaro Ogura,	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-capital tailchar-comma
+I-Reference	Yoshifumi Ooyama, and Yoshihiko Hayashi. 1999.	page=7 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line year headchar-capital tailchar-period column-bottom
+I-Reference	Goi-Taikei: A Japanese Lexicon CDROM. Iwanami	page=7 xpos=5 ypos=0 right-column left-indent font-smallest column-top headchar-capital
+I-Reference	Shoten, Tokyo.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Kaname Kasahara, Kazumitsu Matsuzawa, and Tsu-	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	tomu Ishikawa. 1997. A method for judgment of se-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line year headchar-lower tailchar-hiphen
+I-Reference	mantic similarity between daily-used words by using	page=7 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	machine readable dictionaries. Transactions of In-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	formation Processing Society of Japan, 38(7):1272–	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	1283. in Japanese.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Thomas K. Landauer and Susan T. Dumais. 1997.	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	A solution to Plato’s problem: The latent seman-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	tic analysis theory of the acquisition, induction, and	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	representation of knowledge. Psychological Review,	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	104:211–240.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Douglas L. Nelson, Cathy L. McEvoy, and Thomas A.	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Schreiber. 1998. The university of south florida	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest indented-line year headchar-capital
+I-Reference	word association, rhyme, and word fragment norms.	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	http://www.usf.edu/FreeAssociation/.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Yoshiki Niwa and Yoshihiko Nitta. 1994. Co-	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	occurrence vectors from corpora vs. distance vectors	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	from dictionaries. In Proceedings of the 15th Inter-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	national Conference on Computational Linguistics	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	(COLING94), pages 304–309.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Robert M. Nosofsky. 1992. Similarity scaling and cog-	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	nitive process models. Annual Review of Psychol-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ogy, 43:25–53.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Hinrich Schütze. 1998. Automatic word sense dis-	page=7 xpos=5 ypos=4 right-column right-over font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	crimination. Computational Linguistics, 24(1):97–	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	123.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Mark Steyvers and Joshua B. Tenenbaum. 2005. The	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	large-scale structure of semantic network: Statistical	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	analyses and a model of semantic growth. Cognitive	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Science, 29(1):41–78.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Mark Steyvers, Richard M. Shiffrin, and Douglas L.	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Nelson. 2004. Word association spaces for predict-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	ing semantic similarity effects in episodic memory.	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	In Alice F. Healy, editor, Experimental Cognitive	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Psychology and Its Applications. American Psycho-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	logical Association, 2004.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Takao Umemoto. 1969. Renso Kijunhyo (Free Associ-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ation Norm). Tokyo Daigaku Shuppankai, Tokyo.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Akira Utsumi, Koichi Hori, and Setsuo Ohsuga. 1998.	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	An affective-similarity-based method for compre-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	hending attributional metaphors. Journal of Natural	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Language Processing, 5(3):3–32.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Akira Utsumi. 2006. Computational exploration of	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	metaphor comprehension processes. In Proceedings	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of the 28th Annual Meeting of the Cognitive Science	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Society (CogSci 2006).	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Dominic Widdows. 2003. Orthogonal negation in vec-	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tor spaces for modelling word-meanings and docu-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ment retrieval. In Proceedings of the 41st Annual	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Meeting of the Association for Computational Lin-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	guistics, pages 136–143.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Dominic Widdows. 2004. Geometry and Meaning.	page=7 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	CSLI Publications.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	865	page=7 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only

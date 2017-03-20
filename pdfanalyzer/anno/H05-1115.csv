@@ -1,0 +1,588 @@
+Title	Using Random Walks for Question-focused Sentence Retrieval	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Jahna Otterbacher 1 , Güneş Erkan 2 , Dragomir R. Radev 1,2	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	1 School of Information, 2 Department of EECS	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail numbered-heading1
+I-Affiliation	University of Michigan	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Email	{jahna,gerkan,radev}@umich.edu	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail symbol-atmark column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-blank-line above-double-space above-line-space
+B-Abstract	We consider the problem of question-	page=0 xpos=0 ypos=2 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	focused sentence retrieval from complex	page=0 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower
+I-Abstract	news articles describing multi-event sto-	page=0 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ries published over time. Annotators gen-	page=0 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	erated a list of questions central to under-	page=0 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	standing each story in our corpus. Be-	page=0 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cause of the dynamic nature of the stories,	page=0 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower tailchar-comma
+I-Abstract	many questions are time-sensitive (e.g.	page=0 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower tailchar-period
+I-Abstract	“How many victims have been found?”)	page=0 xpos=0 ypos=4 left-column left-indent aligned-line
+I-Abstract	Judges found sentences providing an an-	page=0 xpos=0 ypos=4 left-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	swer to each question. To address the	page=0 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower
+I-Abstract	sentence retrieval problem, we apply a	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Abstract	stochastic, graph-based method for com-	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	paring the relative importance of the tex-	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tual units, which was previously used suc-	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cessfully for generic summarization. Cur-	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	rently, we present a topic-sensitive version	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Abstract	of our method and hypothesize that it can	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Abstract	outperform a competitive baseline, which	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Abstract	compares the similarity of each sentence	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Abstract	to the input question via IDF-weighted	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Abstract	word overlap. In our experiments, the	page=0 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Abstract	method achieves a TRDR score that is sig-	page=0 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	nificantly higher than that of the baseline.	page=0 xpos=0 ypos=7 left-column left-indent right-indent aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=8 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 column-bottom
+B-Body	Q&A (Voorhees and Tice, 2000)), in which the user	page=0 xpos=5 ypos=2 right-column full-justified column-top year headchar-capital
+I-Body	presents a single question and the system returns a	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	corresponding answer (or a set of likely answers), in	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	this case the user has a more complex information	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	need.	page=0 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Similarly, when reading about a complex news	page=0 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	story, such as an emergency situation, users might	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	seek answers to a set of questions in order to un-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	derstand it better. For example, Figure 1 shows	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the interface to our Web-based news summarization	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	system, which a user has queried for information	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	about Hurricane Isabel. Understanding such stories	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	is challenging for a number of reasons. In particular,	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	complex stories contain many sub-events (e.g. the	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	devastation of the hurricane, the relief effort, etc.) In	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	addition, while some facts surrounding the situation	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	do not change (such as “Which area did the hurri-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cane first hit?”), others may change with time (“How	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	many people have been left homeless?”). There-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fore, we are working towards developing a system	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	for question answering from clusters of complex sto-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ries published over time. As can be seen at the bot-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tom of Figure 1, we plan to add a component to our	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	current system that allows users to ask questions as	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	they read a story. They may then choose to receive	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	either a precise answer or a question-focused sum-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mary.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Currently, we address the question-focused sen-	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tence retrieval task. While passage retrieval (PR) is	page=0 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower column-bottom
+I-Body	Recent work has motivated the need for systems clearly not a new problem (e.g. (Robertson et al.,	page=0 xpos=0 ypos=8 single-column full-justified column-top headchar-capital tailchar-comma
+I-Body	that support “Information Synthesis” tasks, in which 1992; Salton et al., 1993)), it remains important and	page=0 xpos=0 ypos=8 single-column full-justified aligned-line year headchar-lower
+I-Body	a user seeks a global understanding of a topic or yet often overlooked. As noted by (Gaizauskas et al.,	page=0 xpos=0 ypos=8 single-column full-justified aligned-line itemization headchar-lower tailchar-comma
+I-Body	story (Amigo et al., 2004). In contrast to the clas- 2004), while PR is the crucial first step for question	page=0 xpos=0 ypos=8 single-column full-justified aligned-line year headchar-lower
+I-Body	sical question answering setting (e.g. TREC-style answering, Q&A research has typically not empha-	page=0 xpos=0 ypos=9 single-column full-justified aligned-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	915	page=0 xpos=4 ypos=9 single-column left-indent right-indent font-smallest indented-line shorter-tail line-blank-line line-double-space line-space numeric-only
+B-Footer	Proceedings of Human Language Technology Conference and Conference on Empirical Methods in Natural Language	page=0 xpos=0 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail headchar-capital
+I-Footer	Processing (HLT/EMNLP), pages 915–922, Vancouver, October 2005.  2005 c Association for Computational Linguistics	page=0 xpos=0 ypos=9 single-column centered left-indent right-indent font-smallest hanged-line longer-tail year headchar-capital page-bottom
+Figure	__Figure 1__	page=1 xpos=0 ypos=0 left-column centered left-indent right-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: Question tracking interface to a summa-	page=1 xpos=0 ypos=1 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-hiphen
+E-Caption	rization system.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	sized it. The specific problem we consider differs	page=1 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	from the classic task of PR for a Q&A system in	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	interesting ways, due to the time-sensitive nature of	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the stories in our corpus. For example, one challenge	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	is that the answer to a user’s question may be up-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dated and reworded over time by journalists in order	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	to keep a running story fresh, or because the facts	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	themselves change. Therefore, there is often more	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	than one correct answer to a question.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We aim to develop a method for sentence re-	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	trieval that goes beyond finding sentences that are	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	similar to a single query. To this end, we pro-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pose to use a stochastic, graph-based method. Re-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cently, graph-based methods have proved useful for	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	a number of NLP and IR tasks such as document	page=1 xpos=0 ypos=5 left-column full-justified aligned-line itemization headchar-lower
+I-Body	re-ranking in ad hoc IR (Kurland and Lee, 2005)	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	and analyzing sentiments in text (Pang and Lee,	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2004). In (Erkan and Radev, 2004), we introduced	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year
+I-Body	the LexRank method and successfully applied it to	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	generic, multi-document summarization. Presently,	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we introduce topic-sensitive LexRank in creating a	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	sentence retrieval system. We evaluate its perfor-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mance against a competitive baseline, which con-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	siders the similarity between each sentence and the	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	question (using IDF-weighed word overlap). We	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	demonstrate that LexRank significantly improves	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	question-focused sentence selection over the base-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	line.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Formal description of the problem	page=1 xpos=0 ypos=8 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Our goal is to build a question-focused sentence re-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	trieval mechanism using a topic-sensitive version of	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the LexRank method. In contrast to previous PR sys-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems such as Okapi (Robertson et al., 1992), which	page=1 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower above-blank-line above-double-space above-line-space
+Page	916	page=1 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	ranks documents for relevancy and then proceeds to	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	find paragraphs related to a question, we address the	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	finer-grained problem of finding sentences contain-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing answers. In addition, the input to our system is	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	a set of documents relevant to the topic of the query	page=1 xpos=5 ypos=0 right-column full-justified aligned-line itemization headchar-lower
+I-Body	that the user has already identified (e.g. via a search	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	engine). Our system does not rank the input docu-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments, nor is it restricted in terms of the number of	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	sentences that may be selected from the same docu-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ment.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The output of our system, a ranked list of sen-	page=1 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tences relevant to the user’s question, can be sub-	page=1 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sequently used as input to an answer selection sys-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem in order to find specific answers from the ex-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tracted sentences. Alternatively, the sentences can	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	be returned to the user as a question-focused sum-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mary. This is similar to “snippet retrieval” (Wu et	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	al., 2004). However, in our system answers are ex-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tracted from a set of multiple documents rather than	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	on a document-by-document basis.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Our approach: topic-sensitive LexRank	page=1 xpos=5 ypos=4 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	3.1 The LexRank method	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In (Erkan and Radev, 2004), the concept of graph-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Body	based centrality was used to rank a set of sentences,	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	in producing generic multi-document summaries.	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	To apply LexRank, a similarity graph is produced	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	for the sentences in an input document set. In the	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	graph, each node represents a sentence. There are	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	edges between nodes for which the cosine similar-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity between the respective pair of sentences exceeds	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	a given threshold. The degree of a given node is	page=1 xpos=5 ypos=6 right-column full-justified aligned-line itemization headchar-lower
+I-Body	an indication of how much information the respec-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive sentence has in common with other sentences.	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Therefore, sentences that contain the most salient in-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	formation in the document set should be very central	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	within the graph.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Figure 2 shows an example of a similarity graph	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail string-figure headchar-capital
+I-Body	for a set of five input sentences, using a cosine simi-	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	larity threshold of 0.15. Once the similarity graph is	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	constructed, the sentences are then ranked according	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	to their eigenvector centrality. As previously men-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tioned, the original LexRank method performed well	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	in the context of generic summarization. Below,	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we describe a topic-sensitive version of LexRank,	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which is more appropriate for the question-focused	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	sentence retrieval problem. In the new approach, the	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	score of a sentence is determined by a mixture model	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	of the relevance of the sentence to the query and the	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	similarity of the sentence to other high-scoring sen-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tences.	page=2 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Relevance to the question	page=2 xpos=0 ypos=0 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In topic-sensitive LexRank, we first stem all of the	page=2 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	sentences in a set of articles and compute word IDFs	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	by the following formula:	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	 <sub>N</sub> +1 	page=2 xpos=2 ypos=1 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	idf w = log (1)	page=2 xpos=1 ypos=1 left-column left-indent font-smallest hanged-line longer-tail headchar-lower
+I-Equation	0.5 + sf w	page=2 xpos=2 ypos=2 left-column left-indent right-indent font-smallest indented-line shorter-tail numbered-heading2 above-double-space above-line-space
+I-Body	where N is the total number of sentences in the clus-	page=2 xpos=0 ypos=2 left-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ter, and sf w is the number of sentences that the word	page=2 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	w appears in.	page=2 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail itemization headchar-lower tailchar-period
+B-Body	We also stem the question and remove the stop	page=2 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	words from it. Then the relevance of a sentence s to	page=2 xpos=0 ypos=3 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	the question q is computed by:	page=2 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	X	page=2 xpos=1 ypos=3 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital
+I-Equation	rel(s|q) = log(tf w,s + 1) × log(tf w,q + 1) × idf w (2)	page=2 xpos=0 ypos=3 left-column left-indent font-smallest hanged-line longer-tail headchar-lower
+I-Equation	w∈q	page=2 xpos=1 ypos=3 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-double-space above-line-space
+I-Body	where tf w,s and tf w,q are the number of times w	page=2 xpos=0 ypos=3 left-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	appears in s and q, respectively. This model has	page=2 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	proven to be successful in query-based sentence re-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	trieval (Allan et al., 2003), and is used as our com-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	petitive baseline in this study (e.g. Tables 4, 5 and	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	7).	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.3 The mixture model	page=2 xpos=0 ypos=5 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The baseline system explained above does not make	page=2 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	use of any inter-sentence information in a cluster.	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We hypothesize that a sentence that is similar to	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	the high scoring sentences in the cluster should also	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	have a high score. For instance, if a sentence that	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	gets a high score in our baseline model is likely to	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	contain an answer to the question, then a related sen-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence, which may not be similar to the question it-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	self, is also likely to contain an answer.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	This idea is captured by the following mixture	page=2 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	model, where p(s|q), the score of a sentence s given	page=2 xpos=0 ypos=7 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	a question q, is determined as the sum of its rele-	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	vance to the question (using the same measure as	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the baseline described above) and the similarity to	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the other sentences in the document cluster:	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	p(s|q) = d P <sup>rel(s|q)</sup> +(1−d) <sup>X</sup> P sim(s, v) <sub>p(v|q)</sub> (3)	page=2 xpos=0 ypos=8 left-column left-indent font-largest indented-line longer-tail line-space headchar-lower
+I-Equation	z∈C rel(z|q) v∈C z∈C sim(z, v)	page=2 xpos=1 ypos=8 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-double-space above-line-space
+I-Body	where C is the set of all sentences in the cluster. The	page=2 xpos=0 ypos=8 left-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	value of d, which we will also refer to as the “ques-	page=2 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	tion bias,” is a trade-off between two terms in the	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	917	page=2 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 2__	page=2 xpos=5 ypos=-1 right-column full-justified box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 2: LexRank example: sentence similarity	page=2 xpos=5 ypos=3 right-column full-justified aligned-line line-double-space line-space string-figure headchar-capital
+E-Caption	graph with a cosine threshold of 0.15.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	equation and is determined empirically. For higher	page=2 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	values of d, we give more importance to the rele-	page=2 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	vance to the question compared to the similarity to	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the other sentences in the cluster. The denominators	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	in both terms are for normalization, which are de-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scribed below. We use the cosine measure weighted	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	by word IDFs as the similarity between two sen-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences in a cluster:	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	P	page=2 xpos=7 ypos=5 right-column left-indent right-indent font-smallest indented-line longer-tail line-space headchar-capital
+I-Equation	sim(x, y) = qP w∈x,y tf w,x tf qP w,y (idf w ) <sup>2</sup>	page=2 xpos=5 ypos=5 right-column left-indent right-indent font-largest hanged-line longer-tail headchar-lower
+I-Equation	xi ∈x (tf x i ,x idf x i ) <sup>2</sup> × y i ∈y (tf yi ,y idf yi ) 2	page=2 xpos=6 ypos=5 right-column left-indent right-indent font-largest indented-line longer-tail headchar-lower
+I-Equation	(4)	page=2 xpos=9 ypos=5 right-column left-indent font-smallest indented-line longer-tail above-line-space
+B-Body	Equation 3 can be written in matrix notation as	page=2 xpos=5 ypos=5 right-column left-indent hanged-line line-space headchar-capital
+I-Body	follows:	page=2 xpos=5 ypos=6 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon
+B-Equation	p = [dA + (1 − d)B] <sup>T</sup> p (5)	page=2 xpos=6 ypos=6 right-column left-indent font-smaller indented-line longer-tail itemization headchar-lower above-double-space above-line-space
+B-Body	A is the square matrix such that for a given index i,	page=2 xpos=5 ypos=6 right-column full-justified font-largest hanged-line line-double-space line-space headchar-capital tailchar-comma
+I-Body	all the elements in the i th column are proportional	page=2 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	to rel(i|q). B is also a square matrix such that each	page=2 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	entry B(i, j) is proportional to sim(i, j). Both ma-	page=2 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	trices are normalized so that row sums add up to 1.	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Note that as a result of this normalization, all rows	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	of the resulting square matrix Q = [dA + (1 − d)B]	page=2 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	also add up to 1. Such a matrix is called stochastic	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	and defines a Markov chain. If we view each sen-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence as a state in a Markov chain, then Q(i, j) spec-	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ifies the transition probability from state i to state j	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	in the corresponding Markov chain. The vector p	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	we are looking for in Equation 5 is the stationary	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	distribution of the Markov chain. An intuitive inter-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pretation of the stationary distribution can be under-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+I-Body	stood by the concept of a random walk on the graph	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+E-Body	representation of the Markov chain.	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	With probability d, a transition is made from the	page=3 xpos=0 ypos=0 left-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	current node (sentence) to the nodes that are simi-	page=3 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	lar to the query. With probability (1-d), a transition	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	is made to the nodes that are lexically similar to the	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	current node. Every transition is weighted according	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	to the similarity distributions. Each element of the	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	vector p gives the asymptotic probability of ending	page=3 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	up at the corresponding state in the long run regard-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	less of the starting state. The stationary distribution	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	of a Markov chain can be computed by a simple it-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	erative algorithm, called power method. <sup>1</sup>	page=3 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+B-Body	A simpler version of Equation 5, where A is a	page=3 xpos=0 ypos=2 left-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	uniform matrix and B is a normalized binary matrix,	page=3 xpos=0 ypos=2 left-column full-justified font-largest hanged-line headchar-lower tailchar-comma
+I-Body	is known as PageRank (Brin and Page, 1998; Page	page=3 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Body	et al., 1998) and used to rank the web pages by the	page=3 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower
+I-Body	Google search engine. It was also the model used to	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+E-Body	rank sentences in (Erkan and Radev, 2004).	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.4 Experiments with topic-sensitive LexRank	page=3 xpos=0 ypos=3 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We experimented with different values of d on our	page=3 xpos=0 ypos=4 left-column full-justified font-largest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	training data. We also considered several threshold	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	values for inter-sentence cosine similarities, where	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	we ignored the similarities between the sentences	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	that are below the threshold. In the training phase	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	of the experiment, we evaluated all combinations	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	of LexRank with d in the range of [0, 1] (in incre-	page=3 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ments of 0.10) and with a similarity threshold rang-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing from [0, 0.9] (in increments of 0.05). We then	page=3 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	found all configurations that outperformed the base-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	line. These configurations were then applied to our	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	development/test set. Finally, our best sentence re-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	trieval system was applied to our test data set and	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	evaluated against the baseline. The remainder of the	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	paper will explain this process and the results in de-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tail.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Experimental setup	page=3 xpos=0 ypos=7 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	4.1 Corpus	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We built a corpus of 20 multi-document clusters of	page=3 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	complex news stories, such as plane crashes, polit-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ical controversies and natural disasters. The data	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> The stationary distribution is unique and the power method	page=3 xpos=0 ypos=8 left-column left-indent font-smaller indented-line line-double-space line-space headchar-super
+I-Footnote	is guaranteed to converge provided that the Markov chain is	page=3 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	ergodic (Seneta, 1981). A non-ergodic Markov chain can be	page=3 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line year headchar-lower
+I-Footnote	made ergodic by reserving a small probability for jumping to	page=3 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	any other state from the current state (Page et al., 1998).	page=3 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	918	page=3 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	clusters and their characteristics are shown in Ta-	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	ble 1. The news articles were collected from various	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	sources. “Newstracker” clusters were collected au-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tomatically by our Web-based news summarization	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	system. The number of clusters randomly assigned	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	to the training, development/test and test data sets	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	were 11, 3 and 6, respectively.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Next, we assigned each cluster of articles to an	page=3 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	annotator, who was asked to read all articles in the	page=3 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	cluster. He or she then generated a list of factual	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	questions key to understanding the story. Once we	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	collected the questions for each cluster, two judges	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	independently annotated nine of the training clus-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ters. For each sentence and question pair in a given	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	cluster, the judges were asked to indicate whether	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	or not the sentence contained a complete answer	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	to the question. Once an acceptable rate of inter-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	judge agreement was verified on the first nine clus-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ters (Kappa (Carletta, 1996) of 0.68), the remaining	page=3 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+E-Body	11 clusters were annotated by one judge each.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail numbered-heading1 tailchar-period
+B-Body	In some cases, the judges did not find any sen-	page=3 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tences containing the answer for a given question.	page=3 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	Such questions were removed from the corpus. The	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	final number of questions annotated for answers	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	over the entire corpus was 341, and the distributions	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	of questions per cluster can be found in Table 1.	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Evaluation metrics and methods	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	To evaluate our sentence retrieval mechanism, we	page=3 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	produced extract files, which contain a list of sen-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences deemed to be relevant to the question, for the	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	system and from human judgment. To compare dif-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent configurations of our system to the baseline	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	system, we produced extracts at a fixed length of 20	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	sentences. While evaluations of question answering	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	systems are often based on a shorter list of ranked	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	sentences, we chose to generate longer lists for sev-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eral reasons. One is that we are developing a PR	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	system, of which the output can then be input to an	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	answer extraction system for further processing. In	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	such a setting, we would most likely want to gener-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ate a relatively longer list of candidate sentences. As	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	previously mentioned, in our corpus the questions	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	often have more than one relevant answer, so ideally,	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	our PR system would find many of the relevant sen-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences, sending them on to the answer component	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	to decide which answer(s) should be returned to the	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	user. Each system’s extract file lists the document	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Table	__Table 1__	page=4 xpos=0 ypos=-9 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: Corpus of complex news stories.	page=4 xpos=3 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	and sentence numbers of the top 20 sentences. The	page=4 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower
+I-Body	“gold standard” extracts list the sentences judged as	page=4 xpos=0 ypos=1 left-column full-justified aligned-line
+I-Body	containing answers to a given question by the anno-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tators (and therefore have variable sizes) in no par-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ticular order. <sup>2</sup>	page=4 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail headchar-lower above-line-space
+B-Body	We evaluated the performance of the systems us-	page=4 xpos=0 ypos=2 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ing two metrics - Mean Reciprocal Rank (MRR)	page=4 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	(Voorhees and Tice, 2000) and Total Reciprocal	page=4 xpos=0 ypos=3 left-column full-justified aligned-line year
+I-Body	Document Rank (TRDR) (Radev et al., 2005).	page=4 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-capital tailchar-period
+I-Body	MRR, used in the TREC Q&A evaluations, is the	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	reciprocal rank of the first correct answer (or sen-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence, in our case) to a given question. This measure	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	gives us an idea of how far down we must look in the	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	ranked list in order to find a correct answer. To con-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	trast, TRDR is the total of the reciprocal ranks of all	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	answers found by the system. In the context of an-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	swering questions from complex stories, where there	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	is often more than one correct answer to a question,	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and where answers are typically time-dependent, we	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	should focus on maximizing TRDR, which gives us	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>2</sup> For clusters annotated by two judges, all sentences chosen	page=4 xpos=0 ypos=8 left-column left-indent font-smaller indented-line line-double-space line-space headchar-super
+I-Footnote	by at least one judge were included.	page=4 xpos=0 ypos=8 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	919	page=4 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	a measure of how many of the relevant sentences	page=4 xpos=5 ypos=0 right-column full-justified column-top itemization headchar-lower
+I-Body	were identified by the system. However, we report	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	both the average MRR and TRDR over all questions	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	in a given data set.	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 LexRank versus the baseline system	page=4 xpos=5 ypos=2 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In the training phase, we searched the parameter	page=4 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	space for the values of d (the question bias) and the	page=4 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	similarity threshold in order to optimize the resulting	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	TRDR scores. For our problem, we expected that a	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	relatively low similarity threshold pair with a high	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	question bias would achieve the best results. Table 2	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	shows the effect of varying the similarity threshold. <sup>3</sup>	page=4 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	The notation LR[a, d] is used, where a is the simi-	page=4 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	larity threshold and d is the question bias. The opti-	page=4 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	mal range for the parameter a was between 0.14 and	page=4 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	0.20. This is intuitive because if the threshold is too	page=4 xpos=5 ypos=6 right-column full-justified aligned-line
+I-Body	high, such that only the most lexically similar sen-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences are represented in the graph, the method does	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	not find sentences that are related but are more lex-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>3</sup> A threshold of -1 means that no threshold was used such	page=4 xpos=5 ypos=8 right-column left-indent font-smaller indented-line line-double-space line-space headchar-super
+I-Footnote	that all sentences were included in the graph.	page=4 xpos=5 ypos=8 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period page-bottom
+Table	__Table 2__	page=5 xpos=0 ypos=-2 left-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 2: Training phase: effect of similarity thresh-	page=5 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+E-Caption	old (a) on Ave. MRR and TRDR.	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 3__	page=5 xpos=0 ypos=1 left-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 3: Training phase: effect of question bias (d)	page=5 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	on Ave. MRR and TRDR.	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	ically diverse (e.g. paraphrases). Table 3 shows the	page=5 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	effect of varying the question bias at two different	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	similarity thresholds (0.02 and 0.20). It is clear that a	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	high question bias is needed. However, a small prob-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ability for jumping to a node that is lexically simi-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lar to the given sentence (rather than the question	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	itself) is needed. Table 4 shows the configurations	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	of LexRank that performed better than the baseline	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	system on the training data, based on mean TRDR	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	scores over the 184 training questions. We applied	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	all four of these configurations to our unseen devel-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	opment/test data, in order to see if we could further	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	differentiate their performances.	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.1 Development/testing phase	page=5 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The scores for the four LexRank systems and the	page=5 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	baseline on the development/test data are shown in	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+Table	__Table 4__	page=5 xpos=0 ypos=7 left-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 4: Training phase: systems outperforming the	page=5 xpos=0 ypos=9 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	baseline in terms of TRDR score.	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	920	page=5 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Table	__Table 5__	page=5 xpos=5 ypos=-2 right-column centered left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 5: Development testing evaluation.	page=5 xpos=5 ypos=0 right-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-period above-double-space above-line-space
+Table	__Table 6__	page=5 xpos=5 ypos=0 right-column left-over right-over box hanged-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 6: Average scores by cluster: baseline versus	page=5 xpos=5 ypos=1 right-column full-justified shorter-tail line-double-space line-space string-table headchar-capital
+E-Caption	LR[0.20,0.95].	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-Body	Table 5. This time, all four LexRank systems outper-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital tailchar-hiphen
+I-Body	formed the baseline, both in terms of average MRR	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	and TRDR scores. An analysis of the average scores	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	over the 72 questions within each of the three clus-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ters for the best system, LR[0.20,0.95], is shown	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	in Table 6. While LexRank outperforms the base-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	line system on the first two clusters both in terms	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	of MRR and TRDR, their performances are not sub-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stantially different on the third cluster. Therefore,	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we examined properties of the questions within each	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	cluster in order to see what effect they might have on	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	system performance.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We hypothesized that the baseline system, which	page=5 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	compares the similarity of each sentence to the ques-	page=5 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tion using IDF-weighted word overlap, should per-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	form well on questions that provide many content	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	words. To contrast, LexRank might perform bet-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ter when the question provides fewer content words,	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	since it considers both similarity to the query and	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	inter-sentence similarity. Out of the 72 questions in	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the development/test set, the baseline system outper-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formed LexRank on 22 of the questions. In fact, the	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	average number of content words among these 22	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	questions was slightly, but not significantly, higher	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	than the average on the remaining questions (3.63	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	words per question versus 3.46). Given this obser-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vation, we experimented with two mixed strategies,	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	in which the number of content words in a question	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	determined whether LexRank or the baseline system	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	was used for sentence retrieval. We tried threshold	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	values of 4 and 6 content words, however, this did	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	not improve the performance over the pure strategy	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	of system LR[0.20,0.95]. Therefore, we applied this	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Table	__Table 7__	page=6 xpos=0 ypos=-1 left-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 7: Testing phase: baseline vs. LR[0.20,0.95].	page=6 xpos=0 ypos=0 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+I-Body	system versus the baseline to our unseen test set of	page=6 xpos=0 ypos=0 left-column full-justified line-blank-line line-double-space line-space headchar-lower
+E-Body	134 questions.	page=6 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.2 Testing phase	page=6 xpos=0 ypos=1 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	As shown in Table 7, LR[0.20,0.95] outperformed	page=6 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the baseline system on the test data both in terms	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	of average MRR and TRDR scores. The improve-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment in average TRDR score was statistically sig-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nificant with a p-value of 0.0619. Since we are in-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	terested in a passage retrieval mechanism that finds	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	sentences relevant to a given question, providing in-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put to the question answering component of our sys-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem, the improvement in average TRDR score is	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	very promising. While we saw in Section 5.1 that	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	LR[0.20,0.95] may perform better on some question	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	or cluster types than others, we conclude that it beats	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the competitive baseline when one is looking to op-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	timize mean TRDR scores over a large set of ques-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions. However, in future work, we will continue	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	to improve the performance, perhaps by develop-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing mixed strategies using different configurations	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	of LexRank.	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Discussion	page=6 xpos=0 ypos=5 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The idea behind using LexRank for sentence re-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	trieval is that a system that considers only the sim-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ilarity between candidate sentences and the input	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	query, and not the similarity between the candidate	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	sentences themselves, is likely to miss some impor-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tant sentences. When using any metric to compare	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	sentences and a query, there is always likely to be	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	a tie between multiple sentences (or, similarly, there	page=6 xpos=0 ypos=7 left-column full-justified aligned-line itemization headchar-lower
+I-Body	may be cases where fewer than the number of de-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sired sentences have similarity scores above zero).	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	LexRank effectively provides a means to break such	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	ties. An example of such a scenario is illustrated in	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	Tables 8 and 9, which show the top ranked sentences	page=6 xpos=0 ypos=8 left-column full-justified aligned-line string-table headchar-capital
+I-Body	by the baseline and LexRank, respectively for the	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	question “What caused the Kursk to sink?” from the	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	Kursk submarine cluster. It can be seen that all top	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	five sentences chosen by the baseline system have	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	921	page=6 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Table	__Table 8__	page=6 xpos=5 ypos=-1 right-column centered box column-top table-area above-double-space above-line-space
+B-Caption	Table 8: Top ranked sentences using baseline system	page=6 xpos=5 ypos=2 right-column full-justified aligned-line line-double-space line-space string-table headchar-capital
+E-Caption	on the question “What caused the Kursk to sink?”.	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	the same sentence score (similarity to the query), yet	page=6 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	the top ranking two sentences are not actually rele-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vant according to the judges. To contrast, LexRank	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	achieved a better ranking of the sentences since it is	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	better able to differentiate between them. It should	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	be noted that both for the LexRank and baseline sys-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems, chronological ordering of the documents and	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	sentences is preserved, such that in cases where two	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	sentences have the same score, the one published	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	earlier is ranked higher.	page=6 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	7 Conclusion	page=6 xpos=5 ypos=5 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We presented topic-sensitive LexRank and applied	page=6 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	it to the problem of sentence retrieval. In a Web-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based news summarization setting, users of our sys-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem could choose to see the retrieved sentences (as	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	in Table 9) as a question-focused summary. As in-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dicated in Table 9, each of the top three sentences	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	were judged by our annotators as providing a com-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plete answer to the respective question. While the	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	first two sentences provide the same answer (a col-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lision caused the Kursk to sink), the third sentence	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	provides a different answer (an explosion caused the	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	disaster). While the last two sentences do not pro-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vide answers according to our judges, they do pro-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vide context information about the situation. Alter-	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	natively, the user might prefer to see the extracted	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Table	__Table 9__	page=7 xpos=0 ypos=-1 left-column centered right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 9: Top ranked sentences using the	page=7 xpos=0 ypos=3 left-column full-justified aligned-line line-double-space line-space string-table headchar-capital
+I-Caption	LR[0.20,0.95] system on the question “What caused	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+E-Caption	the Kursk to sink?”	page=7 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	answers from the retrieved sentences. In this case,	page=7 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-comma
+I-Body	the sentences selected by our system would be sent	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	to an answer identification component for further	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	processing. As discussed in Section 2, our goal was	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	to develop a topic-sensitive version of LexRank and	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	to use it to improve a baseline system, which had	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	previously been used successfully for query-based	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	sentence retrieval (Allan et al., 2003). In terms of	page=7 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	this task, we have shown that over a large set of unal-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tered questions written by our annotators, LexRank	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	can, on average, outperform the baseline system,	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	particularly in terms of TRDR scores.	page=7 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	8 Acknowledgments	page=7 xpos=0 ypos=6 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-acknowledgement numbered-heading1 above-double-space above-line-space
+B-Body	We would like to thank the members of the CLAIR	page=7 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	group at Michigan and in particular Siwei Shen and	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	Yang Ye for their assistance with this project.	page=7 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=7 left-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	James Allan, Courtney Wade, and Alvaro Bolivar. 2003.	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Retrieval and novelty detection at the sentence level.	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-capital tailchar-period
+I-Reference	In SIGIR ’03: Proceedings of the 26th annual interna-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	tional ACM SIGIR conference on Research and devel-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	opment in informaion retrieval, pages 314–321. ACM	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Press.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Enrique Amigo, Julio Gonzalo, Victor Peinado, Anselmo	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Peñas, and Felisa Verdejo. 2004. An Empirical Study	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	of Information Synthesis Task. In Proceedings of the	page=7 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	922	page=7 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Reference	42nd Meeting of the Association for Computational	page=7 xpos=5 ypos=0 right-column left-indent font-smallest column-top
+I-Reference	Linguistics (ACL’04), Main Volume, pages 207–214,	page=7 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	Barcelona, Spain, July.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Sergey Brin and Lawrence Page. 1998. The anatomy of	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	a large-scale hypertextual Web search engine. Com-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line itemization headchar-lower tailchar-hiphen
+I-Reference	puter Networks and ISDN Systems, 30(1–7):107–117.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Jean Carletta. 1996. Assessing Agreement on Classifica-	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tion Tasks: The Kappa Statistic. CL, 22(2):249–254.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Gunes Erkan and Dragomir Radev. 2004. LexRank:	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-colon
+I-Reference	Graph-based Lexical Centrality as Salience in Text.	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-capital tailchar-period
+I-Reference	JAIR, 22:457–479.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Robert Gaizauskas, Mark Hepple, and Mark Greenwood.	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2004. Information Retrieval for Question Answering:	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year tailchar-colon
+I-Reference	a SIGIR 2004 Workshop. In SIGIR 2004 Workshop on	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line itemization year headchar-lower
+I-Reference	Information Retrieval for Question Answering.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Oren Kurland and Lillian Lee. 2005. PageRank without	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	hyperlinks: Structural re-ranking using links induced	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	by language models. In SIGIR 2005, Salvador, Brazil,	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-comma
+I-Reference	August.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	L. Page, S. Brin, R. Motwani, and T. Winograd. 1998.	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	The pagerank citation ranking: Bringing order to the	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	web. Technical report, Stanford University, Stanford,	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	CA.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Bo Pang and Lillian Lee. 2004. A Sentimental Educa-	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tion: Sentiment Analysis Using Subjectivity Summa-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	rization Based on Minimum Cuts. In Association for	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Computational Linguistics.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Dragomir Radev, Weiguo Fan, Hong Qi, Harris Wu, and	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Amardeep Grewal. 2005. Probabilistic Question An-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	swering on the Web. Journal of the American So-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ciety for Information Science and Technology, 56(3),	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	March.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Stephen E. Robertson, Steve Walker, Micheline	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Hancock-Beaulieu, Aarron Gull, and Marianna Lau.	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-capital tailchar-period
+I-Reference	1992. Okapi at TREC. In Text REtrieval Conference,	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line year tailchar-comma
+I-Reference	pages 21–30.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	G. Salton, J. Allan, and C. Buckley. 1993. Approaches	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	to Passage REtrieval in Full Text Information Systems.	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In Proceedings of the 16th Annual International ACM	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	SIGIR Conference on Research and Development in	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Information Retrieval, pages 49–58.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	E. Seneta. 1981. Non-negative matrices and markov	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	chains. Springer-Verlag, New York.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Ellen Voorhees and Dawn Tice. 2000. The TREC-8	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Question Answering Track Evaluation. In Text Re-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	trieval Conference TREC-8, Gaithersburg, MD.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Harris Wu, Dragomir R. Radev, and Weiguo Fan.	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2004. Towards Answer-focused Summarization Using	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line year
+I-Reference	Search Engines. New Directions in Question Answer-	page=7 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	ing.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period

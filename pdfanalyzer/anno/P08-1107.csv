@@ -1,0 +1,762 @@
+Title	Resolving Personal Names in Email Using Context Expansion	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-double-space above-line-space
+Author	Tamer Elsayed, <sup>∗</sup> Douglas W. Oard, † and Galileo Namata ∗	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space symbol-dagger headchar-capital
+B-Affiliation	Human Language Technology Center of Excellence and	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+I-Affiliation	UMIACS Laboratory for Computational Linguistics and Information Processing (CLIP)	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Affiliation	University of Maryland, College Park, MD 20742	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail year headchar-capital
+Email	{telsayed, oard, gnamata}@umd.edu	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-largest symbol-atmark column-bottom above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=1 left-column centered left-indent right-indent font-largest column-top line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	This paper describes a computational ap-	page=0 xpos=0 ypos=1 left-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	proach to resolving the true referent of a	page=0 xpos=0 ypos=1 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	named mention of a person in the body of an	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	email. A generative model of mention gener-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ation is used to guide mention resolution. Re-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sults on three relatively small collections indi-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cate that the accuracy of this approach com-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	pares favorably to the best known techniques,	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Abstract	and results on the full CMU Enron collection	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	indicate that it scales well to larger collections.	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=3 left-column right-indent font-largest hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The increasing prevalence of informal text from	page=0 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	which a dialog structure can be reconstructed (e.g.,	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	email or instant messaging), raises new challenges if	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	we are to help users make sense of this cacophony.	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Large collections offer greater scope for assembling	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	evidence to help with that task, but they pose addi-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tional challenges as well. With well over 100,000	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	unique email addresses in the CMU version of the	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	Enron collection (Klimt and Yang, 2004), common	page=0 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-capital
+I-Body	names (e.g., John) might easily refer to any one of	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	several hundred people. In this paper, we associate	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	named mentions in unstructured text (i.e., the body	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	of an email and/or the subject line) to modeled iden-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tities. We see at least two direct applications for this	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	work: (1) helping searchers who are unfamiliar with	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the contents of an email collection (e.g., historians or	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	lawyers) better understand the context of emails that	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	they find, and (2) augmenting more typical social	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	networks (based on senders and recipients) with ad-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ditional links based on references found in unstruc-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tured text.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Most approaches to resolving identity can be de-	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	composed into four sub-problems: (1) finding a ref-	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	erence that requires resolution, (2) identifying can-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	didates, (3) assembling evidence, and (4) choosing	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower above-line-space
+B-Footnote	<sup>∗</sup> Department of Computer Science	page=0 xpos=0 ypos=9 left-column left-indent right-indent font-larger indented-line shorter-tail line-space headchar-super
+B-Footnote	<sup>†</sup> College of Information Studies	page=0 xpos=0 ypos=9 left-column left-indent right-indent font-larger aligned-line shorter-tail symbol-dagger headchar-super above-double-space above-line-space
+Page	941	page=0 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-double-space line-space numeric-only column-bottom
+I-Body	among the candidates based on the evidence. For	page=0 xpos=5 ypos=1 right-column full-justified column-top headchar-lower
+I-Body	the work reported in this paper, we rely on the user	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	to designate references requiring resolution (which	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	we model as a predetermined set of mention-queries	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	for which the correct referent is known). Candidate	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	identification is a computational expedient that per-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mits the evidence assembly effort to be efficiently	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	focused; we use only simple techniques for that task.	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Our principal contributions are the approaches we	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	take to evidence generation (leveraging three ways	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	of linking to other emails where evidence might be	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	found: reply chains, social interaction, and topical	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	similarity) and our approach to choosing among can-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	didates (based on a generative model of reference	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	production). We evaluate the effectiveness of our	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	approach on four collections, three of which have	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	previously reported results for comparison, and one	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	that is considerably larger than the others.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The remainder of this paper is as follows. Sec-	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tion 2 surveys prior work. Section 3 then describes	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	our approach to modeling identity and ranking can-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	didates. Section 4 presents results, and Section 5	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	concludes.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Related Work	page=0 xpos=5 ypos=6 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The problem of identity resolution in email is a spe-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	cial case of the more general problem referred to as	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	“Entity Resolution.” Entity resolution is generically	page=0 xpos=5 ypos=6 right-column full-justified aligned-line
+I-Body	defined as a process of determining the mapping	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	from references (e.g., names, phrases) observed in	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	data to real-world entities (e.g., persons, locations).	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In our case, the problem is to map mentions in emails	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+E-Body	to the identities of the individuals being referred to.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower tailchar-period above-line-space
+B-Body	Various approaches have been proposed for en-	page=0 xpos=5 ypos=8 right-column left-indent indented-line line-space headchar-capital tailchar-hiphen
+I-Body	tity resolution. In structured data (e.g., databases),	page=0 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	approaches have included minimizing the number	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	of “matching” and “merging” operations (Benjel-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	loun et al., 2006), using global relational informa-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tion(Malin, 2005; Bhattacharya and Getoor, 2007;	page=0 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Reuther, 2006) and using a probabilistic generative	page=0 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-capital column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of ACL-08: HLT, pages 941–949,	page=0 xpos=3 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Footer	Columbus, Ohio, USA, June 2008.  2008 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail year headchar-capital page-bottom
+I-Body	model (Bhattacharya and Getoor, 2006). None of	page=1 xpos=0 ypos=0 left-column full-justified page-top year headchar-lower
+I-Body	these approaches, however, both make use of con-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	versational, topical, and time aspects, shown impor-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tant in resolving personal names (Reuther, 2006),	page=1 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	and take into account global relational informa-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. Similarly, approaches in unstructured data	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	(e.g., text) have involved using clustering techniques	page=1 xpos=0 ypos=1 left-column full-justified aligned-line
+I-Body	over biographical facts (Mann and Yarowsky, 2003),	page=1 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	within-document resolution (Blume, 2005), and dis-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	criminative unsupervised generative models (Li et	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	al., 2005). These too are insufficient for our prob-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	lem since they suffer from inability scale or to han-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	dle early negotiation.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Specific to the problem of resolving mentions in	page=1 xpos=0 ypos=2 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	email collections, Abadi (Abadi, 2003) used email	page=1 xpos=0 ypos=2 left-column full-justified hanged-line year headchar-lower
+I-Body	orders from an online retailer to resolve product	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	mentions in orders and Holzer et al. (Holzer et al.,	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2005) used the Web to acquire information about	page=1 xpos=0 ypos=3 left-column full-justified aligned-line year
+I-Body	individuals mentioned in headers of an email col-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lection. Our work is focused on resolving personal	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	name references in the full email including the mes-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sage body; a problem first explored by Diehl et al.	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	(Diehl et al., 2006) using header-based traffic anal-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	ysis techniques. Minkov et al.(Minkov et al., 2006)	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	studied the same problem using a lazy graph walk	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	based on both headers and content. Those two re-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cent studies reported results on different test collec-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions, however, making direct comparisons difficult.	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We have therefore adopted their test collections in	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+E-Body	order to establish a common point of reference.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Mention Resolution Approach	page=1 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The problem we are interested in is the resolution	page=1 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	of a personal-name mention (i.e., a named reference	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	to a person) m, in a specific email e <sup>m</sup> in the given	page=1 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	collection of emails E, to its true referent. We as-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sume that the user will designate such mention. This	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	can be formulated as a known-item retrieval problem	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	(Allen, 1989) since there is always only one right an-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	swer. Our goal is to develop a system that provides a	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	list of potential candidates, ranked according to how	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	strongly the system believes that a candidate is the	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	true referent meant by the email author. In this pa-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	per, we propose a probabilistic approach that ranks	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the candidates based on the estimated probability of	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	having been mentioned. Formally, we seek to esti-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mate the probability p(c|m) that a potential candi-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+Page	942	page=1 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-double-space line-space numeric-only column-bottom
+I-Body	date c is the one referred to by the given mention m,	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-comma
+E-Body	over all candidates C.	page=1 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We define a mention m as a tuple < l <sup>m</sup> , e m >,	page=1 xpos=5 ypos=0 right-column left-indent font-largest indented-line longer-tail headchar-capital tailchar-comma
+I-Body	where l <sup>m</sup> is the “literal” string of characters that rep-	page=1 xpos=5 ypos=0 right-column full-justified font-largest hanged-line headchar-lower tailchar-hiphen
+I-Body	resents m and e <sup>m</sup> is the email where m is observed. 1	page=1 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	We assume that m can be resolved to a distinguish-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	able participant for whom at least one email address	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	is present in the collection. <sup>2</sup>	page=1 xpos=5 ypos=1 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+B-Body	The probabilistic approach we propose is moti-	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	vated by a generative scenario of mentioning people	page=1 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	in email. The scenario begins with the author of the	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	email e <sup>m</sup> , intending to refer to a person in that email.	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	To do that s/he will:	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-colon above-double-space above-line-space
+B-Listitem	1. Select a person c to whom s/he will refer	page=1 xpos=5 ypos=2 right-column left-indent right-indent indented-line longer-tail line-double-space line-space itemization above-double-space above-line-space
+B-Listitem	2. Select an appropriate context x <sub>k</sub> to mention c	page=1 xpos=5 ypos=3 right-column left-indent right-indent font-largest aligned-line longer-tail line-double-space line-space itemization above-double-space above-line-space
+B-Listitem	3. Select a specific lexical reference l <sup>m</sup> to refer to	page=1 xpos=5 ypos=3 right-column left-indent font-largest aligned-line longer-tail line-double-space line-space itemization
+I-Listitem	c given the context x <sub>k</sub> .	page=1 xpos=5 ypos=3 right-column left-indent right-indent font-largest indented-line shorter-tail itemization headchar-lower tailchar-period above-double-space above-line-space
+B-Body	For example, suppose “John” is sending an email	page=1 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	to “Steve” and wants to mention a common friend	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	“Edward.” “John” knows that he and Steve know	page=1 xpos=5 ypos=4 right-column full-justified aligned-line
+I-Body	2 people named Edward, one is a friend of both	page=1 xpos=5 ypos=4 right-column full-justified aligned-line numbered-heading1
+I-Body	known by “Ed” and the other is his soccer trainer.	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	If “John” would like to talk about the former, he	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	would use “Ed” but he would likely use “Edward”	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	plus some terms (e.g., “soccer”, “team”, etc) for the	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	latter. “John” relies on the social context, or the topi-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cal context, for “Steve” to disambiguate the mention.	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	The steps of this scenario impose a certain struc-	page=1 xpos=5 ypos=5 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Body	ture to our solution. First, we need to have a	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	representational model for each candidate identity.	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Second, we need to reconstruct the context of the	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	queried mention. Third, it requires a computational	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	model of identity that supports reasoning about iden-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tities. Finally, it requires a resolution technique that	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	leverages both the identity models and the context	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	to rank the potential candidates. In this section,	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we will present our resolution approach within that	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	structure. We first discuss how to build both repre-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sentational and computational models of identity in	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	section 3.1. Next, we introduce a definition of the	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	contextual space and how we can reconstruct it in	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> The exact position in e <sup>m</sup> where l m is observed should also	page=1 xpos=5 ypos=8 right-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	be included in the definition, but we ignore it assuming that all	page=1 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	matched literal mentions in one email refer to the same identity.	page=1 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower tailchar-period
+B-Footnote	<sup>2</sup> Resolving mentions that refer to non-participants is outside	page=1 xpos=5 ypos=9 right-column left-indent indented-line headchar-super
+I-Footnote	the scope of this paper.	page=1 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period page-bottom
+I-Body	section 3.2. Finally, we link those pieces together	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+E-Body	by the resolution algorithm in section 3.3.	page=2 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 Computational Model of Identity	page=2 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Representation: In a collection of emails, indi-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	viduals often use different email addresses, multi-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ple forms of their proper names, and different nick-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	names. In order to track references to a person over	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	a large collection, we need to capture as many as	page=2 xpos=0 ypos=1 left-column full-justified aligned-line itemization headchar-lower
+I-Body	possible of these referential attributes in one rep-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resentation. We extend our simple representation	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	of identity proposed in (Elsayed and Oard, 2006)	page=2 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Body	where an identity is represented by a set of pair-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	wise co-occurrence of referential attributes (i.e., co-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	occurrence “associations”), and each extracted as-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sociation has a frequency of occurrence. The at-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tributes are extracted from the headers and saluta-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion and signature lines. For example, an “address-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nickname” association < a, n > is inferred when-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ever a nickname n is usually observed in signature	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	lines of emails sent from email address a. Three	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	types of referential attributes were identified in the	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	original representation: email addresses, names, and	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	nicknames. We add usernames as well to account	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	for the absence of any other type of names. Names,	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	nicknames, and usernames are distinguishable based	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	on where each is extracted: email addresses and	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	names from headers, nicknames from salutation	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	and signature lines, and usernames from email ad-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dresses. Since (except in rare cases) an email ad-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dress is bound to one personal identity, the model	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	leverages email addresses as the basis by mandat-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing that at least one email address must appear in	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	any observed association. As an off-line preprocess-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing step, we extract the referential attributes from the	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	whole collection and build the identity models. The	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	first step in the resolution process is to determine the	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	list of identity models that are viable candidates as	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the true referent. For the experiments reported in this	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	paper, any identity model with a first name or nick-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	name that exactly matches the mention is considered	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	a candidate.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period
+B-Body	Labeling Observed Names: For the purpose of re-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Body	solving name mentions, it is necessary to compute	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the probability p(l|c) that a person c is referred to by	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	a given “literal” mention l. Intuitively, that probabil-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	ity can be estimated based on the observed “name-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	type” of l and how often that association occurs in	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+Page	943	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-double-space line-space numeric-only column-bottom
+I-Body	the represented model. We define T as the set of	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	3 different types of single-token name-types: first,	page=2 xpos=5 ypos=0 right-column full-justified aligned-line numbered-heading1 tailchar-comma
+I-Body	last, and nickname. We did not handle middle names	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	and initials, just for simplicity. Names that are ex-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tracted from salutation and signature lines are la-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	beled as nicknames whereas full names extracted	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	from headers are first normalized to “First Last”	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	form and then each single token is labeled based on	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	its relative position as being the first or last name.	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Usernames are treated similarly to full names if they	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	have more than one token, otherwise they are ig-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nored. Note that the same single-token name may	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	appear as a first name and a nickname.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 1__	page=2 xpos=6 ypos=2 right-column left-indent right-indent box indented-line shorter-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 1: A computational model of identity.	page=2 xpos=5 ypos=3 right-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space string-figure headchar-capital tailchar-period above-double-space above-line-space
+B-Body	Reasoning: Having tokenized and labeled all	page=2 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	names, we propose to model the association of a	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	single-token name l of type t to an identity c by a	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	simple 3-node Bayesian network illustrated in Fig-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ure 1. In the network, the observed mention l is	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	distributed conditionally on both the identity c and	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the name-type t. p(c) is the prior probability of ob-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	serving the identity c in the collection. p(t|c) is the	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	probability that a name-type t is used to refer to c.	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	p(l|t, c) is the probability of referring to c by l of	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	type t. These probabilities can be inferred from the	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	representational model as follows:	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	|assoc(c)|	page=2 xpos=7 ypos=6 right-column left-indent right-indent font-larger indented-line shorter-tail
+I-Equation	p(c) = <sub>P</sub> <sub>c</sub> 0 ∈C |assoc(c 0 )|	page=2 xpos=6 ypos=6 right-column left-indent right-indent font-largest hanged-line longer-tail headchar-lower
+I-Equation	f req(t, c)	page=2 xpos=7 ypos=6 right-column left-indent right-indent indented-line shorter-tail itemization headchar-lower
+I-Equation	p(t|c) = <sub>P</sub> <sub>t</sub> 0 ∈T f req(t 0 , c)	page=2 xpos=6 ypos=7 right-column left-indent right-indent font-largest hanged-line longer-tail headchar-lower
+I-Equation	f req(l, t, c)	page=2 xpos=7 ypos=7 right-column left-indent right-indent indented-line itemization headchar-lower
+I-Equation	p(l|t, c) = <sub>P</sub> <sub>l</sub> 0 ∈assoc(c) f req(l 0 , t, c)	page=2 xpos=5 ypos=7 right-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-lower
+I-Body	where assoc(c) is the set of observed associations of	page=2 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail headchar-lower
+E-Body	referential attributes in the represented model c.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The probability of observing a mention l given	page=2 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	that it belongs to an identity c, without assuming a	page=2 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	specific token type, can then be inferred as follows:	page=2 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower tailchar-colon
+B-Equation	p(l|c) = <sup>X</sup> p(t|c) p(l|t, c)	page=2 xpos=6 ypos=8 right-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-lower above-line-space
+I-Equation	t∈T	page=2 xpos=7 ypos=9 right-column left-indent right-indent font-smallest indented-line shorter-tail line-space headchar-lower
+B-Body	In the case of a multi-token names (e.g., John	page=2 xpos=5 ypos=9 right-column full-justified hanged-line longer-tail headchar-capital
+I-Body	Smith), we assume that the first is either a first name	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital page-bottom
+I-Body	or nickname and the last is a last name, and compute	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	it accordingly as follows:	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	p(l <sub>1</sub> l 2 |c) = { <sup>X</sup> p(t|c) p(l 1 |t, c)} · p(l 2 |last, c)	page=3 xpos=0 ypos=0 left-column centered left-indent right-indent font-largest longer-tail headchar-lower above-line-space
+I-Equation	t∈{f,n}	page=3 xpos=1 ypos=0 left-column left-indent right-indent font-smallest indented-line shorter-tail line-space headchar-lower above-line-space
+I-Body	where f and n above denotes first name and nick-	page=3 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-space headchar-lower tailchar-hiphen
+E-Body	name respectively.	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Email addresses are also handled, but in a differ-	page=3 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ent way. Since we assume each of them uniquely	page=3 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	identifies the identity, all email addresses for one	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	identity are mapped to just one of them, which then	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	has half of the probability mass (because it appears	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	in every extracted co-occurrence association).	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our computational model of identity can be	page=3 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	thought of as a language model over a set of per-	page=3 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sonal references and thus it is important to account	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	for unobserved references. If we know that a spe-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cific first name often has a common nickname (by a	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	dictionary of commonly used first to nickname map-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pings (e.g., Robert to Bob)), but this nickname was	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	not observed in the corpus, we will need to apply	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	smoothing. We achieve that by assuming the nick-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	name would have been observed n times where n is	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	some fraction (0.75 in our experiments) of the fre-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quency of the observed name. We repeat that for	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	each unobserved nickname and then treat them as if	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	they were actually observed.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Contextual Space	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+Figure	__Figure 2__	page=3 xpos=0 ypos=5 left-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 2: Contextual Space	page=3 xpos=1 ypos=7 left-column centered left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space string-figure headchar-capital
+B-Body	It is obvious that understanding the context of an	page=3 xpos=0 ypos=7 left-column left-indent hanged-line longer-tail headchar-capital
+E-Body	ambiguous mention will help with resolving it.	page=3 xpos=0 ypos=7 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-period
+B-Body	Fortunately, the nature of email as a conversa-	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tional medium and the link-relationships between	page=3 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	emails and people over time can reveal clues that can	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	be exploited to partially reconstruct that context.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We define the contextual space X(m) of a men-	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tion m as a mixture of 4 types of contexts with λ <sub>k</sub> as	page=3 xpos=0 ypos=9 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	the mixing coefficient of context x <sub>k</sub> . The four con-	page=3 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	texts (illustrated in Figure 2) are:	page=3 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+Page	944	page=3 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-double-space line-space numeric-only column-bottom
+B-Listitem	(1) Local Context: the email e <sup>m</sup> where the named	page=3 xpos=5 ypos=0 right-column full-justified font-largest column-top itemization
+I-Listitem	person is mentioned.	page=3 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	(2) Conversational Context: emails in the broader	page=3 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail itemization
+I-Listitem	discussion that includes e <sup>m</sup> , typically the thread that	page=3 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	contains it.	page=3 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	(3) Social Context: discussions that some or all of	page=3 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail itemization
+I-Listitem	the participants (sender and receivers) of e <sup>m</sup> joined	page=3 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	or initiated at around the time of the mention-email.	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Listitem	These might bear some otherwise-undetected rela-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Listitem	tionship to the mention-email.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	(4) Topical Context: discussions that are topically	page=3 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail itemization
+I-Listitem	similar to the mention-discussion that took place at	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Listitem	around the time of e <sup>m</sup> , regardless of whether the dis-	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Listitem	cussions share any common participants.	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	These generally represent a growing (although not	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	strictly nested) contextual space around the queried	page=3 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	mention. We assume that all mentions in an email	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	share the same contextual space. Therefore, we can	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	treat the context of a mention as the context of its	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	email. However, each email in the collection has	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	its own contextual space that could overlap with an-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	other email’s space.	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	3.2.1 Formal Definition	page=3 xpos=5 ypos=4 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading3 above-line-space
+B-Body	We define K as the set of the 4 types of contexts.	page=3 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-period
+I-Body	A context x <sub>k</sub> is represented by a probability distri-	page=3 xpos=5 ypos=5 right-column full-justified font-largest hanged-line headchar-capital tailchar-hiphen
+I-Body	bution over all emails in the collection. An email e <sub>j</sub>	page=3 xpos=5 ypos=5 right-column centered right-indent font-largest aligned-line headchar-lower
+I-Body	belongs to the k <sup>th</sup> context of another email e <sub>i</sub> with	page=3 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	probability p(e <sub>j</sub> |x <sub>k</sub> (e i )). How we actually represent	page=3 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	each context and estimate the distribution depends	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	upon the type of the context. We explain that in de-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tail in section 3.2.2.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	3.2.2 Context Reconstruction	page=3 xpos=5 ypos=6 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading3 above-line-space
+B-Body	In this section, we describe how each context is	page=3 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	constructed.	page=3 xpos=5 ypos=7 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-period
+B-Body	Local Context: Since this is simply e <sup>m</sup> , all of the	page=3 xpos=5 ypos=7 right-column full-justified font-largest aligned-line longer-tail headchar-capital
+E-Body	probability mass is assigned to it.	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Conversational Context: Threads (i.e., reply	page=3 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	chains) are imperfect approximations of focused	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	discussions, since people sometimes switch topics	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	within a thread (and indeed sometimes within the	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	same email). We nonetheless expect threads to ex-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	hibit a useful degree of focus and we have there-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fore adopted them as a computational representation	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	of a discussion in our experiments. To reconstruct	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	threads in the collection, we adopted the technique	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	introduced in (Lewis and Knowles, 1997). Thread	page=3 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-lower page-bottom
+I-Body	reconstruction results in a unique tree containing the	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	mention-email. Although we can distinguish be-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tween different paths or subtrees of that tree, we	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	elected to have a uniform distribution over all emails	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	in the same thread. This also applies to threads re-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	trieved in the social and topical contexts as well.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Social Context: Discussions that share common	page=4 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	participants may also be useful, though we expect	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	their utility to decay somewhat with time. To recon-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	struct that context, we temporally rank emails that	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	share at least one participant with e <sup>m</sup> in a time pe-	page=4 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	riod around e <sup>m</sup> and then expand each by its thread	page=4 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	(with duplicate removal). Emails in each thread are	page=4 xpos=0 ypos=2 left-column full-justified aligned-line
+I-Body	then each assigned a weight that equals the recip-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rocal of its thread rank. We do that separately for	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	emails that temporally precede or follow e <sup>m</sup> . Fi-	page=4 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	nally, weights are normalized to produce one distri-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	bution for the whole social context.	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Topical Context: Identifying topically-similar con-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tent is a traditional query-by-example problem that	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	has been well researched in, for example, the TREC	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	routing task (Lewis, 1996) and the Topic Detection	page=4 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	and Tracking evaluations (Allan, 2002). Individual	page=4 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	emails may be quite terse, but we can exploit the	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	conversational structure to obtain topically related	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	text. In our experiments, we tracked back to the	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	root of the thread in which e <sup>m</sup> was found and used	page=4 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the subject line and the body text of that root email	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	as a query to Lucene <sup>3</sup> to identify topically-similar	page=4 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	emails. Terms found in the subject line are dou-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bled in the query to emphasize what is sometimes	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	a concise description of the original topic. Subse-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	quent processing is then similar to that used for the	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	social context, except that the emails are first ranked	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	by their topical, rather than temporal, similarity.	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The approaches we adopted to reconstruct the so-	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	cial and topical contexts were chosen for their rel-	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ative simplicity, but there are clearly more sophis-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ticated alternatives. For example, topic modeling	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	techniques (McCallum et al., 2005) could be lever-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+E-Body	aged in the reconstruction of the topical context.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.3 Mention Resolution	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Given a specific mention m and the set of identity	page=4 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	models C, our goal now is to compute p(c|m) for	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	each candidate c and rank them accordingly.	page=4 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>3</sup> http://lucene.apache.org	page=4 xpos=0 ypos=9 left-column left-indent right-indent indented-line shorter-tail line-double-space line-space headchar-super above-double-space above-line-space
+Page	945	page=4 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-double-space line-space numeric-only column-bottom
+B-SubsubsectionHeader	3.3.1 Context-Free Mention Resolution	page=4 xpos=5 ypos=0 right-column right-indent column-top numbered-heading3 above-line-space
+B-Body	If we resolve m out of its context, then we can	page=4 xpos=5 ypos=0 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	compute p(c|m) by applying Bayes’ rule as follows:	page=4 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-colon
+B-Equation	p(c|m) ≈ p(c|l <sup>m</sup> ) = <sub>P</sub> <sub>c</sub> 0 ∈C <sup>p(l</sup> p(l <sup>m</sup> |c) m |c p(c) 0 ) p(c 0 )	page=4 xpos=5 ypos=0 right-column centered left-indent right-indent box indented-line shorter-tail headchar-lower
+B-Body	All the terms above are estimated as discussed ear-	page=4 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Body	lier in section 3.1. We call this approach “backoff”	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	since it can be used as a fall-back strategy. It is con-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sidered the baseline approach in our experiments.	page=4 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	3.3.2 Contextual Mention Resolution	page=4 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading3 above-line-space
+B-Body	We now discuss the more realistic situation in	page=4 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	which we use the context to resolve m. By expand-	page=4 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ing the mention with its context, we get	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Equation	p(c|m) = p(c|l <sup>m</sup> , X(e m ))	page=4 xpos=6 ypos=2 right-column centered left-indent right-indent font-largest indented-line headchar-lower above-line-space
+B-Body	We then apply Bayes’ rule to get	page=4 xpos=5 ypos=3 right-column right-indent hanged-line shorter-tail line-space headchar-capital
+B-Equation	p(c|l <sup>m</sup> , X(e m )) = p(c, l <sup>m</sup> , X(e m ))	page=4 xpos=5 ypos=3 right-column centered left-indent right-indent font-largest indented-line longer-tail headchar-lower
+I-Equation	p(l <sup>m</sup> , X(e m ))	page=4 xpos=7 ypos=3 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower
+I-Body	where p(l <sup>m</sup> , X(e m )) is the probability of observ-	page=4 xpos=5 ypos=3 right-column full-justified font-largest hanged-line longer-tail headchar-lower tailchar-hiphen
+I-Body	ing l <sup>m</sup> in the context. We can ignore this probabil-	page=4 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ity since it is constant across all candidates in our	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	ranking. We now restrict our focus to the numera-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tor p(c, l <sup>m</sup> , X(e m )), that is the probability that the	page=4 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	sender chose to refer to c by l <sup>m</sup> in the contextual	page=4 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	space. As we discussed in section 3.2, X is defined	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	as a mixture of contexts therefore we can further ex-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pand it as follows:	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	p(c, l <sup>m</sup> , X(e m )) = <sup>X</sup> λ <sub>k</sub> p(c, l m , x k (e m ))	page=4 xpos=5 ypos=5 right-column centered left-indent right-indent font-largest indented-line longer-tail headchar-lower above-line-space
+I-Equation	k	page=4 xpos=7 ypos=5 right-column left-indent right-indent font-smallest indented-line shorter-tail line-space headchar-lower
+B-Body	Following the intuitive generative scenario we intro-	page=4 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Body	duced earlier, the context-specific probability can be	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	decomposed as follows:	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	p(c, l <sup>m</sup> , x <sub>k</sub> (e m )) = p(c)	page=4 xpos=5 ypos=6 right-column left-indent right-indent font-largest indented-line longer-tail headchar-lower
+I-Equation	∗ p(x <sub>k</sub> (e <sup>m</sup> )|c)	page=4 xpos=7 ypos=6 right-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	∗ p(l <sup>m</sup> |x <sub>k</sub> (e m ), c)	page=4 xpos=7 ypos=7 right-column left-indent right-indent font-largest aligned-line longer-tail
+I-Body	where p(c) is the probability of selecting a can-	page=4 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail headchar-lower tailchar-hiphen
+I-Body	didate c, p(x <sub>k</sub> (e <sup>m</sup> )|c) is the probability of select-	page=4 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ing x <sub>k</sub> as an appropriate context to mention c, and	page=4 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	p(l <sup>m</sup> |x <sub>k</sub> (e m ), c) is the probability of choosing to	page=4 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	mention c by l <sup>m</sup> given that x <sub>k</sub> is the appropriate con-	page=4 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	text.	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Choosing person to mention: p(c) can be estimated	page=4 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail headchar-capital
+E-Body	as discussed in section 3.1.	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Choosing appropriate context: By applying Bayes’	page=4 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	rule to compute p(x <sub>k</sub> (e <sup>m</sup> )|c) we get	page=4 xpos=5 ypos=9 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+B-Equation	p(x <sub>k</sub> (e <sup>m</sup> )|c) = <sup>p(c|x</sup> k (e <sup>m</sup> <sub>p(c)</sub> )) p(x k (e m ))	page=4 xpos=5 ypos=9 right-column centered left-indent right-indent font-largest indented-line longer-tail headchar-lower page-bottom
+B-Body	p(x <sub>k</sub> (e <sup>m</sup> )) is the probability of choosing x k to gen-	page=5 xpos=0 ypos=0 left-column full-justified font-largest page-top headchar-lower tailchar-hiphen
+I-Body	erally mention people. In our experiments, we	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	assumed a uniform distribution over all contexts.	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	p(c|x <sub>k</sub> (e <sup>m</sup> )) is the probability of mentioning c in	page=5 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	x <sub>k</sub> (e <sup>m</sup> ). Given that the context is defined as a distri-	page=5 xpos=0 ypos=0 left-column full-justified font-largest aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	bution over emails, this can be expanded to	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower above-line-space
+B-Equation	p(c|x <sub>k</sub> (e <sup>m</sup> )) = <sup>X</sup> p(e i |x k (e m ) p(c|e i ))	page=5 xpos=0 ypos=1 left-column centered left-indent right-indent font-largest indented-line longer-tail line-space headchar-lower
+I-Equation	e <sub>i</sub> ∈E	page=5 xpos=1 ypos=1 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower above-line-space
+I-Body	where p(c|e <sub>i</sub> ) is the probability that c is mentioned	page=5 xpos=0 ypos=1 left-column full-justified font-largest hanged-line longer-tail line-space headchar-lower
+I-Body	in the email e <sub>i</sub> . This, in turn, can be estimated us-	page=5 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the probability of referring to c by at least one	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	unique reference observed in that email. By assum-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing that all lexical matches in the same email refer to	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the same person, and that all lexically-unique refer-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ences are statistically independent, we can compute	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	that probability as follows:	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	p(c|e <sub>i</sub> ) = 1 − p(c is not mentioned in e i )	page=5 xpos=0 ypos=3 left-column centered left-indent right-indent font-largest indented-line longer-tail line-space headchar-lower above-line-space
+I-Equation	=1 − <sup>Y</sup> (1 − p(c|m 0 ))	page=5 xpos=1 ypos=3 left-column left-indent right-indent font-largest indented-line shorter-tail line-space above-line-space
+I-Equation	m 0 ∈M (e <sub>i</sub> )	page=5 xpos=1 ypos=3 left-column left-indent right-indent font-largest indented-line shorter-tail line-space itemization headchar-lower
+I-Body	where p(c|m <sup>0</sup> ) is the probability that c is the true	page=5 xpos=0 ypos=4 left-column full-justified font-largest hanged-line longer-tail headchar-lower
+I-Body	referent of m <sup>0</sup> . This is the same general problem	page=5 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	of resolving mentions, but now concerning a related	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	mention m <sup>0</sup> found in the context of m. To handle	page=5 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	this, there are two alternative solutions: (1) break the	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	cycle and compute context-free resolution probabil-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ities for those related mentions, or (2) jointly resolve	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	all mentions. In this paper, we will only consider the	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	first, leaving joint resolution for future work.	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Choosing a name-mention: To estimate	page=5 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	p(l <sup>m</sup> |x <sub>k</sub> (e m ), c), we suggest that the email au-	page=5 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	thor would choose either to select a reference (or a	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	modified version of a reference) that was previously	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	mentioned in the context or just ignore the context.	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Hence, we estimate that probability as follows:	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-colon
+B-Equation	p(l <sup>m</sup> |x <sub>k</sub> (e m ), c) = α p(l m ∈ x k (e m )|c)	page=5 xpos=0 ypos=7 left-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-lower
+I-Equation	+(1 − α) p(l <sup>m</sup> |c)	page=5 xpos=2 ypos=7 left-column left-indent right-indent font-largest indented-line above-line-space
+I-Body	where α ∈ [0, 1] is a mixing parameter (set at 0.9	page=5 xpos=0 ypos=7 left-column full-justified font-larger hanged-line longer-tail line-space headchar-lower
+I-Body	in our experiments), and p(l <sup>m</sup> |c) is estimated as in	page=5 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	section 3.1. p(l <sup>m</sup> ∈ x <sub>k</sub> (e m )|c) can be estimated as	page=5 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	follows:	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	p(l <sup>m</sup> ∈ x <sub>k</sub> (e m )|c) =	page=5 xpos=2 ypos=8 left-column left-indent right-indent font-largest indented-line longer-tail headchar-lower
+I-Equation	<sup>X</sup> p(l m |l m <sup>0</sup> )p(l m 0 |x <sub>k</sub> ) p(c|l m 0 )	page=5 xpos=0 ypos=8 left-column left-indent right-indent font-largest hanged-line headchar-super
+I-Equation	m 0 ∈x <sub>k</sub>	page=5 xpos=0 ypos=8 left-column left-indent right-indent font-largest hanged-line shorter-tail itemization headchar-lower
+I-Body	where p(l <sup>m</sup> |l m <sup>0</sup> ) is the probability of modifying l m 0	page=5 xpos=0 ypos=9 left-column right-indent font-largest hanged-line longer-tail headchar-lower
+I-Body	into l <sup>m</sup> . We assume all possible mentions of c	page=5 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower above-double-space above-line-space
+Page	946	page=5 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-double-space line-space numeric-only column-bottom
+I-Body	are equally similar to m and estimate p(l <sup>m</sup> |l m <sup>0</sup> ) by	page=5 xpos=5 ypos=0 right-column full-justified font-largest column-top headchar-lower
+I-Body	|possible mentions of c| . <sup>p(l</sup> <sup>m</sup> <sup>0</sup> |x k ) is the probability of	page=5 xpos=5 ypos=0 right-column centered left-indent font-largest
+I-Body	1	page=5 xpos=5 ypos=0 right-column left-indent right-indent font-smallest indented-line shorter-tail numeric-only above-double-space above-line-space
+I-Body	observing l <sup>m</sup> <sup>0</sup> in x <sub>k</sub> , which we estimate by its rel-	page=5 xpos=5 ypos=0 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ative frequency in that context. Finally, p(c|l <sup>m</sup> <sup>0</sup> ) is	page=5 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	again a mention resolution problem concerning the	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	reference r <sub>i</sub> which can be resolved as shown earlier.	page=5 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower tailchar-period
+B-Body	The Aho-Corasick linear-time algorithm (Aho	page=5 xpos=5 ypos=1 right-column left-indent indented-line headchar-capital
+I-Body	and Corasick, 1975) is used to find mentions of	page=5 xpos=5 ypos=1 right-column full-justified hanged-line year headchar-lower
+I-Body	names, using a corpus-based dictionary that includes	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	all names, nicknames, and email addresses extracted	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	in the preprocessing step.	page=5 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Experimental Evaluation	page=5 xpos=5 ypos=2 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We evaluate our mention resolution approach using	page=5 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	four test collections, all are based on the CMU ver-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sion of the Enron collection; each was created by se-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lecting a subset of that collection, selecting a set of	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	query-mentions within emails from that subset, and	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	creating an answer key in which each query-mention	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	is associated with a single email address.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The first two test collections were created by	page=5 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	Minkov et al (Minkov et al., 2006). These test col-	page=5 xpos=5 ypos=4 right-column full-justified hanged-line year headchar-capital tailchar-hiphen
+I-Body	lections correspond to two email accounts, “sager-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	e” (the “Sager” collection) and “shapiro-r” (the	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	“Shapiro” collection). Their mention-queries and	page=5 xpos=5 ypos=5 right-column full-justified aligned-line
+I-Body	answer keys were generated automatically by iden-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tifying name mentions that correspond uniquely to	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	individuals referenced in the cc header, and elimi-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	nating that cc entry from the header.	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The third test collection, which we call the	page=5 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	“Enron-subset” is an extended version of the test	page=5 xpos=5 ypos=6 right-column full-justified hanged-line
+I-Body	collection created by Diehl at al (Diehl et al., 2006).	page=5 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	Emails from all top-level folders were included	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	in the collection, but only those that were both	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	sent by and received by at least one email address	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	of the form <name1>.<name2>@enron.com were	page=5 xpos=5 ypos=7 right-column full-justified aligned-line symbol-atmark headchar-lower
+I-Body	retained. A set of 78 mention-queries were manu-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ally selected and manually associated with the email	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	address of the true referent by the third author using	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	an interactive search system developed specifically	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	to support that task. The set of queries was lim-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ited to those that resolve to an address of the form	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	<name1>.<name2>@enron.com. Names found in	page=5 xpos=5 ypos=8 right-column full-justified aligned-line symbol-atmark
+I-Body	salutation or signature lines or that exactly match	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	<name1> or <name2> of any of the email partic-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line tailchar-hiphen
+I-Body	ipants were not selected as query-mentions. Those	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	78 queries include the 54 used by Diehl et al.	page=5 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail numbered-heading1 tailchar-period page-bottom
+Table	__Table 1__	page=6 xpos=-1 ypos=-2 left-column left-over right-over box page-top table-area above-blank-line above-double-space above-line-space
+B-Body	For our fourth test collection (“Enron-all”), we	page=6 xpos=0 ypos=0 left-column left-indent indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	used the same 78 mention-queries and the answer	page=6 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	key from the Enron-subset collection, but we used	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	the full CMU version of the Enron collection (with	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	duplicates removed). We use this collection to as-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sess the scalability of our techniques.	page=6 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Some descriptive statistics for each test collection	page=6 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	are shown in Table 1. The Sager and Shapiro col-	page=6 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	lections are typical of personal collections, while	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the other two represent organizational collections.	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	These two types of collections differ markedly in	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	the number of known identities and the candidate	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	list sizes as shown in the table (the candidate list	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	size is presented as an average over that collection’s	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	mention-queries and as the full range of values).	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Evaluation Measures	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	There are two commonly used single-valued eval-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	uation measures for “known item”-retrieval tasks.	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The “Success @ 1” measure characterizes the ac-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line symbol-atmark headchar-capital tailchar-hiphen
+I-Body	curacy of one-best selection, computed as the mean	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	across queries of the precision at the top rank for	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	each query. For a single-valued figure of merit that	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	considers every list position, we use “Mean Recip-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rocal Rank” (MRR), computed as the mean across	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	queries of the inverse of the rank at which the cor-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	rect referent is found.	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Results	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	There are four basic questions which we address in	page=6 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	our experimental evaluation: (1) How does our ap-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach perform compared to other approaches?, (2)	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	How is it affected by the size of the collection and	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	by increasing the time period?, (3) Which context	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	makes the most important contribution to the resolu-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion task? and (4) Does the mixture help?	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Body	In our experiments, we set the mixing coefficients	page=6 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	λ <sub>k</sub> and the context priors p(x k ) to a uniform distri-	page=6 xpos=0 ypos=8 left-column full-justified font-largest hanged-line tailchar-hiphen
+E-Body	bution over all reconstructed contexts.	page=6 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To compare our system performance with results	page=6 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital above-double-space above-line-space
+Page	947	page=6 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-double-space line-space numeric-only column-bottom
+Table	__Table 2__	page=6 xpos=4 ypos=-2 right-column left-over right-over box column-top table-area above-blank-line above-double-space above-line-space
+I-Body	previously reported, we experimented with differ-	page=6 xpos=5 ypos=2 right-column full-justified indented-line line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ent (symmetric) time periods for selecting threads	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	in the social and topical contexts. Three represen-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tative time periods, in days, were arbitrarily chosen:	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-colon
+I-Body	10 (i.e., +/- 5) days, 100 (i.e., +/- 50) days, and 200	page=6 xpos=5 ypos=3 right-column full-justified aligned-line numbered-heading1
+I-Body	(i.e., +/- 100) days. In each case, the mention-email	page=6 xpos=5 ypos=3 right-column full-justified aligned-line
+E-Body	defines the center of this period.	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	A summary of the our results (denoted by “Prob.”)	page=6 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	are shown in Table 2 with the best results for each	page=6 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	test collection highlighted in bold. The table also in-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cludes the results reported in Minkov et al (Minkov	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	et al., 2006) for the small collections for comparison	page=6 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	purposes. <sup>4</sup> Each score for our system was the best	page=6 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	over all combinations of contexts for these collec-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions and time periods. Given these scores, our re-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults compare favorably with the previously reported	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	results for both Sager and Shapiro collections.	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Another notable thing about our results is that	page=6 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	they seem to be good enough for practical appli-	page=6 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	cations. Specifically, our one-best selection (over	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	all tried conditions) is correct at least 82% of the	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	time over all collections, including the largest one.	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Of course, the Enron-focused selection of mention-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	queries in every case is an important caveat on these	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	results; we do not yet know how well our techniques	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	will hold up with less evidence, as might be the case	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	for mentions of people from outside Enron.	page=6 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	It is encouraging that testing on the largest col-	page=6 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>4</sup> For the “Enron-subset” collection, we do not know which	page=6 xpos=5 ypos=9 right-column left-indent line-double-space line-space headchar-super
+I-Footnote	54 mention-queries Diehl et al used in (Diehl et al., 2006)	page=6 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail numbered-heading1 year page-bottom
+I-Body	lection (with all unrelated and thus noisy data) did	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	not hurt the effectiveness much. For the three differ-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ent time periods we tried, there was no systematic	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	effect.	page=7 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 3__	page=7 xpos=0 ypos=0 left-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 3: Individual contexts, period set to 100 days.	page=7 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest line-double-space line-space string-figure headchar-capital tailchar-period above-double-space above-line-space
+B-Body	Individual Contexts: Our choice of contexts was	page=7 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	motivated by intuition rather than experiments, so	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	we also took this opportunity to characterize the	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	contribution of each context to the results. We	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	did that by setting some of the context mixing-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	coefficients to zero and leaving the others equally-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	weighted. Figure 3 shows the MRR achieved with	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	each context. In that figure, the “backoff” curve in-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dicates how well the simple context-free resolution	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	would do. The difference between the two small-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	est and the two largest collections is immediately	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	apparent–this backoff is remarkably effective for the	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	smaller collections, and almost useless for the larger	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	ones, suggesting that the two smaller collections are	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	essentially much easier. The social context is clearly	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	quite useful, more so than any other single context,	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	for every collection. This tends to support our ex-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pectation that social networks can be as informative	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	as content networks in email collections. The topical	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	context also seems to be useful on its own. The con-	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	versational context is moderately useful on its own	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	in the larger collections. The local context alone is	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	not very informative for the larger collections.	page=7 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Mixture of Contexts: The principal motivation for	page=7 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	combining different types of contexts is that differ-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ent sources may provide complementary evidence.	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	To characterize that effect, we look at combinations	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	of contexts. Figure 4 shows three such context com-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	binations, anchored by the social context alone, with	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	a 100-day window (the results for 10 and 200 day	page=7 xpos=0 ypos=9 left-column full-justified aligned-line itemization headchar-lower
+I-Body	periods are similar). Reassuringly, adding more con-	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	texts (hence more evidence) turns out to be a rea-	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+Page	948	page=7 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-double-space line-space numeric-only column-bottom
+Figure	__Figure 4__	page=7 xpos=5 ypos=-1 right-column centered left-indent right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 4: Mixture of contexts, period set to 100 days.	page=7 xpos=5 ypos=2 right-column centered left-indent right-indent font-smallest hanged-line line-double-space line-space string-figure headchar-capital tailchar-period above-double-space above-line-space
+I-Body	sonable choice in most cases. For the full combi-	page=7 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	nation, we notice a drop in the effectiveness from	page=7 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the addition of the topical context. <sup>5</sup> This suggests	page=7 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	that the construction of the topical context may need	page=7 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	more careful design, and/or that learned λ <sub>k</sub> ’s could	page=7 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	yield better evidence combination (since these re-	page=7 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sults were obtained with equal λ <sub>k</sub> ’s).	page=7 xpos=5 ypos=3 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusion	page=7 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We have presented an approach to mention resolu-	page=7 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tion in email that flexibly makes use of expanding	page=7 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	contexts to accurately resolve the identity of a given	page=7 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	mention. Our approach focuses on four naturally	page=7 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	occurring contexts in email, including a message,	page=7 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	a thread, other emails with senders and/or recipi-	page=7 xpos=5 ypos=5 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	ents in common, and other emails with significant	page=7 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	topical content in common. Our approach outper-	page=7 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	forms previously reported techniques and it scales	page=7 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	well to larger collections. Moreover, our results	page=7 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	serve to highlight the importance of social context	page=7 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	when resolving mentions in social media, which is	page=7 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	an idea that deserves more attention generally. In fu-	page=7 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture work, we plan to extend our test collection with	page=7 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	mention queries that must be resolved in the “long	page=7 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	tail” of the identity distribution where less evidence	page=7 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	is available. We are also interested in exploring iter-	page=7 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ative approaches to jointly resolving mentions.	page=7 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgments	page=7 xpos=5 ypos=8 right-column right-indent font-largest aligned-line shorter-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	The authors would like to thank Lise Getoor for her	page=7 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+E-Acknowledgement	helpful advice.	page=7 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Footnote	<sup>5</sup> This also occurs even when topical context is combined	page=7 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-super
+I-Footnote	with only social context.	page=7 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period page-bottom
+ReferenceHeader	References	page=8 xpos=0 ypos=0 left-column right-indent font-largest page-top string-reference headchar-capital above-double-space above-line-space
+B-Reference	Daniel J. Abadi. 2003. Comparing domain-specific and	page=8 xpos=0 ypos=0 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	non-domain-specific anaphora resolution techniques.	page=8 xpos=0 ypos=0 left-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	Cambridge University MPhil Dissertation.	page=8 xpos=0 ypos=0 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Alfred V. Aho and Margaret J. Corasick. 1975. Effi-	page=8 xpos=0 ypos=0 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	cient string matching: an aid to bibliographic search.	page=8 xpos=0 ypos=0 left-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In Communications of the ACM.	page=8 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	James Allan, editor. 2002. Topic detection and tracking:	page=8 xpos=0 ypos=1 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-colon
+I-Reference	event-based information organization. Kluwer Aca-	page=8 xpos=0 ypos=1 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	demic Publishers, Norwell, MA, USA.	page=8 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Bryce Allen. 1989. Recall cues in known-item retrieval.	page=8 xpos=0 ypos=1 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	JASIS, 40(4):246–252.	page=8 xpos=0 ypos=1 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period
+B-Reference	Omar Benjelloun, Hector Garcia-Molina, Hideki Kawai,	page=8 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-comma
+I-Reference	Tait Eliott Larson, David Menestrina, Qi Su, Sut-	page=8 xpos=0 ypos=2 left-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	thipong Thavisomboon, and Jennifer Widom. 2006.	page=8 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line year headchar-lower tailchar-period
+I-Reference	Generic entity resolution in the serf project. IEEE	page=8 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Data Engineering Bulletin, June.	page=8 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Indrajit Bhattacharya and Lise Getoor. 2006. A latent	page=8 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	dirichlet model for unsupervised entity resolution. In	page=8 xpos=0 ypos=3 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	The SIAM International Conference on Data Mining	page=8 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	(SIAM-SDM), Bethesda, MD, USA.	page=8 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Indrajit Bhattacharya and Lise Getoor. 2007. Collective	page=8 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	entity resolution in relational data. ACM Transactions	page=8 xpos=0 ypos=3 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	on Knowledge Discovery from Data, 1(1), March.	page=8 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Matthias Blume. 2005. Automatic entity disambigua-	page=8 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tion: Benefits to NER, relation extraction, link anal-	page=8 xpos=0 ypos=4 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ysis, and inference. In International Conference on	page=8 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Intelligence Analysis, May.	page=8 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Chris Diehl, Lise Getoor, and Galileo Namata. 2006.	page=8 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Name reference resolution in organizational email	page=8 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	archives. In Proceddings of SIAM International Con-	page=8 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ference on Data Mining, Bethesda, MD , USA, April	page=8 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	20-22.	page=8 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Tamer Elsayed and Douglas W. Oard. 2006. Modeling	page=8 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	identity in archival collections of email: A prelimi-	page=8 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	nary study. In Proceedings of the 2006 Conference	page=8 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line year headchar-lower
+I-Reference	on Email and Anti-Spam (CEAS 06), pages 95–103,	page=8 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	Mountain View, California, July.	page=8 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Ralf Holzer, Bradley Malin, and Latanya Sweeney. 2005.	page=8 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Email alias detection using social network analysis. In	page=8 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	LinkKDD ’05: Proceedings of the 3rd international	page=8 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	workshop on Link discovery, pages 52–57, New York,	page=8 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	NY, USA. ACM Press.	page=8 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Bryan Klimt and Yiming Yang. 2004. Introducing the	page=8 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Enron corpus. In Conference on Email and Anti-Spam,	page=8 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-capital tailchar-comma
+I-Reference	Mountain view, CA, USA, July 30-31.	page=8 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	David D. Lewis and Kimberly A. Knowles. 1997.	page=8 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Threading electronic mail: a preliminary study. Inf.	page=8 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-capital tailchar-period
+I-Reference	Process. Manage., 33(2):209–217.	page=8 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	David D. Lewis. 1996. The trec-4 filtering track. In The	page=8 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Fourth Text REtrieval Conference (TREC-4), pages	page=8 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	165–180, Gaithersburg, Maryland.	page=8 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Xin Li, Paul Morie, and Dan Roth. 2005. Semantic inte-	page=8 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	gration in text: from ambiguous names to identifiable	page=8 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	entities. AI Magazine. Special Issue on Semantic Inte-	page=8 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	gration, 26(1):45–58.	page=8 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Page	949	page=8 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-double-space line-space numeric-only column-bottom
+B-Reference	Bradley Malin. 2005. Unsupervised name disambigua-	page=8 xpos=5 ypos=0 right-column full-justified font-smallest column-top year headchar-capital tailchar-hiphen
+I-Reference	tion via social network similarity. In Workshop on	page=8 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Link Analysis, Counter-terrorism, and Security, in	page=8 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	conjunction with the SIAM International Conference	page=8 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	on Data Mining, Newport Beach, CA, USA, April 21-	page=8 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	23.	page=8 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Gideon S. Mann and David Yarowsky. 2003. Unsuper-	page=8 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	vised personal name disambiguation. In Proceedings	page=8 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of the seventh conference on Natural language learn-	page=8 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ing at HLT-NAACL 2003, pages 33–40, Morristown,	page=8 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-comma
+I-Reference	NJ, USA. Association for Computational Linguistics.	page=8 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line headchar-capital tailchar-period
+B-Reference	Andrew McCallum, Andres Corrada-Emmanuel, and	page=8 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line headchar-capital
+I-Reference	XueruiWang Wang. 2005. Topic and role discovery	page=8 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	in social networks. In IJCAI.	page=8 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Einat Minkov, William W. Cohen, and Andrew Y. Ng.	page=8 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-period
+I-Reference	2006. Contextual search and name disambiguation in	page=8 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year
+I-Reference	email using graphs. In SIGIR ’06: Proceedings of	page=8 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	the 29th annual international ACM SIGIR conference	page=8 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	on Research and development in information retrieval,	page=8 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	pages 27–34, New York, NY, USA. ACM Press.	page=8 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Patric Reuther. 2006. Personal name matching: New test	page=8 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	collections and a social network based approach.	page=8 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period

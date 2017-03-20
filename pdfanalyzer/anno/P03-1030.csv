@@ -1,0 +1,603 @@
+Title	Optimizing Story Link Detection is not Equivalent to	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-double-space above-line-space
+Title	Optimizing New Event Detection	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+Author	Ayman Farahat Francine Chen Thorsten Brants	page=0 xpos=0 ypos=0 single-column left-indent right-indent font-larger hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	PARC PARC PARC	page=0 xpos=1 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Address	3333 Coyote Hill Rd 3333 Coyote Hill Rd 3333 Coyote Hill Rd	page=0 xpos=0 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail
+Address	Palo Alto, CA 94304 Palo Alto, CA 94304 Palo Alto, CA 94304	page=0 xpos=0 ypos=1 single-column centered left-indent right-indent font-larger aligned-line headchar-capital
+Email	farahat@parc.com fchen@parc.com thorsten@brants.net	page=0 xpos=0 ypos=1 single-column left-indent right-indent font-smaller hanged-line longer-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-blank-line above-double-space above-line-space
+B-Abstract	Link detection has been regarded as a core	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Abstract	technology for the Topic Detection and	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	Tracking tasks of new event detection. In	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	this paper we formulate story link detec-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion and new event detection as informa-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion retrieval task and hypothesize on the	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	impact of precision and recall on both sys-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tems. Motivated by these arguments, we	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	introduce a number of new performance	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	enhancing techniques including part of	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	speech tagging, new similarity measures	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	and expanded stop lists. Experimental re-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sults validate our hypothesis.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Topic Detection and Tracking (TDT) research is	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	sponsored by the DARPA Translingual Information	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	Detection, Extraction, and Summarization (TIDES)	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	program. The research has five tasks related to	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	organizing streams of data such as newswire and	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	broadcast news (Wayne, 2000): story segmentation,	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	topic tracking, topic detection, new event detection	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	(NED), and link detection (LNK). A link detection	page=0 xpos=0 ypos=8 left-column full-justified aligned-line
+I-Body	system detects whether two stories are “linked”, or	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	discuss the same event. A story about a plane crash	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	and another story about the funeral of the crash vic-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tims are considered to be linked. In contrast, a story	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	about hurricane Andrew and a story about hurricane	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	Agnes are not linked because they are two different	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	events. A new event detection system detects when	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	a story discusses a previously unseen or “not linked”	page=0 xpos=0 ypos=9 left-column full-justified aligned-line itemization headchar-lower column-bottom
+I-Body	event. Link detection is considered to be a core tech-	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower tailchar-hiphen
+E-Body	nology for new event detection and the other tasks.	page=0 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Several groups are performing research in the	page=0 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	TDT tasks of link detection and new event detection.	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-capital tailchar-period
+I-Body	Based on their findings, we incorporated a number	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	of their ideas into our baseline system. CMU (Yang	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	et al., 1998) and UMass (Allan et al., 2000a) found	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	that for new event detection it was better to com-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pare a new story against all previously seen stories	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	than to cluster previously seen stories and compare	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	a new story against the clusters. CMU (Carbonell	page=0 xpos=5 ypos=4 right-column full-justified aligned-line itemization headchar-lower
+I-Body	et al., 2001) found that NED results could be im-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	proved by developing separate models for different	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	news sources to that could capture idiosyncrasies of	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	different sources, which we also extended to link de-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tection. UMass reported on adapting a tracking sys-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem for NED detection (Allan et al., 2000b). Allan	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Body	et. al , (Allan et al., 2000b) developed a NED system	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Body	based upon a tracking technology and showed that	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	to achieve high-quality first story detection, tracking	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	effectiveness must improve to a degree that experi-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence suggests is unlikely. In this paper, while we	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	reach a similar conclusion as (Allan et al., 2000b) for	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	LNK and NED systems , we give specific directions	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	for improving each system separately. We compare	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the link detection and new event detection tasks and	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	discuss ways in which we have observed that tech-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	niques developed for one task do not always perform	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	similarly for the other task.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Common Processing and Models	page=0 xpos=5 ypos=9 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	This section describes those parts of the process-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ing steps and the models that are the same for New	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	Event Detection and for Link Detection.	page=0 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period page-bottom
+B-SubsectionHeader	2.1 Pre-Processing	page=1 xpos=0 ypos=0 left-column right-indent page-top numbered-heading2 above-double-space above-line-space
+B-Body	For pre-processing, we tokenize the data, recog-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	nize abbreviations, normalize abbreviations, remove	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	stop-words, replace spelled-out numbers by digits,	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	add part-of-speech tags, replace the tokens by their	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	stems, and then generate term-frequency vectors.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 Incremental TF-IDF Model	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Our similarity calculations of documents are based	page=1 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	on an incremental TF-IDF model. In a TF-IDF	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	model, the frequency of a term in a document (TF) is	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	weighted by the inverse document frequency (IDF).	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In the incremental model, document frequencies	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body		page=1 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail
+I-Body	are not static but change in time steps   . At	page=1 xpos=0 ypos=2 left-column left-indent font-larger indented-line longer-tail headchar-lower
+I-Body	time   , a new set of test documents is added to	page=1 xpos=0 ypos=2 left-column full-justified font-larger hanged-line headchar-lower
+I-Body	the model by updating the frequencies	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower above-line-space
+B-Equation	      	page=1 xpos=1 ypos=3 left-column left-indent right-indent font-larger indented-line longer-tail line-space
+I-Equation	  (1)    	page=1 xpos=1 ypos=3 left-column left-indent font-larger indented-line longer-tail above-line-space
+I-Equation		page=1 xpos=0 ypos=3 left-column left-indent right-indent font-larger hanged-line shorter-tail line-space
+I-Body	where   denote the document frequencies in the	page=1 xpos=0 ypos=3 left-column full-justified font-larger hanged-line longer-tail headchar-lower
+I-Body	newly added set of documents . The initial docu-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body		page=1 xpos=1 ypos=4 left-column left-indent right-indent font-larger indented-line shorter-tail
+I-Body	ment frequencies are generated from a (pos-	page=1 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail headchar-lower tailchar-hiphen
+I-Body	sibly emtpy) training set. In a static TF-IDF model,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	new words (i.e., those words, that did not occur in	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the training set) are ignored in further computations.	page=1 xpos=0 ypos=4 left-column centered right-indent aligned-line headchar-lower tailchar-period
+I-Body	An incremental TF-IDF model uses the new vocab-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ulary in similarity calculations. This is an advantage	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	because new events often contain new vocabulary.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+Unknown		page=1 xpos=2 ypos=5 left-column left-indent right-indent font-larger indented-line shorter-tail
+B-Body	Very low frequency terms tend to be uninfor-	page=1 xpos=0 ypos=5 left-column left-indent hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Body	mative. We therefore set a threshold  . Only terms	page=1 xpos=0 ypos=6 left-column full-justified font-larger hanged-line headchar-lower
+I-Body	    #"	page=1 xpos=0 ypos=6 left-column left-indent right-indent font-larger indented-line shorter-tail
+E-Body	with   ! are used at time   . We use  .	page=1 xpos=0 ypos=6 left-column full-justified font-larger hanged-line longer-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.3 Term Weighting	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The document frequencies as described in the pre-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	vious section are used to calculate weights for the	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body		page=1 xpos=0 ypos=7 left-column left-indent right-indent font-larger indented-line shorter-tail
+I-Body	terms in the documents . At time   , we use	page=1 xpos=0 ypos=7 left-column right-indent font-larger hanged-line longer-tail headchar-lower above-double-space above-line-space
+B-Equation	$&%('*)  ,+-.  /  ,+-3254768 9  	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-larger indented-line shorter-tail line-double-space line-space
+I-Equation	    0  1   (2)	page=1 xpos=0 ypos=7 left-column left-indent font-larger indented-line longer-tail
+I-Equation	   	page=1 xpos=2 ypos=7 left-column left-indent right-indent font-larger indented-line shorter-tail above-double-space above-line-space
+I-Body	where 9   is the total number of documents at time	page=1 xpos=0 ypos=8 left-column full-justified font-larger hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	0  *	page=1 xpos=0 ypos=8 left-column left-indent right-indent font-larger indented-line shorter-tail numbered-heading1
+I-Body	  .   is a normalization value such that either	page=1 xpos=0 ypos=8 left-column full-justified font-larger hanged-line longer-tail
+I-Body	the weights sum to 1 (if we use Hellinger distance,	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	KL-divergence, or Clarity-based distance), or their	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+E-Body	squares sum to 1 (if we use cosine distance).	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.4 Similarity Calculation	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The vectors consisting of normalized term weights	page=1 xpos=0 ypos=9 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	:$5%('*)	page=1 xpos=0 ypos=9 left-column right-indent font-larger aligned-line shorter-tail
+I-Body	    are used to calculate the similarity between	page=1 xpos=0 ypos=9 left-column left-indent font-larger indented-line longer-tail column-bottom
+I-Body	two documents and ; . In our current implementa-	page=1 xpos=5 ypos=0 right-column full-justified font-larger column-top headchar-lower tailchar-hiphen
+I-Body	tion, we use the the Clarity metric which was intro-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	duced by (Croft et al., 2001; Lavrenko et al., 2002)	page=1 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+I-Body	and gets its name from the distance to general En-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	glish, which is called Clarity. We used a symmetric	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	version that is computed as:	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	< %>=? @+ ; A CBEDGF: IH7H ;   DJF: IH7HLKMN	page=1 xpos=5 ypos=1 right-column left-indent right-indent font-largest indented-line longer-tail line-space symbol-atmark
+I-Equation	B DJF: H7H 1DJFO H7HLKMN	page=1 xpos=6 ypos=1 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+I-Equation	; ; (3)	page=1 xpos=7 ypos=1 right-column left-indent font-larger indented-line longer-tail
+I-Equation	:$5%('*)  ,+-	page=1 xpos=8 ypos=1 right-column left-indent right-indent font-larger indented-line shorter-tail tailchar-hiphen
+I-Equation	DJFO @+ P RQTSU:$5%('*)  @+-&2WVXY'I    	page=1 xpos=5 ypos=1 right-column right-indent font-larger hanged-line shorter-tail symbol-atmark headchar-capital
+I-Equation	;     $&%('*)  +-,Z	page=1 xpos=5 ypos=2 right-column left-indent right-indent font-larger indented-line longer-tail
+I-Equation	   ;	page=1 xpos=9 ypos=2 right-column left-indent right-indent font-larger indented-line shorter-tail tailchar-semicolon
+I-Equation	(4)	page=1 xpos=9 ypos=2 right-column left-indent indented-line longer-tail
+I-Equation	DJF	page=1 xpos=5 ypos=2 right-column left-indent right-indent font-larger hanged-line shorter-tail headchar-capital
+I-Body	where “ ” is the Kullback-Leibler divergence,	page=1 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail headchar-lower tailchar-comma
+I-Body	KM	page=1 xpos=5 ypos=2 right-column right-indent font-larger aligned-line shorter-tail headchar-capital
+I-Body	is the probability distribution of words for “gen-	page=1 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-lower tailchar-hiphen
+I-Body	eral English” as derived from the training corpus.	page=1 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	The idea behind this metric is that we want to give	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	credit to similar pairs of documents that are very	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	different from general English, and we want to dis-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	count similar pairs of documents that are close to	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	general English (which can be interpreted as being	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the noise). The motivation for using the clarity met-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ric will given in section 6.1.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Another metric is Hellinger distance	page=1 xpos=5 ypos=4 right-column left-indent right-indent indented-line longer-tail headchar-capital above-double-space above-line-space
+B-Equation	< %>=    ,+ ;  RQ <sup>S\[</sup> :$5%('*)      ,+-2&:$5%('*)      ; +- Z	page=1 xpos=5 ypos=4 right-column centered left-indent right-indent font-largest hanged-line longer-tail line-double-space line-space above-double-space above-line-space
+I-Equation	(5)	page=1 xpos=9 ypos=5 right-column left-indent indented-line line-double-space line-space
+B-Body	Other possible similarity metrics are the cosine dis-	page=1 xpos=5 ypos=5 right-column full-justified hanged-line headchar-capital tailchar-hiphen
+I-Body	tance, the Kullback-Leibler divergence, or the sym-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	metric form of it, Jensen-Shannon distance.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.5 Source-Specific TF-IDF Model	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Documents in the stream of news stories may stem	page=1 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	from different sources, e.g., there are 20 different	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	sources in the data for TDT 2002 (ABC News, As-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	sociated Press, New York Times, etc). Each source	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	might use the vocabulary differently. For example,	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the names of the sources, names of shows, or names	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	of news anchors are much more frequent in their	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	own source than in the other ones. In order to re-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	flect the source-specific differences we do not build	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	one incremental TF-IDF model, but as many as we	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	have different sources and use frequencies	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower above-line-space
+B-Equation	]-^   	page=1 xpos=7 ypos=8 right-column left-indent right-indent font-larger indented-line shorter-tail line-space
+I-Equation	  (6)	page=1 xpos=7 ypos=9 right-column left-indent font-larger indented-line longer-tail above-line-space
+I-Body	for source < at time <sub> </sub> . The frequencies are updated	page=1 xpos=5 ypos=9 right-column full-justified font-largest hanged-line line-space headchar-lower
+I-Body	according to equation (1), but only using those doc-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	uments in   that are from the same source < . As	page=1 xpos=5 ypos=9 right-column full-justified font-largest aligned-line headchar-lower page-bottom
+I-Body	a consequence, a term like “CNN” receives a high	page=2 xpos=0 ypos=0 left-column full-justified page-top itemization headchar-lower
+I-Body	document frequency (thus low weight) in the model	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	for the source CNN and a low document frequency	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	(thus high weight) in the New York Times model.	page=2 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	Instead of the overall document frequencies	page=2 xpos=0 ypos=0 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	   ] ^ 	page=2 xpos=0 ypos=0 left-column right-indent font-larger hanged-line
+I-Body	  , we now use the source specific  	page=2 xpos=0 ypos=1 left-column left-indent right-indent font-larger indented-line shorter-tail
+I-Body	when calculating the term weights in equation (2).	page=2 xpos=0 ypos=1 left-column right-indent hanged-line longer-tail headchar-lower tailchar-period
+I-Body	(i.e., no data to generate Sources < for which no <sub></sub> <sub>]-^</sub> training  <sub>is</sub> data available) is available might	page=2 xpos=0 ypos=1 left-column full-justified font-largest aligned-line longer-tail
+I-Body	be initialized in two different ways:	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	1. Use an empty model:  ] ^     <sub>for</sub> all  ;	page=2 xpos=0 ypos=2 left-column centered left-indent right-indent font-largest indented-line longer-tail itemization tailchar-semicolon above-double-space above-line-space
+B-Listitem	2. Identify one or more other but similar sources	page=2 xpos=0 ypos=2 left-column left-indent aligned-line longer-tail line-double-space line-space itemization
+I-Listitem		page=2 xpos=0 ypos=2 left-column left-indent right-indent font-largest indented-line shorter-tail
+I-Listitem	< for which training data is available and use	page=2 xpos=0 ypos=2 left-column left-indent right-indent font-largest aligned-line longer-tail above-line-space
+B-Equation	 ]-^   Q   ] ^   Z (7)	page=2 xpos=1 ypos=3 left-column left-indent font-largest indented-line longer-tail line-space
+I-Equation	] 	page=2 xpos=2 ypos=3 left-column left-indent right-indent font-largest indented-line shorter-tail above-blank-line above-double-space above-line-space
+B-SubsectionHeader	2.6 Source-Pair-Specific Normalization	page=2 xpos=0 ypos=3 left-column right-indent hanged-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Due to stylistic differences between various sources,	page=2 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	e.g., news paper vs. broadcast news, translation er-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rors, and automatic speech recognition errors (Allan	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	et al., 1999), the similarity measures for both on-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	topic and off-topic pairs will in general depend on	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the source pair. Errors due to these differences can	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	be reduced by using thresholds conditioned on the	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	sources (Carbonell et al., 2001), or, as we do, by	page=2 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	normalizing the similarity values based on similari-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ties for the source pairs found in the story history.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 New Event Detection	page=2 xpos=0 ypos=6 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In order to decide whether a new document ; that	page=2 xpos=0 ypos=6 left-column full-justified font-larger aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	is added to the collection at time   describes a new	page=2 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	event, it is individually compared to all previous	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	<sup>documents</sup> <sup>using</sup> <sup>the</sup> <sup>steps</sup>  described in section 2.	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-super tailchar-period
+I-Body	We identify the document with highest similarity:	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-colon
+B-Equation	      8    <sub><</sub> %T= <sub> </sub>  ; + 1 Z (8)	page=2 xpos=1 ypos=7 left-column left-indent font-largest indented-line
+I-Equation		page=2 xpos=1 ypos=7 left-column left-indent right-indent font-larger indented-line shorter-tail
+B-Body	The value  <  X $  <sub>;</sub>   / B < %>= <sub> </sub>  ; +   is used to de-	page=2 xpos=0 ypos=8 left-column full-justified font-largest hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Body	termine whether a document ; is about a new event	page=2 xpos=0 ypos=8 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	and at the same time is an indication of the confi-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dence in our decision. If the score exceeds a thresh-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	]	page=2 xpos=0 ypos=8 left-column left-indent right-indent font-larger indented-line shorter-tail
+I-Body	old  , then there is no sufficiently similar previous	page=2 xpos=0 ypos=9 left-column full-justified font-larger hanged-line longer-tail headchar-lower
+I-Body	document, thus ; describes a new event (decision  ]	page=2 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	YES). If the score is smaller than  , then is suf-	page=2 xpos=0 ypos=9 left-column full-justified font-larger aligned-line headchar-capital tailchar-hiphen
+I-Body	ficiently similar, thus ; describes an old event (de-	page=2 xpos=0 ypos=9 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	]	page=2 xpos=2 ypos=9 left-column left-indent right-indent font-larger indented-line shorter-tail
+I-Body	cision NO). The threshold  can be determined by	page=2 xpos=0 ypos=9 left-column full-justified font-larger hanged-line longer-tail headchar-lower column-bottom
+I-Body	using labeled training data and calculating similar-	page=2 xpos=4 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	ity scores for document pairs on the same event and	page=2 xpos=4 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	on different events.	page=2 xpos=4 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Link Detection	page=2 xpos=4 ypos=0 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In order to decide whether a pair of stories and	page=2 xpos=4 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	;  <sup>are</sup> <sub>that</sub> linked, capture we the identify similarity a set between of similarity the two metrics docu-	page=2 xpos=4 ypos=1 right-column full-justified font-largest aligned-line tailchar-hiphen
+I-Body	ments using Clarity and Hellinger metrics:	page=2 xpos=4 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	 ,+ P   < %>=  5 @+ <sub>;</sub>  + < %>=  @ @+ ;   Z	page=2 xpos=5 ypos=2 right-column centered left-indent right-indent font-largest indented-line longer-tail line-space symbol-atmark
+I-Equation		page=2 xpos=5 ypos=2 right-column left-indent right-indent font-largest aligned-line shorter-tail
+I-Equation	; (9)	page=2 xpos=5 ypos=2 right-column left-indent font-larger indented-line longer-tail above-line-space
+B-Body	The value   @+ <sub>;</sub>  is used to determine whether sto-	page=2 xpos=4 ypos=2 right-column full-justified font-largest hanged-line line-space symbol-atmark headchar-capital tailchar-hiphen
+I-Body	ries “q” and “d” are linked. If the similarity exceeds	page=2 xpos=4 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	a threshold     we the two stories are sufficiently	page=2 xpos=4 ypos=2 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	similar (decision YES). If the similarity is smaller	page=2 xpos=4 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	than    we the two stories are sufficiently differ-	page=2 xpos=4 ypos=3 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ent (decision NO). The Threshold    can be deter-	page=2 xpos=4 ypos=3 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	mined using labeled training data.	page=2 xpos=4 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Evaluation	page=2 xpos=4 ypos=4 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	All TDT systems are evaluated by calculating a De-	page=2 xpos=4 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tection Cost:	page=2 xpos=4 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	"!$#     &%(' ]] ) 2 %&' ]] ) 2 +*-,/.   #    1032 ) 2 032 ) 2 45 +   *6,/. #   Z	page=2 xpos=4 ypos=4 right-column right-over font-largest aligned-line longer-tail line-space
+I-Body	where %(' ]] and 032 are the costs of a miss <sup>(10)</sup> and	page=2 xpos=4 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	<sup>a</sup> <sup>false</sup> <sup>alarm.</sup> <sup>They</sup> ) are ]] set to ) 1 and 0.1, respec-	page=2 xpos=4 ypos=5 right-column full-justified font-largest aligned-line headchar-super tailchar-hiphen
+I-Body	tively, for all tasks. %(' and 032 are the condi-	page=2 xpos=4 ypos=5 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	<sup>tional</sup> <sup>probabilities</sup> ) of a miss ) and a false alarm in the	page=2 xpos=4 ypos=6 right-column full-justified font-largest aligned-line headchar-super
+I-Body	system output. +*6,/.   #   and 45   +*6,/. #   a the a priori	page=2 xpos=4 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	target and non-target probabilities. They are set to	page=2 xpos=4 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	0.02 and 0.98 for LNK and NED. The detection cost	page=2 xpos=4 ypos=6 right-column full-justified aligned-line numbered-heading2
+I-Body	is normalized such that a perfect system scores 0,	page=2 xpos=4 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and a random baseline scores 1:	page=2 xpos=4 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	 "!$#   /7  4, %   <sub>min</sub>  1 %(' ]] ) 2 +*6,/.   "!$# #   + 1032   ) 2 45 +   *6,/. #   	page=2 xpos=4 ypos=7 right-column left-indent right-over font-largest longer-tail line-double-space line-space
+I-Equation	(11)	page=2 xpos=9 ypos=7 right-column left-indent right-over indented-line longer-tail above-double-space above-line-space
+B-Body	TDT evaluates all systems with a topic-weighted	page=2 xpos=4 ypos=8 right-column full-justified hanged-line shorter-tail line-double-space line-space headchar-capital
+I-Body	method: error probabilities are accumulated sepa-	page=2 xpos=4 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rately for each topic and then averaged. This is mo-	page=2 xpos=4 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tivated by the different sizes of the topics.	page=2 xpos=4 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The evaluation yields two costs: the detection cost	page=2 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	is the cost when using the actual decisions made by	page=2 xpos=4 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Body	the system; the minimum detection cost is the cost	page=2 xpos=4 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	when using the confidence scores that each system	page=2 xpos=4 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	has to emit with each decision and selecting the op-	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+E-Body	timal threshold based on the score.	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In the TDT-2002 evaluation, our Link Detec-	page=3 xpos=0 ypos=0 left-column left-indent indented-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Body	tion system was the best of three systems, yield-	page=3 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	 1  /7  4, %    Z/  and =  % P   1  /7  4, %  	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line shorter-tail
+I-Body	<sup>ing</sup>  <sub>Z/</sub>    " . Our New Event Detection <sub></sub> system /7 was	page=3 xpos=0 ypos=0 left-column full-justified box hanged-line longer-tail headchar-super
+I-Body	ranked second of four with costs of  #   4 , %  	page=3 xpos=0 ypos=1 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+E-Body	 Z   / and =   %  P  & #   7 4,%    Z    .	page=3 xpos=0 ypos=1 left-column right-indent font-largest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Differences between LNK and NED	page=3 xpos=0 ypos=1 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this section, we draw on Information retrieval	page=3 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	tools to analyze LNK and NED tasks. Motivated by	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the results of this analysis, we compare a number of	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	techniques in the LNK and NED tasks in particular	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	we compare the utility of two similarity measures,	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	part-of-speech tagging, stop wording, and normal-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	izing abbreviations and numerals. The comparisons	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	were performed on corpora developed for TDT, in-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cluding TDT2 and TDT3.	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	6.1 Information Retrieval and TDT	page=3 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The conditions for false alarms and misses are re-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	versed for LNK and NED tasks. In the LNK task,	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	incorrectly flagging two stories as being on the same	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	event is considered a false alarm. In contrast in the	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	NED task, incorrectly flagging two stories as being	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	on the same event will cause the true first story to	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	be missed. Conversely, in LNK incorrectly labeling	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	two stories that are on the same event as not linked is	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	a miss, but in the NED task, incorrectly labeling two	page=3 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower
+I-Body	stories on the same event as not linked can result in	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	a false alarm where a story is incorrectly identified	page=3 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower
+E-Body	as a new event.	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	<sup>The</sup> <sup>detection</sup> <sup>cost</sup> <sup>in</sup> <sup>Eqn.10</sup> <sup>which</sup> ) assigns   a	page=3 xpos=0 ypos=7 left-column left-indent font-largest indented-line longer-tail line-space headchar-super
+I-Body	<sup>higher</sup>  <sub>Z</sub>  "*+ 032 cost 2 ) to 45 false +*6,/.   #   alarm    Z    %(' . <sup>]]</sup> A <sup>2</sup> LNK +*6,/.   system #  	page=3 xpos=0 ypos=7 left-column full-justified box hanged-line headchar-super
+I-Body	wants to minimize false alarms and to do this it	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	should identify stories as being linked only if they	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	are linked, which translates to high precision. In	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	contrast a NED system, will minimize false alarms	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	by identifying all stories that are linked which trans-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lates to high recall. Motivated by this discussion, we	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	investigated the use of number of precision and re-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	call enhancing techniques with the LNK and NED	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	system. We investigated the use of the Clarity met-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ric (Lavrenko et al., 2002) which was shown to cor-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	relate positively with precision. We investigated the	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+Figure	__Figure 1__	page=3 xpos=5 ypos=0 right-column centered right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 1: CDF for Clarity and Hellinger similarity	page=3 xpos=5 ypos=2 right-column full-justified aligned-line line-double-space line-space string-figure headchar-capital
+E-Caption	on the LNK task for on-topic and off-topic pairs.	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	use of part-of-speech tagging which was shown by	page=3 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	Allan and Raghavan (Allan and Raghavan, 2002)	page=3 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-capital
+I-Body	to improve query clarity. In section 6.2.1 we will	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	show how POS helps recall. We also investigated the	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	use of expanded stop-list which improves precision.	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We also investigated normalizing abbreviations and	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	transforming spelled out numbers into numbers. On	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the one hand the enhanced processing list includes	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	most of the term in the ASR stop-list and remov-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing these terms will improve precision. On the other	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	hand normalizing these terms will have the same ef-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fect as stemming a recall enhancing device (Xu and	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	Croft, 1998) , (Kraaij and Pohlmann, 1996). In ad-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	dition to these techniques, we also investigated the	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	use of different similarity measures.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	6.2 Similarity Measures	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The systems developed for TDT primarily use co-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	sine similarity as the similarity measure. We have	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	developed systems based on cosine similarity (Chen	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	et al., 2003). In work on text segmentation, (Brants	page=3 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	et al., 2002) observed that the system performance	page=3 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	was much better when the Hellinger measure was	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	used instead. In this work, we decided to use the	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	clarity metric, a precision enhancing device (Croft et	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	al., 2001). For both our LNK and NED systems, we	page=3 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	compared the performance of the systems using each	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	of the similarity measures separately. Table 1 shows	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	that for LNK, the system based on Clarity similar-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity performed better the system based on Hellinger	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	similarity; in contrast, for NED, the system based on	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Figure	__Figure 2__	page=4 xpos=0 ypos=-1 left-column right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 2: CDF for Clarity and Hellinger similarity	page=4 xpos=0 ypos=2 left-column full-justified aligned-line line-double-space line-space string-figure headchar-capital
+E-Caption	on the NED task for on-topic and off-topic pairs.	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Caption	Table 1: Effect of different similarity measures	page=4 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital
+I-Caption	on topic-weighted minimum normalized detection	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Caption	costs for LNK and NED on the TDT 2002 dry run	page=4 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower
+Table	__Table 1__	page=4 xpos=-1 ypos=3 left-column left-over right-over box longer-tail table-area above-blank-line above-double-space above-line-space
+I-Body	Hellinger similarity performed better.	page=4 xpos=0 ypos=5 left-column right-indent shorter-tail line-blank-line line-double-space line-space headchar-capital tailchar-period
+B-Body	Figure 1 shows the cumulative density function	page=4 xpos=0 ypos=5 left-column left-indent indented-line longer-tail string-figure headchar-capital
+I-Body	for the Hellinger and Clarity similarities for on-topic	page=4 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	(about the same event) and off-topic (about different	page=4 xpos=0 ypos=5 left-column full-justified aligned-line
+I-Body	events) pairs for the LNK task. While there are a	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	number of statistics to measure the overall difference	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	between tow cumulative distribution functions, we	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	used the Kolmogorov-Smirnov distance (K-S dis-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tance; the largest difference between two cumula-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive distributions) for two reasons. First, the K-S	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	distance is invariant under re-parametrization. Sec-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ond, the significance of the K-S distance in case of	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the null hypothesis (data sets are drawn from same	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	distribution) can be calculated (Press et al., 1993).	page=4 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	The K-S distance between the on-topic and off-topic	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	similarities is larger for Clarity similarity (cf. table	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	2), indicating that it is the better metric for LNK.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	Figure 2 shows the cumulative distribution func-	page=4 xpos=0 ypos=8 left-column left-indent indented-line longer-tail string-figure headchar-capital tailchar-hiphen
+I-Body	tions for Hellinger and Clarity similarities in the	page=4 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	NED task. The plot is based on pairs that contain the	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	current story and its most similar story in the story	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	history. When the most similar story is on the same	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	event (approx. 75% of the cases), its similarity is part	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+B-Caption	Table 2: K-S distance between on-topic and off-	page=4 xpos=5 ypos=0 right-column full-justified column-top string-table headchar-capital tailchar-hiphen above-double-space above-line-space
+Table	__Table 2__	page=4 xpos=5 ypos=0 right-column left-over right-over box longer-tail line-double-space line-space table-area above-blank-line above-double-space above-line-space
+B-Caption	Table 3: Effect of using part-of-speech on minimum	page=4 xpos=5 ypos=1 right-column full-justified shorter-tail line-blank-line line-double-space line-space string-table headchar-capital
+E-Caption	normalized detection costs for LNK and NED on the	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+Table	__Table 3__	page=4 xpos=5 ypos=1 right-column left-over right-indent box shorter-tail line-double-space line-space table-area above-blank-line above-double-space above-line-space
+I-Body	of the on-topic distribution, otherwise (approx. 25%	page=4 xpos=5 ypos=3 right-column full-justified longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	of the cases) it is plotted as off-topic. The K-S dis-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tance between the Hellinger on-topic and off-topic	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	CDFs is larger than those for Clarity (cf. table 2).	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	For both NED and LNK, we can reject the null hy-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	pothesis for both metrics with over 99.99 % confi-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	dence.	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	To get the high precision required for LNK sys-	page=4 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tem, we need to have a large separation between the	page=4 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	on-topic and off-topic distributions. Examining Fig-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ure 1 and Table 2 , indicates that the Clarity metric	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	has a larger separation than the Hellinger metric. At	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	high recall required by NED system (low CDF val-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ues for on-topic), there is a greater separation with	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the Hellinger metric. For example, at 10% recall, the	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	Hellinger metric has 71 % false alarm rate as com-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	pared to 75 % for the Clarity metric.	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	6.2.1 Part-of-Speech (PoS) Tagging	page=4 xpos=5 ypos=6 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading3 above-double-space above-line-space
+B-Body	We explored the idea that noting the part-of-	page=4 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	speech of the terms in a document may help to re-	page=4 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	duce confusion among some of the senses of a word.	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	During pre-processing, we tagged the terms as one	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	of five categories: adjective, noun, proper nouns,	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	verb, or other. A “tagged term” was then created	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	by combining the stem and part-of-speech. For ex-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ample, ‘N train’ represents the term ‘train’ when	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	used as a noun, and ‘V train’ represents the term	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	‘train’ when used as a verb. We then ran our NED	page=4 xpos=5 ypos=8 right-column full-justified aligned-line
+I-Body	and LNK systems using the tagged terms. The sys-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems were tested in the Dry Run 2002 TDT data.	page=4 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	A comparison of the performance of the systems	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital
+I-Body	when part-of-speech is used against a baseline sys-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+I-Body	Table 4: Comparison of using an “ASR stop-list”	page=5 xpos=0 ypos=0 left-column full-justified page-top string-table headchar-capital
+I-Body	and “enhanced preprocessing” for handling ASR	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+Table	__Table 4__	page=5 xpos=-1 ypos=0 left-column left-over right-indent box shorter-tail table-area above-blank-line above-double-space above-line-space
+I-Body	tem when part-of-speech is not used is shown in Ta-	page=5 xpos=0 ypos=1 left-column full-justified longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ble 3. For Story Link Detection, performance de-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	creases by 38.3%, while for New Event Detection,	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	performance improves by 8.3%. Since POS tagging	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	helps differentiates between the different senses of	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the same root, it also reduces the number of match-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing terms between two documents. In the LNK task	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	for example, the total number of matches drops from	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	177,550 to 151,132. This has the effect of placing a	page=5 xpos=0 ypos=3 left-column full-justified aligned-line
+I-Body	higher weight on terms that match, i.e. terms that	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	have the same sense and for the TDT corpus will	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	increase recall and decrease. Consider for example	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	matching “food server to “food service” and “java	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	server”. When using POS both terms will have the	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	same similarity to the query and the use of POS will	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	retrieve the relevant documents but will also retrieve	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	other documents that share the same sense.	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	6.2.2 Stop Words	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading3 above-double-space above-line-space
+B-Body	A large portion of the documents in the TDT col-	page=5 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	lection has been automatically transcribed using Au-	page=5 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tomatic Speech Recognition (ASR) systems which	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	can achieve over 95% accuracies. However, some	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	of the words not recognized by the ASR tend to be	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	very informative words that can significantly impact	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the detection performance (Allan et al., 1999). Fur-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	thermore, there are systematic differences between	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	ASR and manually transcribed text, e.g., numbers	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	are often spelled out thus “30” will be spelled out	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	“thirty”. Another situation where ASR is different	page=5 xpos=0 ypos=7 left-column full-justified aligned-line
+I-Body	from transcribed text is abbreviations, e.g. ASR sys-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem will recognize ‘CNN” as three separate tokens	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	“C”, “N”, and “N”.	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	In order to account for these differences, we iden-	page=5 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tified the set of tokens that are problematic for ASR.	page=5 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	Our approach was to identify a parallel corpus of	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	manually and automatically transcribed documents,	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the TDT2 corpus, and then use a statistical approach	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	(Dunning, 1993) to identify tokens with significantly	page=5 xpos=0 ypos=9 left-column full-justified aligned-line year column-bottom
+I-Body	Table 5: Impact of recall and precision enhancing	page=5 xpos=5 ypos=0 right-column full-justified column-top string-table headchar-capital
+I-Body	__Table 5__	page=5 xpos=5 ypos=0 right-column left-over right-indent box shorter-tail table-area above-blank-line above-double-space above-line-space
+I-Body	different distributions in the two corpora. We com-	page=5 xpos=5 ypos=1 right-column full-justified longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	piled the problematic ASR terms into an “ASR stop-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	list”. This list was primarily composed of spelled-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	out numbers, numerals and a few other terms. Ta-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ble 4 shows the topic-weighted minimum detection	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	costs for LNK and NED on the TDT 2002 dry run	page=5 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower
+I-Body	data. The table shows results for standard pre-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	processing without an ASR stop-list and with and	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	ASR stop-list. For Link Detection, the ASR stop-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	list improves results, while the same list decreases	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	performance for New Event Detection.	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In (Chen et al., 2003) we investigated normalizing	page=5 xpos=5 ypos=3 right-column left-indent indented-line longer-tail year headchar-capital
+I-Body	abbreviations and transforming spelled-out numbers	page=5 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	into numerals, “enhanced preprocessing”, and then	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	compared this approach with using an “ASR stop-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	list”.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	6.2.3 Impact of Recall and Precision	page=5 xpos=5 ypos=5 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading3 above-line-space
+B-Body	The previous two sections examined the impact	page=5 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	of four different techniques on the performance of	page=5 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	LNK and NED systems. The Part-of-speech is a re-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	call enhancing devices while the ASR stop-list is a	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	precision enhancing device. The enhanced prepro-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cessing improves precision and recall. The results	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	which are summarized in Table 5 indicate that pre-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cision enhancing devices improved the performance	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of the LNK task while recall enhancing devices im-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	proved the NED task.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	6.3 Final Remarks on Differences	page=5 xpos=5 ypos=7 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In the extreme case, a perfect link detection system	page=5 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	performs perfectly on the NED task. We gave em-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pirical evidence that there is not necessarily such a	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	correlation at lower accuracies. These findings are in	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	accordance with the results reported in (Allan et al.,	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	2000b) for topic tracking and first story detection.	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail year tailchar-period
+B-Body	To test the impact of the cost function on the per-	page=5 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	formance of LNK and NED systems, we repeated	page=5 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Body	the evaluation with "%&' ]] and  * both set to 1,	page=5 xpos=5 ypos=9 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	and we found that the difference between the two re-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+B-Caption	Table 6: Topic-weighted minimum normalized de-	page=6 xpos=0 ypos=0 left-column full-justified page-top string-table headchar-capital tailchar-hiphen
+I-Caption	tection cost for NED when using parameter settings	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Caption	that are best for NED (1) and those that are best	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Caption	for LNK (2). Columns (3) and (4) show the detec-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Caption	tion costs using uniform costs for misses and false	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Caption	alarms.	page=6 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+Table	__Table 6__	page=6 xpos=0 ypos=1 left-column centered left-indent box longer-tail table-area above-blank-line above-double-space above-line-space
+I-Body	sults decreases from 30.24% to 14.73%. The result	page=6 xpos=0 ypos=3 left-column full-justified aligned-line line-blank-line line-double-space line-space headchar-lower
+I-Body	 B	page=6 xpos=3 ypos=3 left-column left-indent right-indent font-larger indented-line shorter-tail
+I-Body	indicates that the setting (Hel, PoS, ASRstop)	page=6 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail headchar-lower
+I-Body	is better at recall (identifying same-event stories),	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	B 	page=6 xpos=1 ypos=4 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+I-Body	while (Clarity, PoS, ASRstop) is better at pre-	page=6 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail headchar-lower tailchar-hiphen
+E-Body	cision (identifying different-event stories).	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	In addition to the different costs assigned to	page=6 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	misses and false alarms, there is a difference in the	page=6 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	number of positives and negatives in the data set (the	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	TDT cost function uses  +*6,/.   #      Z  " ). This might	page=6 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-capital
+E-Body	explain part of the remaining difference of 14.73%.	page=6 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Another view on the differences is that a NED	page=6 xpos=0 ypos=6 left-column left-indent indented-line line-double-space line-space headchar-capital
+I-Body	system must perform very well on the higher penal-	page=6 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ized first stories when it does not have any training	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	data for the new event, event though it may perform	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	worse on follow-up stories. A LNK system, how-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ever, can afford to perform worse on the first story if	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	it compensates by performing well on follow-up sto-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ries (because here not flagged follow-up stories are	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	considered misses and thus higher penalized than in	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	NED). This view explains the benefits of using part-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	of-speech information and the negative effect of the	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	ASR stop-list on NED : different part-of-speech tags	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	help discriminate new events from old events; re-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	moving words by using the ASR stoplist makes it	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	harder to discriminate new events. We conjecture	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	that the Hellinger metric helps improve recall, and	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	in a study similar to (Allan et al., 2000b) we plan to	page=6 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower
+I-Body	further evaluate the impact of the Hellinger metric	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	on a closed collection e.g. TREC.	page=6 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-SectionHeader	7 Conclusions and Future Work	page=6 xpos=5 ypos=0 right-column right-indent font-larger column-top numbered-heading1 above-double-space above-line-space
+B-Body	We have compared the effect of several techniques	page=6 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	on the performance of a story link detection system	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	and a new event detection system. Although many	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	of the processing techniques used by our systems are	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	the same, a number of core technologies affect the	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	performance of the LNK and NED systems differ-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ently. The Clarity similarity measure was more ef-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fective for LNK, Hellinger similarity measure was	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	more effective for NED, part-of-speech was more	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	useful for NED, and stop-list adjustment was more	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	useful for LNK. These differences may be due in	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	part to a reversal in the tasks: a miss in LNK means	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the system does not flag two stories as being on the	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	same event when they actually are, while a miss in	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	NED means the system does flag two stories as be-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ing on the same event when actually they are not.	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In future work, we plan to evaluate the impact of	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	the Hellinger metric on recall. In addition, we plan	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	to use Anaphora resolution which was shown to im-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	prove recall (Pirkola and Jrvelin, 1996) to enhance	page=6 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+E-Body	the NED system.	page=6 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=6 xpos=5 ypos=5 right-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	James Allan and Hema Raghavan. 2002. Using part-of-	page=6 xpos=5 ypos=5 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	speech patterns to reduce query ambiguity. In ACM	page=6 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	SIGIR2002, Tampere, Finland.	page=6 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	James Allan, Hubert Jin, Martin Rajman, Charles Wayne,	page=6 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	and et. al. 1999. Topic-based novelty detection. Sum-	page=6 xpos=5 ypos=6 right-column left-indent font-smallest indented-line year headchar-lower tailchar-hiphen
+I-Reference	mer workshop final report, Center for Language and	page=6 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Speech Processing, Johns Hopkins University.	page=6 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	J. Allan, V. Lavrenko, D. Malin, and R. Swan. 2000a.	page=6 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Detections, bounds, and timelines: Umass and tdt-3.	page=6 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-capital tailchar-period
+I-Reference	In Proceedings of Topic Detection and Tracking Work-	page=6 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	shop (TDT-3), Vienna, VA.	page=6 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	James Allan, Victor Lavrenko, and Hubert Jin. 2000b.	page=6 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	First story detection in TDT is hard. In CIKM, pages	page=6 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	374–381.	page=6 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Thorsten Brants, Francine Chen, and Ioannis Tsochan-	page=6 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	taridis. 2002. Topic-based document segmentation	page=6 xpos=5 ypos=8 right-column left-indent font-smallest indented-line year headchar-lower
+I-Reference	with probabilistic latent semantic analysis. In Inter-	page=6 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	national Conference on Information and Knowledge	page=6 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Management (CIKM), McLean, VA.	page=6 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Jaime Carbonell, Yiming Yang, Ralf Brown, Chun Jin,	page=6 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	and Jian Zhang. 2001. Cmu tdt report. Slides at the	page=6 xpos=5 ypos=9 right-column left-indent font-smallest indented-line year headchar-lower
+I-Reference	TDT-2001 meeting, CMU.	page=6 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period page-bottom
+B-Reference	Francine Chen, Ayman Farahat, and Thorsten Brants.	page=7 xpos=0 ypos=0 left-column full-justified font-smallest page-top headchar-capital tailchar-period
+I-Reference	2003. Story link detection and new event detection	page=7 xpos=0 ypos=0 left-column left-indent font-smallest indented-line year
+I-Reference	are asymmetric. In Proceedings of NAACL-HLT-2002,	page=7 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line year headchar-lower tailchar-comma
+I-Reference	Edmonton, AL.	page=7 xpos=0 ypos=0 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	W. Bruce Croft, Stephen Cronen-Townsend, and Victor	page=7 xpos=0 ypos=1 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Larvrenko. 2001. Relevance feedback and person-	page=7 xpos=0 ypos=1 left-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	alization: A language modeling perspective. In DE-	page=7 xpos=0 ypos=1 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	LOS Workshop: Personalisation and Recommender	page=7 xpos=0 ypos=1 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Systems in Digital Libraries.	page=7 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Ted E. Dunning. 1993. Accurate methods for the statis-	page=7 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tics of surprise and coincidence. Computational Lin-	page=7 xpos=0 ypos=2 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	guistics, 19(1):61–74.	page=7 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Wessel Kraaij and Renee Pohlmann. 1996. Viewing	page=7 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	stemming as recall enhancement. In ACM SIGIR1996.	page=7 xpos=0 ypos=3 left-column left-indent font-smallest indented-line year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Victor Lavrenko, James Allan, Edward DeGuzman,	page=7 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line line-double-space line-space headchar-capital tailchar-comma
+I-Reference	Daniel LaFlamme, Veera Pollard, and Stephen	page=7 xpos=0 ypos=4 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Thomas. 2002. Relevance models for topic detection	page=7 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line year headchar-capital
+I-Reference	and tracking. In Proceedings of HLT-2002, San Diego,	page=7 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line year headchar-lower tailchar-comma
+I-Reference	CA.	page=7 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	A. Pirkola and K. Jrvelin. 1996. The effect of anaphora	page=7 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	and ellipsis resolution on proximity searching in a text	page=7 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	database. Information Processing and Management,	page=7 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	32(2):199–216.	page=7 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	William H. Press, Saul A. Teukolsky, William Vetterling,	page=7 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	and Brian Flannery. 1993. Numerical Recipes. Cam-	page=7 xpos=0 ypos=6 left-column left-indent font-smallest indented-line year headchar-lower tailchar-hiphen
+I-Reference	bridge Unv. Press.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Charles Wayne. 2000. Multilingual topic detection	page=7 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	and tracking: Successful research enabled by corpora	page=7 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	and evaluation. In Language Resources and Evalu-	page=7 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ation Conference (LREC), pages 1487–1494, Athens,	page=7 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	Greece.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Jinxi Xu and W. Bruce Croft. 1998. Corpus-based	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	stemming using cooccurrence of word variants. ACM	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Transactions on Information Systems, 16(1):61–81.	page=7 xpos=0 ypos=8 left-column centered left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Yiming Yang, Tom Pierce, and Jaime Carbonell. 1998.	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	A study on retrospective and on-line event detection.	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-capital tailchar-period
+I-Reference	In Proceedings of SIGIR-98, Melbourne, Australia.	page=7 xpos=0 ypos=9 left-column centered left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period

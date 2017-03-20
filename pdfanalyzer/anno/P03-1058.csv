@@ -1,0 +1,631 @@
+Title	Exploiting Parallel Texts for Word Sense Disambiguation:	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital tailchar-colon above-double-space above-line-space
+Title	An Empirical Study	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space headchar-capital above-double-space above-line-space
+Author	Hwee Tou Ng	page=0 xpos=4 ypos=1 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space headchar-capital
+Author	Bin Wang	page=0 xpos=4 ypos=1 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+Author	Yee Seng Chan	page=0 xpos=4 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+B-Affiliation	Department of Computer Science	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Affiliation	National University of Singapore	page=0 xpos=3 ypos=2 single-column centered left-indent right-indent font-larger aligned-line headchar-capital
+Address	3 Science Drive 2, Singapore 117543	page=0 xpos=3 ypos=2 single-column centered left-indent right-indent font-larger hanged-line longer-tail numbered-heading1 above-line-space
+Email	{nght, wangbin, chanys}@comp.nus.edu.sg	page=0 xpos=2 ypos=2 single-column centered left-indent right-indent hanged-line longer-tail line-space symbol-atmark column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=3 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	A central problem of word sense disam-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	biguation (WSD) is the lack of manually	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	sense-tagged data required for supervised	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	learning. In this paper, we evaluate an ap-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	proach to automatically acquire sense-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tagged training data from English-Chinese	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	parallel corpora, which are then used for	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	disambiguating the nouns in the	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	SENSEVAL-2 English lexical sample	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	task. Our investigation reveals that this	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	method of acquiring sense-tagged data is	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	promising. On a subset of the most diffi-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cult SENSEVAL-2 nouns, the accuracy	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	difference between the two approaches is	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	only 14.0%, and the difference could nar-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	row further to 6.5% if we disregard the	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	advantage that manually sense-tagged	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	data have in their sense coverage. Our	page=0 xpos=0 ypos=7 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	analysis also highlights the importance of	page=0 xpos=0 ypos=7 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	the issue of domain dependence in evalu-	page=0 xpos=0 ypos=7 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ating WSD programs.	page=0 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=8 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The task of word sense disambiguation (WSD) is	page=0 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	to determine the correct meaning, or sense of a	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	word in context. It is a fundamental problem in	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	natural language processing (NLP), and the ability	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	to disambiguate word sense accurately is important	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	for applications like machine translation, informa-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion retrieval, etc.	page=0 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	Corpus-based, supervised machine learning	page=0 xpos=5 ypos=2 right-column left-indent column-top headchar-capital
+I-Body	methods have been used to tackle the WSD task,	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	just like the other NLP tasks. Among the various	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	approaches to WSD, the supervised learning ap-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach is the most successful to date. In this ap-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach, we first collect a corpus in which each	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	occurrence of an ambiguous word w has been	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	manually annotated with the correct sense, accord-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing to some existing sense inventory in a diction-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ary. This annotated corpus then serves as the	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	training material for a learning algorithm. After	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	training, a model is automatically learned and it is	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	used to assign the correct sense to any previously	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	unseen occurrence of w in a new context.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	While the supervised learning approach has	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	been successful, it has the drawback of requiring	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	manually sense-tagged data. This problem is par-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ticular severe for WSD, since sense-tagged data	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	must be collected separately for each word in a	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	language.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	One source to look for potential training data	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	for WSD is parallel texts, as proposed by Resnik	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	and Yarowsky (1997). Given a word-aligned paral-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	lel corpus, the different translations in a target lan-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage serve as the “sense-tags” of an ambiguous	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	word in the source language. For example, some	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	possible Chinese translations of the English noun	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	channel are listed in Table 1. To illustrate, if the	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	sense of an occurrence of the noun channel is “a	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	path over which electrical signals can pass”, then	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-line-space
+I-Body	this occurrence can be translated as “频道” in Chi-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line line-space headchar-lower tailchar-hiphen
+E-Body	nese.	page=0 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Table	__Table 1__	page=1 xpos=0 ypos=-3 single-column left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: WordNet 1.7 English sense descriptions, the actual lumped senses, and Chinese translations	page=1 xpos=0 ypos=0 single-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital
+E-Caption	of the noun channel used in our implemented approach	page=1 xpos=2 ypos=0 single-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+Table	__Table 2__	page=1 xpos=0 ypos=0 single-column left-indent box hanged-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 2: Size of English-Chinese parallel corpora	page=1 xpos=2 ypos=3 single-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+B-Body	This approach of getting sense-tagged corpus	page=1 xpos=0 ypos=4 left-column left-indent column-top line-blank-line line-double-space line-space headchar-capital
+I-Body	also addresses two related issues in WSD. Firstly,	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	what constitutes a valid sense distinction carries	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	much subjectivity. Different dictionaries define a	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	different sense inventory. By tying sense distinc-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion to the different translations in a target lan-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage, this introduces a “data-oriented” view to	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	sense distinction and serves to add an element of	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	objectivity to sense definition. Secondly, WSD has	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	been criticized as addressing an isolated problem	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	without being grounded to any real application. By	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	defining sense distinction in terms of different tar-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	get translations, the outcome of word sense disam-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguation of a source language word is the	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	selection of a target word, which directly corre-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sponds to word selection in machine translation.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	While this use of parallel corpus for word sense	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	disambiguation seems appealing, several practical	page=1 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	issues arise in its implementation:	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	(i) What is the size of the parallel corpus	page=1 xpos=0 ypos=9 left-column left-indent indented-line longer-tail itemization
+I-Listitem	needed in order for this approach to be able to dis-	page=1 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Listitem	ambiguate a source language word accurately?	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower column-bottom
+B-Listitem	(ii) While we can obtain large parallel corpora	page=1 xpos=5 ypos=4 right-column left-indent column-top
+I-Listitem	in the long run, to have them manually word-	page=1 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Listitem	aligned would be too time-consuming and would	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Listitem	defeat the original purpose of getting a sense-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tagged corpus without manual annotation. How-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ever, are current word alignment algorithms accu-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	rate enough for our purpose?	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	(iii) Ultimately, using a state-of-the-art super-	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail tailchar-hiphen
+I-Listitem	vised WSD program, what is its disambiguation	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Listitem	accuracy when it is trained on a “sense-tagged”	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Listitem	corpus obtained via parallel text alignment, com-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	pared with training on a manually sense-tagged	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Listitem	corpus?	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Body	Much research remains to be done to investi-	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	gate all of the above issues. The lack of large-scale	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	parallel corpora no doubt has impeded progress in	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	this direction, although attempts have been made to	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	mine parallel corpora from the Web (Resnik,	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	1999).	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail year tailchar-period
+B-Body	However, large-scale, good-quality parallel	page=1 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	corpora have recently become available. For ex-	page=1 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ample, six English-Chinese parallel corpora are	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	now available from Linguistic Data Consortium.	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-period
+I-Body	These parallel corpora are listed in Table 2, with a	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	combined size of 280 MB. In this paper, we ad-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dress the above issues and report our findings, ex-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ploiting the English-Chinese parallel corpora in	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	Table 2 for word sense disambiguation. We evalu-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line string-table headchar-capital tailchar-hiphen
+I-Body	ated our approach on all the nouns in the English	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	lexical sample task of SENSEVAL-2 (Edmonds	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	and Cotton, 2001; Kilgarriff 2001), which used the	page=2 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower
+I-Body	WordNet 1.7 sense inventory (Miller, 1990). While	page=2 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-capital
+I-Body	our approach has only been tested on English and	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	Chinese, it is completely general and applicable to	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+E-Body	other language pairs.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Approach	page=2 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Our approach of exploiting parallel texts for word	page=2 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	sense disambiguation consists of four steps: (1)	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	parallel text alignment (2) manual selection of tar-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	get translations (3) training of WSD classifier (4)	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	WSD of words in new contexts.	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.1 Parallel Text Alignment	page=2 xpos=0 ypos=4 left-column right-indent font-larger aligned-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In this step, parallel texts are first sentence-aligned	page=2 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	and then word-aligned. Various alignment algo-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rithms (Melamed 2001; Och and Ney 2000) have	page=2 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	been developed in the past. For the six bilingual	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	corpora that we used, they already come with sen-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences pre-aligned, either manually when the cor-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pora were prepared or automatically by sentence-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	alignment programs. After sentence alignment, the	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	English texts are tokenized so that a punctuation	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	symbol is separated from its preceding word. For	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the Chinese texts, we performed word segmenta-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, so that Chinese characters are segmented into	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	words. The resulting parallel texts are then input to	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the GIZA++ software (Och and Ney 2000) for	page=2 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+E-Body	word alignment.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the output of GIZA++, each English word	page=2 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	token is aligned to some Chinese word token. The	page=2 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	alignment result contains much noise, especially	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	for words with low frequency counts.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 Manual Selection of Target Translations	page=2 xpos=0 ypos=8 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In this step, we will decide on the sense classes of	page=2 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	an English word w that are relevant to translating w	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	into Chinese. We will illustrate with the noun	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	channel, which is one of the nouns evaluated in the	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	English lexical sample task of SENSEVAL-2. We	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital column-bottom
+I-Body	rely on two sources to decide on the sense classes	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	of w:	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	(i) The sense definitions in WordNet 1.7, which	page=2 xpos=5 ypos=0 right-column left-indent indented-line longer-tail itemization
+I-Listitem	lists seven senses for the noun channel. Two	page=2 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Listitem	senses are lumped together if they are translated in	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Listitem	the same way in Chinese. For example, sense 1 and	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower above-line-space
+I-Listitem	7 of channel are both translated as “频道” in Chi-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line line-space numbered-heading1 tailchar-hiphen
+I-Listitem	nese, so these two senses are lumped together.	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	(ii) From the word alignment output of	page=2 xpos=5 ypos=1 right-column left-indent indented-line longer-tail
+I-Listitem	GIZA++, we select those occurrences of the noun	page=2 xpos=5 ypos=1 right-column full-justified hanged-line headchar-capital
+I-Listitem	channel which have been aligned to one of the	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Listitem	Chinese translations chosen (as listed in Table 1).	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital tailchar-period
+B-Body	These occurrences of the noun channel in the Eng-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	lish side of the parallel texts are considered to have	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	been disambiguated and “sense-tagged” by the ap-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	propriate Chinese translations. Each such occur-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rence of channel together with the 3-sentence	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	context in English surrounding channel then forms	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	a training example for a supervised WSD program	page=2 xpos=5 ypos=3 right-column full-justified aligned-line itemization headchar-lower
+E-Body	in the next step.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The average time taken to perform manual se-	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	lection of target translations for one SENSEVAL-2	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	English noun is less than 15 minutes. This is a rela-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tively short time, especially when compared to the	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	effort that we would otherwise need to spend to	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	perform manual sense-tagging of training exam-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ples. This step could also be potentially automated	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	if we have a suitable bilingual translation lexicon.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.3 Training of WSD Classifier	page=2 xpos=5 ypos=5 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Much research has been done on the best super-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	vised learning approach for WSD (Florian and	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	Yarowsky, 2002; Lee and Ng, 2002; Mihalcea and	page=2 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-capital
+I-Body	Moldovan, 2001; Yarowsky et al., 2001). In this	page=2 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-capital
+I-Body	paper, we used the WSD program reported in (Lee	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	and Ng, 2002). In particular, our method made use	page=2 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	of the knowledge sources of part-of-speech, sur-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rounding words, and local collocations. We used	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	naïve Bayes as the learning algorithm. Our previ-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ous research demonstrated that such an approach	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	leads to a state-of-the-art WSD program with good	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	performance.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.4 WSD of Words in New Contexts	page=2 xpos=5 ypos=8 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Given an occurrence of w in a new context, we	page=2 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	then used the naïve Bayes classifier to determine	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	the most probable sense of w.	page=2 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Table	__Table 3__	page=3 xpos=0 ypos=-18 single-column left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 3: List of 29 SENSEVAL-2 nouns, their number of senses, and various accuracy figures	page=3 xpos=0 ypos=0 single-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+B-SectionHeader	3 An Empirical Study	page=3 xpos=0 ypos=1 left-column right-indent font-larger column-top line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We evaluated our approach to word sense disam-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	biguation on all the 29 nouns in the English lexical	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	sample task of SENSEVAL-2 (Edmonds and Cot-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ton, 2001; Kilgarriff 2001). The list of 29 nouns is	page=3 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower
+I-Body	given in Table 3. The second column of Table 3	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	lists the number of senses of each noun as given in	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	the WordNet 1.7 sense inventory (Miller, 1990).	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	We first lump together two senses s <sub>1</sub> and s 2 of a	page=3 xpos=0 ypos=5 left-column left-indent font-larger indented-line longer-tail headchar-capital
+I-Body	noun if s <sub>1</sub> and s 2 are translated into the same Chi-	page=3 xpos=0 ypos=6 left-column full-justified font-larger hanged-line headchar-lower tailchar-hiphen
+I-Body	nese word. The number of senses of each noun	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	after sense lumping is given in column 3 of Table	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	3. For the 7 nouns that are lumped into one sense	page=3 xpos=0 ypos=8 left-column full-justified aligned-line itemization
+I-Body	(i.e., they are all translated into one Chinese word),	page=3 xpos=0 ypos=8 left-column full-justified aligned-line tailchar-comma
+I-Body	we do not perform WSD on these words. The aver-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	age number of senses before and after sense lump-	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+E-Body	ing is 5.07 and 3.52 respectively.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	After sense lumping, we trained a WSD classi-	page=3 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	fier for each noun w, by using the lumped senses in	page=3 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	the manually sense-tagged training data for w pro-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vided by the SENSEVAL-2 organizers. We then	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	tested the WSD classifier on the official	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	SENSEVAL-2 test data (but with lumped senses)	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	for w. The test accuracy (based on fine-grained	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	scoring of SENSEVAL-2) of each noun obtained is	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	listed in the column labeled M1 in Table 3.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We then used our approach of parallel text	page=3 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	alignment described in the last section to obtain the	page=3 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	training examples from the English side of the par-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	allel texts. Due to the memory size limitation of	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	our machine, we were not able to align all six par-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	allel corpora of 280MB in one alignment run of	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	GIZA++. For two of the corpora, Hong Kong Han-	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-capital tailchar-hiphen
+I-Body	sards and Xinhua News, we gathered all English	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	sentences containing the 29 SENSEVAL-2 noun	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	occurrences (and their sentence-aligned Chinese	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	sentence counterparts). This subset, together with	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	the complete corpora of Hong Kong News, Hong	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	Kong Laws, English translation of Chinese Tree-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	bank, and Sinorama, is then given to GIZA++ to	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	perform one word alignment run. It took about 40	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	hours on our 2.4 GHz machine with 2 GB memory	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	to perform this alignment.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	After word alignment, each 3-sentence context	page=4 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	in English containing an occurrence of the noun w	page=4 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	that is aligned to a selected Chinese translation	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	then forms a training example. For each	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	SENSEVAL-2 noun w, we then collected training	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	examples from the English side of the parallel texts	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	using the same number of training examples for	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	each sense of w that are present in the manually	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	sense-tagged SENSEVAL-2 official training cor-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pus (lumped-sense version). If there are insuffi-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cient training examples for some sense of w from	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the parallel texts, then we just used as many paral-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lel text training examples as we could find for that	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	sense. We chose the same number of training ex-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	amples for each sense as the official training data	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	so that we can do a fair comparison between the	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	accuracy of the parallel text alignment approach	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	versus the manual sense-tagging approach.	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	After training a WSD classifier for w with such	page=4 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	parallel text examples, we then evaluated the WSD	page=4 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	classifier on the same official SENSEVAL-2 test	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	set (with lumped senses). The test accuracy of each	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	noun obtained by training on such parallel text	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	training examples (averaged over 10 trials) is listed	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	in the column labeled P1 in Table 3.	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The baseline accuracy for each noun is also	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	listed in the column labeled “P1-Baseline” in Table	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	3. The baseline accuracy corresponds to always	page=4 xpos=0 ypos=7 left-column full-justified aligned-line itemization
+I-Body	picking the most frequently occurring sense in the	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	training data.	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Ideally, we would hope M1 and P1 to be close	page=4 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	in value, since this would imply that WSD based	page=4 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	on training examples collected from the parallel	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	text alignment approach performs as well as manu-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ally sense-tagged training examples. Comparing	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the M1 and P1 figures, we observed that there is a	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	set of nouns for which they are relatively close.	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	These nouns are: bar, bum, chair, day, dyke, fa-	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tigue, hearth, mouth, nation, nature, post, re-	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	straint, sense, stress. This set of nouns is relatively	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	easy to disambiguate, since using the most-	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	frequently-occurring-sense baseline would have	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	done well for most of these nouns.	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The parallel text alignment approach works	page=4 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	well for nature and sense, among these nouns. For	page=4 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	nature, the parallel text alignment approach gives	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	better accuracy, and for sense the accuracy differ-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence is only 0.014 (while there is a relatively large	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	difference of 0.231 between P1 and P1-Baseline of	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	sense). This demonstrates that the parallel text	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	alignment approach to acquiring training examples	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	can yield good results.	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For the remaining nouns (art, authority, chan-	page=4 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	nel, church, circuit, facility, grip, spade), the	page=4 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	accuracy difference between M1 and P1 is at least	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	0.10. Henceforth, we shall refer to this set of 8	page=4 xpos=5 ypos=2 right-column full-justified aligned-line
+I-Body	nouns as “difficult” nouns. We will give an analy-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sis of the reason for the accuracy difference be-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tween M1 and P1 in the next section.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Analysis	page=4 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-blank-line above-double-space above-line-space
+B-SubsectionHeader	4.1 Sense-Tag Accuracy of Parallel Text	page=4 xpos=5 ypos=4 right-column full-justified font-larger aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2
+I-SubsectionHeader	Training Examples	page=4 xpos=5 ypos=4 right-column left-indent right-indent indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	To see why there is still a difference between the	page=4 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	accuracy of the two approaches, we first examined	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the quality of the training examples obtained	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	through parallel text alignment. If the automati-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cally acquired training examples are noisy, then	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	this could account for the lower P1 score.	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The word alignment output of GIZA++ con-	page=4 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tains much noise in general (especially for the low	page=4 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	frequency words). However, note that in our ap-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach, we only select the English word occur-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rences that align to our manually selected Chinese	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	translations. Hence, while the complete set of word	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	alignment output contains much noise, the subset	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	of word occurrences chosen may still have high	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	quality sense tags.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our manual inspection reveals that the annota-	page=4 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tion errors introduced by parallel text alignment	page=4 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	can be attributed to the following sources:	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	(i) Wrong sentence alignment: Due to errone-	page=4 xpos=5 ypos=8 right-column left-indent indented-line longer-tail itemization tailchar-hiphen
+I-Listitem	ous sentence segmentation or sentence alignment,	page=4 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Listitem	the correct Chinese word that an English word w	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Listitem	should align to is not present in its Chinese sen-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tence counterpart. In this case, word alignment will	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Listitem	align the wrong Chinese word to w.	page=4 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	(ii) Presence of multiple Chinese translation	page=4 xpos=5 ypos=9 right-column left-indent indented-line longer-tail
+I-Listitem	candidates: Sometimes, multiple and distinct Chi-	page=4 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen page-bottom
+I-Listitem	nese translations appear in the aligned Chinese	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Listitem	sentence. For example, for an English occurrence	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower above-line-space
+I-Listitem	channel, both “频道” (sense 1 translation) and “途	page=5 xpos=0 ypos=0 left-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Listitem	径” (sense 5 translation) happen to appear in the	page=5 xpos=0 ypos=0 left-column full-justified aligned-line line-space
+I-Listitem	aligned Chinese sentence. In this case, word	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Listitem	alignment may erroneously align the wrong Chi-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	nese translation to channel.	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	(iii) Truly ambiguous word: Sometimes, a word	page=5 xpos=0 ypos=1 left-column left-indent indented-line longer-tail
+I-Listitem	is truly ambiguous in a particular context, and dif-	page=5 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Listitem	ferent translators may translate it differently. For	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Listitem	example, in the phrase “the church meeting”,	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma above-line-space
+I-Listitem	church could be the physical building sense (教	page=5 xpos=0 ypos=2 left-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Listitem	堂 ), or the institution sense ( 教 会 ). In manual	page=5 xpos=0 ypos=2 left-column full-justified aligned-line line-space
+I-Listitem	sense tagging done in SENSEVAL-2, it is possible	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Listitem	to assign two sense tags to church in this case, but	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Listitem	in the parallel text setting, a particular translator	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower above-line-space
+I-Listitem	will translate it in one of the two ways (教堂 or 教	page=5 xpos=0 ypos=3 left-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Listitem	会), and hence the sense tag found by parallel text	page=5 xpos=0 ypos=3 left-column full-justified aligned-line line-space above-line-space
+I-Listitem	alignment is only one of the two sense tags.	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail line-space headchar-lower tailchar-period
+B-Body	By manually examining a subset of about 1,000	page=5 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	examples, we estimate that the sense-tag error rate	page=5 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	of training examples (tagged with lumped senses)	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	obtained by our parallel text alignment approach is	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	less than 1%, which compares favorably with the	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	quality of manually sense tagged corpus prepared	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	in SENSEVAL-2 (Kilgarriff, 2001).	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Domain Dependence and Insufficient	page=5 xpos=0 ypos=5 left-column full-justified font-larger aligned-line longer-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	Sense Coverage	page=5 xpos=0 ypos=5 left-column left-indent right-indent indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	While it is encouraging to find out that the par-	page=5 xpos=0 ypos=5 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	allel text sense tags are of high quality, we are still	page=5 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	left with the task of explaining the difference be-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tween M1 and P1 for the set of difficult nouns. Our	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	further investigation reveals that the accuracy dif-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ference between M1 and P1 is due to the following	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	two reasons: domain dependence and insufficient	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	sense coverage.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Domain Dependence The accuracy figure of	page=5 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	M1 for each noun is obtained by training a WSD	page=5 xpos=0 ypos=7 left-column full-justified hanged-line headchar-capital
+I-Body	classifier on the manually sense-tagged training	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	data (with lumped senses) provided by	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	SENSEVAL-2 organizers, and testing on the cor-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	responding official test data (also with lumped	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	senses), both of which come from similar domains.	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In contrast, the P1 score of each noun is obtained	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	by training the WSD classifier on a mixture of six	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	parallel corpora, and tested on the official	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	SENSEVAL-2 test set, and hence the training and	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	test data come from dissimilar domains in this	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	case.	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	Moreover, from the “docsrc” field (which re-	page=5 xpos=5 ypos=0 right-column left-indent column-top headchar-capital tailchar-hiphen
+I-Body	cords the document id that each training or test	page=5 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	example originates) of the official SENSEVAL-2	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	training and test examples, we realized that there	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	are many cases when some of the examples from a	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	document are used as training examples, while the	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	rest of the examples from the same document are	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	used as test examples. In general, such a practice	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	results in higher test accuracy, since the test exam-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ples would look a lot closer to the training exam-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ples in this case.	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To address this issue, we took the official	page=5 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	SENSEVAL-2 training and test examples of each	page=5 xpos=5 ypos=2 right-column full-justified hanged-line headchar-capital
+I-Body	noun w and combined them together. We then ran-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	domly split the data into a new training and a new	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	test set such that no training and test examples	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	come from the same document. The number of	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	training examples in each sense in such a new	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	training set is the same as that in the official train-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ing data set of w.	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	A WSD classifier was then trained on this new	page=5 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	training set, and tested on this new test set. We	page=5 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	conducted 10 random trials, each time splitting into	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	a different training and test set but ensuring that	page=5 xpos=5 ypos=4 right-column full-justified aligned-line itemization headchar-lower
+I-Body	the number of training examples in each sense (and	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	thus the sense distribution) follows the official	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	training set of w. We report the average accuracy	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of the 10 trials. The accuracy figures for the set of	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	difficult nouns thus obtained are listed in the col-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	umn labeled M2 in Table 3.	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We observed that M2 is always lower in value	page=5 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	compared to M1 for all difficult nouns. This sug-	page=5 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	gests that the effect of training and test examples	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	coming from the same document has inflated the	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	accuracy figures of SENSEVAL-2 nouns.	page=5 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Next, we randomly selected 10 sets of training	page=5 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	examples from the parallel corpora, such that the	page=5 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	number of training examples in each sense fol-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lowed the official training set of w. (When there	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	were insufficient training examples for a sense, we	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	just used as many as we could find from the paral-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lel corpora.) In each trial, after training a WSD	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	classifier on the selected parallel text examples, we	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	tested the classifier on the same test set (from	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	SENSEVAL-2 provided data) used in that trial that	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	generated the M2 score. The accuracy figures thus	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	obtained for all the difficult nouns are listed in the	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	column labeled P2 in Table 3.	page=5 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Insufficient Sense Coverage We observed that	page=5 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	there are situations when we have insufficient	page=5 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Body	training examples in the parallel corpora for some	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	of the senses of some nouns. For instance, no oc-	page=6 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	currences of sense 5 of the noun circuit (racing	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	circuit, a racetrack for automobile races) could be	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	found in the parallel corpora. To ensure a fairer	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	comparison, for each of the 10-trial manually	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	sense-tagged training data that gave rise to the ac-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	curacy figure M2 of a noun w, we extracted a new	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	subset of 10-trial (manually sense-tagged) training	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	data by ensuring adherence to the number of train-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing examples found for each sense of w in the cor-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	responding parallel text training set that gave rise	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	to the accuracy figure P2 for w. The accuracy fig-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ures thus obtained for the difficult nouns are listed	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	in the column labeled M3 in Table 3. M3 thus gave	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the accuracy of training on manually sense-tagged	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	data but restricted to the number of training exam-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ples found in each sense from parallel corpora.	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.3 Discussion	page=6 xpos=0 ypos=3 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The difference between the accuracy figures of	page=6 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	M2 and P2 averaged over the set of all difficult	page=6 xpos=0 ypos=3 left-column full-justified hanged-line headchar-capital
+I-Body	nouns is 0.140. This is smaller than the difference	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	of 0.189 between the accuracy figures of M1 and	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	P1 averaged over the set of all difficult nouns. This	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	confirms our hypothesis that eliminating the possi-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bility that training and test examples come from	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the same document would result in a fairer com-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	parison.	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In addition, the difference between the accuracy	page=6 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	figures of M3 and P2 averaged over the set of all	page=6 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	difficult nouns is 0.065. That is, eliminating the	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	advantage that manually sense-tagged data have in	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	their sense coverage would reduce the performance	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	gap between the two approaches from 0.140 to	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	0.065. Notice that this reduction is particularly sig-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line tailchar-hiphen
+I-Body	nificant for the noun circuit. For this noun, the par-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	allel corpora do not have enough training examples	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	for sense 4 and sense 5 of circuit, and these two	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	senses constitute approximately 23% in each of the	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	10-trial test set.	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	We believe that the remaining difference of	page=6 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	0.065 between the two approaches could be attrib-	page=6 xpos=0 ypos=8 left-column full-justified hanged-line numbered-heading2 tailchar-hiphen
+I-Body	uted to the fact that the training and test examples	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	of the manually sense-tagged corpus, while not	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	coming from the same document, are however still	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	drawn from the same general domain. To illustrate,	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we consider the noun channel where the difference	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	between M3 and P2 is the largest. For channel, it	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	turns out that a substantial number of the training	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	and test examples contain the collocation “Channel	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	tunnel” or “Channel Tunnel”. On average, about	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	9.8 training examples and 6.2 test examples con-	page=6 xpos=5 ypos=0 right-column full-justified column-top numbered-heading2 tailchar-hiphen
+I-Body	tain this collocation. This alone would have ac-	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	counted for 0.088 of the accuracy difference	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	between the two approaches.	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	That domain dependence is an important issue	page=6 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	affecting the performance of WSD programs has	page=6 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	been pointed out by (Escudero et al., 2000). Our	page=6 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower
+I-Body	work confirms the importance of domain depend-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ence in WSD.	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As to the problem of insufficient sense cover-	page=6 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	age, with the steady increase and availability of	page=6 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	parallel corpora, we believe that getting sufficient	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	sense coverage from larger parallel corpora should	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	not be a problem in the near future for most of the	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	commonly occurring words in a language.	page=6 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Related Work	page=6 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Brown et al. (1991) is the first to have explored	page=6 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-double-space line-space year headchar-capital
+I-Body	statistical methods in word sense disambiguation in	page=6 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	the context of machine translation. However, they	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	only looked at assigning at most two senses to a	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	word, and their method only asked a single ques-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion about a single word of context. Li and Li	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	(2002) investigated a bilingual bootstrapping tech-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	nique, which differs from the method we imple-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mented here. Their method also does not require a	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	parallel corpus.	page=6 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The research of (Chugur et al., 2002) dealt with	page=6 xpos=5 ypos=5 right-column left-indent indented-line longer-tail year headchar-capital
+I-Body	sense distinctions across multiple languages. Ide et	page=6 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	al. (2002) investigated word sense distinctions us-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ing parallel corpora. Resnik and Yarowsky (2000)	page=6 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Body	considered word sense disambiguation using mul-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tiple languages. Our present work can be similarly	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	extended beyond bilingual corpora to multilingual	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	corpora.	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The research most similar to ours is the work of	page=6 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	Diab and Resnik (2002). However, they used ma-	page=6 xpos=5 ypos=7 right-column full-justified hanged-line year headchar-capital tailchar-hiphen
+I-Body	chine translated parallel corpus instead of human	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	translated parallel corpus. In addition, they used an	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	unsupervised method of noun group disambigua-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion, and evaluated on the English all-words task.	page=6 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Conclusion	page=6 xpos=5 ypos=8 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper, we reported an empirical study to	page=6 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	evaluate an approach of automatically acquiring	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	sense-tagged training data from English-Chinese	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	parallel corpora, which were then used for disam-	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguating the nouns in the SENSEVAL-2 English	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	lexical sample task. Our investigation reveals that	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	this method of acquiring sense-tagged data is pro-	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	mising and provides an alternative to manual sense	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	tagging.	page=7 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgements	page=7 xpos=0 ypos=0 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	This research is partially supported by a research	page=7 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Acknowledgement	grant R252-000-125-112 from National University	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Acknowledgement	of Singapore Academic Research Fund.	page=7 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Peter F. Brown, Stephen A. Della Pietra, Vincent J.	page=7 xpos=0 ypos=2 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Della Pietra, and Robert L. Mercer. 1991. Word-	page=7 xpos=0 ypos=2 left-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	sense disambiguation using statistical methods. In	page=7 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Proceedings of the 29th Annual Meeting of the Asso-	page=7 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	ciation for Computational Linguistics, pages 264-	page=7 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	270.	page=7 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Irina Chugur, Julio Gonzalo, and Felisa Verdejo. 2002.	page=7 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Polysemy and sense proximity in the Senseval-2 test	page=7 xpos=0 ypos=3 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	suite. In Proceedings of the ACL SIGLEX Workshop	page=7 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	on Word Sense Disambiguation: Recent Successes	page=7 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	and Future Directions, pages 32-39.	page=7 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Mona Diab and Philip Resnik. 2002. An unsupervised	page=7 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	method for word sense tagging using parallel cor-	page=7 xpos=0 ypos=4 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	pora. In Proceedings of the 40th Annual Meeting of	page=7 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	the Association for Computational Linguistics, pages	page=7 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	255-262.	page=7 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Philip Edmonds and Scott Cotton. 2001. SENSEVAL-2:	page=7 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-colon
+I-Reference	Overview. In Proceedings of the Second Interna-	page=7 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	tional Workshop on Evaluating Word Sense	page=7 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Disambiguation Systems (SENSEVAL-2), pages 1-5.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Gerard Escudero, Lluis Marquez, and German Rigau.	page=7 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2000. An empirical study of the domain dependence	page=7 xpos=0 ypos=6 left-column left-indent font-smallest indented-line year
+I-Reference	of supervised word sense disambiguation systems. In	page=7 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Proceedings of the Joint SIGDAT Conference on	page=7 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Empirical Methods in Natural Language Processing	page=7 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	and Very Large Corpora, pages 172-180.	page=7 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Radu Florian and David Yarowsky. 2002. Modeling	page=7 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	consensus: Classifier combination for word sense	page=7 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	disambiguation. In Proceedings of the 2002 Confer-	page=7 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line year headchar-lower tailchar-hiphen
+I-Reference	ence on Empirical Methods in Natural Language	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Processing, pages 25-32.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Nancy Ide, Tomaz Erjavec, and Dan Tufis. 2002. Sense	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	discrimination with parallel corpora. In Proceedings	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of the ACL SIGLEX Workshop on Word Sense Dis-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ambiguation: Recent Successes and Future Direc-	page=7 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tions, pages 54-60.	page=7 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Adam Kilgarriff. 2001. English lexical sample task de-	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	scription. In Proceedings of the Second International	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-lower column-bottom
+I-Reference	Workshop on Evaluating Word Sense Disambigua-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest column-top headchar-capital tailchar-hiphen
+I-Reference	tion Systems (SENSEVAL-2), pages 17-20.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Yoong Keok Lee and Hwee Tou Ng. 2002. An empiri-	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	cal evaluation of knowledge sources and learning al-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	gorithms for word sense disambiguation. In	page=7 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Proceedings of the 2002 Conference on Empirical	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line year headchar-capital
+I-Reference	Methods in Natural Language Processing, pages 41-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	48.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Cong Li and Hang Li. 2002. Word translation disam-	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	biguation using bilingual bootstrapping. In Proceed-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ings of the 40th Annual Meeting of the Association	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	for Computational Linguistics, pages 343-351.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	I. Dan Melamed. 2001. Empirical Methods for Exploit-	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ing Parallel Texts. MIT Press, Cambridge.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Rada F. Mihalcea and Dan I. Moldovan. 2001. Pattern	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	learning and active feature selection for word sense	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	disambiguation. In Proceedings of the Second Inter-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	national Workshop on Evaluating Word Sense Dis-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ambiguation Systems (SENSEVAL-2), pages 127-130.	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	George A. Miller. (Ed.) 1990. WordNet: An on-line	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line line-double-space line-space year headchar-capital
+I-Reference	lexical database. International Journal of Lexicogra-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	phy, 3(4):235-312.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Franz Josef Och and Hermann Ney. 2000. Improved	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	statistical alignment models. In Proceedings of the	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	38th Annual Meeting of the Association for Computa-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line tailchar-hiphen
+I-Reference	tional Linguistics, pages 440-447.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Philip Resnik. 1999. Mining the Web for bilingual text.	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	In Proceedings of the 37th Annual Meeting of the As-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	sociation for Computational Linguistics, pages 527-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	534.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Philip Resnik and David Yarowsky. 1997. A perspec-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tive on word sense disambiguation methods and their	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	evaluation. In Proceedings of the ACL SIGLEX	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Workshop on Tagging Text with Lexical Semantics:	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-capital tailchar-colon
+I-Reference	Why, What, and How?, pages 79-86.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Philip Resnik and David Yarowsky. 2000. Distinguish-	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ing systems and distinguishing senses: New evalua-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tion methods for word sense disambiguation. Natural	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Language Engineering, 5(2):113-133.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	David Yarowsky, Silviu Cucerzan, Radu Florian,	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	Charles Schafer, and Richard Wicentowski. 2001.	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line year headchar-capital tailchar-period
+I-Reference	The Johns Hopkins SENSEVAL2 system descrip-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	tions. In Proceedings of the Second International	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Workshop on Evaluating Word Sense Disambigua-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	tion Systems (SENSEVAL-2), pages 163-166.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period

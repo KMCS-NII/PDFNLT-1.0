@@ -1,0 +1,614 @@
+Title	Using Machine Learning Techniques to Interpret WH-questions	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Author	Ingrid Zukerman Eric Horvitz	page=0 xpos=2 ypos=0 left-column left-indent right-over font-larger column-top line-blank-line line-double-space line-space headchar-capital column-bottom
+B-Affiliation	School of Computer Science and Software Engineering Microsoft Research	page=0 xpos=0 ypos=0 single-column left-indent right-indent font-larger column-top headchar-capital column-bottom
+I-Affiliation	Monash University One Microsoft Way	page=0 xpos=2 ypos=0 left-column left-indent right-over font-larger column-top headchar-capital column-bottom
+Address	Clayton, Victoria 3800, AUSTRALIA Redmond, WA 98052, USA	page=0 xpos=1 ypos=1 single-column left-indent right-indent font-larger column-top headchar-capital above-line-space
+Email	ingrid@csse.monash.edu.au horvitz@microsoft.com	page=0 xpos=1 ypos=1 single-column left-indent right-indent font-smallest indented-line line-space symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	We describe a set of supervised ma-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	chine learning experiments centering	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	on the construction of statistical mod-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	els of WH-questions. These models,	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-comma
+I-Abstract	which are built from shallow linguis-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tic features of questions, are employed	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	to predict target variables which repre-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sent a user’s informational goals. We	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	report on different aspects of the pre-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	dictive performance of our models, in-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cluding the influence of various training	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	and testing factors on predictive perfor-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	mance, and examine the relationships	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	among the target variables.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The growth in popularity of the Internet highlights	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the importance of developing machinery for gen-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erating responses to queries targeted at large un-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structured corpora. At the same time, the access	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	of World Wide Web resources by large numbers	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	of users provides opportunities for collecting and	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	leveraging vast amounts of data about user activ-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity. In this paper, we describe research on exploit-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing data collected from logs of users’ queries in	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	order to build models that can be used to infer	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	users’ informational goals from queries.	page=0 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We describe experiments which use supervised	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	machine learning techniques to build statistical	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	models of questions posed to the Web-based En-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	carta encyclopedia service. We focus on mod-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els and analyses of complete questions phrased	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	in English. These models predict a user’s infor-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mational goals from shallow linguistic features	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	of questions obtained from a natural language	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	parser. We decompose these goals into (1) the	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	type of information requested by the user (e.g.,	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-comma column-bottom
+I-Body	definition, value of an attribute, explanation for an	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower
+I-Body	event), (2) the topic, focal point and additional re-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	strictions posed by the question, and (3) the level	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	of detail of the answer. The long-term aim of this	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	project is to use predictions of these informational	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	goals to enhance the performance of information-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	retrieval and question-answering systems. In this	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	paper, we report on different aspects of the predic-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive performance of our statistical models, includ-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the influence of various training and testing	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	factors on predictive performance, and examine	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	the relationships among the informational goals.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the next section, we review related research.	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital tailchar-period
+I-Body	In Section 3, we describe the variables being	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-capital
+I-Body	modeled. In Section 4, we discuss our predic-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive models. We then evaluate the predictions ob-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tained from models built under different training	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	and modeling conditions. Finally, we summarize	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the contribution of this work and discuss research	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	directions.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Related Research	page=0 xpos=5 ypos=6 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-line-space
+B-Body	Our research builds on earlier work on the use	page=0 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	of probabilistic models to understand free-text	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	queries in search applications (Heckerman and	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	Horvitz, 1998; Horvitz et al., 1998), and on work	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital
+I-Body	conducted in the IR arena of question answering	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	(QA) technologies.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	Heckerman and Horvitz (1998) and Horvitz et	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail year headchar-capital
+I-Body	al. (1998) used hand-crafted models and super-	page=0 xpos=5 ypos=7 right-column full-justified hanged-line year headchar-lower tailchar-hiphen
+I-Body	vised learning to construct Bayesian models that	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	predict users’ goals and needs for assistance in the	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	context of consumer software applications. Heck-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erman and Horvitz’ models considered words,	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	phrases and linguistic structures (e.g., capitaliza-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion and definite/indefinite articles) appearing in	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	queries to a help system. Horvitz et al.’s models	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	considered a user’s recent actions in his/her use of	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	software, together with probabilistic information	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	maintained in a dynamically updated user profile.	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-period page-bottom
+B-Body	QA research centers on the challenge of en-	page=1 xpos=0 ypos=0 left-column left-indent page-top headchar-capital tailchar-hiphen
+I-Body	hancing the response of search engines to a user’s	page=1 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	questions by returning precise answers rather than	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	returning documents, which is the more common	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	IR goal. QA systems typically combine tradi-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tional IR statistical methods (Salton and McGill,	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1983) with “shallow” NLP techniques. One ap-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	proach to the QA task consists of applying the IR	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	methods to retrieve documents relevant to a user’s	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	question, and then using the shallow NLP to ex-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tract features from both the user’s question and	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the most promising retrieved documents. These	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	features are then used to identify an answer within	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	each document which best matches the user’s	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	question. This approach was adopted in (Kupiec,	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1993; Abney et al., 2000; Cardie et al., 2000;	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year tailchar-semicolon
+E-Body	Moldovan et al., 2000).	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period
+B-Body	The NLP components of these systems em-	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ployed hand-crafted rules to infer the type of an-	page=1 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	swer expected. These rules were built by con-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sidering the first word of a question as well as	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	larger patterns of words identified in the question.	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For example, the question “How far is Mars?”	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	might be characterized as requiring a reply of type	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	DISTANCE . Our work differs from traditional QA	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	research in its use of statistical models to pre-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dict variables that represent a user’s informational	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	goals. The variables under consideration include	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the type of the information requested in a query,	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the level of detail of the answer, and the parts-of-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	speech which contain the topic the query and its	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	focus (which resembles the type of the expected	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	answer). In this paper, we focus on the predictive	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	models, rather than on the provision of answers to	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	users’ questions. We hope that in the short term,	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the insights obtained from our work will assist	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	QA researchers to fine-tune the answers generated	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+E-Body	by their systems.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Data Collection	page=1 xpos=0 ypos=7 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-line-space
+B-Body	Our models were built from questions identi-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	fied in a log of Web queries submitted to the	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	Encarta encyclopedia service. These questions	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	include traditional WH-questions, which begin	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	with “what”, “when”, “where”, “which”, “who”,	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	“why” and “how”, as well as imperative state-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line tailchar-hiphen
+I-Body	ments starting with “name”, “tell”, “find”, “de-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fine” and “describe”. We extracted 97,640 ques-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions (removing consecutive duplicates), which	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	constitute about 6% of the 1,649,404 queries in	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the log files collected during a period of three	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	weeks in the year 2000. A total of 6,436 questions	page=1 xpos=5 ypos=0 right-column full-justified column-top year headchar-lower
+I-Body	were tagged by hand. Two types of tags were col-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lected for each question: (1) tags describing lin-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guistic features, and (2) tags describing high-level	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	informational goals of users. The former were ob-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tained automatically, while the latter were tagged	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	manually.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We considered three classes of linguistic fea-	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+E-Body	tures: word-based, structural and hybrid.	page=1 xpos=5 ypos=1 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Word-based features indicate the presence of	page=1 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	specific words or phrases in a user’s question,	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which we believed showed promise for predicting	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	components of his/her informational goals. These	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	are words like “make”, “map” and “picture”.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Structural features include information ob-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tained from an XML-encoded parse tree gen-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erated for each question by NLPWin (Heidorn,	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1999) – a natural language parser developed by	page=1 xpos=5 ypos=3 right-column full-justified aligned-line year
+I-Body	the Natural Language Processing Group at Mi-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	crosoft Research. We extracted a total of 21 struc-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tural features, including the number of distinct	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	parts-of-speech (PoS) – NOUNs, VERBs, NPs,	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	etc – in a question, whether the main noun is plu-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ral or singular, which noun (if any) is a proper	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	noun, and the PoS of the head verb post-modifier.	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period above-line-space
+I-Body	Hybrid features are constructed from structural	page=1 xpos=5 ypos=5 right-column full-justified aligned-line line-space headchar-capital
+I-Body	and word-based information. Two hybrid fea-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures were extracted: (1) the type of head verb in	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	a question, e.g., “know”, “be” or action verb ;	page=1 xpos=5 ypos=5 right-column full-justified aligned-line itemization headchar-lower tailchar-semicolon
+I-Body	and (2) the initial component of a question, which	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	usually encompasses the first word or two of the	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	question, e.g., “what”, “when” or “how many”,	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	but for “how” may be followed by a PoS, e.g.,	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	“how ADVERB” or “how ADJECTIVE.”	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail above-line-space
+B-Body	We considered the following variables rep-	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	resenting high-level informational goals: Infor-	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	mation Need, Coverage Asked, Coverage Would	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	Give, Topic, Focus, Restriction and LIST. Infor-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	mation about the state of these variables was pro-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vided manually by three people, with the majority	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	of the tagging being performed under contract by	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	a professional outside the research team.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period above-line-space
+B-Body	Information Need is a variable that repre-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	sents the type of information requested by a	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	user. We provided fourteen types of informa-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion need, including Attribute, IDentifica-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, Process, Intersection and Topic It-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	self (which, as shown in Section 5, are the most	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	common information needs), plus the additional	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	category OTHER . As examples, the question “What	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	is a hurricane?” is an IDentification query;	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-semicolon
+I-Body	“What is the color of sand in the Kalahari?” is an	page=2 xpos=0 ypos=0 left-column full-justified aligned-line
+I-Body	Attribute query (the attribute is “color”); “How	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	does lightning form?” is a Process query; “What	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	are the biggest lakes in New Hampshire?” is an	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	Intersection query (a type of IDentification ,	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	where the returned item must satisfy a particular	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	Restriction – in this case “biggest”); and “Where	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	can I find a picture of a bay?” is a Topic Itself	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	query (interpreted as a request for accessing an	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	object directly, rather than obtaining information	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	about the object).	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Coverage Asked and Coverage Would Give are	page=2 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	variables that represent the level of detail in an-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	swers. Coverage Asked is the level of detail of	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	a direct answer to a user’s question. Coverage	page=2 xpos=0 ypos=3 left-column full-justified aligned-line itemization headchar-lower
+I-Body	Would Give is the level of detail that an infor-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	mation provider would include in a helpful an-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	swer. For instance, although the direct answer to	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the question “When did Lincoln die?” is a sin-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gle date, a helpful information provider might add	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	other details about Lincoln, e.g., that he was the	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	sixteenth president of the United States, and that	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	he was assassinated. This additional level of de-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tail depends on the request itself and on the avail-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	able information. However, here we consider the	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	former factor, viewing it as an initial filter that	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	will guide the content planning process of an en-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	hanced QA system. The distinction between the	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	requested level of detail and the provided level of	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	detail makes it possible to model questions for	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	which the preferred level of detail in a response	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	differs from the detail requested by the user. We	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	considered three levels of detail for both coverage	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	variables: Precise, Additional and Extended ,	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	plus the additional category OTHER . Precise in-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dicates that an exact answer has been requested,	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	e.g., a name or date (this is the value of Cover-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	age Asked in the above example); Additional	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	refers to a level of detail characterized by a one-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	paragraph answer (this is the value of Coverage	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	Would Give in the above example); and Extended	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+E-Body	indicates a longer, more detailed answer.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Topic, Focus and Restriction contain a PoS in	page=2 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the parse tree of a user’s question. These variables	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	represent the topic of discussion, the type of the	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	expected answer, and information that restricts	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the scope of the answer, respectively. These vari-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ables take 46 possible values, e.g., NOUN , VERB	page=2 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower
+I-Body	and NP , plus the category OTHER . For each ques-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line longer-tail headchar-lower tailchar-hiphen column-bottom
+I-Body	tion, the tagger selected the most specific PoS that	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	contains the portion of the question which best	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	matches each of these informational goals. For in-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stance, given the question “What are the main tra-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ditional foods that Brazilians eat?”, the Topic is	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	NOUN (Brazilians), the Focus is ADJ +NOUN (tra-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ditional foods) and the restriction is ADJ (main).	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	As shown in this example, it was sometimes nec-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	essary to assign more than one PoS to these tar-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	get variables. At present, these composite assign-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ments are classified as the category OTHER .	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	LIST is a boolean variable which indicates	page=2 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	whether the user is looking for a single answer	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	( False ) or multiple answers ( True ).	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Predictive Model	page=2 xpos=5 ypos=2 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-line-space
+B-Body	We built decision trees to infer high-level in-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	formational goals from the linguistic features	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	of users’ queries. One decision tree was con-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structed for each goal: Information Need, Cov-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erage Asked, Coverage Would Give, Topic, Fo-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cus, Restriction and LIST. Our decision trees were	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	built using dprog (Wallace and Patrick, 1993)	page=2 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	– a procedure based on the Minimum Message	page=2 xpos=5 ypos=4 right-column full-justified aligned-line
+E-Body	Length principle (Wallace and Boulton, 1968).	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period
+B-Body	The decision trees described in this section are	page=2 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	those that yield the best predictive performance	page=2 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	(obtained from a training set comprised of “good”	page=2 xpos=5 ypos=5 right-column full-justified aligned-line
+I-Body	queries, as described Section 5). The trees them-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	selves are too large to be included in this paper.	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	However, we describe the main attributes iden-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tified in each decision tree. Table 2 shows, for	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	each target variable, the size of the decision tree	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	(in number of nodes) and its maximum depth, the	page=2 xpos=5 ypos=6 right-column full-justified aligned-line
+I-Body	attribute used for the first split, and the attributes	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	used for the second split. Table 1 shows examples	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	and descriptions of the attributes in Table 2. <sup>1</sup>	page=2 xpos=5 ypos=7 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+B-Body	We note that the decision tree for Focus splits	page=2 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	first on the initial component of a question, e.g.,	page=2 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	“how ADJ”, “where” or “what”, and that one of	page=2 xpos=5 ypos=7 right-column full-justified aligned-line
+I-Body	the second-split attributes is the PoS following the	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	initial component. These attributes were also used	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	to build the hand-crafted rules employed by the	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	QA systems described in Section 2, which con-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	centrate on determining the type of the expected	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> The meaning of “Total PRONOUNS” is peculiar in	page=2 xpos=5 ypos=9 right-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	our context, because the NLPWin parser tags words such	page=2 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	as “what” and “who” as PRONOUNs. Also, the clue at-	page=2 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	tributes, e.g., Comparison clues , represent groupings of dif-	page=2 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	ferent clues that at design time where considered helpful in	page=2 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	identifying certain target variables.	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Caption	Table 1: Attributes in the decision trees	page=3 xpos=3 ypos=0 single-column centered left-indent right-indent page-top string-table headchar-capital
+Table	__Table 1__	page=3 xpos=0 ypos=0 single-column centered left-indent right-indent box hanged-line longer-tail table-area above-blank-line above-double-space above-line-space
+B-Caption	Table 2: Summary of decision trees	page=3 xpos=3 ypos=3 single-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-table headchar-capital above-line-space
+Table	__Table 2__	page=3 xpos=-1 ypos=3 single-column full-justified box hanged-line longer-tail line-space table-area column-bottom above-blank-line above-double-space above-line-space
+I-Body	answer (which is similar to our Focus). How-	page=3 xpos=0 ypos=6 left-column right-indent column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ever, our Focus decision tree includes additional	page=3 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	attributes in its second split (these attributes are	page=3 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	added by dprog because they improve predictive	page=3 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower
+E-Body	performance on the training data).	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	5 Results	page=3 xpos=0 ypos=7 left-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Our report on the predictive performance of the	page=3 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	decision trees considers the effect of various train-	page=3 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	ing and testing factors on predictive performance,	page=3 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower tailchar-comma
+I-Body	and examines the relationships among the target	page=3 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+E-Body	variables.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.1 Training Factors	page=3 xpos=0 ypos=9 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We examine how the quality of the training data	page=3 xpos=0 ypos=9 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	and the size of the training set affect predictive	page=3 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower
+E-Body	performance.	page=3 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	Quality of the data. In our context, the quality	page=3 xpos=5 ypos=6 right-column full-justified column-top headchar-capital
+I-Body	of the training data is determined by the wording	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of the queries and the output of the parser. For	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	each query, the tagger could indicate whether it	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	was a BAD QUERY or whether a WRONG PARSE	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	had been produced. A BAD QUERY is incoher-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ent or articulated in such a way that the parser	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	generates a WRONG PARSE , e.g., “When its hot it	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	expand?”. Figure 1 shows the predictive perfor-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mance of the decision trees built for two train-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing sets: All5145 and Good4617 . The first set	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	contains 5145 queries, while the second set con-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tains a subset of the first set comprised of “good”	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	queries only (i.e., bad queries and queries with	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	wrong parses were excluded). In both cases, the	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	same 1291 queries were used for testing. As a	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	baseline measure, we also show the predictive ac-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+Figure	__Figure 1__	page=4 xpos=-1 ypos=-4 left-column centered left-over right-over box page-top figure-area above-line-space
+B-Caption	Figure 1: Performance comparison: training with	page=4 xpos=0 ypos=0 left-column full-justified line-space string-figure headchar-capital
+I-Caption	all queries versus training with good queries;	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-semicolon
+E-Caption	prior probabilities included as baseline	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+Table	__Table 3__	page=4 xpos=-1 ypos=1 left-column centered left-over right-over box longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 3: Four training and testing set sizes	page=4 xpos=0 ypos=2 left-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+I-Body	curacy of using the maximum prior probability to	page=4 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	predict each target variable. These prior probabil-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ities were obtained from the training set All5145 .	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The Information Need with the highest prior prob-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ability is IDentification , the highest Coverage	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	Asked is Precise , while the highest Coverage	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	Would Give is Additional ; NOUN contains the	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	most common Topic; the most common Focus and	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	Restriction are NONE ; and LIST is almost always	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	False . As seen in Figure 1, the prior probabilities	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	yield a high predictive accuracy for Restriction	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	and LIST. However, for the other target variables,	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the performance obtained using decision trees is	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	substantially better than that obtained using prior	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	probabilities. Further, the predictive performance	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	obtained for the set Good4617 is only slightly bet-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ter than that obtained for the set All5145 . How-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ever, since the set of good queries is 10% smaller,	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	it is considered a better option.	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Size of the training set. The effect of the size	page=4 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	of the training set on predictive performance was	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	assessed by considering four sizes of training/test	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	sets: Small, Medium, Large, and X-Large. Ta-	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ble 3 shows the number of training and test	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	queries for each set size for the “all queries” and	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	the “good queries” training conditions.	page=4 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+Figure	__Figure 2__	page=4 xpos=5 ypos=-4 right-column right-indent box column-top figure-area above-line-space
+B-Caption	Figure 2: Predictive performance for four training	page=4 xpos=5 ypos=0 right-column full-justified line-space string-figure headchar-capital
+I-Caption	sets (1878, 2676, 3765 and 5145) averaged over 5	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Caption	runs – All queries	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-Caption	Figure 3: Predictive performance for four training	page=4 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital
+E-Caption	sets (1679, 2389, 3381 and 4617) – Good queries	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Body	The predictive performance for the all-queries	page=4 xpos=5 ypos=4 right-column left-indent indented-line line-double-space line-space headchar-capital
+I-Body	and good-queries sets is shown in Figures 2 and 3	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	respectively. Figure 2 depicts the average of the	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	results obtained over five runs, while Figure 3	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	shows the results of a single run (similar results	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	were obtained from other runs performed with the	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	good-queries sets). As indicated by these results,	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	for both data sets there is a general improvement	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	in predictive performance as the size of the train-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ing set increases.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.2 Testing Factors	page=4 xpos=5 ypos=7 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	We examine the effect of two factors on the pre-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	dictive performance of our models: (1) query	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	length (measured in number of words), and (2) in-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation need (as recorded by the tagger). These	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	effects were studied with respect to the predic-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions generated by the decision trees obtained	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	from the set Good4617 , which had the best per-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	formance overall.	page=4 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Figure	__Figure 4__	page=5 xpos=-1 ypos=-3 left-column right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 4: Query length distribution – Test set	page=5 xpos=0 ypos=0 left-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+Figure	__Figure 5__	page=5 xpos=-1 ypos=0 left-column left-over box hanged-line longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 5: Predictive performance by query length	page=5 xpos=0 ypos=3 left-column full-justified line-double-space line-space string-figure headchar-capital
+E-Caption	– Good queries	page=5 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail above-double-space above-line-space
+B-Body	Query length. The queries were divided into	page=5 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	four length categories (measured in number of	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	words): length , length , length	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower
+I-Body	and length. Figure 4 displays the distribu-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail headchar-lower tailchar-hiphen
+I-Body	tion of queries in the test set according to these	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	length categories. According to this distribution,	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	over 90% of the queries have less than 11 words.	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The predictive performance of our decision trees	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	broken down by query length is shown in Fig-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ure 5. As shown in this chart, for all target vari-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ables there is a downward trend in predictive ac-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	curacy as query length increases. Still, for queries	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of less than 11 words and all target variables ex-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cept Topic, the predictive accuracy remains over	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	74%. In contrast, the Topic predictions drop from	page=5 xpos=0 ypos=8 left-column full-justified aligned-line
+I-Body	88% (for queries of less than 5 words) to 57%	page=5 xpos=0 ypos=8 left-column full-justified aligned-line
+I-Body	(for queries of 8, 9 or 10 words). Further, the pre-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line tailchar-hiphen
+I-Body	dictive accuracy for Information Need, Topic, Fo-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cus and Restriction drops substantially for queries	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	that have 11 words or more. This drop in predic-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive performance may be explained by two fac-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tors. For one, the majority of the training data	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+B-Caption	Figure 6: Information need distribution – Test set	page=5 xpos=5 ypos=0 right-column full-justified column-top string-figure headchar-capital above-double-space above-line-space
+Figure	__Figure 7__	page=5 xpos=5 ypos=0 right-column centered left-over right-over box line-double-space line-space figure-area above-line-space
+B-Caption	Figure 7: Predictive performance for five most	page=5 xpos=5 ypos=3 right-column full-justified line-space string-figure headchar-capital
+E-Caption	frequent information needs – Good queries	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	consists of shorter questions. Hence, the applica-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	bility of the inferred models to longer questions	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	may be limited. Also, longer questions may exac-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erbate errors associated with some of the indepen-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	dence assumptions implicit in our current model.	page=5 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Information need. Figure 6 displays the dis-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tribution of the queries in the test set ac-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cording to Information Need. The five	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	most common Information Need categories	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	are: IDentification, Attribute, Topic It-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	self, Intersection and Process , jointly ac-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	counting for over 94% of the queries. Figure 7	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	displays the predictive performance of our models	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	for these five categories. The best performance	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	is exhibited for the IDentification and Topic	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	Itself queries. In contrast, the lowest predictive	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	accuracy was obtained for the Information Need,	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	Topic and Restriction of Intersection queries.	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	This can be explained by the observation that In-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tersection queries tend to be the longest queries	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	(as seen above, predictive accuracy drops for long	page=5 xpos=5 ypos=9 right-column full-justified aligned-line page-bottom
+Figure	__Figure 8__	page=6 xpos=-1 ypos=0 left-column left-over right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 8: Performance comparison for four pre-	page=6 xpos=0 ypos=2 left-column full-justified line-double-space line-space string-figure headchar-capital tailchar-hiphen
+I-Caption	diction models: PerfectInformation, BestRe-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Caption	sults, PredictionOnly and Mixed ; prior prob-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Caption	abilities included as baseline	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	queries). The relatively low predictive accuracy	page=6 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	obtained for both types of Coverage for Process	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	queries remains to be explained.	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.3 Relations between target variables	page=6 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	To determine whether the states of our target	page=6 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	variables affect each other, we built three pre-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	diction models, each of which includes six tar-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	get variables for predicting the remaining vari-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	able. For instance, Information Need, Coverage	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	Asked, Coverage Would Give, Focus, Restriction	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	and LIST are incorporated as data (in addition to	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the observable variables) when training a model	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	that predicts Focus. Our three models are: Pre-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dictionOnly – which uses the predicted values	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	of the six target variables both for the training set	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	and for the test set; Mixed – which uses the actual	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	values of the six target variables for the training	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	set and their predicted values for the test set; and	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	PerfectInformation – which uses actual values	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	of the six target variables for both training and	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	testing. This model enables us to determine the	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	performance boundaries of our methodology in	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	light of the currently observed attributes.	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Figure 8 shows the predictive accuracy of five	page=6 xpos=0 ypos=8 left-column left-indent indented-line longer-tail string-figure headchar-capital
+I-Body	models: the above three models, our best model	page=6 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	so far (obtained from the training set Good4617 )	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	– denoted BestResult , and prior probabilities.	page=6 xpos=0 ypos=8 left-column full-justified aligned-line tailchar-period
+I-Body	As expected, the PerfectInformation model	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	has the best performance. However, its predic-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive accuracy is relatively low for Topic and Fo-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cus, suggesting some inherent limitations of our	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	methodology. The performance of the Predic-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	tionOnly model is comparable to that of BestRe-	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	sult , but the performance of the Mixed model	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	seems slightly worse. This difference in perfor-	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mance may be attributed to the fact that the Pre-	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dictionOnly model is a “smoothed” version of	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	the Mixed model. That is, the PredictionOnly	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	model uses a consistent version of the target vari-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ables (i.e., predicted values) both for training and	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	testing. This is not the case for the Mixed model,	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	where actual values are used for training (thus the	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	Mixed model is the same as the PerfectInfor-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	mation model), but predicted values (which are	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	not always accurate) are used for testing.	page=6 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Finally, Information Need features prominently	page=6 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	both in the PerfectInformation/Mixed model	page=6 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	and the PredictionOnly model, being used in	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the first or second split of most of the decision	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	trees for the other target variables. Also, as ex-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pected, Coverage Asked is used to predict Cov-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erage Would Give and vice versa. These re-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults suggest using modeling techniques which	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	can take advantage of dependencies among tar-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	get variables. These techniques would enable the	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	construction of models which take into account	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the distribution of the predicted values of one or	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	more target variables when predicting another tar-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	get variable.	page=6 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Discussion and Future Work	page=6 xpos=5 ypos=5 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-line-space
+B-Body	We have introduced a predictive model, built	page=6 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	by applying supervised machine-learning tech-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	niques, which can be used to infer a user’s key in-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formational goals from free-text questions posed	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	to an Internet search service. The predictive	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	model, which is built from shallow linguistic fea-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures of users’ questions, infers a user’s informa-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion need, the level of detail requested by the user,	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the level of detail deemed appropriate by an infor-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation provider, and the topic, focus and restric-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions of the user’s question. The performance of	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	our model is encouraging, in particular for shorter	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	queries, and for queries with certain information	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	needs. However, further improvements are re-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quired in order to make this model practically ap-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	plicable.	page=6 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We believe there is an opportunity to identify	page=6 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	additional linguistic distinctions that could im-	page=6 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	prove the model’s predictive performance. For	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	example, we intend to represent frequent combi-	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nations of PoS, such as NOUN +NOUN , which are	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	currently classified as OTHER (Section 3). We also	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	propose to investigate predictive models which	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	return more informative predictions than those re-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	turned by our current model, e.g., a distribution	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	of the probable informational goals, instead of a	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	single goal. This would enable an enhanced QA	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	system to apply a decision procedure in order to	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	determine a course of action. For example, if the	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	Additional value of the Coverage Would Give	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	variable has a relatively high probability, the sys-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem could consider more than one Information	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	Need, Topic or Focus when generating its reply.	page=7 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Body	In general, the decision-tree generation meth-	page=7 xpos=0 ypos=2 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ods described in this paper do not have the abil-	page=7 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ity to take into account the relationships among	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	different target variables. In Section 5.3, we in-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vestigated this problem by building decision trees	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	which incorporate predicted and actual values of	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	target variables. Our results indicate that it is	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	worth exploring the relationships between several	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	of the target variables. We intend to use the in-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sights obtained from this experiment to construct	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	models which can capture probabilistic depen-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	dencies among variables.	page=7 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Finally, as indicated in Section 1, this project	page=7 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	is part of a larger effort centered on improv-	page=7 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ing a user’s ability to access information from	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	large information spaces. The next stage of this	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	project involves using the predictions generated	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	by our model to enhance the performance of QA	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	or IR systems. One such enhancement pertains	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	to query reformulation, whereby the inferred in-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formational goals can be used to reformulate or	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	expand queries in a manner that increases the	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	likelihood of returning appropriate answers. As	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	an example of query expansion, if Process was	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	identified as the Information Need of a query,	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	words that boost responses to searches for infor-	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation relating to processes could be added to the	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	query prior to submitting it to a search engine.	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Another envisioned enhancement would attempt	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	to improve the initial recall of the document re-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	trieval process by submitting queries which con-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tain the content words in the Topic and Focus of a	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	user’s question (instead of including all the con-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tent words in the question). In the longer term, we	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	plan to explore the use of Coverage results to en-	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	able an enhanced QA system to compose an ap-	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	propriate answer from information found in the	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	retrieved documents.	page=7 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+AcknowledgementHeader	Acknowledgments	page=7 xpos=5 ypos=0 right-column right-indent font-larger column-top string-acknowledgement headchar-capital above-line-space
+B-Acknowledgement	This research was largely performed during the	page=7 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Acknowledgement	first author’s visit at Microsoft Research. The au-	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Acknowledgement	thors thank Heidi Lindborg, Mo Corston-Oliver	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Acknowledgement	and Debbie Zukerman for their contribution to the	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Acknowledgement	tagging effort.	page=7 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=5 ypos=1 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-line-space
+B-Reference	S. Abney, M. Collins, and A. Singhal. 2000. Answer	page=7 xpos=5 ypos=1 right-column full-justified font-smallest aligned-line longer-tail line-space year headchar-capital
+I-Reference	extraction. In Proceedings of the Sixth Applied Nat-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ural Language Processing Conference, pages 296–	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	301, Seattle, Washington.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	C. Cardie, V. Ng, D. Pierce, and C. Buckley.	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2000. Examining the role of statistical and lin-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	guistic knowledge sources in a general-knowledge	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	question-answering system. In Proceedings of the	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Sixth Applied Natural Language Processing Con-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	ference, pages 180–187, Seattle, Washington.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	D. Heckerman and E. Horvitz. 1998. Inferring infor-	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	mational goals from free-text queries: A Bayesian	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	approach. In Proceedings of the Fourteenth Confer-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ence on Uncertainty in Artificial Intelligence, pages	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	230–237, Madison, Wisconsin.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	G. Heidorn. 1999. Intelligent writing assistance. In	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	A Handbook of Natural Language Processing Tech-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	niques. Marcel Dekker.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	E. Horvitz, J. Breese, D. Heckerman, D. Hovel,	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	and K. Rommelse. 1998. The Lumiere project:	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line year headchar-lower tailchar-colon
+I-Reference	Bayesian user modeling for inferring the goals and	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	needs of software users. In Proceedings of the	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Fourteenth Conference on Uncertainty in Artificial	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Intelligence, pages 256–265, Madison, Wisconsin.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	J. Kupiec. 1993. MURAX: A robust linguistic ap-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	proach for question answering using an on-line en-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	cyclopedia. In Proceedings of the 16th Annual	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	International ACM-SIGIR Conference on Research	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	and Development in Information Retrieval, pages	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	181–190, Pittsburgh, Pennsylvania.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	D. Moldovan, S. Harabagiu, M. Pasca, R. Mihalcea,	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	R. Girju, R. Goodrum, and V. Rus. 2000. The	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	structure and performance of an open-domain ques-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tion answering system. In ACL2000 – Proceedings	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line year headchar-lower
+I-Reference	of the 38th Annual Meeting of the Association for	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Computational Linguistics, pages 563–570, Hong	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Kong.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	G. Salton and M.J. McGill. 1983. An Introduction to	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Modern Information Retrieval. McGraw Hill.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	C.S. Wallace and D.M. Boulton. 1968. An informa-	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tion measure for classification. The Computer Jour-	page=7 xpos=5 ypos=9 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	nal, 11:185–194.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	C.S. Wallace and J.D. Patrick. 1993. Coding decision	page=7 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	trees. Machine Learning, 11:7–22.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period

@@ -1,0 +1,670 @@
+Title	Learning to Find English to Chinese Transliterations on the Web	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Author	Jian-Cheng Wu	page=0 xpos=1 ypos=0 left-column left-indent right-indent font-larger column-top line-blank-line line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+B-Affiliation	Department of Computer Science	page=0 xpos=1 ypos=1 left-column left-indent right-indent font-larger hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Affiliation	National Tsing Hua University	page=0 xpos=1 ypos=1 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Address	101, Kuangfu Road, Hsinchu, Taiwan	page=0 xpos=0 ypos=1 left-column left-indent right-indent font-larger hanged-line longer-tail above-line-space
+Email	d928322@oz.nthu.edu.tw	page=0 xpos=1 ypos=1 left-column left-indent right-indent font-smaller indented-line shorter-tail line-space symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	We present a method for learning to find	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	English to Chinese transliterations on the	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	Web. In our approach, proper nouns are	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	expanded into new queries aimed at maxi-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	mizing the probability of retrieving trans-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	literations from existing search engines.	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	The method involves learning the sublexi-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	cal relationships between names and their	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	transliterations. At run-time, a given name	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	is automatically extended into queries with	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	relevant morphemes, and transliterations in	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	the returned search snippets are extracted	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	and ranked. We present a new system,	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-comma
+I-Abstract	TermMine, that applies the method to find	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	transliterations of a given name. Evaluation	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	on a list of 500 proper names shows that	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	the method achieves high precision and re-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	call, and outperforms commercial machine	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	translation systems.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-larger hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Increasingly, short passages or web pages are be-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ing translated by desktop machine translation soft-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ware or are submitted to machine translation ser-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vices on the Web every day. These texts usually	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	contain some proportion of proper names (e.g.,	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	place and people names in “The cities of Mesopo-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tamia prospered under Parthian and Sassanian	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	rule.”), which may not be handled properly by a	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	machine translation system. Online machine trans-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lation services such as Google Translate <sup>1</sup> or Yahoo!	page=0 xpos=0 ypos=8 left-column right-over font-largest aligned-line longer-tail headchar-lower
+I-Body	Babelfish <sup>2</sup> typically use a bilingual dictionary that	page=0 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-capital
+I-Body	is either manually compiled or learned from a par-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+B-Footnote	<sup>1</sup> Google Translate: translate.google.com/translate_t	page=0 xpos=0 ypos=9 left-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space headchar-super
+I-Footnote	<sup>2</sup> Yahoo! Babelfish: babelfish.yahoo.com	page=0 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-super column-bottom
+Author	Jason S. Chang	page=0 xpos=6 ypos=0 right-column left-indent right-indent font-larger column-top headchar-capital above-blank-line above-double-space above-line-space
+B-Affiliation	Department of Computer Science	page=0 xpos=5 ypos=1 right-column left-indent right-indent font-larger hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Affiliation	National Tsing Hua University	page=0 xpos=5 ypos=1 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Address	101, Kuangfu Road, Hsinchu, Taiwan	page=0 xpos=5 ypos=1 right-column left-indent right-indent font-larger hanged-line longer-tail above-line-space
+Email	jschang@cs.nthu.edu.tw	page=0 xpos=5 ypos=1 right-column left-indent right-indent font-smaller indented-line shorter-tail line-space symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+I-Body	allel corpus. However, such dictionaries often have	page=0 xpos=5 ypos=2 right-column centered left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	insufficient coverage of proper names and techni-	page=0 xpos=5 ypos=2 right-column centered left-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	cal terms, leading to poor translation performance	page=0 xpos=5 ypos=2 right-column centered left-indent aligned-line headchar-lower
+E-Body	due to out of vocabulary (OOV) problem.	page=0 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Handling name transliteration is also important	page=0 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	for cross language information retrieval (CLIR)	page=0 xpos=5 ypos=3 right-column centered left-indent hanged-line headchar-lower
+I-Body	and terminology translation (Quah 2006). There	page=0 xpos=5 ypos=3 right-column centered left-indent aligned-line year headchar-lower
+I-Body	are also services on the Web specifically targeting	page=0 xpos=5 ypos=3 right-column centered left-indent aligned-line headchar-lower
+I-Body	transliteration aimed at improving CLIR, including	page=0 xpos=5 ypos=3 right-column centered left-indent aligned-line headchar-lower
+I-Body	CHINET (Kwok et al. 2005) and LiveTrans (Lu,	page=0 xpos=5 ypos=3 right-column centered left-indent aligned-line year headchar-capital tailchar-comma
+E-Body	Chien, and Lee 2004).	page=0 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period
+B-Body	The OOV problems of machine translation (MT)	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	or CLIR can be handled more effectively by learn-	page=0 xpos=5 ypos=4 right-column centered left-indent hanged-line headchar-lower tailchar-hiphen
+I-Body	ing to find transliteration on the Web. Consider the	page=0 xpos=5 ypos=4 right-column centered left-indent aligned-line headchar-lower
+I-Body	sentence in Example (1), containing three proper	page=0 xpos=5 ypos=4 right-column centered left-indent aligned-line headchar-lower
+I-Body	names. Google Translate produces the sentence in	page=0 xpos=5 ypos=4 right-column centered left-indent aligned-line headchar-lower
+I-Body	Example (2) and leaves “Parthian” and “Sas-	page=0 xpos=5 ypos=5 right-column centered left-indent aligned-line headchar-capital tailchar-hiphen
+I-Body	sanian” not translated. A good response might be a	page=0 xpos=5 ypos=5 right-column centered left-indent aligned-line headchar-lower
+I-Body	translation like Example (3) with appropriate	page=0 xpos=5 ypos=5 right-column centered left-indent aligned-line headchar-lower
+E-Body	transliterations (underlined).	page=0 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	(1) The cities of Mesopotamia prospered under	page=0 xpos=5 ypos=5 right-column full-justified longer-tail itemization
+I-Listitem	Parthian and Sassanian rule.	page=0 xpos=5 ypos=6 right-column left-indent right-indent indented-line shorter-tail headchar-capital tailchar-period
+B-Listitem	(2) 城市繁榮下 parthian 達米亞、sassanian 統	page=0 xpos=5 ypos=6 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	治。	page=0 xpos=5 ypos=6 right-column left-indent right-indent font-largest indented-line shorter-tail tailchar-period
+B-Listitem	(3) 美索不達米亞 <sup>3</sup> 城市在巴底亞 4 和薩珊 5 統治下	page=0 xpos=5 ypos=6 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	繁榮起來。	page=0 xpos=5 ypos=6 right-column left-indent right-indent font-largest indented-line shorter-tail tailchar-period above-line-space
+B-Body	These transliterations can be more effectively	page=0 xpos=5 ypos=7 right-column left-indent hanged-line longer-tail line-space headchar-capital
+I-Body	retrieved from mixed-code Web pages by extend-	page=0 xpos=5 ypos=7 right-column centered left-indent hanged-line headchar-lower tailchar-hiphen
+I-Body	ing each of the proper names into a query. Intui-	page=0 xpos=5 ypos=7 right-column centered left-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	tively, by requiring one of likely transliteration	page=0 xpos=5 ypos=7 right-column centered left-indent aligned-line headchar-lower
+I-Body	morphemes (e.g., “巴”(Ba) or “帕”(Pa) for names	page=0 xpos=5 ypos=7 right-column centered left-indent aligned-line headchar-lower above-line-space
+I-Body	beginning with the prefix “par-”), we can bias the	page=0 xpos=5 ypos=8 right-column centered left-indent aligned-line line-space headchar-lower
+I-Body	search engine towards retrieving the correct trans-	page=0 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+B-Footnote	<sup>3</sup> 美索不達米亞(Meisuobudamiya) <sub>is</sub> the transliteration of	page=0 xpos=5 ypos=8 right-column left-indent right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space headchar-super
+I-Footnote	“Mesopotamia.”	page=0 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail
+B-Footnote	<sup>4</sup> 巴底亞(Badiya) is the transliteration of “Parthian.”	page=0 xpos=5 ypos=9 right-column left-indent right-indent aligned-line longer-tail headchar-super
+B-Footnote	<sup>5</sup> 薩珊(Sashan) <sub>is</sub> the transliteration of “Sassanian.”	page=0 xpos=5 ypos=9 right-column left-indent right-indent font-largest aligned-line headchar-super column-bottom above-double-space above-line-space
+Page	996	page=0 xpos=4 ypos=9 single-column left-indent right-indent column-top line-double-space line-space numeric-only
+B-Footer	Proceedings of the 2007 Joint Conference on Empirical Methods in Natural Language Processing and Computational	page=0 xpos=0 ypos=9 single-column centered left-indent right-indent font-smallest hanged-line longer-tail year headchar-capital
+I-Footer	Natural Language Learning, pp. 996–1004, Prague, June 2007.  2007 c Association for Computational Linguistics	page=0 xpos=0 ypos=9 single-column centered left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital page-bottom
+Figure	__Figure 1__	page=1 xpos=-1 ypos=-7 single-column left-over right-indent box page-top figure-area
+B-Caption	Figure 1. An example of TermMine search for transliterations of the name “Parthian”	page=1 xpos=1 ypos=0 single-column centered left-indent right-indent font-smallest indented-line shorter-tail string-figure headchar-capital column-bottom above-double-space above-line-space
+I-Body	literations (e.g., “ 巴 底 亞 ”(Badiya) and “ 帕 提	page=1 xpos=0 ypos=0 left-column full-justified font-largest column-top line-double-space line-space headchar-lower
+I-Body	亞”(Patiya)) in snippets of many top-ranked docu-	page=1 xpos=0 ypos=0 left-column full-justified font-largest aligned-line tailchar-hiphen above-line-space
+E-Body	ments.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail line-space headchar-lower tailchar-period
+B-Body	This approach to terminology translation by	page=1 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	searching is a strategy increasingly adopted by	page=1 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	human translators. Quah (2006) described a mod-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ern day translator would search for the translation	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	of a difficult technical term such as “異方性導電	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	樹脂フィルム” by expanding the query with the	page=1 xpos=0 ypos=3 left-column full-justified font-largest aligned-line above-line-space
+I-Body	word “film” (back transliteration of the component	page=1 xpos=0 ypos=3 left-column full-justified aligned-line line-space headchar-lower
+I-Body	“フィルム” of the term in question). This kind of	page=1 xpos=0 ypos=3 left-column full-justified aligned-line above-line-space
+I-Body	query expansion (QE) indeed increases the chance	page=1 xpos=0 ypos=4 left-column full-justified aligned-line line-space headchar-lower
+I-Body	of finding the correct translation “anisotropic con-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ductive film” in top-ranked snippets. However, the	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	manual process of expanding query, sending	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	search request, and extracting transliteration is te-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dious and time consuming. Furthermore, unless the	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	query expansion is done properly, snippets con-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	taining answers might not be ranked high enough	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	for this strategy to be the most effective.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We present a new system, TermMine, that auto-	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	matically learns to extend a given name into a	page=1 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	query expected to retrieve and extract translitera-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions of the proper name. An example of machine	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	transliteration of “Parthian” is shown in Figure 1.	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	TermMine has determined the best 10 query ex-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	pansions (e.g., “Parthian 巴 ,” “Parthian 帕 ”).	page=1 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower tailchar-period above-line-space
+I-Body	TermMine learns these effective expansions auto-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line line-space headchar-capital tailchar-hiphen above-double-space above-line-space
+Page	997	page=1 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-double-space line-space numeric-only column-bottom
+I-Body	matically during training by analyzing a collection	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	of place names and their transliterations, and deriv-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing cross-language relationships of prefix and post-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fix morphemes. For instance, TermMine learns that	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	a name that begins with the prefix “par-” is likely	page=1 xpos=5 ypos=1 right-column full-justified aligned-line itemization headchar-lower
+I-Body	to have a transliteration beginning with “巴” or	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower above-line-space
+I-Body	“帕”). We describe the learning process in Section	page=1 xpos=5 ypos=2 right-column full-justified aligned-line line-space above-line-space
+E-Body	3.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail line-space tailchar-period
+B-Body	This prototype demonstrates a novel method for	page=1 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	learning to find transliterations of proper nouns on	page=1 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	the Web based on query expansion aimed at	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	maximizing the probability of retrieving translit-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erations from existing search engines. Since the	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	method involves learning the morphological rela-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tionships between names and their transliterations,	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we refer to this IR-based approach as morphologi-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cal query expansion approach to machine translit-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eration. This novel approach is general in scope	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	and can also be applied to back transliteration and	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	to translation with slight modifications, even	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	though we focus on transliteration in this paper.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The remainder of the paper is organized as fol-	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	lows. First, we give a formal statement for the	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	problem (Section 2). Then, we present a solution to	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the problem by proposing new transliteration prob-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ability functions, describing the procedure for es-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	timating parameters for these functions (Section 3)	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	and the run-time procedure for searching and ex-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+I-Body	tracting transliteration via a search engine (Section	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	4). As part of our evaluation, we carry out two sets	page=2 xpos=0 ypos=0 left-column full-justified aligned-line
+I-Body	of experiments, with or without query expansion,	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and compare the results. We also evaluate the re-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults against two commercial machine translation	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	online services (Section 5).	page=2 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Problem Statement	page=2 xpos=0 ypos=1 left-column right-indent font-larger aligned-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Using online machine translation services for name	page=2 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	transliteration does not work very well. Searching	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	in the vicinity of the name in mixed-code Web	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	pages is a good strategy. However, query expan-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sion is needed for this strategy to be effective.	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Therefore, to find transliterations of a name, a	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	promising approach is to automatically expand the	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	given name into a query with the additional re-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quirement of some morpheme expected to be part	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	of relevant transliterations that might appear on the	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	Web.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-Caption	Table 1. Sample name-transliteration pairs from the	page=2 xpos=0 ypos=3 left-column full-justified font-smallest aligned-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital
+Table	__Table 1__	page=2 xpos=-1 ypos=4 left-column centered left-over right-over box longer-tail table-area above-double-space above-line-space
+B-Body	Now, we formally state the problem we are deal-	page=2 xpos=0 ypos=6 left-column left-indent indented-line shorter-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ing with:	page=2 xpos=0 ypos=6 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon above-blank-line above-double-space above-line-space
+B-Quote	While a proper name N is given. Our goal	page=2 xpos=0 ypos=6 left-column left-indent right-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Quote	is to search and extract the transliteration	page=2 xpos=0 ypos=6 left-column left-indent right-indent aligned-line headchar-lower
+I-Quote	T of N from Web pages via a general-	page=2 xpos=0 ypos=6 left-column left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Quote	purpose search engine SE. For that, we	page=2 xpos=0 ypos=7 left-column left-indent right-indent aligned-line headchar-lower
+I-Quote	expand N into a set of queries q <sub>1</sub> , q 2 , …,	page=2 xpos=0 ypos=7 left-column left-indent right-indent font-larger aligned-line headchar-lower tailchar-comma
+I-Quote	q <sub>m</sub> , such that the top n document snippets	page=2 xpos=0 ypos=7 left-column left-indent right-indent font-larger aligned-line itemization headchar-lower
+I-Quote	returned by SE for the queries are likely to	page=2 xpos=0 ypos=7 left-column left-indent right-indent aligned-line headchar-lower
+I-Quote	contain some transliterations T of the	page=2 xpos=0 ypos=7 left-column left-indent right-indent aligned-line headchar-lower
+I-Quote	given name N.	page=2 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Body	In the next section, we propose using a probabil-	page=2 xpos=0 ypos=8 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ity function to model the relationships between	page=2 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	names and transliterations and describe how the	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	parameters in this function can be estimated.	page=2 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	998	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-SectionHeader	3 Learning Relationships for QE	page=2 xpos=5 ypos=0 right-column right-indent font-larger column-top numbered-heading1 above-double-space above-line-space
+B-Body	We attempt to derive cross-language morpho-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	logical relationships between names and translit-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erations and use them to expand a name into an	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	effective query for searching and extracting trans-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	literations. For the purpose of expanding the given	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	name, N, into effective queries to search and ex-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tract transliterations T, we define a probabilistic	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	function for mapping prefix syllable from the	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	source to the target languages. The prefix translit-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eration function P(T <sub>P</sub> | N P ) is the probability of T	page=2 xpos=5 ypos=2 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	has a prefix T <sub>P</sub> under the condition that the name N	page=2 xpos=5 ypos=2 right-column full-justified font-larger aligned-line headchar-lower
+E-Body	has a prefix N <sub>P</sub> .	page=2 xpos=5 ypos=2 right-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	P (T <sub>P</sub> | N P ) = Count (T P ,N P ) / Count (N P ) (1)	page=2 xpos=5 ypos=2 right-column left-indent right-indent font-larger indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+I-Equation	where Count (T <sub>P</sub> ,N P ) is the number of T P and N P	page=2 xpos=5 ypos=2 right-column left-indent font-larger aligned-line longer-tail line-double-space line-space headchar-lower
+I-Equation	co-occurring in the pairs of training set	page=2 xpos=6 ypos=3 right-column left-indent indented-line headchar-lower
+I-Equation	(see Table 1), and Count(N <sub>P</sub> ) is the num-	page=2 xpos=6 ypos=3 right-column left-indent font-larger aligned-line tailchar-hiphen
+I-Equation	ber of N <sub>P</sub> occurring in training set.	page=2 xpos=6 ypos=3 right-column left-indent right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Similarly, we define the function P (T <sub>S</sub> | N S ) for	page=2 xpos=5 ypos=3 right-column left-indent font-larger hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	postfixes T <sub>S</sub> and N S :	page=2 xpos=5 ypos=4 right-column right-indent font-larger hanged-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	P (T <sub>S</sub> | N S ) = Count (T S ,N S ) / Count (N S ) (2)	page=2 xpos=5 ypos=4 right-column left-indent right-indent font-larger indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	The prefixes and postfixes are intended as a syl-	page=2 xpos=5 ypos=4 right-column left-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	lable in the two languages involved, so the two	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	prefixes correspond to each other (See Table 2&3).	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Due to the differences in the sound inventory, the	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	Roman prefix corresponding to a syllabic prefix in	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	Chinese may vary, ranging from a consonant, a	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	vowel, or a consonant followed by a vowel (but not	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	a vowel followed by a consonant). So, it is likely	page=2 xpos=5 ypos=5 right-column full-justified aligned-line itemization headchar-lower
+I-Body	such a Roman prefix has from one to four letters.	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	On the contrary, the prefix syllable for a name	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+E-Body	written in Chinese is readily identifiable.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Caption	Table 2. Sample cross-language morphological relation-	page=2 xpos=5 ypos=6 right-column full-justified font-smallest aligned-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital tailchar-hiphen
+Table	__Table 2__	page=2 xpos=4 ypos=7 right-column left-over right-over box hanged-line table-area page-bottom
+B-Caption	Table 3. Sample cross-language morphological relation-	page=3 xpos=0 ypos=0 left-column full-justified font-smallest page-top string-table headchar-capital tailchar-hiphen
+Table	__Table 3__	page=3 xpos=-1 ypos=0 left-column centered left-over right-over box hanged-line longer-tail table-area above-double-space above-line-space
+B-Body	We also observe that a preferred prefix (e.g.,	page=3 xpos=0 ypos=2 left-column left-indent indented-line shorter-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	“艾”(Ai)) is often used for a Roman prefix (e.g.,	page=3 xpos=0 ypos=2 left-column full-justified hanged-line tailchar-comma above-line-space
+I-Body	“a-” or “ir-”), while occasionally other homo-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line line-space tailchar-hiphen
+I-Body	phonic characters are used (e.g., “埃”(Ai)). The	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower above-line-space
+I-Body	skew distribution creates problems for reliable es-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line line-space headchar-lower tailchar-hiphen
+I-Body	timation of transliteration functions. To cope with	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	this data sparseness problem, we use homophone	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	classes and a function CL that maps homophonic	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	characters to the same class number. For instance,	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	“艾” and “埃” are homophonic, and both are as-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line tailchar-hiphen above-line-space
+I-Body	signed the same class identifier(see Table 4 for	page=3 xpos=0 ypos=4 left-column full-justified aligned-line line-space headchar-lower
+E-Body	more samples).	page=3 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Therefore, we have	page=3 xpos=0 ypos=4 left-column left-indent right-indent indented-line longer-tail headchar-capital above-double-space above-line-space
+B-Equation	CL (“艾”) = CL (“埃”) = 275.	page=3 xpos=0 ypos=4 left-column left-indent right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Caption	Table 4. Some examples of classes of homophonic	page=3 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space string-table headchar-capital
+I-Caption	characters. The class ID of each class is assigned arbi-	page=3 xpos=0 ypos=5 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+Table	__Table 4__	page=3 xpos=-1 ypos=5 left-column centered left-over right-over box table-area above-double-space above-line-space
+B-Body	With homophonic classes of transliteration mor-	page=3 xpos=0 ypos=7 left-column left-indent indented-line shorter-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	phemes, we define class-based transliteration prob-	page=3 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ability as follows	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Equation	P <sub>CL</sub> (C | N P ) = Count(T P ,N P ) / Count(N P ) (3)	page=3 xpos=0 ypos=8 left-column centered left-indent right-indent font-larger indented-line longer-tail headchar-capital
+I-Equation	where CL(T <sub>P</sub> ) = C	page=3 xpos=0 ypos=8 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Equation	P <sub>CL</sub> (C | N S ) = Count(T S ,N S ) / Count(N S ) (4)	page=3 xpos=0 ypos=8 left-column centered left-indent right-indent font-larger hanged-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+I-Equation	where CL(T <sub>S</sub> ) = C	page=3 xpos=0 ypos=9 left-column left-indent right-indent font-larger indented-line shorter-tail line-double-space line-space headchar-lower
+I-Body	and then we rewrite P (T <sub>P</sub> | N P ) and P (T S | N S ) as	page=3 xpos=0 ypos=9 left-column right-indent font-larger hanged-line longer-tail headchar-lower above-blank-line above-double-space above-line-space
+Page	999	page=3 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Equation	P (T <sub>P</sub> | N P ) = P CL (CL(T P ) | N P ) (5)	page=3 xpos=5 ypos=0 right-column left-indent right-indent font-larger column-top headchar-capital above-double-space above-line-space
+B-Equation	P (T <sub>S</sub> | N S ) = P CL (CL(T S ) | N S ) (6)	page=3 xpos=5 ypos=0 right-column left-indent right-indent font-larger aligned-line line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	With class-based transliteration probabilities, we	page=3 xpos=5 ypos=0 right-column left-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	are able to cope with difficulty in estimating pa-	page=3 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	rameters for rare events which are under repre-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sented in the training set. Table 5 shows that “埃”	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower above-line-space
+I-Body	belongs to a homophonic class co-occurring with	page=3 xpos=5 ypos=1 right-column full-justified aligned-line line-space headchar-lower
+I-Body	“a-” for 46 times, even when only one instance of	page=3 xpos=5 ypos=1 right-column full-justified aligned-line
+E-Body	(“埃”, “a-”).	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Body	After cross-language relationships for prefixes	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	and postfixes are automatically trained, the prefix	page=3 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	relationships are stored as prioritized query expan-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sion rules. In addition to that, we also need a trans-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	literation probability function to rank candidate	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	transliterations at run-time (Section 4). To cope	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	with data sparseness, we consider names (or trans-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	literations) with the same prefix (or postfix) as a	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	class. With that in mind, we use both prefix and	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	postfix to formulate an interpolation-based estima-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tor for name transliteration probability:	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	P(T | N)= max λ <sub>1</sub> P(T P | N P )+λ 2 P(T S | N S ) (7)	page=3 xpos=5 ypos=4 right-column centered left-indent right-indent font-largest indented-line longer-tail line-space headchar-capital
+I-Equation	N <sub>P</sub> , N S	page=3 xpos=6 ypos=4 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital
+I-Equation	where λ <sub>1</sub> + λ 2 = 1 and N P , N S , T P , and T S are the	page=3 xpos=5 ypos=4 right-column left-indent font-largest hanged-line longer-tail headchar-lower
+I-Equation	prefix and postfix of the given name N	page=3 xpos=6 ypos=5 right-column left-indent indented-line headchar-lower
+I-Equation	and transliteration T.	page=3 xpos=6 ypos=5 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Body	For instance, the probability of “美索不達米	page=3 xpos=5 ypos=5 right-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	亞 ”(Meisuobudamiya) as a transliteration of	page=3 xpos=5 ypos=5 right-column centered left-over font-largest hanged-line above-line-space
+I-Body	“Mesopotamia” is estimated as follows	page=3 xpos=5 ypos=6 right-column left-over right-indent aligned-line shorter-tail line-space above-double-space above-line-space
+Figure	__Figure 2__	page=3 xpos=4 ypos=6 right-column centered left-over right-over box hanged-line longer-tail line-double-space line-space figure-area
+B-Caption	Figure 2. Outline of the process used to train the	page=3 xpos=5 ypos=8 right-column full-justified font-smallest indented-line shorter-tail string-figure headchar-capital
+E-Caption	TermMine system.	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-Body	The system follows the procedure shown in Fig-	page=3 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ure 2 to estimate these probabilities. In Step (1),	page=3 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-comma page-bottom
+I-Body	the system generates all possible prefix pairs for	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	each name-transliteration pair. For instance, con-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sider the pair, (“Aabenraa,” “阿本洛”), the system	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower above-line-space
+I-Body	will generate eight pairs:	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail line-space headchar-lower tailchar-colon
+B-Quote	(a-, 阿-), (aa-, 阿-), (aab-, 阿-), (aabe-, 阿-),	page=4 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line longer-tail tailchar-comma above-line-space
+I-Quote	(-a, -洛), (-aa, -洛), (-raa, -洛), and (-nraa, -洛).	page=4 xpos=0 ypos=1 left-column left-indent right-indent aligned-line longer-tail line-space tailchar-period above-double-space above-line-space
+B-Body	Finally, the transliteration probabilities are esti-	page=4 xpos=0 ypos=1 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	mated based on the counts of prefixes, postfixes,	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and their co-occurrences. The derived probabilities	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	embody a number of relationships:	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	(a) Phoneme to syllable relationships (e.g., “b” vs.	page=4 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail itemization tailchar-period
+I-Listitem	“ 布 ” as in “Brooklyn” and “ 布 魯 克	page=4 xpos=0 ypos=2 left-column left-indent font-largest indented-line
+I-Listitem	林”(Bulukelin)),	page=4 xpos=0 ypos=2 left-column left-indent right-indent font-largest aligned-line shorter-tail tailchar-comma above-line-space
+B-Listitem	(b) Syllable to syllable relationships (e.g., “bu” vs.	page=4 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-space itemization tailchar-period
+I-Listitem	“布”),	page=4 xpos=0 ypos=2 left-column left-indent right-indent indented-line shorter-tail tailchar-comma above-line-space
+B-Listitem	(c) Phonics rules (e.g., “br-“ vs. “布” and “克” vs.	page=4 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-space itemization tailchar-period above-line-space
+I-Listitem	“cl-”). The high probability of P(“克” | “cl-”)	page=4 xpos=0 ypos=3 left-column left-indent indented-line line-space above-line-space
+I-Listitem	amounts to the phonics rule that stipulates “c”	page=4 xpos=0 ypos=3 left-column left-indent aligned-line line-space headchar-lower
+I-Listitem	be pronounced with a “k” sound in the context	page=4 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower
+I-Listitem	of “l.”	page=4 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-SectionHeader	4 Transliteration Search and Extraction	page=4 xpos=0 ypos=4 left-column right-indent font-larger hanged-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	At run-time, the system follows the procedure in	page=4 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	Figure 3 to process the given name. In Step (1), the	page=4 xpos=0 ypos=4 left-column full-justified aligned-line string-figure headchar-capital
+I-Body	system looks up in the prefix relationship table to	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	find the n best relationships (n = MaxExpQueries)	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	for query expansion with preference for relation-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ships with higher probabilistic value. For instance,	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	to search for transliterations of “Acton,” the system	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	looks at all possible prefixes and postfixes of “Ac-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ton,” including a-, ac-, act-, acto-, -n, -on, -ton,	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and -cton, and determines the best query expan-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sions: “Acton 阿,” “Acton 亞,” “Acton 艾,” “Ac-	page=4 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ton 頓,” “Acton 騰,” etc. These effective expan-	page=4 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen above-line-space
+I-Body	sions are automatically derived during the training	page=4 xpos=0 ypos=6 left-column full-justified aligned-line line-space headchar-lower
+I-Body	stage described in Section 3 by analyzing a large	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	collection of name-transliteration pairs.	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In Step (2), the system sends off each of these	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	queries to a search engine to retrieve up to	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	MaxDocRetrieved document snippets. In Step (3),	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	the system discards snippets that have too little	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	proportion of target-language text. See Example (4)	page=4 xpos=0 ypos=8 left-column right-over aligned-line headchar-lower
+I-Body	for a snippet that has high portion of English text	page=4 xpos=0 ypos=8 left-column full-justified aligned-line shorter-tail headchar-lower
+I-Body	and therefore is less likely to contain a translitera-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. In Step (4), the system considers the sub-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	strings in the remaining snippets.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+Figure	__Figure 3__	page=4 xpos=5 ypos=-1 right-column left-over right-indent box column-top figure-area
+B-Caption	Figure 3. Outline of the steps used to search, extract,	page=4 xpos=5 ypos=2 right-column full-justified font-smallest string-figure headchar-capital tailchar-comma
+E-Caption	and rank transliterations.	page=4 xpos=5 ypos=2 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Caption	Table 5. Sample data for class-based morphological	page=4 xpos=5 ypos=2 right-column full-justified font-smallest aligned-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital
+I-Caption	transliteration probability of prefixes, where # of N <sub>P</sub>	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Caption	denotes the number of the name prefix N <sub>P</sub> ; # of C, N P	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Caption	denotes the number of all T <sub>P</sub> belonging to the class C	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Caption	co-occurring with the N <sub>P</sub> ; # T P , N P denotes the number	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Caption	of transliteration prefix T <sub>P</sub> co-occurs with the N P ; P(C|N P )	page=4 xpos=5 ypos=3 right-column right-over aligned-line headchar-lower
+I-Caption	denotes the probability of all T <sub>P</sub> belonging to C co-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Caption	occurring with the N <sub>P</sub> ; P(T P |N P ) denotes the probability	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Caption	of the T <sub>p</sub> co-occurs with the N P.	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Table	N <sub>P</sub> Class T P # of N P # of # of P(C|N P ) P(T P |N P )	page=4 xpos=5 ypos=4 right-column left-indent right-indent font-smallest longer-tail headchar-capital
+I-Table	ID C,N <sub>P</sub> T P ,N P	page=4 xpos=5 ypos=4 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital
+I-Table	a- 275 艾 1456 46 28 0.032 0.019	page=4 xpos=5 ypos=4 right-column right-indent hanged-line longer-tail headchar-lower above-line-space
+I-Table	a- 275 愛 1456 46 17 0.032 0.012	page=4 xpos=5 ypos=4 right-column right-indent aligned-line line-space headchar-lower above-line-space
+I-Table	a- 275 埃 1456 46 1 0.032 0.000	page=4 xpos=5 ypos=5 right-column right-indent aligned-line line-space headchar-lower above-line-space
+I-Table	a- 276 奧 1456 103 100 0.071 0.069	page=4 xpos=5 ypos=5 right-column right-indent aligned-line line-space headchar-lower above-line-space
+I-Table	a- 276 澳 1456 103 2 0.071 0.001	page=4 xpos=5 ypos=5 right-column right-indent aligned-line line-space headchar-lower above-line-space
+I-Table	a- 276 敖 1456 103 1 0.071 0.000	page=4 xpos=5 ypos=5 right-column right-indent aligned-line line-space headchar-lower above-line-space
+I-Table	ba- 2 波 652 5 3 0.008 0.005	page=4 xpos=5 ypos=5 right-column right-indent aligned-line line-space headchar-lower above-line-space
+I-Table	ba- 2 百 652 5 1 0.008 0.002	page=4 xpos=5 ypos=6 right-column right-indent aligned-line line-space headchar-lower above-line-space
+E-Table	ba- 2 柏 652 5 1 0.008 0.002	page=4 xpos=5 ypos=6 right-column right-indent aligned-line line-space headchar-lower above-blank-line above-double-space above-line-space
+B-Caption	Table 6. Sample data for class-based morphological	page=4 xpos=5 ypos=6 right-column full-justified font-smallest aligned-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital
+I-Caption	transliteration probability of postfixes. Notations are	page=4 xpos=5 ypos=6 right-column full-justified font-smallest aligned-line headchar-lower
+E-Caption	similar to those for Table 5.	page=4 xpos=5 ypos=7 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Table	N <sub>s</sub> Class T s # of N s # of # of P(C|N s ) P(T s |N s )	page=4 xpos=5 ypos=7 right-column left-indent right-over font-smallest indented-line longer-tail headchar-capital
+I-Table	ID C,N <sub>s</sub> T s ,N s	page=4 xpos=5 ypos=7 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital
+I-Table	-li 103 利 142 140 85 0.986 0.599	page=4 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail above-line-space
+I-Table	-li 103 里 142 140 52 0.986 0.366	page=4 xpos=5 ypos=7 right-column full-justified aligned-line line-space above-line-space
+I-Table	-li 103 力 142 140 2 0.986 0.014	page=4 xpos=5 ypos=7 right-column full-justified aligned-line line-space above-line-space
+I-Table	-li 103 立 142 140 1 0.986 0.007	page=4 xpos=5 ypos=8 right-column full-justified aligned-line line-space above-line-space
+I-Table	-li 103 李 142 140 0 0.986 0.000	page=4 xpos=5 ypos=8 right-column full-justified aligned-line line-space above-line-space
+I-Table	-raa 112 洛 4 1 1 0.250 0.250	page=4 xpos=5 ypos=8 right-column full-justified aligned-line line-space above-line-space
+I-Table	-raa 112 珞 4 1 0 0.250 0.000	page=4 xpos=5 ypos=8 right-column full-justified aligned-line line-space above-line-space
+I-Table	-raa 112 絡 4 1 0 0.250 0.000	page=4 xpos=5 ypos=8 right-column full-justified aligned-line line-space above-line-space
+E-Table	-raa 112 落 4 1 0 0.250 0.000	page=4 xpos=5 ypos=9 right-column full-justified aligned-line line-space column-bottom above-blank-line above-double-space above-line-space
+Page	1000	page=4 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-Body	For instance, Examples (5-7) shows remaining	page=5 xpos=0 ypos=0 left-column left-indent page-top headchar-capital
+I-Body	snippets that have high proportion of Chinese text.	page=5 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	The strings “阿克頓”(Akedun) is a transliteration	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital above-line-space
+I-Body	found in snippet shown in Example (5), a candi-	page=5 xpos=0 ypos=0 left-column full-justified aligned-line line-space headchar-lower tailchar-hiphen
+I-Body	date beginning with the prefix “阿” and ending	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower above-line-space
+I-Body	with the postfix “頓” and is within the distance of	page=5 xpos=0 ypos=1 left-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	1 of the instance “Acton,” separated by a punctua-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line line-space numbered-heading1 tailchar-hiphen
+I-Body	tion token. The string “埃克頓” (Aikedun) found	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower above-line-space
+I-Body	in Example (6) is also a legitimate transliteration	page=5 xpos=0 ypos=1 left-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	beginning with a different prefix “埃,” while “艾	page=5 xpos=0 ypos=1 left-column full-justified aligned-line line-space headchar-lower
+I-Body	科騰”(Aiketeng) in Example (7) is a transliteration	page=5 xpos=0 ypos=2 left-column full-justified font-largest aligned-line above-line-space
+I-Body	beginning with yet another prefix “艾.” Translit-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line line-space headchar-lower tailchar-hiphen above-line-space
+I-Body	eration “埃克頓” appears at a distance of 3 from	page=5 xpos=0 ypos=2 left-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	“Acton,” while two instances of “艾科騰” appear	page=5 xpos=0 ypos=2 left-column full-justified aligned-line line-space above-line-space
+I-Body	at the distances of 1 and 20 from the nearest in-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line line-space headchar-lower tailchar-hiphen
+E-Body	stances of “Acton.”	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	(4) Acton moive feel pics!! - 攝影	page=5 xpos=0 ypos=3 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space itemization
+I-Listitem	目前位置: 文藝線 > 遊藝支線 > 攝影 > Acton	page=5 xpos=0 ypos=3 left-column left-indent right-indent font-larger indented-line longer-tail above-line-space
+I-Listitem	moive feel pics!! Hop Hero - Acton moive feel	page=5 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-lower
+I-Listitem	pics!!	page=5 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower
+I-Listitem	http://www.hkmassive.com/forum/viewthread.php?	page=5 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower
+I-Listitem	tid=2368&fpage=1 Watch the slide show! ...	page=5 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	(5) New Home Alert - Sing Tao New Homes	page=5 xpos=0 ypos=4 left-column right-indent font-smallest hanged-line shorter-tail itemization
+I-Listitem	Please select, Acton 阿克頓, Ajax 亞積士, Allis-	page=5 xpos=0 ypos=4 left-column left-indent right-indent font-larger indented-line longer-tail headchar-capital tailchar-hiphen
+I-Listitem	ton 阿里斯頓, Ancaster 安卡斯特, Arthur 阿瑟,	page=5 xpos=0 ypos=4 left-column left-indent right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-comma
+I-Listitem	Aurora 奧羅拉, Ayr 艾爾, Barrie 巴里, Beamsville,	page=5 xpos=0 ypos=5 left-column left-indent right-over font-larger aligned-line longer-tail headchar-capital tailchar-comma above-line-space
+I-Listitem	Belleville ...	page=5 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-capital tailchar-period
+B-Listitem	(6) STS-51-F – Wikipedia	page=5 xpos=0 ypos=5 left-column right-indent font-smallest hanged-line longer-tail itemization
+I-Listitem	前排左起：英格蘭、海因茲、福勒頓、布里奇	page=5 xpos=0 ypos=5 left-column left-indent right-indent indented-line longer-tail
+I-Listitem	斯 ... 卡爾·海因茲 (Karl Henize ，曾執行 STS-51-	page=5 xpos=0 ypos=5 left-column left-indent right-indent font-larger aligned-line longer-tail tailchar-hiphen
+I-Listitem	F 任務)，任務專家; 羅倫·埃克頓 (Loren Acton，	page=5 xpos=0 ypos=6 left-column left-indent right-indent font-larger aligned-line headchar-capital
+I-Listitem	曾執行 STS-51-F 任務)，有效載荷專家; 約翰-大	page=5 xpos=0 ypos=6 left-column left-indent right-indent font-larger aligned-line
+I-Listitem	衛·巴托 (John-David F. ...	page=5 xpos=0 ypos=6 left-column left-indent right-indent font-larger aligned-line shorter-tail tailchar-period above-line-space
+B-Listitem	(7) 澳洲艾科騰-00-Acton-Australia.htm	page=5 xpos=0 ypos=6 left-column right-indent font-larger hanged-line longer-tail line-space itemization above-line-space
+I-Listitem	Acton Systems is a world leading manufacturer	page=5 xpos=0 ypos=6 left-column left-indent right-indent font-smallest indented-line longer-tail line-space headchar-capital
+I-Listitem	supplying stuctured cabling systems suited to the	page=5 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower
+I-Listitem	Australian and New Zealand marketplace. 澳洲艾	page=5 xpos=0 ypos=7 left-column left-indent right-indent font-larger aligned-line longer-tail headchar-capital above-line-space
+I-Listitem	科騰乃專業之整合式配線系統製造商, 產品銷售	page=5 xpos=0 ypos=7 left-column left-indent right-indent aligned-line longer-tail line-space above-line-space
+I-Listitem	於澳洲及紐西蘭 。 Custom made leads are now	page=5 xpos=0 ypos=7 left-column left-indent font-largest aligned-line line-space above-line-space
+I-Listitem	available ...	page=5 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail line-space headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Body	The occurrence counts and average distance	page=5 xpos=0 ypos=8 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	from instances of the given name are tallied for	page=5 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	each of these candidates. Candidates with a low	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	occurrence count and long average distance are	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	excluded from further consideration. Finally, all	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	candidates are evaluated and ranked using Equa-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion (7) given in Section 3.	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-SectionHeader	5 Evaluation	page=5 xpos=5 ypos=0 right-column right-indent font-larger column-top numbered-heading1 above-double-space above-line-space
+B-Body	In the experiment carried out to assess the feasibil-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ity to the proposed method, a data set of 23,615	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	names and transliterations was used. This set of	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	place name data is available from NICT, Taiwan	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	for training and testing. There are 967 distinct Chi-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nese characters presented in the data, and more	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	details of training data are available in Table 7.	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The English part consists of Romanized versions	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	of names originated from many languages, includ-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing Western and Asian languages. Most of the time,	page=5 xpos=5 ypos=2 right-column right-over aligned-line headchar-lower tailchar-comma
+I-Body	the names come with a Chinese counterpart based	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	solely on transliteration. But occasionally, the Chi-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nese counterpart is part translation and part trans-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	literation. For instance, the city of “Southampton”	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	has a Chinese counterpart consisting of “ 南 ”	page=5 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower above-line-space
+I-Body	(translation of “south”) and “漢普頓” (translitera-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line line-space tailchar-hiphen above-line-space
+E-Body	tion of “ampton”).	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail line-space headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 7__	page=5 xpos=5 ypos=3 right-column centered left-over right-over box longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Body	We used the set of parameters shown in Table 8	page=5 xpos=5 ypos=6 right-column left-indent indented-line line-double-space line-space headchar-capital
+I-Body	to train and run System TermMine. A set of 500	page=5 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	randomly selected were set aside for testing. We	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	paired up the prefixes and postfixes in the remain-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing 23,116 pairs, by taking one to four leading or	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	trailing letters of each Romanized place names and	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the first and last Chinese transliteration character	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	to estimate P (T <sub>P</sub> | N P ) and P (T S | N S ).	page=5 xpos=5 ypos=7 right-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 8__	page=5 xpos=5 ypos=8 right-column left-over right-indent box longer-tail line-double-space line-space table-area column-bottom above-double-space above-line-space
+Page	1001	page=5 xpos=4 ypos=9 single-column left-indent right-indent column-top line-double-space line-space numeric-only page-bottom
+B-Table	Min rate of target	page=6 xpos=2 ypos=0 left-column left-indent right-indent font-smallest page-top headchar-capital
+I-Table	MinTargetRate 0.5	page=6 xpos=0 ypos=0 left-column right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Table	text in a snippet	page=6 xpos=2 ypos=0 left-column left-indent right-indent font-smallest indented-line longer-tail headchar-lower
+I-Table	Min number of co-	page=6 xpos=2 ypos=0 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Table	occurrence of query	page=6 xpos=2 ypos=0 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower
+I-Table	MinOccCount 1	page=6 xpos=0 ypos=0 left-column right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Table	and transliteration	page=6 xpos=2 ypos=0 left-column left-indent right-indent font-smallest indented-line longer-tail headchar-lower
+I-Table	candidate in snippets	page=6 xpos=2 ypos=0 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower
+I-Table	Max distance be-	page=6 xpos=2 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-hiphen
+I-Table	MaxAvgDistance 4	page=6 xpos=0 ypos=1 left-column right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Table	tween N and T	page=6 xpos=2 ypos=1 left-column left-indent right-indent font-smallest indented-line longer-tail headchar-lower
+I-Table	Weight of Prefix	page=6 xpos=2 ypos=1 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Table	WeightPrefixProb 0.5	page=6 xpos=0 ypos=1 left-column right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Table	probability (λ <sub>1</sub> )	page=6 xpos=2 ypos=1 left-column left-indent right-indent indented-line longer-tail headchar-lower
+I-Table	Weight of Postfix	page=6 xpos=2 ypos=1 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Table	WeightPostfixProb 0.5	page=6 xpos=0 ypos=1 left-column right-indent font-smallest hanged-line shorter-tail headchar-capital
+E-Table	probability (λ <sub>2</sub> )	page=6 xpos=2 ypos=1 left-column left-indent right-indent indented-line longer-tail headchar-lower above-double-space above-line-space
+B-Body	We carried out two kinds of evaluation on Sys-	page=6 xpos=0 ypos=2 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tem TermMine, with and without query expansion.	page=6 xpos=0 ypos=2 left-column centered left-indent hanged-line headchar-lower tailchar-period
+I-Body	With QE option off, the name itself was sent off as	page=6 xpos=0 ypos=2 left-column centered left-indent aligned-line headchar-capital
+I-Body	a query to the search engine, while with QE option	page=6 xpos=0 ypos=2 left-column centered left-indent aligned-line itemization headchar-lower
+I-Body	turned on, up to 10 expanded queries were sent for	page=6 xpos=0 ypos=3 left-column centered left-indent aligned-line headchar-lower
+I-Body	each name. We also evaluated the system against	page=6 xpos=0 ypos=3 left-column centered left-indent aligned-line headchar-lower
+I-Body	Google Translate and Yahoo! Babelfish. We dis-	page=6 xpos=0 ypos=3 left-column centered left-indent aligned-line headchar-capital tailchar-hiphen
+I-Body	carded the results when the names are returned un-	page=6 xpos=0 ypos=3 left-column centered left-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	translated. After that, we checked the correctness	page=6 xpos=0 ypos=3 left-column centered left-indent aligned-line headchar-lower
+I-Body	of all remaining results by hand. Table 9 shows a	page=6 xpos=0 ypos=4 left-column centered left-indent aligned-line headchar-lower
+E-Body	sample of the results produced by the three systems.	page=6 xpos=0 ypos=4 left-column left-indent right-over aligned-line headchar-lower tailchar-period
+B-Body	In Table 10, we show performance differences	page=6 xpos=0 ypos=4 left-column left-indent indented-line headchar-capital
+I-Body	of system TermMine in query expansion option.	page=6 xpos=0 ypos=4 left-column centered left-indent hanged-line headchar-lower tailchar-period
+I-Body	Without QE, the system returns transliterations	page=6 xpos=0 ypos=4 left-column centered left-indent aligned-line headchar-capital
+I-Body	(applicability) less than 50% of the time. Neverthe-	page=6 xpos=0 ypos=4 left-column centered left-indent aligned-line tailchar-hiphen
+I-Body	less, there are enough snippets for extracting and	page=6 xpos=0 ypos=5 left-column centered left-indent aligned-line headchar-lower
+I-Body	ranking of transliterations. The precision rate of the	page=6 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Body	top-ranking transliterations is 88%. With QE	page=6 xpos=0 ypos=5 left-column centered left-indent aligned-line headchar-lower
+I-Body	turned on, the applicability rate increases signifi-	page=6 xpos=0 ypos=5 left-column centered left-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	cantly to 60%. The precision rate also improved	page=6 xpos=0 ypos=5 left-column centered left-indent aligned-line headchar-lower
+E-Body	slightly to 0.89.	page=6 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The performance evaluation of three systems is	page=6 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	shown in Table 11. For the test set of 500 place	page=6 xpos=0 ypos=6 left-column centered left-indent hanged-line headchar-lower
+I-Body	names, Google Translate returned 146 translitera-	page=6 xpos=0 ypos=6 left-column centered left-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	tions and Yahoo! Babelfish returned only 44, while	page=6 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Body	TermMine returned 300. Of the returned translit-	page=6 xpos=0 ypos=7 left-column centered left-indent aligned-line headchar-capital tailchar-hiphen
+I-Body	erations, Google Translate and Yahoo! Babelfish	page=6 xpos=0 ypos=7 left-column centered left-indent aligned-line headchar-lower
+I-Body	achieved a precision rate around 50%, while	page=6 xpos=0 ypos=7 left-column centered left-indent aligned-line headchar-lower
+I-Body	TermMine achieved a precision rate almost as high	page=6 xpos=0 ypos=7 left-column centered left-indent aligned-line headchar-capital
+I-Body	as 90%. The results show that System TermMine	page=6 xpos=0 ypos=7 left-column centered left-indent aligned-line headchar-lower
+I-Body	outperforms both commercial MT systems by a	page=6 xpos=0 ypos=8 left-column centered left-indent aligned-line headchar-lower
+I-Body	wide margin, in the area of machine transliteration	page=6 xpos=0 ypos=8 left-column centered left-indent aligned-line headchar-lower
+E-Body	of proper names.	page=6 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Caption	Table 9. Sample output by three systems evaluated. The	page=6 xpos=0 ypos=8 left-column centered left-indent font-smallest aligned-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital
+E-Caption	stared transliterations are incorrect.	page=6 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Table	Google Yahoo!	page=6 xpos=2 ypos=9 left-column left-indent right-indent font-smallest indented-line longer-tail headchar-capital
+I-Table	Name TermMine	page=6 xpos=0 ypos=9 left-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Table	Translate Babelfish	page=6 xpos=2 ypos=9 left-column left-indent right-indent font-smallest indented-line longer-tail headchar-capital
+E-Table	Arlington 雅靈頓 阿靈頓 阿靈頓	page=6 xpos=0 ypos=9 left-column right-indent font-smaller hanged-line shorter-tail headchar-capital column-bottom
+Table	__Table 10__	page=6 xpos=5 ypos=-1 right-column left-over right-over box column-top table-area above-double-space above-line-space
+B-Caption	Table 10. Performance evaluation of TermMine	page=6 xpos=5 ypos=2 right-column right-indent font-smallest shorter-tail line-double-space line-space string-table headchar-capital
+B-Table	Method TermMine TermMine	page=6 xpos=6 ypos=3 right-column left-indent right-indent font-smaller indented-line longer-tail headchar-capital
+I-Table	Evaluation QE- QE+	page=6 xpos=5 ypos=3 right-column left-indent right-indent hanged-line shorter-tail headchar-capital
+I-Table	# of cases performed 238 300	page=6 xpos=5 ypos=3 right-column left-indent font-smallest longer-tail
+I-Table	Applicability 0.48 0.60	page=6 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-capital
+I-Table	# Correct Answers 209 263	page=6 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line
+I-Table	Precision 0.88 0.89	page=6 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-capital
+I-Table	Recall 0.42 0.53	page=6 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-capital
+E-Table	F-measure 0.57 0.66	page=6 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-capital above-double-space above-line-space
+Table	__Table 11__	page=6 xpos=5 ypos=4 right-column left-over right-over box hanged-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-SectionHeader	6 Comparison with Previous Work	page=6 xpos=5 ypos=6 right-column right-indent font-larger shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Machine transliteration has been an area of active	page=6 xpos=5 ypos=7 right-column right-over aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	research. Most of the machine transliteration	page=6 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower
+I-Body	method attempts to model the transliteration proc-	page=6 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	ess of mapping between graphemes and phonemes.	page=6 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower tailchar-period
+I-Body	Knight and Graehl (1998) proposed a multilayer	page=6 xpos=5 ypos=7 right-column right-over aligned-line year headchar-capital
+I-Body	model and a generate-and-test approach to perform	page=6 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower
+I-Body	back transliteration from Japanese to English based	page=6 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower
+I-Body	on the model. In our work we address an issue of	page=6 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower
+E-Body	producing transliteration by way of search.	page=6 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Goto et al. (2003), and Li et al. (2004) proposed	page=6 xpos=5 ypos=8 right-column left-indent right-over indented-line longer-tail year headchar-capital
+I-Body	a grapheme-based transliteration model. Hybrid	page=6 xpos=5 ypos=8 right-column right-over hanged-line itemization headchar-lower
+I-Body	transliteration models were described by Al-	page=6 xpos=5 ypos=9 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	Onaizan and Knight (2002), and Oh et al. (2005).	page=6 xpos=5 ypos=9 right-column right-over aligned-line year headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	1002	page=6 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	Recently, some of the machine transliteration study	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-capital
+I-Body	has begun to consider the problem of extracting	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	names and their transliterations from parallel cor-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pora (Qu and Grefenstette 2004, Lin, Wu and	page=7 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower
+I-Body	Chang 2004; Lee and Chang 2003, Li and Grefen-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+E-Body	stette 2005).	page=7 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	Cao and Li (2002) described a new method for	page=7 xpos=0 ypos=1 left-column left-indent indented-line longer-tail year headchar-capital
+I-Body	base noun phrase translation by using Web data.	page=7 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	Kwok, et al. (2001) described a system called	page=7 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-capital
+I-Body	CHINET for cross language name search. Nagata	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	et al. (2001) described how to exploit proximity	page=7 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower
+I-Body	and redundancy to extract translation for a given	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	term. Lu, Chien, and Lee (2002) describe a method	page=7 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Body	for name translation based on mining of anchor	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	texts. More recently, Zhang, Huang, and Vogel	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	(2005) proposed to use occurring words to expand	page=7 xpos=0 ypos=2 left-column full-justified aligned-line year
+I-Body	queries for searching and extracting transliterations.	page=7 xpos=0 ypos=3 left-column right-over aligned-line headchar-lower tailchar-period
+I-Body	Oh and Isahara (2006) use phonetic-similarity to	page=7 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-capital
+E-Body	recognize transliteration pairs on the Web.	page=7 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In contrast to previous work, we propose a sim-	page=7 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ple method for extracting transliterations based on	page=7 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	a statistical model trained automatically on a bilin-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	gual name list via unsupervised learning. We also	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	carried out experiments and evaluation of training	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	and applying the proposed model to extract trans-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	literations by using web as corpus.	page=7 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	7 Conclusion and Future Work	page=7 xpos=0 ypos=5 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Morphological query expansion represents an in-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	novative way to capture cross-language relations in	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	name transliteration. The method is independent of	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the bilingual lexicon content making it easy to	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	adopt to other proper names such person, product,	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	or organization names. This approach is useful in a	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	number of machine translation subtasks, including	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	name transliteration, back transliteration, named	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	entity translation, and terminology translation.	page=7 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Many opportunities exist for future research and	page=7 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	improvement of the proposed approach. First, the	page=7 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	method explored here can be extended as an alter-	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ative way to support such MT subtasks as back	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	transliteration (Knight and Graehl 1998) and noun	page=7 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	phrase translation (Koehn and Knight 2003). Fi-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	nally, for more challenging MT tasks, such as han-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dling sentences, the improvement of translation	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	quality probably will also be achieved by combin-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing this IR-based approach and statistical machine	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	translation. For example, a pre-processing unit may	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	replace the proper names in a sentence with trans-	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	literations (e.g., mixed code text “The cities of 美	page=7 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower column-bottom
+I-Body	索不達米亞 prospered under 巴底亞 and 薩珊	page=7 xpos=5 ypos=0 right-column full-justified font-largest column-top above-line-space
+I-Body	rule.” before sending it off to MT for final transla-	page=7 xpos=5 ypos=0 right-column full-justified aligned-line line-space headchar-lower tailchar-hiphen
+E-Body	tion.	page=7 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=5 ypos=0 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	GW Bian, HH Chen. Cross-language information access	page=7 xpos=5 ypos=1 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Reference	to multilingual collections on the internet. 2000.	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line year headchar-lower tailchar-period
+I-Reference	Journal of American Society for Information Science	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	& Technology (JASIST), Special Issue on Digital Li-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line tailchar-hiphen
+I-Reference	braries, 51(3), pp.281-296, 2000.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Y. Cao and H. Li. Base Noun Phrase Translation Using	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Web Data and the EM Algorithm. 2002. In Proceed-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	ings of the 19th International Conference on Compu-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tational Linguistics (COLING’02), pp.127-133, 2002.	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	PJ. Cheng, JW. Teng, RC. Chen, JH. Wang, WH. Lu,	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line line-double-space line-space headchar-capital tailchar-comma
+I-Reference	and LF. Chien. Translating unknown queries with	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	web corpora for cross-language information retrieval.	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	2004. In Proceedings of the 27th ACM International	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line year
+I-Reference	Conference on Research and Development in Infor-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	mation Retrieval (SIGIR04), pp. 146-153, 2004.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	I. Goto, N. Kato, N. Uratani, and T. Ehara. Translitera-	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	tion considering context information based on the	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	maximum entropy method. In Proceedings of Ninth	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Machine Translation Summit, pp.125-132, 2003.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	F. Huang, S. Vogel, and A. Waibel. Automatic extrac-	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	tion of named entity translingual equivalence based	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	on multi-feature cost minimization. In Proceeding of	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	the 41st ACL, Workshop on Multilingual and Mixed-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	Language Named Entity Recognition, Sapporo, 2003.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	A. Kilgarriff and Grefenstette, G. 2003. Introduction to	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line line-double-space line-space year headchar-capital
+I-Reference	the Special Issue on the Web as Corpus. Computa-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tional Linguistics 29(3), pp. 333-348, 2003.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	K. Knight, J. Graehl. Machine Transliteration. 1998.	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Computational Linguistics 24(4), pp.599-612, 1998.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	P. Koehn, K. Knight. 2003. Feature-Rich Statistical	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Translation of Noun Phrases. In Proceedings of the	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	41st Annual Meeting on Association for Computa-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line tailchar-hiphen
+I-Reference	tional Linguistics, pp. 311-318, 2003.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	J. Kupiec. 1993. An Algorithm for Finding Noun Phrase	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Correspondences in Bilingual Corpora. In Proceed-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	ings of the 31st Annual Meeting of the Association	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	for Computational Linguistics, pp. 17-22, 1993.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	KL Kwok. 2001. NTCIR-2 Chinese, Cross Language	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Retrieval Experiments Using PIRCS. In Proceedings	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	of NTCIR Workshop Meeting, pp.111-118, 2001.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	KL Kwok, P Deng, N Dinstl, HL Sun, W Xu, P Peng,	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	and Doyon, J. 2005. CHINET: a Chinese name finder	page=7 xpos=5 ypos=9 right-column left-indent font-smallest indented-line year headchar-lower
+I-Reference	system for document triage. In Proceedings of 2005	page=7 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line year headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	1003	page=7 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Reference	International Conference on Intelligence Analysis,	page=8 xpos=0 ypos=0 left-column left-indent font-smallest page-top headchar-capital tailchar-comma
+I-Reference	2005.	page=8 xpos=0 ypos=0 left-column left-indent right-indent font-smallest aligned-line shorter-tail year tailchar-period column-bottom
+I-Reference	query expansion. In Proceedings of the 28th Annual	page=8 xpos=5 ypos=0 right-column full-justified font-smallest column-top headchar-lower
+I-Reference	International ACM SIGIR, pp.669-670, 2005.	page=8 xpos=5 ypos=0 right-column right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period column-bottom above-double-space above-line-space
+B-Reference	C.J. Lee, and Jason S. Chang. 2003. Acquisition of Eng- Y. Zhang and P. Vines. 2004. Detection and translation	page=8 xpos=0 ypos=0 single-column full-justified font-smallest column-top line-double-space line-space year headchar-capital column-bottom
+I-Reference	lish-Chinese Transliterated Word Pairs from Parallel-	page=8 xpos=0 ypos=0 left-column left-indent font-smallest column-top headchar-lower tailchar-hiphen
+I-Reference	Aligned Texts using a Statistical Machine Translit-	page=8 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	eration Model, In Proceedings of HLT-NAACL 2003	page=8 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line year headchar-lower
+I-Reference	Workshop, pp. 96-103, 2003.	page=8 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	H. Li, M. Zhang, and J. Su. 2004. A joint source-	page=8 xpos=0 ypos=1 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	channel model for machine transliteration. In Pro-	page=8 xpos=0 ypos=1 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ceedings of the 42nd Annual Meeting on Association	page=8 xpos=0 ypos=1 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	for Computational Linguistics, pp.159-166, 2004.	page=8 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Y. Li, G. Grefenstette. 2005. Translating Chinese Ro-	page=8 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	manized name into Chinese idiographic characters	page=8 xpos=0 ypos=2 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	via corpus and web validation. In Proceedings of	page=8 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	CORIA 2005, pp. 323-338, 2005.	page=8 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	T. Lin, J.C. Wu, and J. S. Chang. 2004. Extraction of	page=8 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Name and Transliteration in Monolingual and Paral-	page=8 xpos=0 ypos=3 left-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	lel Corpora. In Proceedings of AMTA 2004, pp.177-	page=8 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line year headchar-lower tailchar-hiphen
+I-Reference	186, 2004.	page=8 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Reference	WH. Lu, LF. Chien, and HJ. Lee. 2002. Translation of	page=8 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	web queries using anchor text mining. ACM Transac-	page=8 xpos=0 ypos=3 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tions on Asian Language Information Processing,	page=8 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	1(2):159–172, 2002.	page=8 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Reference	WH Lu, LF Chien, HJ Lee. Anchor text mining for	page=8 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	translation of Web queries: A transitive translation	page=8 xpos=0 ypos=4 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	approach. ACM Transactions on Information Systems	page=8 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	22(2), pp. 242-269, 2004.	page=8 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Reference	M. Nagata, T. Saito, and K. Suzuki. Using the Web as a	page=8 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	bilingual dictionary. 2001. In Proceedings of 39th.	page=8 xpos=0 ypos=5 left-column left-indent font-smallest indented-line year headchar-lower tailchar-period
+I-Reference	ACL Workshop on Data-Driven Methods in Machine	page=8 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Translation, pp. 95-102, 2001.	page=8 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	J.-H Oh, and H. Isahara. 2006. Mining the Web for	page=8 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Transliteration Lexicons: Joint-Validation Approach,	page=8 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-capital tailchar-comma
+I-Reference	In IEEE/WIC/ACM International Conference on Web	page=8 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Intelligence, pp. 254-261, 2006.	page=8 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	J.-H. Oh and K.-S. Choi. 2005. An ensemble of graph-	page=8 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	eme and phoneme for machine transliteration. In Pro-	page=8 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ceedings of IJCNLP05, pp.450–461, 2005.	page=8 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Y. Qu, and G. Grefenstette. 2004. Finding Ideographic	page=8 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Representations of Japanese Names Written in Latin	page=8 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Script via Language Identification and Corpus Vali-	page=8 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	dation. In Proceedings of the 42 <sup>nd</sup> Annual Meeting of	page=8 xpos=0 ypos=7 left-column left-indent font-largest aligned-line headchar-lower
+I-Reference	the Association for Computational Linguistics,	page=8 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	pp.183-190, 2004.	page=8 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	CK Quah. 2006. Translation and Technology, Palgrave	page=8 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Textbooks in Translation and Interpretation, Pal-	page=8 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	grave MacMillan.	page=8 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Y Zhang, F Huang, S Vogel. 2005. Mining translations	page=8 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	of OOV terms from the web through cross-lingual	page=8 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-lower above-blank-line above-double-space above-line-space
+Page	1004	page=8 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Reference	of oov terms prior to query time. In Proceedings of	page=8 xpos=5 ypos=0 right-column full-justified font-smallest column-top headchar-lower
+I-Reference	the 27th annual international ACM SIGIR conference	page=8 xpos=5 ypos=0 right-column full-justified font-smallest aligned-line headchar-lower
+I-Reference	on Research and development in information re-	page=8 xpos=5 ypos=0 right-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	trieval, pp.524-525, 2004.	page=8 xpos=5 ypos=1 right-column right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period

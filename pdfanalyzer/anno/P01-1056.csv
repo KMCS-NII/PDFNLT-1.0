@@ -1,0 +1,640 @@
+Title	Evaluating a Trainable Sentence Planner for a Spoken Dialogue System	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Owen Rambow Monica Rogati Marilyn A. Walker	page=0 xpos=0 ypos=0 single-column left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	AT&T Labs – Research Carnegie Mellon University AT&T Labs – Research	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Address	Florham Park, NJ, USA Pittsburgh, PA, USA Florham Park, NJ, USA	page=0 xpos=0 ypos=1 single-column centered left-indent right-indent font-larger aligned-line headchar-capital above-line-space
+Email	rambow@research.att.com mrogati+@cs.cmu.edu walker@research.att.com	page=0 xpos=0 ypos=1 single-column left-indent right-indent font-smallest indented-line shorter-tail line-space symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	Techniques for automatically training	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	modules of a natural language gener-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ator have recently been proposed, but	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	a fundamental concern is whether the	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line itemization headchar-lower
+I-Abstract	quality of utterances produced with	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	trainable components can compete with	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	hand-crafted template-based or rule-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	based approaches. In this paper We ex-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	perimentally evaluate a trainable sen-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tence planner for a spoken dialogue sys-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tem by eliciting subjective human judg-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ments. In order to perform an ex-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	haustive comparison, we also evaluate	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	a hand-crafted template-based genera-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line itemization headchar-lower tailchar-hiphen
+I-Abstract	tion component, two rule-based sen-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tence planners, and two baseline sen-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tence planners. We show that the train-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	able sentence planner performs better	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	than the rule-based systems and the	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	baselines, and as well as the hand-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	crafted system.	page=0 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=7 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The past several years have seen a large increase	page=0 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	in commercial dialog systems. These systems	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	typically use system-initiative dialog strategies,	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	with system utterances highly scripted for style	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	and register and recorded by voice talent. How-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ever several factors argue against the continued	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	use of these simple techniques for producing the	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	system side of the conversation. First, text-to-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	speech has improved to the point of being a vi-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	able alternative to pre-recorded prompts. Second,	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	there is a perceived need for spoken dialog sys-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems to be more flexible and support user initia-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive, but this requires greater flexibility in utter-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	ance generation. Finally, systems to support com-	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	plex planning are being developed, which will re-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	quire more sophisticated output.	page=0 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	As we move away from systems with pre-	page=0 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	recorded prompts, there are two possible ap-	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	proaches to producing system utterances. The	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	first is template-based generation, where ut-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	terances are produced from hand-crafted string	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	templates. Most current research systems use	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	template-based generation because it is concep-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tually straightforward. However, while little or	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	no linguistic training is needed to write templates,	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	it is a tedious and time-consuming task: one or	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	more templates must be written for each combi-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nation of goals and discourse contexts, and lin-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guistic issues such as subject-verb agreement and	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	determiner-noun agreement must be repeatedly	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	encoded for each template. Furthermore, main-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tenance of the collection of templates becomes a	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	software engineering problem as the complexity	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	of the dialog system increases. <sup>1</sup>	page=0 xpos=5 ypos=6 right-column right-indent font-largest aligned-line shorter-tail headchar-lower above-line-space
+B-Body	The second approach is natural language gen-	page=0 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	eration (NLG), which customarily divides the	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	generation process into three modules (Rambow	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	and Korelsky, 1992): (1) Text Planning, (2) Sen-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tence Planning, and (3) Surface Realization. In	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	this paper, we discuss only sentence planning; the	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	role of the sentence planner is to choose abstract	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	lexico-structural resources for a text plan, where	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	a text plan encodes the communicative goals for	page=0 xpos=5 ypos=8 right-column full-justified aligned-line itemization headchar-lower
+I-Body	an utterance (and, sometimes, their rhetorical	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	structure). In general, NLG promises portability	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	across application domains and dialog situations	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	by focusing on the development of rules for each	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	generation module that are general and domain-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>1</sup> Although we are not aware of any software engineering	page=0 xpos=5 ypos=9 right-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	studies of template development and maintenance, this claim	page=0 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	is supported by abundant anecdotal evidence.	page=0 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+I-Body	independent. However, the quality of the output	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	for a particular domain, or a particular situation	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	in a dialog, may be inferior to that of a template-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based system without considerable investment in	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	domain-specific rules or domain-tuning of gen-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eral rules. Furthermore, since rule-based systems	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	use sophisticated linguistic representations, this	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	handcrafting requires linguistic knowledge.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Recently, several approaches for automatically	page=1 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	training modules of an NLG system have been	page=1 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	proposed (Langkilde and Knight, 1998; Mel-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	lish et al., 1998; Walker, 2000). These hold	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Body	the promise that the complex step of customiz-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing NLG systems by hand can be automated,	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	while avoiding the need for tedious hand-crafting	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	of templates. While the engineering benefits of	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	trainable approaches appear obvious, it is unclear	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	whether the utterance quality is high enough.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In (Walker et al., 2001) we propose a new	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space year headchar-capital
+I-Body	model of sentence planning called SP O T. In	page=1 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	SP O T, the sentence planner is automatically	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	trained, using feedback from two human judges,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	to choose the best from among different options	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	for realizing a set of communicative goals. In	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	(Walker et al., 2001), we evaluate the perfor-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	mance of the learning component of SP O T, and	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	show that SP O T learns to select sentence plans	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	that are highly rated by the two human judges.	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	While this evaluation shows that SP O T has in-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	deed learned from the human judges, it does not	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	show that using only two human judgments is	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	sufficient to produce more broadly acceptable re-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults, nor does it show that SP O T performs as well	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	as optimized hand-crafted template or rule-based	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	systems. In this paper we address these questions.	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Because SP O T is trained on data from a work-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ing system, we can directly compare SP O T to the	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	hand-crafted, template-based generation compo-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nent of the current system. In order to perform an	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	exhaustive comparison, we also implemented two	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	rule-based and two baseline sentence-planners.	page=1 xpos=0 ypos=8 left-column centered right-indent aligned-line headchar-lower tailchar-period
+I-Body	One baseline simply produces a single sentence	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	for each communicative goal. Another baseline	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	randomly makes decisions about how to combine	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	communicative goals into sentences. We directly	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	compare these different approaches in an evalua-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion experiment in which 60 human subjects rate	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	each system’s output on a scale of 1 to 5.	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The experimental design is described in section	page=1 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-space headchar-capital column-bottom
+Figure	__Figure 1__	page=1 xpos=5 ypos=-1 right-column left-indent right-over box column-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: A dialog with AMELIA	page=1 xpos=5 ypos=1 right-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+I-Body	2. The sentence planners used in the evaluation	page=1 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space itemization
+I-Body	are described in section 3. In section 4, we present	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	our results. We show that the trainable sentence	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	planner performs better than both rule-based sys-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems and as well as the hand-crafted template-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based system. These four systems outperform the	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	baseline sentence planners. Section 5 summarizes	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	our results and discusses related and future work.	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Experimental Context and Design	page=1 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Our research concerns developing and evaluat-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ing a portable generation component for a mixed-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	initiative travel planning system, AMELIA, de-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	veloped at AT&T Labs as part of DARPA Com-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	municator. Consider the required generation ca-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	pabilities of AMELIA, as illustrated in Figure 1.	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Utterance System1 requests information about	page=1 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	the caller’s departure airport, but in User2, the	page=1 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	caller takes the initiative to provide information	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	about her destination. In System3, the system’s	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	goal is to implicitly confirm the destination (be-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cause of the possibility of error in the speech	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	recognition component), and request information	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	(for the second time) of the caller’s departure air-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line tailchar-hiphen
+I-Body	port. This combination of communicative goals	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	arises dynamically in the dialog because the sys-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem supports user initiative, and requires differ-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ent capabilities for generation than if the system	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	could only understand the direct answer to the	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	question that it asked in System1.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In User4, the caller provides this information	page=1 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	but takes the initiative to provide the month and	page=1 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	day of travel. Given the system’s dialog strategy,	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the communicative goals for its next turn are to	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	implicitly confirm all the information that the user	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	has provided so far, i.e. the departure and desti-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nation cities and the month and day information,	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	as well as to request information about the time	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	of travel. The system’s representation of its com-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+I-Body	municative goals for System5 is in Figure 2. As	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	before, this combination of communicative goals	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	arises in response to the user’s initiative.	page=2 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 2__	page=2 xpos=0 ypos=0 left-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 2: The text plan (communicative goals) for	page=2 xpos=0 ypos=1 left-column full-justified hanged-line longer-tail line-double-space line-space string-figure headchar-capital
+E-Caption	System5 in Figure 1	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	Like most working research spoken dialog	page=2 xpos=0 ypos=2 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	systems, AMELIA uses hand-crafted, template-	page=2 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	based generation. Its output is created by choos-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing string templates for each elementary speech	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	act, using a large choice function which depends	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	on the type of speech act and various context con-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ditions. Values of template variables (such as ori-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gin and destination cities) are instantiated by the	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	dialog manager. The string templates for all the	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	speech acts of a turn are heuristically ordered and	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	then appended to produce the output. In order to	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	produce output that is not highly redundant, string	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	templates must be written for every possible com-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bination of speech acts in a text plan. We refer to	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the output generated by AMELIA using this ap-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	proach as the TEMPLATE output.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	__Figure 3__	page=2 xpos=-1 ypos=5 left-column left-over right-over box longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 3: Sample outputs for System5 of Figure 1	page=2 xpos=0 ypos=8 left-column full-justified shorter-tail line-double-space line-space string-figure headchar-capital
+I-Caption	for each type of generation system used in the	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Caption	evaluation experiment.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We perform an evaluation using human sub-	page=2 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	jects who judged the TEMPLATE output of	page=2 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower
+I-Body	AMELIA against five NLG-based approaches:	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital tailchar-colon
+I-Body	SP O T, two rule-based approaches, and two base-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital tailchar-hiphen column-bottom
+I-Body	lines. We describe them in Section 3. An exam-	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	ple output for the text plan in Figure 2 for each	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	system is in Figure 3. The experiment required	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	human subjects to read 5 dialogs of real inter-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	actions with AMELIA. At 20 points over the 5	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	dialogs, AMELIA’s actual utterance ( TEMPLATE )	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	is augmented with a set of variants; each set of	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	variants included a representative generated by	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	SP O T, and representatives of the four compari-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	son sentence planners. At times two or more of	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	these variants coincided, in which case sentences	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	were not repeated and fewer than six sentences	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	were presented to the subjects. The subjects rated	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	each variation on a 5-point Likert scale, by stating	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the degree to which they agreed with the state-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment The system’s utterance is easy to under-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stand, well-formed, and appropriate to the dialog	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	context. Sixty colleagues not involved in this re-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	search completed the experiment.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Sentence Planning Systems	page=2 xpos=5 ypos=4 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	This section describes the five sentence planners	page=2 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	that we compare. SP O T, the two rule-based	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	systems, and the two baseline sentence planners	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	are all NLG based sentence planners. In Sec-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion 3.1, we describe the shared representations	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of the NLG based sentence planners. Section 3.2	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	describes the baselines, R ANDOM and N O A GG .	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Section 3.3 describes SP O T. Section 3.4 de-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	scribes the rule-based sentence planners, RBS	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	and ICF.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 Aggregation in Sentence Planning	page=2 xpos=5 ypos=6 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In all of the NLG sentence planners, each speech	page=2 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	act is assigned a canonical lexico-structural rep-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resentation (called a DSyntS – Deep Syntactic	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	Structure (Melčuk, 1988)). We exclude issues of	page=2 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital
+I-Body	lexical choice from this study, and restrict our at-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tention to the question of how elementary struc-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures for separate elementary speech acts are as-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sembled into extended discourse. The basis of all	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the NLG systems is a set of clause-combining op-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erations that incrementally transform a list of el-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ementary predicate-argument representations (the	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	DSyntSs corresponding to the elementary speech	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital
+I-Body	acts of a single text plan) into a list of lexico-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structural representations of one or more sen-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences, that are sent to a surface realizer. We uti-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lize the RealPro Surface realizer with all of the	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Figure	__Figure 4__	page=3 xpos=-1 ypos=-3 single-column centered left-over right-over box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 4: List of clause combining operations with examples	page=3 xpos=2 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital column-bottom above-blank-line above-double-space above-line-space
+E-Body	sentence planners (Lavoie and Rambow, 1997).	page=3 xpos=0 ypos=0 left-column right-indent column-top line-blank-line line-double-space line-space year headchar-lower tailchar-period
+B-Body	DSyntSs are combined using the operations ex-	page=3 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	emplified in Figure 4. The result of applying the	page=3 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	operations is a sentence plan tree (or sp-tree	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	for short), which is a binary tree with leaves la-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	beled by all the elementary speech acts from the	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	input text plan, and with its interior nodes la-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	beled with clause-combining operations. As an	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	example, Figure 5 shows the sp-tree for utterance	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	System5 in Figure 1. Node soft-merge-general	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-capital
+I-Body	merges an implicit-confirmation of the destina-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail headchar-lower tailchar-hiphen
+I-Body	tion city and the origin city. The row labelled	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	SOFT - MERGE in Figure 4 shows the result when	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	Args 1 and 2 are implicit confirmations of the ori-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	gin and destination. See (Walker et al., 2001) for	page=3 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	more detail on the sp-tree. The experimental sen-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence planners described below vary how the sp-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tree is constructed.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Figure	soft−merge−general <sub>1</sub>	page=3 xpos=1 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-lower above-double-space above-line-space
+I-Figure	soft−merge soft−merge−general <sub>2</sub>	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-largest hanged-line longer-tail line-double-space line-space headchar-lower above-blank-line above-double-space above-line-space
+I-Figure	imp−confirm(day) imp−confirm(month) request(time) soft−merge−general	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-largest hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+E-Figure	__Figure 5__	page=3 xpos=2 ypos=7 left-column left-indent right-over box indented-line longer-tail figure-area above-double-space above-line-space
+B-Caption	Figure 5: A Sentence Plan Tree for Utterance Sys-	page=3 xpos=0 ypos=8 left-column full-justified hanged-line line-double-space line-space string-figure headchar-capital tailchar-hiphen
+E-Caption	tem 5 in Dialog D1	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.2 Baseline Sentence Planners	page=3 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In one obvious baseline system the sp-tree is con-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	structed by applying only the P ERIOD operation:	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-colon
+I-Body	each elementary speech act is realized as its own	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	sentence. This baseline, N O A GG , was suggested	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	by Hovy and Wanner (1996). For N O A GG , we	page=3 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+I-Body	order the communicative acts from the text plan	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	as follows: implicit confirms precede explicit	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	confirms precede requests. Figure 3 includes a	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	N O A GG output for the text plan in Figure 2.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	A second possible baseline sentence planner	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	simply applies combination rules randomly ac-	page=3 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	cording to a hand-crafted probability distribution	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	based on preferences for operations such as the	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	MERGE family over CONJUNCTION and PERIOD .	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	In order to be able to generate the resulting sen-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tence plan tree, we exclude certain combinations,	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	such as generating anything other than a P ERIOD	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	above a node labeled P ERIOD in a sentence plan.	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The resulting sentence planner we refer to as	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	R ANDOM . Figure 3 includes a R ANDOM output	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+E-Body	for the text plan in Figure 2.	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In order to construct a more complex, and	page=3 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	hopefully better, sentence planner, we need to en-	page=3 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	code constraints on the application of, and order-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing of, the operations. It is here that the remaining	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	approaches differ. In the first approach, SP O T,	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we learn constraints from training material; in the	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	second approach, rule-based, we construct con-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	straints by hand.	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.3 SPoT: A Trainable Sentence Planner	page=3 xpos=5 ypos=7 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	For the sentence planner SP O T, we reconceptu-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	alize sentence planning as consisting of two dis-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tinct phases as in Figure 6. In the first phase, the	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	sentence-plan-generator (SPG) randomly gener-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ates up to twenty possible sentence plans for a	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	given text-plan input. For this phase we use the	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	R ANDOM sentence-planner. In the second phase,	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	the sentence-plan-ranker (SPR) ranks the sample	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+B-Figure	★ Sentence Planner ★	page=4 xpos=1 ypos=0 left-column left-indent right-indent font-largest page-top above-double-space above-line-space
+I-Figure	✍	page=4 xpos=2 ypos=0 left-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space
+I-Figure	__Figure 6__	page=4 xpos=3 ypos=0 left-column left-indent right-over box indented-line longer-tail figure-area
+I-Figure	System Dialog ❁ SPG ✍ ✍ . . SPR ✍	page=4 xpos=0 ypos=0 left-column left-over right-indent box hanged-line shorter-tail headchar-capital
+I-Figure	.	page=4 xpos=2 ypos=1 left-column left-indent right-indent font-largest indented-line shorter-tail tailchar-period
+I-Figure	✍	page=4 xpos=2 ypos=1 left-column left-indent right-indent font-largest hanged-line longer-tail above-blank-line above-double-space above-line-space
+I-Figure	Sp−trees with associated DSyntSs	page=4 xpos=1 ypos=1 left-column left-indent right-indent font-largest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital above-double-space above-line-space
+E-Figure	Text Plan Chosen sp−tree with	page=4 xpos=0 ypos=2 left-column left-indent right-indent font-largest hanged-line shorter-tail line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+B-Caption	Figure 6: Architecture of SPoT	page=4 xpos=0 ypos=2 left-column centered left-indent right-indent indented-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+I-Body	sentence plans, and then selects the top-ranked	page=4 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	output to input to the surface realizer. The SPR	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	is automatically trained by applying RankBoost	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	(Freund et al., 1998) to learn ranking rules from	page=4 xpos=0 ypos=3 left-column full-justified aligned-line year
+I-Body	training data. The training data was assembled	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	by using R ANDOM to randomly generate up to	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	20 realizations for 100 turns; two human judges	page=4 xpos=0 ypos=4 left-column full-justified aligned-line numbered-heading1
+I-Body	then ranked each of these realizations (using the	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	setup described in Section 2). Over 3,000 fea-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures were discovered from the generated trees	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	by routines that encode structural and lexical as-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pects of the sp-trees and the DSyntS. RankBoost	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	identified the features that contribute most to a	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	realization’s ranking. The SPR uses these rules	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	to rank alternative sp-trees, and then selects the	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	top-ranked output as input to the surface realizer.	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+E-Body	Walker et al. (2001) describe SP O T in detail.	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.4 Two Rule-Based Sentence Planners	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	It has not been the object of our research to con-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	struct a rule-based sentence planner by hand, be	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	it domain-independent or optimized for our do-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	main. Our goal was to compare the SP O T sen-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence planner with a representative rule-based	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	system. We decided against using an existing off-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	the-shelf rule-based system, since it would be too	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	complex a task to port it to our application. In-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stead, we constructed two reasonably representa-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive rule-based sentence planners. This task was	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	made easier by the fact that we could reuse much	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	of the work done for SP O T, in particular the data	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	structure of the sp-tree and the implementation of	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the clause-combining operations. We developed	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the two systems by applying heuristics for pro-	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	ducing good output, such as preferences for ag-	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	gregation. They differ only in the initial ordering	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	of the communicative acts in the input text plan.	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In the first rule-based system, RBS (for “Rule-	page=4 xpos=5 ypos=0 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	Based System”), we order the speech acts with	page=4 xpos=5 ypos=0 right-column full-justified hanged-line headchar-capital
+I-Body	explicit confirms first, then requests, then implicit	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	confirms. Note that explicit confirms and requests	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	do not co-occur in our data set. The second rule-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based system is identical, except that implicit con-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	firms come first rather than last. This system we	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	call ICF (for “Rule-based System with Implicit	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	Confirms First”).	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Body	In the initial step of both RBS and ICF,	page=4 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-comma
+I-Body	we take the two leftmost members of the text	page=4 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	plan and try to combine them using the follow-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing preference ranking of the combination op-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erations: A DJECTIVE , the M ERGE s, C ONJUNC -	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	TION , R ELATIVE - CLAUSE , P ERIOD . The first	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	operation to succeed is chosen. This yields a bi-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nary sp-tree with three nodes, which becomes the	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	current sp-tree. As long as the root node of	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the current sp-tree is not a P ERIOD , we iterate	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	through the list of remaining speech acts on the	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	ordered text plan, combining each one with the	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	current sp-tree using the preference-ranked opera-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions as just described. The result of each iteration	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	step is a binary, left-branching sp-tree. However,	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	if the root node of the current sp-tree is a P ERIOD ,	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we start a new current sp-tree, as in the initial step	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	described above. When the text plan has been ex-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	hausted, all partial sp-trees (all of which except	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	for the last one are rooted in P ERIOD ) are com-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bined in a left-branching tree using P ERIOD . Cue	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	words are added as follows: (1) The cue word	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	now is attached to utterances beginning a new	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	subtask; (2) The cue word and is attached to ut-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	terances continuing a subtask; (3) The cue words	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	alright or okay are attached to utterances contain-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing implicit confirmations. Figure 3 includes an	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	RBS and an ICF output for the text plan in Fig-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ure 2. In this case ICF and RBS differ only in	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the verb chosen as a more general verb during the	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	SOFT - MERGE operation.	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Body	We illustrate the RBS procedure with an ex-	page=4 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ample for which ICF works similarly. For RBS,	page=4 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	the text plan in Figure 2 is ordered so that the re-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quest is first. For the request, a DSyntS is cho-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sen that can be paraphrased as What time would	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	you like to leave?. Then, the first implicit-confirm	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	is translated by lookup into a DSyntS which on	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	its own could generate Leaving in September.	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We first try the A DJECTIVE aggregation opera-	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tion, but since neither tree is a predicative ad-	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	jective, this fails. We then try the M ERGE fam-	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ily. M ERGE -G ENERAL succeeds, since the tree	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	for the request has an embedded node labeled	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	leave. The resulting DSyntS can be paraphrased	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	as What time would you like to leave in Septem-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ber?, and is attached to the new root node of	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the resulting sp-tree. The root node is labeled	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	M ERGE - GENERAL , and its two daughters are the	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	two speech acts. The implicit-confirm of the	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	day is added in a similar manner (adding an-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	other left-branching node to the sp-tree), yielding	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	a DSyntS that can be paraphrased as What time	page=5 xpos=0 ypos=3 left-column full-justified aligned-line itemization headchar-lower
+I-Body	would you like to leave on September the 1st? (us-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing some special-case attachment for dates within	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	M ERGE ). We now try and add the DSyntS for	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	the implicit-confirm, whose DSyntS might gener-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ate Going to Dallas. Here, we again cannot use	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	A DJECTIVE , nor can we use M ERGE or M ERGE -	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	GENERAL , since the verbs are not identical. In-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	stead, we use S OFT - MERGE - GENERAL , which	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	identifies the leave node with the go root node of	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the DSyntS of the implicit-confirm. When soft-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	merging leave with go, fly is chosen as a general-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ization, resulting in a DSyntS that can be gener-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ated as What time would you like to fly on Septem-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ber the 1st to Dallas?. The sp-tree has added a	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	layer but is still left-branching. Finally, the last	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	implicit-confirm is added to yield a DSyntS that	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	is realized as What time would you like to fly on	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	September the 1st to Dallas from Newark?.	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Experimental Results	page=5 xpos=0 ypos=7 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	All 60 subjects completed the experiment in a half	page=5 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	hour or less. The experiment resulted in a total	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of 1200 judgements for each of the systems be-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing compared, since each subject judged 20 ut-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	terances by each system. We first discuss overall	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	differences among the different systems and then	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	make comparisons among the four different types	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	of systems: (1) TEMPLATE , (2) SP O T, (3) two	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	rule-based systems, and (4) two baseline systems.	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	All statistically significant results discussed here	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+E-Body	had p values of less than .01.	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We first examined whether differences in hu-	page=5 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	man ratings (score) were predictable from the	page=5 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower column-bottom
+Figure	__Figure 7__	page=5 xpos=5 ypos=-1 right-column centered left-indent right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 7: Summary of Overall Results for all Sys-	page=5 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space string-figure headchar-capital tailchar-hiphen
+E-Caption	tems Evaluated	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	type of system that produced the utterance be-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ing rated. A one-way ANOVA with system as the	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	independent variable and score as the dependent	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	variable showed that there were significant differ-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ences in score as a function of system. The overall	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	differences are summarized in Figure 7.	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	As Figure 7 indicates, some system outputs re-	page=5 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ceived more consistent scores than others, e.g.	page=5 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	the standard deviation for TEMPLATE was much	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	smaller than R ANDOM . The ranking of the sys-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems by average score is TEMPLATE , SP O T, ICF,	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	RBS, N O A GG , and R ANDOM . Posthoc compar-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	isons of the scores of individual pairs of systems	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	using the adjusted Bonferroni statistic revealed	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	several different groupings. <sup>2</sup>	page=5 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail headchar-lower above-line-space
+B-Body	The highest ranking systems were TEMPLATE	page=5 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	and SP O T, whose ratings were not statistically	page=5 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	significantly different from one another. This	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	shows that it is possible to match the quality of a	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	hand-crafted system with a trainable one, which	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	should be more portable, more general and re-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	quire less overall engineering effort.	page=5 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The next group of systems were the two rule-	page=5 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	based systems, ICF and RBS, which were not	page=5 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	statistically different from one another. However	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	SP O T was statistically better than both of these	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	systems (p .01). Figure 8 shows that SP O T	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	got more high rankings than either of the rule-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based systems. In a sense this may not be that	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	surprising, because as Hovy and Wanner (1996)	page=5 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	point out, it is difficult to construct a rule-based	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	sentence planner that handles all the rule interac-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions in a reasonable way. Features that SPoT’s	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	SPR uses allow SP O T to be sensitive to particular	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	discourse configurations or lexical collocations.	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In order to encode these in a rule-based sentence	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital above-double-space above-line-space
+B-Footnote	<sup>2</sup> The adjusted Bonferroni statistic guards against acci-	page=5 xpos=5 ypos=9 right-column left-indent indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	dentally finding differences between systems when making	page=5 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	multiple comparisons among systems.	page=5 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+I-Body	planner, one would first have to discover these	page=6 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	constraints and then determine a way of enforc-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing them. However the SPR simply learns that	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	a particular configuration is less preferred, result-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	ing in a small decrement in ranking for the cor-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	responding sp-tree. This flexibility of increment-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing or decrementing a particular sp-tree by a small	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	amount may in the end allow it to be more sensi-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tive to small distinctions than a rule-based system.	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	Along with the TEMPLATE and RULE - BASED	page=6 xpos=0 ypos=1 left-column left-indent indented-line headchar-capital
+I-Body	systems, SP O T also scored better than the base-	page=6 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	line systems N O A GG and R ANDOM . This is also	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	somewhat to be expected, since the baseline sys-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems were intended to be the simplest systems	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	constructable. However it would have been a pos-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sible outcome for SP O T to not be different than	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	either system, e.g. if the sp-trees produced by	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	R ANDOM were all equally good, or if the ag-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	gregation rules that SP O T learned produced out-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put less readable than N O A GG . Figure 8 shows	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	that the distributions of scores for SP O T vs. the	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	baseline systems are very different, with SP O T	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	skewed towards higher scores.	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Interestingly N O A GG also scored better than	page=6 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	R ANDOM (p .01), and the standard deviation	page=6 xpos=0 ypos=4 left-column full-justified hanged-line headchar-capital
+I-Body	of its scores was smaller (see Figure 7). Remem-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ber that R ANDOM ’s sp-trees often resulted in ar-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bitrarily ordering the speech acts in the output.	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	While N O A GG produced redundant utterances, it	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	placed the initiative taking speech act at the end of	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the utterance in its most natural position, possibly	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	resulting in a preference for N O A GG over R AN -	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	DOM . Another reason to prefer N O A GG could be	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+E-Body	its predictability.	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Discussion and Future Work	page=6 xpos=0 ypos=7 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Other work has also explored automatically train-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ing modules of a generator (Langkilde and	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	Knight, 1998; Mellish et al., 1998; Walker, 2000).	page=6 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-capital tailchar-period
+I-Body	However, to our knowledge, this is the first re-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ported experimental comparison of a trainable	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	technique that shows that the quality of system	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	utterances produced with trainable components	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	can compete with hand-crafted or rule-based tech-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	niques. The results validate our methodology;	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-semicolon
+I-Body	SP O T outperforms two representative rule-based	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	sentence planners, and performs as well as the	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	hand-crafted TEMPLATE system, but is more eas-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ily and quickly tuned to a new domain: the train-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	ing materials for the SP O T sentence planner can	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	be collected from subjective judgements from a	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	small number of judges with little or no linguistic	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	knowledge.	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Previous work on evaluation of natural lan-	page=6 xpos=5 ypos=0 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	guage generation has utilized three different ap-	page=6 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	proaches to evaluation (Mellish and Dale, 1998).	page=6 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	The first approach is a subjective evaluation	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	methodology such as we use here, where human	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	subjects rate NLG outputs produced by different	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	sources (Lester and Porter, 1997). Other work has	page=6 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower
+I-Body	evaluated template-based spoken dialog genera-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion with a task-based approach, i.e. the genera-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tor is evaluated with a metric such as task com-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pletion or user satisfaction after dialog comple-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion (Walker, 2000). This approach can work	page=6 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	well when the task only involves one or two ex-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	changes, when the choices have large effects over	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the whole dialog, or the choices vary the con-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tent of the utterance. Because sentence plan-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ning choices realize the same content and only	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	affect the current utterance, we believed it impor-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tant to get local feedback. A final approach fo-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cuses on subproblems of natural language gener-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ation such as the generation of referring expres-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sions. For this type of problem it is possible to	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	evaluate the generator by the degree to which it	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	matches human performance (Yeh and Mellish,	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1997). When evaluating sentence planning, this	page=6 xpos=5 ypos=5 right-column full-justified aligned-line year
+I-Body	approach doesn’t make sense because many dif-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ferent realizations may be equally good.	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	However, this experiment did not show that	page=6 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	trainable sentence planners produce, in general,	page=6 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	better-quality output than template-based or rule-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based sentence planners. That would be im-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	possible: given the nature of template and rule-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based systems, any quality standard for the output	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	can be met given sufficient person-hours, elapsed	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	time, and software engineering acumen. Our prin-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cipal goal, rather, is to show that the quality of the	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	TEMPLATE output, for a currently operational dia-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	log system whose template-based output compo-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nent was developed, expanded, and refined over	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	about 18 months, can be achieved using a train-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	able system, for which the necessary training data	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	was collected in three person-days. Furthermore,	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we wished to show that a representative rule-	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based system based on current literature, without	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	massive domain-tuning, cannot achieve the same	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Figure	__Figure 8__	page=7 xpos=0 ypos=-7 single-column left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 8: Chart comparing distribution of human ratings for SP O T, RBS, ICF, N O A GG and R ANDOM .	page=7 xpos=0 ypos=0 single-column full-justified hanged-line longer-tail line-double-space line-space string-figure headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	level of quality. In future work, we hope to extend	page=7 xpos=0 ypos=0 left-column centered right-indent column-top line-blank-line line-double-space line-space headchar-lower
+E-Body	SPoT and integrate it into AMELIA.	page=7 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Acknowledments	page=7 xpos=0 ypos=1 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	This work was partially funded by DARPA under	page=7 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+E-Body	contract MDA972-99-3-0003.	page=7 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=3 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Y. Freund, R. Iyer, R. E. Schapire, and Y.Singer. 1998.	page=7 xpos=0 ypos=3 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	An efficient boosting algorithm for combining pref-	page=7 xpos=0 ypos=4 left-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	erences. In Machine Learning: Proc. of the Fif-	page=7 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	teenth International Conference.	page=7 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	E.H. Hovy and L. Wanner. 1996. Managing sentence	page=7 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	planning requirements. In Proc. of the ECAI’96	page=7 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Workshop Gaps and Bridges: New Directions in	page=7 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Planning and Natural Language Generation.	page=7 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	I. Langkilde and K. Knight. 1998. Generation that ex-	page=7 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ploits corpus-based statistical knowledge. In Proc.	page=7 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	of COLING-ACL.	page=7 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Benoit Lavoie and Owen Rambow. 1997. A fast and	page=7 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	portable realizer for text generation systems. In	page=7 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Proc. of the Third Conference on Applied Natural	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Language Processing, ANLP97, pages 265–268.	page=7 xpos=0 ypos=8 left-column centered left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	J. Lester and B. Porter. 1997. Developing and em-	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	pirically evaluating robust explanation generators:	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-lower tailchar-colon
+I-Reference	The knight experiments. Computational Linguis-	page=7 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	tics, 23-1:65–103.	page=7 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Reference	C. Mellish and R. Dale. 1998. Evaluation in the	page=7 xpos=5 ypos=0 right-column full-justified font-smallest column-top year headchar-capital
+I-Reference	context of natural language generation. Computer	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Speech and Language, 12(3).	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	C. Mellish, A. Knott, J. Oberlander, and M.	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	O’Donnell. 1998. Experiments using stochas-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	tic search for text planning. In Proc. of Interna-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tional Conference on Natural Language Genera-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tion, pages 97–108.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	I. A. Melčuk. 1988. Dependency Syntax: Theory and	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Practice. SUNY, Albany, New York.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	O. Rambow and T. Korelsky. 1992. Applied text	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	generation. In Proc. of the Third Conference on	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Applied Natural Language Processing, ANLP92,	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	pages 40–47.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	M. Walker, O. Rambow, and M. Rogati. 2001. Spot:	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-colon
+I-Reference	A trainable sentence planner. In Proc. of the North	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	American Meeting of the Association for Computa-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	tional Linguistics.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	M. A. Walker. 2000. An application of reinforcement	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	learning to dialogue strategy selection in a spoken	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	dialogue system for email. Journal of Artificial In-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	telligence Research, 12:387–416.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	C.L. Yeh and C. Mellish. 1997. An empirical study	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	on the generation of anaphora in chinese. Compu-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tational Linguistics, 23-1:169–190.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period

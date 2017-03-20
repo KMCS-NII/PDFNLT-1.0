@@ -1,0 +1,358 @@
+Title	Reformatting Web Documents via Header Trees	page=0 xpos=1 ypos=0 single-column left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Minoru Yoshida and Hiroshi Nakagawa	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Information Technology Center, University of Tokyo	page=0 xpos=2 ypos=0 single-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Address	7-3-1, Hongo, Bunkyo-ku, Tokyo 113-0033, Japan	page=0 xpos=2 ypos=1 single-column left-indent right-indent font-larger indented-line shorter-tail
+B-Affiliation	CREST, JST	page=0 xpos=4 ypos=1 single-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Email	mino@r.dl.itc.u-tokyo.ac.jp, nakagawa@dl.itc.u-tokyo.ac.jp	page=0 xpos=0 ypos=1 single-column left-indent right-indent font-smaller hanged-line longer-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	We propose a new method for reformat-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	ting web documents by extracting seman-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tic structures from web pages. Our ap-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	proach is to extract trees that describe hier-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	archical relations in documents. We devel-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	oped an algorithm for this task by employ-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing the EM algorithm and clustering tech-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	niques. Preliminary experiments showed	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	that our approach was more effective than	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	baseline methods.	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=4 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	This paper proposes a novel method for reformat-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ting (i.e., changing visual representations,) of web	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	documents. Our final goal is to implement the sys-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem that appropriately reformats layouts of web doc-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	uments by separating semantic aspects (like XML)	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	from layout aspects (like CSS) of web documents,	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and changing the layout aspects while retaining the	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	semantic aspects.	page=0 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We propose a header tree, which is a reasonable	page=0 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	choice as a semantic representation of web docu-	page=0 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ments for this goal. Header trees can be seen as vari-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ants of XML trees where each internal node is not an	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	XML tag, but a header which is a part of document	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	that can be regarded as tags annotated to other parts	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of the document. Titles, headlines, and attributes are	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	examples of headers. The left part of Figure 1 shows	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	an example web document. In this document, the	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	headers are About Me, which is a title, and NAME	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	and AGE, which are attributes. (For example, NAME	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	can be seen as a tag annotated to John Smith.)	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	Figure 2 shows a header tree for the example docu-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line string-figure headchar-capital tailchar-hiphen
+I-Body	ment. It should be noted that each node is labeled	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	with parts of HTML pages, not abstract categories	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	such as XML tags.	page=0 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	121	page=0 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 1__	page=0 xpos=5 ypos=2 right-column right-indent box column-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: An Example Web Document and Conver-	page=0 xpos=5 ypos=4 right-column full-justified longer-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-hiphen
+E-Caption	sion from HTML Documents to Block Lists.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Body	Therefore, the required task is to extract header	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	trees from given web documents. Web documents	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	can be reformatted by converting their header trees	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	into various forms including Powerpoint-like in-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dented lists, HTML tables <sup>1</sup> , and Tree-class objects	page=0 xpos=5 ypos=5 right-column centered right-indent font-largest aligned-line headchar-lower
+I-Body	of Java. We implemented the system that produces	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	these representations by extracting header trees from	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	given web documents.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	One application of such reformatting is a web	page=0 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	browser on small devices that shows extracted	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	header trees regardless of original HTML visual ren-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dering. Trees can be used as compact representa-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions of web documents because they show internal	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	structures of web documents concisely, and they can	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	be further augmented with open/close operations on	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	each node for the purpose of closing unnecessary	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	nodes, or sentence summarization on leaf nodes con-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	taining long sentences. Another application is a lay-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	out changer, which change a layout (i.e., HTML tag	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	usage) of one web page to another, by aligning ex-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tracted header trees of two web documents. Other	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	applications include HTML to XML transformation	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	and audio-browsable web content (Mukherjee et al.,	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	2003).	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Footnote	<sup>1</sup> For example, the first column represents the root, the sec-	page=0 xpos=5 ypos=9 right-column left-indent right-indent indented-line longer-tail line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	ond column represents its children, etc.	page=0 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of the ACL Interactive Poster and Demonstration Sessions,	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Footer	pages 121–124, Ann Arbor, June 2005.  2005 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail year headchar-lower page-bottom
+B-Figure	About Me	page=1 xpos=1 ypos=0 left-column left-indent right-indent font-smaller page-top headchar-capital above-double-space above-line-space
+I-Figure	NAME	page=1 xpos=2 ypos=0 left-column left-indent right-indent font-smaller indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+I-Figure	John Smith	page=1 xpos=3 ypos=0 left-column left-indent right-indent font-smaller indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+I-Figure	AGE	page=1 xpos=2 ypos=0 left-column left-indent right-indent font-smaller hanged-line shorter-tail line-double-space line-space headchar-capital above-double-space above-line-space
+I-Figure	25	page=1 xpos=3 ypos=1 left-column left-indent right-indent font-smaller indented-line longer-tail line-double-space line-space numeric-only above-double-space above-line-space
+E-Figure	Back to Home Page	page=1 xpos=1 ypos=1 left-column left-indent right-indent font-smaller hanged-line shorter-tail line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+B-Caption	Figure 2: A Header Tree for the Example Web Doc-	page=1 xpos=0 ypos=1 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-hiphen
+E-Caption	ument	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-SubsectionHeader	1.1 Related Work	page=1 xpos=0 ypos=2 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Several studies have addressed the problem of ex-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tracting logical structures from general HTML doc-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	uments without labeled training examples. One	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	of these studies used domain-specific knowledge to	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	extract information used to organize logical struc-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures (Chung et al., 2002). However, their ap-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	proach cannot be applied to domains for which	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	any knowledge is not provided. Another type of	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	study employed algorithms to detect repeated pat-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	terns in a list of HTML tags and texts (Yang and	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	Zhang, 2001; Nanno et al., 2003), or more struc-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	tured forms (Mukherjee et al., 2003; Crescenzi et	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	al., 2001; Chang and Lui, 2001) such as DOM	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	trees. This approach might be useful for certain	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	types of web documents, particularly those with	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	highly regular formats such as www.yahoo.com	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	and www.amazon.com. However, in many cases,	page=1 xpos=0 ypos=5 left-column centered right-indent aligned-line headchar-lower tailchar-comma
+I-Body	HTML tag usage does not have so much regularity,	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	and, there are even the case where headers do not	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	repeat at all. Therefore, this type of algorithm may	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	be inadequate for the task of header extraction from	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	arbitrary web documents.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The remainder of this paper is organized as fol-	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	lows. Section 2 defines the terms used in this paper.	page=1 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	Section 3 provides the details of our algorithm. Sec-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tion 4 lists the experimental results and Section 5	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	concludes this paper.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Definitions	page=1 xpos=0 ypos=7 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	2.1 Definition of Terms	page=1 xpos=0 ypos=7 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Our system decomposes an HTML document into a	page=1 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	list of blocks. A block is defined as the part of a	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	web document that is separated by a separator. A	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	separator is a sequence of HTML tags and symbols.	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Symbols are defined as characters in texts that are	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	neither numbers nor letters. Figure 1 shows an ex-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ample of the conversion of an HTML document to a	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	list of blocks.	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	122	page=1 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Figure	[ [About Me, [NAME, John Smith], [AGE, 25] ], Back to Home	page=1 xpos=5 ypos=0 right-column centered right-indent font-smallest column-top above-line-space
+E-Figure	Page] ]	page=1 xpos=5 ypos=0 right-column right-indent font-smallest aligned-line shorter-tail line-space headchar-capital above-double-space above-line-space
+B-Caption	Figure 3: A List Representation of the Example Web	page=1 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space string-figure headchar-capital
+E-Caption	Document	page=1 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+B-Body	A header is defined as a block that modifies sub-	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	sequent blocks. In other words, a block that can be	page=1 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	a tag annotated to subsequent blocks is defined as a	page=1 xpos=5 ypos=1 right-column full-justified aligned-line itemization headchar-lower
+I-Body	header. Some examples of headers are Titles (e.g.,	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	“About Me”), Headlines (e.g., “Here is my pro-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line tailchar-hiphen
+I-Body	file:”), Attributes (e.g., “Name”, “Age”, etc.), and	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	Dates.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 Definition of the Task	page=1 xpos=5 ypos=2 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The system produces header trees for given web	page=1 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	documents. A header tree can be seen as an indented	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	list of blocks where the level of each node’s indent	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	is equal to the depth of the node, as shown in Figure	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	2. Therefore, the main part of our task is to give a	page=1 xpos=5 ypos=3 right-column full-justified aligned-line itemization
+I-Body	depth to each block in a given web document. After	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	that, some heuristic rules are employed to construct	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	header trees from a list of depths. In the next sec-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, we discuss the task of assigning a depth to each	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	block. Therefore, an input to the system is a list of	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	blocks and the output is a list of depths.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The system also produces nested-list representa-	page=1 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tion of header trees for the purpose of evaluation. In	page=1 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	nested-list representation, each node that has chil-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dren is represented by the list whose first element	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	represents the parent and remaining elements repre-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sent the children. Figure 3 shows list representation	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	of the tree in Figure 2.	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Header Extraction Algorithm	page=1 xpos=5 ypos=5 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this section, we describe our algorithm that re-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+E-Body	ceives a list of blocks and returns a list of depths.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 Basic Concepts	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The algorithm proceeds in two steps: separator cat-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	egorization and block clustering. The first step	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	estimates local block relations (i.e., relations be-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tween neighboring blocks) via probabilistic models	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	for characters and tags that appear around separa-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tors. The second step supplements the first by ex-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tracting the undetermined relations between blocks	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	by focusing on global features, i.e., regularities in	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	HTML tag sequences. We employed a clustering	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	framework to implement a flexible regularity detec-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion system that is robust to noise.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 STEP 1: Separator Categorization	page=1 xpos=5 ypos=9 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The algorithm classifies each block relation into one	page=1 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	of three classes: NON-BOUNDARY, RELATING,	page=1 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower tailchar-comma page-bottom
+Figure	__Figure 4__	page=2 xpos=0 ypos=-1 left-column right-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 4: An Example of Separator Categorization.	page=2 xpos=0 ypos=1 left-column centered left-indent right-indent longer-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+I-Body	and UNRELATING. Both RELATING and UNRE-	page=2 xpos=0 ypos=1 left-column right-indent line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	LATING can be considered to be boundaries; how-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ever, blocks that sandwich RELATING separators	page=2 xpos=0 ypos=1 left-column centered right-indent aligned-line headchar-lower
+I-Body	are regarded to consist of a header and its modified	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	block. Figure 4 shows an example of separator cate-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	gorization for the list of blocks in Figure 1.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The left block of a RELATING separator must be	page=2 xpos=0 ypos=2 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	in the smaller depth than the right block. Figure 2	page=2 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	shows an example. In this tree, NAME is in a smaller	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	depth than John. On the other hand, both the left	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	and right blocks in a NON-BOUNDARY separator	page=2 xpos=0 ypos=3 left-column centered right-indent aligned-line headchar-lower
+I-Body	must be in the same depth in a tree representation,	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	for example, John and Smith in Figure 2.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	3.2.1 Local Model	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading3 above-line-space
+B-Body	We use a probabilistic model that assumes the lo-	page=2 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	cality of relations among separators and blocks. In	page=2 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	this model, each separator and the strings around	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	it,  and  , are modeled by means of the hidden vari-	page=2 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	able  , which indicates the class in which is cate-	page=2 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	gorized. We use the character zerogram, unigram, or	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	bigram (changed according to the number of appear-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ances <sup>2</sup> ) for  and  to avoid data sparseness prob-	page=2 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	lems.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For example, let us consider the following part of	page=2 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	the example document:	page=2 xpos=0 ypos=5 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Quote	NAME: John Smith.	page=2 xpos=0 ypos=6 left-column right-indent font-smallest aligned-line longer-tail line-space headchar-capital tailchar-period above-line-space
+B-Body	In this case, : is a separator, ME is the left string and	page=2 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-space headchar-capital
+E-Body	Jo is the right string.	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	Assuming the locality of separator appearances,	page=2 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	the model for all separators   in a given document set	page=2 xpos=0 ypos=6 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	is defined as             where is a	page=2 xpos=0 ypos=7 left-column centered right-indent font-largest aligned-line headchar-lower
+I-Body	vector of left strings,  is a vector of separators, and	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	 is a vector of right strings.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	The joint probability of obtaining  , , and  is	page=2 xpos=0 ypos=7 left-column left-indent right-indent font-largest indented-line longer-tail headchar-capital above-double-space above-line-space
+B-Equation	                  	page=2 xpos=0 ypos=7 left-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space above-double-space above-line-space
+I-Body	assuming that  and  depend only on  : a class of	page=2 xpos=0 ypos=8 left-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower
+E-Body	relation between the blocks around . <sup>34</sup>	page=2 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail headchar-lower above-line-space
+B-Footnote	<sup>2</sup> This generalization is performed by a heuristic algorithm.	page=2 xpos=0 ypos=8 left-column left-indent right-indent indented-line longer-tail line-space headchar-super tailchar-period
+I-Footnote	The main idea is to use a bigram if its number of appearances is	page=2 xpos=0 ypos=8 left-column centered right-indent font-smallest hanged-line headchar-capital
+I-Footnote	over a threshold, and unigrams or zerograms otherwise.	page=2 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>3</sup> If the frequency for     is over a threthold,       is	page=2 xpos=0 ypos=8 left-column left-indent right-indent font-larger indented-line longer-tail headchar-super
+I-Footnote	used instead of          .	page=2 xpos=0 ypos=9 left-column right-indent font-smaller hanged-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>4</sup> If the frequency for  is under a threthold,  is replaced by	page=2 xpos=0 ypos=9 left-column left-indent right-indent indented-line longer-tail headchar-super
+I-Footnote	its longest prefix whose frequency is over the threthold.	page=2 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	123	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Body	Based on this model, each class of separators is	page=2 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	determined as follows:	page=2 xpos=5 ypos=0 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	                 	page=2 xpos=5 ypos=0 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space above-double-space above-line-space
+B-Body	The hidden parameters    ,     , and	page=2 xpos=5 ypos=0 right-column left-indent right-indent font-largest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	    , are estimated by the EM algorithm (Demp-	page=2 xpos=5 ypos=1 right-column full-justified font-largest hanged-line tailchar-hiphen
+I-Body	ster et al., 1977). Starting with arbitrary initial pa-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	rameters, the EM algorithm iterates E-STEPs and	page=2 xpos=5 ypos=1 right-column centered right-indent aligned-line headchar-lower
+E-Body	function        M-STEPs in order to increase   the  (log-)likelihood    .	page=2 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower tailchar-period
+B-Body	To characterize each class of separators, we use a	page=2 xpos=5 ypos=1 right-column left-indent indented-line headchar-capital
+I-Body	set of typical symbols and HTML tags, called rep-	page=2 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	resentatives from each class. This constraint con-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tributes to give a structure to the parameter space.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.3 STEP 2: Block Clustering	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	The purpose of block clustering is to take advantage	page=2 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	of the regularity in visual representations. For exam-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ple, we can observe regularity between NAME and	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	AGE in Figure 1 because both are sandwiched by the	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	character * and preceded by a null line. This visual	page=2 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	representation is described in the HTML source as,	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	for example,	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-comma above-line-space
+B-Quote	... <br><br>* NAME *<br> ...	page=2 xpos=5 ypos=4 right-column right-indent font-smallest aligned-line longer-tail line-space tailchar-period
+I-Quote	... <br><br>* AGE *<br> ...	page=2 xpos=5 ypos=4 right-column right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Body	Our idea is to define the similarities between (con-	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	text of) blocks based on the similarities between	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	their surrounding separators. Each separator is rep-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resented by the vector that consist of symbols and	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	HTML tags included in it, and the similarity be-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tween separators are calculated as cosine values.	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The algorithm proceeds in a bottom-up manner by	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	examining a given block list from tail to head, find-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the block that is the most similar to the current	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	block, and collecting them into the same cluster. Af-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ter that, all blocks in the same cluster is assigned the	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	same depth.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Preliminary Experiments	page=2 xpos=5 ypos=6 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We used a training data that consists of 1,418 web	page=2 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	documents <sup>5</sup> of moderate file size 6 that did not have	page=2 xpos=5 ypos=7 right-column centered right-indent font-largest aligned-line headchar-lower
+I-Body	“src” or “script” tags <sup>7</sup> . The former criteria is based	page=2 xpos=5 ypos=7 right-column centered right-indent font-largest aligned-line
+I-Body	on the observation that too small or too large doc-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	uments are hard to use for measuring performance	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	of algorithms, and the latter criteria is caused by the	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	fact our system currently has no module to handle	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	image files as blocks.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We randomly selected 20 documents as test doc-	page=2 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	uments. Each test document was bracketed by hand	page=2 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>5</sup> They are collected by retrieving all user pages on one server	page=2 xpos=5 ypos=8 right-column left-indent right-indent indented-line line-double-space line-space headchar-super
+I-Footnote	of a Japanese ISP.	page=2 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>6</sup> from 1,000 to 10,000 bytes	page=2 xpos=5 ypos=9 right-column left-indent right-indent indented-line longer-tail headchar-super
+B-Footnote	<sup>7</sup> Src tags indicate inclusion of image files, java codes, etc	page=2 xpos=5 ypos=9 right-column left-indent right-indent aligned-line longer-tail headchar-super page-bottom
+B-Table	Algorithm Recall Precision F-measure	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-smallest page-top headchar-capital
+I-Table	OUR ALGORITHM 0.477 0.266 0.329	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Table	NO-CL 0.178 0.119 0.139	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-smallest indented-line headchar-capital
+I-Table	NO-EM 0.389 0.211 0.265	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-smallest headchar-capital
+E-Table	PREV 0.144 0.615 0.202	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-smallest headchar-capital above-double-space above-line-space
+B-Caption	Table 1: Macro-Averaged Recall, Precision, and F-	page=3 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+E-Caption	measure on Test Documents	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	to evaluate machine-made bracketings. The per-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	formance of web-page structuring algorithms can	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	be evaluated via the nested-list form of tree by	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	bracketed recall and bracketed precision (Goodman,	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1996). Recall is the rate that bracketing given by	page=3 xpos=0 ypos=2 left-column full-justified aligned-line year
+I-Body	hand are also given by machine, and precision is the	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	rate that bracketing given by machine are also given	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	by hand. F-measure is a harmonic mean of recall and	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	precision that is used as a combined measure. Recall	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	and precision were evaluated for each test document	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	and they were averaged across all test documents.	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	These averaged values are called macro-average re-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	call, precision, and f-measure (Yang, 1999).	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	We implemented our algorithm and the following	page=3 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+E-Body	three ones as baselines.	page=3 xpos=0 ypos=3 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	NO-CL does not perform block clustering.	page=3 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Listitem	NO-EM does not perform the EM-parameter-	page=3 xpos=0 ypos=4 left-column centered right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Listitem	estimation. Every boundary but representatives	page=3 xpos=0 ypos=4 left-column left-indent indented-line headchar-lower
+I-Listitem	is defined to be categorized as “UNRELAT-	page=3 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ING”.	page=3 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Listitem	PREV performs neither the EM-learning nor the	page=3 xpos=0 ypos=5 left-column centered right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Listitem	block clustering. Every boundary but represen-	page=3 xpos=0 ypos=5 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	tatives is defined to be categorized as “NON-	page=3 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	BOUNDARY” <sup>8</sup> . It uses the heuristics that “ev-	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-largest aligned-line headchar-capital tailchar-hiphen
+I-Listitem	ery block depends on its previous block.”	page=3 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Table 1 shows the result. We observed that use of	page=3 xpos=0 ypos=6 left-column left-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital
+I-Body	both the EM-learning and block clustering resulted	page=3 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	in the best performance. NO-EM performs the best	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	among the three baselines. It suggests that only rely-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing on HTML tag information is not a so bad strat-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	egy when the EM-training is not available because	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of, for example, the lack of a sufficient number of	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	training examples.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Results on the documents that were rich in HTML	page=3 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	tags with highly coherent layouts were better than	page=3 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	those on the others like the documents with poor	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	separators such as only one space character or one	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	line feed. Some of the current results on the doc-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	uments with such poor visual cues seemed difficult	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	for use in practical systems, which indicates our sys-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tem still leaves room for improvement.	page=3 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>8</sup> This strategy is based on the fact that it maximized the per-	page=3 xpos=0 ypos=9 left-column left-indent right-indent indented-line longer-tail line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	formance in a preliminary investigation.	page=3 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	124	page=3 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-SectionHeader	5 Conclusions and Future Work	page=3 xpos=5 ypos=0 right-column right-indent font-larger column-top numbered-heading1 above-double-space above-line-space
+B-Body	This paper proposed a method for reformatting web	page=3 xpos=5 ypos=0 right-column right-over aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	documents by extracting header trees that give hi-	page=3 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	erarchical structures of web documents. Prelimi-	page=3 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	nary experiments showed that the proposed algo-	page=3 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	rithm was effective compared with some baseline	page=3 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower
+I-Body	methods. However, the performance of the algo-	page=3 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	rithm on some of the test documents was not suf-	page=3 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	ficient for practical use. We plan to improve the	page=3 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower
+I-Body	performance by, for example, using larger amount	page=3 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower
+I-Body	of training examples. Finding other reformatting	page=3 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower
+I-Body	strategies in addition to the ones proposed in this pa-	page=3 xpos=5 ypos=2 right-column right-over aligned-line headchar-lower tailchar-hiphen
+E-Body	per is also important future work.	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=3 xpos=5 ypos=2 right-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Chia-Hui Chang and Shao-Chen Lui. 2001. IEPAD: In-	page=3 xpos=5 ypos=3 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	formation extraction based on pattern discovery. In	page=3 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Proceedings of WWW2001, pages 681–688.	page=3 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Christina Yip Chung, Michael Gertz, and Neel Sundare-	page=3 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	san. 2002. Reverse engineering for web data: From	page=3 xpos=5 ypos=3 right-column left-indent font-smallest indented-line year headchar-lower
+I-Reference	visual to semantic structures. In ICDE.	page=3 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Valter Crescenzi, Giansalvatore Mecca, and Paolo Meri-	page=3 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	aldo. 2001. ROADRUNNER: Towards automatic data	page=3 xpos=5 ypos=4 right-column left-indent font-smallest indented-line year headchar-lower
+I-Reference	extraction from large web sites. In Proceedings of	page=3 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	VLDB ’01, pages 109–118.	page=3 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	A.P. Dempster, N.M. Laird, and D.B. Rubin. 1977. Max-	page=3 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	imum likelihood from incomplete data via the EM al-	page=3 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	gorithm. Journal of Royal Statistical Society: Series	page=3 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	B, 39:1–38.	page=3 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Joshua Goodman. 1996. Parsing algorithms and metrics.	page=3 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	In Proceedings of ACL96, pages 177–183.	page=3 xpos=5 ypos=5 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Saikat Mukherjee, Guizhen Yang, Wenfang Tan, and I.V.	page=3 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Ramakrishnan. 2003. Automatic discovery of seman-	page=3 xpos=5 ypos=6 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	tic structures in HTML documents. In Proceedings of	page=3 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	ICDAR 2003.	page=3 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Tomoyuki Nanno, Suguru Saito, and Manabu Okumura.	page=3 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2003. Structuring web pages based on repetition of	page=3 xpos=5 ypos=7 right-column left-indent font-smallest indented-line year
+I-Reference	elements. In Proceedings of WDA2003.	page=3 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Yudong Yang and Hongjiang Zhang. 2001. HTML page	page=3 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	analysis based on visual cues. In Proceedings of IC-	page=3 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	DAR01.	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Yiming Yang. 1999. An evaluation of statistical ap-	page=3 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	proaches to text categorization. INRT, 1:69–90.	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period

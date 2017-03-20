@@ -1,0 +1,403 @@
+Title	Predicting Responses to Microblog Posts	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Author	Yoav Artzi <sup>∗</sup>	page=0 xpos=2 ypos=0 left-column left-indent right-indent font-largest column-top line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Computer Science & Engineering	page=0 xpos=1 ypos=0 left-column left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+I-Affiliation	University of Washington	page=0 xpos=2 ypos=1 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+Address	Seattle, WA, USA	page=0 xpos=2 ypos=1 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital column-bottom
+B-Affiliation	Patrick Pantel, Michael Gamon	page=0 xpos=5 ypos=0 right-column left-indent right-indent font-largest column-top headchar-capital
+I-Affiliation	Microsoft Research	page=0 xpos=6 ypos=0 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+Address	One Microsoft Way	page=0 xpos=6 ypos=1 right-column left-indent right-indent font-largest aligned-line headchar-capital
+Address	Redmond, WA, USA	page=0 xpos=6 ypos=1 right-column left-indent right-indent font-largest headchar-capital column-bottom
+Email	yoav@cs.washington.edu {ppantel,mgamon}@microsoft.com	page=0 xpos=1 ypos=1 single-column left-indent right-indent font-largest column-top symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=2 ypos=2 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	Microblogging networks serve as vehicles for	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	reaching and influencing users. Predicting	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	whether a message will elicit a user response	page=0 xpos=1 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	opens the possibility of maximizing the viral-	page=0 xpos=1 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ity, reach and effectiveness of messages and	page=0 xpos=1 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	ad campaigns on these networks. We propose	page=0 xpos=1 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	a discriminative model for predicting the like-	page=0 xpos=1 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line itemization headchar-lower tailchar-hiphen
+I-Abstract	lihood of a response or a retweet on the Twit-	page=0 xpos=1 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ter network. The approach uses features de-	page=0 xpos=1 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	rived from various sources, such as the lan-	page=0 xpos=1 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	guage used in the tweet, the user’s social net-	page=0 xpos=1 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	work and history. The feature design process	page=0 xpos=1 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	leverages aggregate statistics over the entire	page=0 xpos=1 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	social network to balance sparsity and infor-	page=0 xpos=1 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	mativeness. We use real-world tweets to train	page=0 xpos=1 ypos=5 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	models and empirically show that they are ca-	page=0 xpos=1 ypos=5 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	pable of generating accurate predictions for a	page=0 xpos=1 ypos=5 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	large number of tweets.	page=0 xpos=1 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-largest hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Microblogging networks are increasingly evolving	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	into broadcasting networks with strong social as-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pects. The most popular network today, Twitter, re-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ported routing 200 million tweets (status posts) per	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	day in mid-2011. As the network is increasingly	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	used as a channel for reaching out and marketing	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	to its users, content generators aim to maximize the	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	impact of their messages, an inherently challeng-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing task. However, unlike for conventionally pro-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	duced news, Twitter’s public network allows one to	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	observe how messages are reaching and influencing	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	users. One such direct measure of impact are mes-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sage responses.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Footnote	<sup>∗</sup> This work was conducted at Microsoft Research.	page=0 xpos=1 ypos=8 left-column left-indent right-indent font-larger indented-line longer-tail line-space headchar-super tailchar-period above-blank-line above-double-space above-line-space
+Page	602	page=0 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Body	In this work, we describe methods to predict if a	page=0 xpos=5 ypos=2 right-column left-indent column-top headchar-capital
+I-Body	given tweet will elicit a response. Twitter provides	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	two methods to respond to messages: replies and	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	retweets (re-posting of a message to one’s follow-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ers). Responses thus serve both as a measure of dis-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tribution and as a way to increase it. Being able to	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	predict responses is valuable for any content gener-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ator, including advertisers and celebrities, who use	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	Twitter to increase their exposure and maintain their	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	brand. Furthermore, this prediction ability can be	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	used for ranking, allowing the creation of better op-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	timized news feeds.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	To predict if a tweet will receive a response prior	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	to its posting we use features of the individual tweet	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	together with features aggregated over the entire so-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cial network. These features, in combination with	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	historical activity, are used to train a prediction	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	model.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Related Work	page=0 xpos=5 ypos=6 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The public nature of Twitter and the unique char-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	acteristics of its content have made it an attractive	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	research topic over recent years. Related work can	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	be divided into several types:	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	Twitter Demographics One of the most fertile av-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Listitem	enues of research is modeling users and their inter-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	actions on Twitter. An extensive line of work char-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	acterizes users (Pear Analytics, 2009) and quantifies	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Listitem	user influence (Cha et al., 2010; Romero et al., 2011;	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Listitem	Wu et al., 2011; Bakshy et al., 2011). Popescu and	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-capital
+I-Listitem	Jain (2011) explored how businesses use Twitter to	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-capital
+I-Listitem	connect with their customer base. Popescu and Pen-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	nacchiotti (2011) and Qu et al. (2011) investigated	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower column-bottom above-blank-line above-double-space above-line-space
+B-Footer	2012 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, pages 602–606,	page=0 xpos=0 ypos=9 single-column left-over right-over font-smallest column-top line-blank-line line-double-space line-space year tailchar-comma
+I-Footer	Montréal, Canada, June 3-8, 2012.  2012 c Association for Computational Linguistics	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital page-bottom
+I-Listitem	how users react to events on social media. There	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Listitem	also has been extensive work on modeling conver-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	sational interactions on Twitter (Honeycutt and Her-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ring, 2009; Boyd et al., 2010; Ritter et al., 2010;	page=1 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Listitem	Danescu-Niculescu-Mizil et al., 2011). Our work	page=1 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-capital
+I-Listitem	builds on these findings to predict response behavior	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Listitem	on a large scale.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Listitem	Mining Twitter Social media has been used to de-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Listitem	tect events (Sakaki et al., 2010; Popescu and Pennac-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Listitem	chiotti, 2010; Popescu et al., 2011), and even predict	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Listitem	their outcomes (Asur and Huberman, 2010; Culotta,	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Listitem	2010). Similarly to this line of work, we mine the	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year
+I-Listitem	social network for event prediction. In contrast, our	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Listitem	focus is on predicting events within the network.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Listitem	Response Prediction There has been significant	page=1 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Listitem	work addressing the task of response prediction in	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Listitem	news articles (Tsagkias et al., 2009; Tsagkias et al.,	page=1 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Listitem	2010) and blogs (Yano et al., 2009; Yano and Smith,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year tailchar-comma
+I-Listitem	2010; Balasubramanyan et al., 2011). The task of	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year
+I-Listitem	predicting responses in social networks has been in-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	vestigated previously: Hong et al. (2011) focused	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Listitem	on predicting responses for highly popular items,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Listitem	Rowe et al. (2011) targeted the prediction of con-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Listitem	versations and their length and Suh et al. (2010) pre-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Listitem	dicted retweets. In contrast, our work targets tweets	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Listitem	regardless of their popularity and attempts to predict	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Listitem	both replies and retweets. Furthermore, we present	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Listitem	a scalable method to use linguistic lexical features in	page=1 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower
+I-Listitem	discriminative models by leveraging global network	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Listitem	statistics. A related task to ours is that of response	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Listitem	generation, as explored by Ritter et al. (2011). Our	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Listitem	work complements their approach by allowing to	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Listitem	detect when the generation of a response is appro-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	priate. Lastly, the task of predicting the spread of	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Listitem	hashtags in microblogging networks (Tsur and Rap-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	poport, 2012) is also closely related to our work and	page=1 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Listitem	both approaches supplement each other as measures	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Listitem	of impact.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Listitem	Ranking in News Feeds Different approaches	page=1 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Listitem	were suggested for ranking items in social media	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Listitem	(Das Sarma et al., 2010; Lakkaraju et al., 2011). Our	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year
+I-Listitem	work provides an important signal, which can be in-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	corporated into any ranking approach.	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	603	page=1 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-SectionHeader	3 Response Prediction on Twitter	page=1 xpos=5 ypos=0 right-column right-indent font-largest column-top numbered-heading1 above-double-space above-line-space
+B-Body	Our goal is to learn a function f that maps a tweet	page=1 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	x to a binary value y ∈ {0, 1}, where y indicates if	page=1 xpos=5 ypos=0 right-column full-justified font-larger aligned-line itemization headchar-lower
+I-Body	x will receive a response. In this work we make no	page=1 xpos=5 ypos=0 right-column full-justified aligned-line itemization headchar-lower
+E-Body	distinction between different kinds of responses.	page=1 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In addition to x, we assume access to a social net-	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	work S, which we view as a directed graph hU, Ei.	page=1 xpos=5 ypos=1 right-column full-justified font-larger hanged-line headchar-lower tailchar-period
+I-Body	The set of vertices U represents the set of users. For	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	each u <sup>0</sup> , u 00 ∈ U , hu 0 , u 00 i ∈ E if and only if there	page=1 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	exists a following relationship from u <sup>0</sup> to u 00 .	page=1 xpos=5 ypos=1 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For the purpose of defining features we denote x <sub>t</sub>	page=1 xpos=5 ypos=2 right-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	as the text of the tweet x and x <sub>u</sub> ∈ U the user who	page=1 xpos=5 ypos=2 right-column full-justified font-largest hanged-line headchar-lower
+I-Body	posted x. For training we assume access to a set of	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	n labeled examples {hx <sub>i</sub> , y i i : i = 1 . . . n}, where	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	the label indicates whether the tweet has received a	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	response or not.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 Features	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	For prediction we represent a given tweet x using six	page=1 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	feature families:	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	Historical Features Historical behavior is often	page=1 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Listitem	strong evidence of future trends. To account for this	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Listitem	information, we compute the following features: ra-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tio of tweets by x <sub>u</sub> that received a reply, ratio of	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	tweets by x <sub>u</sub> that were retweeted and ratio of tweets	page=1 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	by x <sub>u</sub> that received both a reply and retweet.	page=1 xpos=5 ypos=5 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	Social Features The immediate audience of a user	page=1 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Listitem	x <sub>u</sub> is his followers. Therefore, incorporating social	page=1 xpos=5 ypos=5 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Listitem	features into our model is likely to contribute to its	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Listitem	prediction ability. For a user x <sub>u</sub> ∈ U we include	page=1 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	features for the number of followers (indegree in S),	page=1 xpos=5 ypos=6 right-column full-justified font-larger aligned-line headchar-lower tailchar-comma
+I-Listitem	the number of users x <sub>u</sub> follows (outdegree in S) and	page=1 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	the ratio between the two.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	Aggregate Lexical Features To detect lexical	page=1 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Listitem	items that trigger certain response behavior we de-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	fine features for all bigrams and hashtags in our set	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Listitem	of tweets. To avoid sparsity and maintain a manage-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	able feature space we compress the features using	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Listitem	the labels: for each lexical item l we define R <sub>l</sub> to	page=1 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	be the set of tweets that include l and received a re-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	sponse, and N <sub>l</sub> to be the set of tweets that contain l	page=1 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	and received no response. We then define the inte-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ger n to be the rounding of <sub>|N</sub> <sup>|R</sup> <sub>l</sub> l | | to the nearest integer.	page=1 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Listitem	For each such integer we define a feature, which we	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital
+I-Listitem	increase by 1 when the lexical item l is present in x <sub>t</sub> .	page=1 xpos=5 ypos=9 right-column full-justified font-largest aligned-line headchar-lower tailchar-period page-bottom
+I-Listitem	We use this process separately for bigrams and hash-	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-capital tailchar-hiphen
+I-Listitem	tags, creating separate sets of aggregate features.	page=2 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	Local Content Features We introduce 45 features	page=2 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Listitem	to capture how the content of x <sub>t</sub> influences response	page=2 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Listitem	behavior, including features such as the number of	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Listitem	stop words and the percentage of English words. In	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Listitem	addition we include features specific to Twitter, such	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Listitem	as the number of hash tags and user references.	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	Posting Features Past analysis of Twitter showed	page=2 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Listitem	that posting time influences response potential (Pear	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Listitem	Analytics, 2009). To examine temporal influences,	page=2 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-capital tailchar-comma
+I-Listitem	we include features to account for the user’s local	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Listitem	time and day of the week when x was created.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	Sentiment Features To measure how sentiment	page=2 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Listitem	influences response behavior we define features that	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Listitem	count the number of positive and negative sentiment	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Listitem	words in x <sub>t</sub> . To detect sentiment words we use a pro-	page=2 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Listitem	prietary Microsoft lexicon of 7K positive and nega-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tive terms.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Evaluation	page=2 xpos=0 ypos=4 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	4.1 Learning Algorithm	page=2 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We experimented with two different learning al-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	gorithms: Multiple Additive Regression-Trees	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	(MART) (Wu et al., 2008) and a maximum entropy	page=2 xpos=0 ypos=5 left-column full-justified aligned-line year
+I-Body	classifier (Berger et al., 1996). Both provide fast	page=2 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	classification, a natural requirement for large-scale	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	real-time tasks.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Dataset	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In our evaluation we focus on English tweets only.	page=2 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Body	Since we use local posting time in our features, we	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	filtered users whose profile did not contain location	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	information. To collect Tweeter messages we used	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the entire public feed of Twitter (often referred to as	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the Twitter Firehose). We randomly sampled 943K	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	tweets from one week of data. We allowed an ex-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tra week for responses, giving a response window	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of two weeks. The majority of tweets in our set	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	(90%) received no response. We used 750K tweets	page=2 xpos=0 ypos=8 left-column full-justified aligned-line
+I-Body	for training and 188K for evaluation. A separate data	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	set served as a development set. For the computation	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	of aggregate lexical features we used 186M tweets	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	from the same week, resulting in 14M bigrams and	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	400K hash tags. To compute historical features, we	page=2 xpos=0 ypos=9 left-column full-justified aligned-line
+E-Body	sampled 2B tweets from the previous three months.	page=2 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	604	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 1__	page=2 xpos=5 ypos=-1 right-column right-indent box column-top figure-area above-line-space
+B-Caption	Figure 1: Precision-recall curves for predicting that a	page=2 xpos=5 ypos=1 right-column full-justified font-smallest aligned-line longer-tail line-space string-figure headchar-capital
+I-Caption	tweet will get a response. The marked area highlights	page=2 xpos=5 ypos=1 right-column full-justified font-smallest aligned-line headchar-lower
+E-Caption	the area of the curve we focus on in our evaluation.	page=2 xpos=5 ypos=1 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 2__	page=2 xpos=5 ypos=1 right-column right-indent box aligned-line longer-tail line-double-space line-space figure-area above-line-space
+B-Caption	Figure 2: Precision-recall curves with increasing number	page=2 xpos=5 ypos=3 right-column full-justified font-smallest aligned-line longer-tail line-space string-figure headchar-capital
+I-Caption	of features removed for the marked area in Figure 1. For	page=2 xpos=5 ypos=3 right-column full-justified font-smallest aligned-line headchar-lower
+I-Caption	each curve we removed one additional feature set from	page=2 xpos=5 ypos=4 right-column full-justified font-smallest aligned-line headchar-lower
+E-Caption	the one above it.	page=2 xpos=5 ypos=4 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	4.3 Results	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Our evaluation focuses on precision-recall curves	page=2 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	for predicting that a given tweet will get a response.	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The curves were generated by varying the confi-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	dence measure threshold, which both classifiers pro-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vided. As can be seen in Figure 1, MART outper-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	forms the maximum entropy model. We can also see	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	that it is hard to predict response behavior for most	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	tweets, but for a large subset we can provide a rela-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tively accurate prediction (highlighted in Figure 1).	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The rest of our analysis focuses on this subset and	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+E-Body	on results based on MART.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To better understand the contribution of each fea-	page=2 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ture set, we removed features in a greedy manner.	page=2 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	After learning a model and testing it, we removed	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	the feature family that was overall most highly	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	ranked by MART (i.e., was used in high-level splits	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in the decision trees) and learned a new model. Fig-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ure 2 shows how removing feature sets degrades pre-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	diction performance. Removing historical features	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	lowers the model’s prediction abilities, although pre-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	diction quality remains relatively high. Removing	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	social features creates a bigger drop in performance.	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Lastly, removing aggregate lexical features and lo-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital tailchar-hiphen page-bottom
+I-Body	cal content features further decreases performance.	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-period
+I-Body	At this point, removing posting time features is not	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	influential. Following the removal of posting time	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	features, the model includes only sentiment features.	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Discussion and Conclusion	page=3 xpos=0 ypos=0 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The first trend seen by removing features is that local	page=3 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	content matters less, or at least is more complex to	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	capture and use for response prediction. Despite the	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	influence of chronological trends on posting behav-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ior on Twitter (Pear Analytics, 2009), we were un-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	able to show influence of posting time on response	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	prediction. Historical features were the most promi-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nent in our experiments. Second were social fea-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures, showing that developing one’s network is crit-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ical for impact. The third most prominent set of fea-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures, aggregate lexical features, shows that users are	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	sensitive to certain expressions and terms that tend	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	to trigger responses.	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The natural path for future work is to improve per-	page=3 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	formance using new features. These may include	page=3 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	clique-specific language features, more properties of	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the user’s social network, mentions of named enti-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ties and topics of tweets. Another direction is to dis-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tinguish between replies and retweets and to predict	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the number of responses and the length of conversa-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions that a tweet may generate. There is also po-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tential in learning models for the prediction of other	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	measures of impact, such as hashtag adoption and	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	inclusion in “favorites” lists.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgments	page=3 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	We would like to thank Alan Ritter, Bill Dolan,	page=3 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Acknowledgement	Chris Brocket and Luke Zettlemoyer for their sug-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Acknowledgement	gestions and comments. We wish to thank Chris	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	Quirk and Qiang Wu for providing us with access	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Acknowledgement	to their learning software. Thanks to the reviewers	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Acknowledgement	for the helpful comments.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=3 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	S. Asur and B.A. Huberman. 2010. Predicting the future	page=3 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	with social media. In Proceedings of the International	page=3 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Conference on Web Intelligence and Intelligent Agent	page=3 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Technology.	page=3 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	E. Bakshy, J. M. Hofman, W. A. Mason, and D. J. Watts.	page=3 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail line-space headchar-capital tailchar-period
+I-Reference	2011. Everyone’s an influencer: quantifying influence	page=3 xpos=0 ypos=9 left-column left-indent font-smallest indented-line year above-blank-line above-double-space above-line-space
+Page	605	page=3 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Reference	on twitter. In Peoceedings of the ACM International	page=3 xpos=5 ypos=0 right-column left-indent font-smallest column-top headchar-lower
+I-Reference	Conference on Web Search and Data Mining.	page=3 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	R. Balasubramanyan, W.W. Cohen, D. Pierce, and D.P.	page=3 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-period
+I-Reference	Redlawsk. 2011. What pushes their buttons? predict-	page=3 xpos=5 ypos=0 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	ing comment polarity from the content of political blog	page=3 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	posts. In Proceedings of the Workshop on Language in	page=3 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Social Media.	page=3 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Adam L. Berger, Vincent J. Della Pietra, and Stephen A.	page=3 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-period
+I-Reference	Della Pietra. 1996. A maximum entropy approach to	page=3 xpos=5 ypos=1 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	natural language processing. Computational Linguis-	page=3 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tics.	page=3 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	D. Boyd, S. Golder, and G. Lotan. 2010. Tweet, tweet,	page=3 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-comma
+I-Reference	retweet: Conversational aspects of retweeting on twit-	page=3 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ter. In Proceedings of the International Conference on	page=3 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	System Sciences.	page=3 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	M. Cha, H. Haddadi, F. Benevenuto, and K.P. Gummadi.	page=3 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-period
+I-Reference	2010. Measuring user influence in twitter: The million	page=3 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year
+I-Reference	follower fallacy. In Proceedings of the International	page=3 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	AAAI Conference on Weblogs and Social Media.	page=3 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	A. Culotta. 2010. Towards detecting influenza epidemics	page=3 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	by analyzing twitter messages. In Proceedings of the	page=3 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Workshop on Social Media Analytics.	page=3 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	C. Danescu-Niculescu-Mizil, M. Gamon, and S. Dumais.	page=3 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-period
+I-Reference	2011. Mark my words!: linguistic style accommoda-	page=3 xpos=5 ypos=4 right-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	tion in social media. In Proceedings of the Interna-	page=3 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tional Conference on World Wide Web.	page=3 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	A. Das Sarma, A. Das Sarma, S. Gollapudi, and R. Pan-	page=3 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Reference	igrahy. 2010. Ranking mechanisms in twitter-like fo-	page=3 xpos=5 ypos=4 right-column left-indent font-smallest indented-line year headchar-lower tailchar-hiphen
+I-Reference	rums. In Proceedings of the ACM International Con-	page=3 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ference on Web Search and Data Mining.	page=3 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	C. Honeycutt and S.C. Herring. 2009. Beyond mi-	page=3 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	croblogging: Conversation and collaboration via twit-	page=3 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ter. In Proceedings of the International Conference on	page=3 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	System Sciences.	page=3 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	L. Hong, O. Dan, and B. D. Davison. 2011. Predict-	page=3 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ing popular messages in twitter. In Proceedings of the	page=3 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	International Conference on World Wide Web.	page=3 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	H. Lakkaraju, A. Rai, and S. Merugu. 2011. Smart	page=3 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	news feeds for social networks using scalable joint la-	page=3 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tent factor models. In Proceedings of the International	page=3 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Conference on World Wide Web.	page=3 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Pear Analytics. 2009. Twitter study.	page=3 xpos=5 ypos=7 right-column right-indent font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+B-Reference	A.M. Popescu and A. Jain. 2011. Understanding the	page=3 xpos=5 ypos=7 right-column full-justified font-smallest aligned-line longer-tail year headchar-capital
+I-Reference	functions of business accounts on twitter. In Proceed-	page=3 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ings of the International Conference on World Wide	page=3 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Web.	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	A.M. Popescu and M. Pennacchiotti. 2010. Detect-	page=3 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ing controversial events from twitter. In Proceedings	page=3 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of the International Conference on Information and	page=3 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Knowledge Management.	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	A.M. Popescu and M. Pennacchiotti. 2011. Dancing	page=3 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	with the stars, nba games, politics: An exploration of	page=3 xpos=5 ypos=9 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	twitter users response to events. In Proceedings of the	page=3 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line headchar-lower page-bottom
+I-Reference	International AAAI Conference on Weblogs and Social T. Yano and N.A. Smith. 2010. Whats worthy of com-	page=4 xpos=0 ypos=0 single-column left-indent font-smallest page-top year headchar-capital tailchar-hiphen column-bottom
+I-Reference	Media.	page=4 xpos=0 ypos=0 left-column left-indent right-indent font-smallest column-top headchar-capital tailchar-period
+B-Reference	A.M. Popescu, M. Pennacchiotti, and D. Paranjpe. 2011.	page=4 xpos=0 ypos=0 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Extracting events and event descriptions from twit-	page=4 xpos=0 ypos=0 left-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen column-bottom
+I-Reference	ment? content and comment volume in political blogs.	page=4 xpos=5 ypos=0 right-column full-justified font-smallest column-top headchar-lower tailchar-period
+I-Reference	Proceedings of the International AAAI Conference on	page=4 xpos=5 ypos=0 right-column full-justified font-smallest aligned-line headchar-capital
+I-Reference	Weblogs and Social Media.	page=4 xpos=5 ypos=0 right-column right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period column-bottom
+I-Reference	ter. In Proceedings of the International Conference T. Yano, W.W. Cohen, and N.A. Smith. 2009. Predict-	page=4 xpos=0 ypos=0 single-column left-indent font-smaller column-top year headchar-lower tailchar-hiphen column-bottom
+I-Reference	on World Wide Web.	page=4 xpos=0 ypos=0 left-column left-indent right-indent font-smallest column-top headchar-lower tailchar-period
+B-Reference	Y. Qu, C. Huang, P. Zhang, and J. Zhang. 2011. Mi-	page=4 xpos=0 ypos=1 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	croblogging after a major disaster in china: a case	page=4 xpos=0 ypos=1 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	study of the 2010 yushu earthquake. In Proceedings	page=4 xpos=0 ypos=1 left-column left-indent font-smallest aligned-line year headchar-lower
+I-Reference	of the ACM Conference on Computer Supported Co-	page=4 xpos=0 ypos=1 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	operative Work.	page=4 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	A. Ritter, C. Cherry, and B. Dolan. 2010. Unsupervised	page=4 xpos=0 ypos=1 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	modeling of twitter conversations. In Proceedings of	page=4 xpos=0 ypos=2 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	the Annual Conference of the North American Chapter	page=4 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	of the Association for Computational Linguistics.	page=4 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	A. Ritter, C. Cherry, and B. Dolan. 2011. Data-driven	page=4 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	response generation in social media. In Proceedings	page=4 xpos=0 ypos=2 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of the Conference on Empirical Methods in Natural	page=4 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Language Processing.	page=4 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	D. Romero, W. Galuba, S. Asur, and B. Huberman. 2011.	page=4 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Influence and passivity in social media. Machine	page=4 xpos=0 ypos=3 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Learning and Knowledge Discovery in Databases,	page=4 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	pages 18–33.	page=4 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	M. Rowe, S. Angeletou, and H. Alani. 2011. Predicting	page=4 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	discussions on the social semantic web. In Proceed-	page=4 xpos=0 ypos=4 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ings of the Extended Semantic Web Conference.	page=4 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	T. Sakaki, M. Okazaki, and Y. Matsuo. 2010. Earth-	page=4 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	quake shakes twitter users: real-time event detection	page=4 xpos=0 ypos=4 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	by social sensors. In Proceedings of the International	page=4 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Conference on World Wide Web.	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	B. Suh, L. Hong, P. Pirolli, and E. H. Chi. 2010. Want to	page=4 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	be retweeted? large scale analytics on factors impact-	page=4 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ing retweet in twitter network. In Proceedings of the	page=4 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	IEEE International Conference on Social Computing.	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line headchar-capital tailchar-period
+B-Reference	M. Tsagkias, W. Weerkamp, and M. De Rijke. 2009.	page=4 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line year headchar-capital tailchar-period
+I-Reference	Predicting the volume of comments on online news	page=4 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	stories. In Proceedings of the ACM Conference on In-	page=4 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	formation and Knowledge Management.	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	M. Tsagkias, W. Weerkamp, and M. De Rijke. 2010.	page=4 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	News comments: Exploring, modeling, and online	page=4 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	prediction. Advances in Information Retrieval, pages	page=4 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	191–203.	page=4 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	O. Tsur and A. Rappoport. 2012. What’s in a hash-	page=4 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tag?: content based prediction of the spread of ideas	page=4 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	in microblogging communities. In Proceedings of the	page=4 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	ACM International Conference on Web Search and	page=4 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Data Mining.	page=4 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Q. Wu, C.J.C. Burges, K.M. Svore, and J. Gao. 2008.	page=4 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Ranking, boosting, and model adaptation. Tecnical	page=4 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Report, MSR-TR-2008-109.	page=4 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	S. Wu, J.M. Hofman, W.A. Mason, and D.J. Watts. 2011.	page=4 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Who says what to whom on twitter. In Proceedings of	page=4 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	the International Conference on World Wide Web.	page=4 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	606	page=4 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Reference	ing response to political blog posts with topic mod-	page=4 xpos=5 ypos=0 right-column full-justified font-smallest column-top headchar-lower tailchar-hiphen
+I-Reference	els. In Proceedings of the Annual Conference of the	page=4 xpos=5 ypos=1 right-column full-justified font-smallest aligned-line headchar-lower
+I-Reference	North American Chapter of the Association for Com-	page=4 xpos=5 ypos=1 right-column full-justified font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	putational Linguistics.	page=4 xpos=5 ypos=1 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period

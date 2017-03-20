@@ -1,0 +1,561 @@
+Title	Automatic recognition of French expletive pronoun occurrences	page=0 xpos=0 ypos=0 single-column left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Laurence DANLOS	page=0 xpos=3 ypos=0 single-column left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Université Paris 7	page=0 xpos=3 ypos=0 single-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Address	2 Place Jussieu	page=0 xpos=4 ypos=0 single-column left-indent right-indent font-larger indented-line shorter-tail numbered-heading1
+Address	F-75005 Paris	page=0 xpos=4 ypos=0 single-column left-indent right-indent font-larger headchar-capital above-line-space
+Email	danlos@linguist.jussieu.fr	page=0 xpos=2 ypos=1 single-column left-indent right-indent font-smaller hanged-line longer-tail line-space symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	We present a tool, called ILIMP , which	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	takes as input a raw text in French and	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	produces as output the same text in	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	which every occurrence of the pronoun	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	il is tagged either with tag [ANA] for	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	anaphoric or [IMP] for impersonal or	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	expletive. This tool is therefore	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	designed to distinguish between the	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	anaphoric occurrences of il, for which	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	an anaphora resolution system has to	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	look for an antecedent, and the expletive	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	occurrences of this pronoun, for which it	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	does not make sense to look for an	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	antecedent. The precision rate for ILIMP	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	is 97,5%. The few errors are analyzed in	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	detail. Other tasks using the method	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	developed for ILIMP are described	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	briefly, as well as the use of ILIMP in a	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	modular syntactic analysis system.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-larger hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	A lot of research is dedicated to anaphora	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	resolution since it is a crucial issue, for example,	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	for Information Retrieval or Text Summarization.	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Among anaphora, third person pronouns are quite	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	frequent and therefore widely studied. Pronoun il	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	in French, it in English, can be used either	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	"impersonally" ("expletively") (il pleut, it rains)	page=0 xpos=0 ypos=7 left-column full-justified aligned-line
+I-Body	or anaphorically (il est violet, it is purple).	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Therefore, authors who have developed a	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	pronoun resolution system acknowledge that the	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	impersonal pronoun occurrences must be	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	recognized first, before dealing with anaphoric	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	pronouns.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	There exists a number of works on the	page=0 xpos=5 ypos=2 right-column left-indent column-top headchar-capital
+I-Body	English pronoun it, among them (Lapin, Leass,	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-capital tailchar-comma
+I-Body	1994), (Kennedy, Bogurev, 1996) and (Evans	page=0 xpos=5 ypos=2 right-column full-justified aligned-line year
+I-Body	2001). However, no work has been done on the	page=0 xpos=5 ypos=2 right-column full-justified aligned-line year
+I-Body	French pronoun il <sup>1</sup> . This paper presents a tool,	page=0 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-capital tailchar-comma
+I-Body	ILIMP , which is designed to mark any occurrence	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	of il with either tag [IMP] or tag [ANA] (for	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	impersonal or anaphoric use, respectively). This	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	tool is rule based (as it is the case for Lapin and	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	Leass' system); it works on raw texts (contrarily	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	to Lapin and Leass' system which relies on a	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	syntactic analysis).	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	If ILIMP is imperative for an anaphora	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	resolution system, it is also a tool which can be	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	integrated into a processing chain within a	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	modular approach to syntactic analysis. First, it	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	should be noted that [IMP] and [ANA] can be	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	viewed as an enhancement of the part-of-speech	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	tag set generally used in taggers: the tag	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	“pronoun” would be replaced by two tags,	page=0 xpos=5 ypos=5 right-column full-justified aligned-line tailchar-comma
+I-Body	“anaphoric pronoun” versus “impersonal	page=0 xpos=5 ypos=5 right-column full-justified aligned-line
+I-Body	(expletive) pronoun”. It is known that the richer	page=0 xpos=5 ypos=5 right-column full-justified aligned-line
+I-Body	the tag set is, the better would the syntactic	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	analysis based on tagging be (Nasr, 2004).	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	Moreover, it will be shown that tools derived	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	from ILIMP can be used for other linguistic	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	annotations.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Section 2 presents the method, which is	page=0 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	based, on linguistic grounds, on a French	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	linguistic resource, the Lexicon-Grammar, and	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	on computational grounds, on a tool, Unitex.	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Section 3 presents the realization of ILIMP , the	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital above-double-space above-line-space
+B-Footnote	1 Some data on the discrepancies between il and it. While	page=0 xpos=5 ypos=7 right-column full-justified font-largest aligned-line line-double-space line-space numbered-heading1
+I-Footnote	the English pronoun it can be found in subject and object	page=0 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	positions, the French pronoun il can be found only in a	page=0 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	subject position. When it is an anaphoric subject pronoun, it	page=0 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	can have a clausal or nominal antecedent, while an	page=0 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	anaphoric il can have only a nominal antecedent. The	page=0 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	anaphoric subject pronoun il translates in English as he or it	page=0 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	depending on the human nature of the nominal antecedent.	page=0 xpos=5 ypos=8 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	73	page=0 xpos=4 ypos=9 single-column left-indent right-indent font-largest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	difficulties which have been encountered and the	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	choices made to solve them. Finally, Section 4	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	presents an evaluation of ILIMP and discusses its	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	positioning within a modular syntactic analysis.	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Method	page=1 xpos=0 ypos=0 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	2.1 Lexicon-Grammar	page=1 xpos=0 ypos=1 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	As for most linguistic phenomena, the	page=1 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	impersonal use of il depends on both lexical and	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	syntactic conditions. For example, the adjective	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	violet (purple) can never be the lexical head of an	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	impersonal clause – see (1a); the adjective	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	probable (likely) followed by a clausal	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	complement anchors an impersonal clause – see	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	(1b); and the adjective difficile (difficult) when	page=1 xpos=0 ypos=2 left-column full-justified aligned-line
+I-Body	followed by an infinitival complement introduced	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	by the preposition de (resp. à) anchors an	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	impersonal (resp. personal) clause – see (1c) and	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	(1d).	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Listitem	(1)a Il est violet (It is purple)	page=1 xpos=0 ypos=3 left-column left-indent right-indent indented-line longer-tail line-double-space line-space above-double-space above-line-space
+B-Listitem	b Il est probable que Fred viendra (It is	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Listitem	likely that Fred will come)	page=1 xpos=0 ypos=4 left-column left-indent right-indent hanged-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	c Il est difficile de résoudre ce problème (It	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Listitem	is difficult to solve this problem)	page=1 xpos=0 ypos=4 left-column left-indent right-indent hanged-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	d Il est difficile à résoudre, ce problème (It	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Listitem	is difficult to solve, this problem)	page=1 xpos=0 ypos=4 left-column left-indent right-indent hanged-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Therefore, the French lexicon-grammar	page=1 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	developed by Maurice Gross and his group	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	(Gross 1994, Leclère 2003) is an appropriate	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year
+I-Body	linguistic resource for ILIMP since it describes,	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	for each lexical head of a clause, its syntactic	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	arguments and the possible alternations. From the	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	lexicon-grammar, I have (manually) extracted all	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the items that can be the lexical head of an	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	impersonal clause while recording their syntactic	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	arguments. See below for a brief overview of the	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	lexical heads that I have recorded.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	First, one has to distinguish verbal phrases for	page=1 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	which the subject can only be the impersonal	page=1 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	pronoun il, from those whose surface subject is	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	impersonal il because their deep subject is	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	extraposed in a post-verbal position.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Among the former ones, I have compiled 45	page=1 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	meteorological verbal phrases (Il neige (It	page=1 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	snows), Il fait beau (It is a nice day)), 21 verbs	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	from Table 17 of (Gross 1975) (Il faut que Fred	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	vienne /du pain) and 38 frozen expressions (Il	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	était une fois (once upon a time), quoi qu'il en	page=1 xpos=0 ypos=8 left-column full-justified aligned-line
+E-Body	soit (whatsoever)).	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	Among the latter ones, one has to distinguish	page=1 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	those with a clausal extraposed subject from	page=1 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+E-Body	those with a nominal extraposed subject.	page=1 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Among the former ones, I have compiled 682	page=1 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	adjectives (Il est probable que Fred viendra (it is	page=1 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	likely that Fred will come)), 88 expressions of the	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	form Prép X (Danlos 1980) (Il est de règle de	page=1 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower
+I-Body	faire un cadeau (It is standard practice to make a	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	present)), and around 250 verbs from (Gross	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	1975) (Il est dit que Fred viendra (It is said that	page=1 xpos=5 ypos=1 right-column full-justified aligned-line year
+E-Body	Fred will come)).	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	Among the latter ones with a nominal	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	extraposed subject, some are quite frequent verbs	page=1 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	such as rester or manquer, while others are verbs	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	in the passive form only used in a refined register	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	(Il est venu trois personnes (Three persons	page=1 xpos=5 ypos=2 right-column full-justified aligned-line
+E-Body	came)).	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 Unitex	page=1 xpos=5 ypos=3 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	Unitex <sup>2</sup> is a tool which allows us to write	page=1 xpos=5 ypos=3 right-column left-indent font-largest indented-line longer-tail line-space headchar-capital
+I-Body	linguistic patterns (regular expressions or	page=1 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	automata) which are located in the input text,	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	with a possible addition of information when an	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	automaton is in fact a transducer. A raw text,	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	when given as input to Unitex, is first pre-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	processed: it is segmented into sentences, some	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	compound expressions are recognized as such,	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and each token is tagged with all the parts of	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	speech and inflexion features recorded in its	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	entry (if any) in the French full-form	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	morphologic dictionary DELAF (Courtois 2004).	page=1 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	There is no disambiguation at all; in other words,	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	the pre-processing in Unitex does not amount to	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	a tagging.	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period
+B-Body	For ILIMP , the basic idea is to manually write	page=1 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	patterns (transducers) such as the one presented	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	in (2) in a simplified linear form. <être.V:3s>	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	targets the third person singular inflected forms	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of the verb être; <Adj1:ms> targets the masculine	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	singular adjectives that belong to the class Adj1,	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which groups together adjectives behaving as	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	difficult; <V:K> targets any verb in the infinitive	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	form. [IMP] is a tag which is added in the input	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	text to the occurrences of il that appear in clauses	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	which follow the pattern in (2). The occurrence	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	of il in (1c) is thereby marked with tag [IMP].	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	(2) Il[IMP] <être.V:3s> <Adj1:ms> de	page=1 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-double-space line-space itemization
+I-Listitem	<V:K>	page=1 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail above-double-space above-line-space
+B-Footnote	<sup>2</sup> Unitex is a GPL open source system, which is similar to	page=1 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-super
+I-Footnote	Intex (Silberstein 1994). Documentation and download of	page=1 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line year headchar-capital
+I-Footnote	Unitex can be found at the following url: http://ladl.univ-	page=1 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Footnote	mlv.fr.	page=1 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	74	page=1 xpos=4 ypos=9 single-column left-indent right-indent font-largest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-Body	Tag [ANA] is the default value: it marks the	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-capital
+I-Body	occurrences of il that have not been tagged with	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	[IMP]. The occurrence of il in (1d) is thereby	page=2 xpos=0 ypos=0 left-column full-justified aligned-line
+I-Body	marked with tag [ANA]. Nevertheless, the matter	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	is slightly more complex, since there is a third	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	tag, [AMB], which is explained in Section 3.2.	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The output of ILIMP is therefore the input text in	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	which each occurrence of il is marked with one	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	of [IMP], [ANA] and [AMB].	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	After this presentation of the theoretical	page=2 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	principles underlying ILIMP , let us examine its	page=2 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+E-Body	realization.	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Realization	page=2 xpos=0 ypos=2 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	3.1 Left context of the lexical head	page=2 xpos=0 ypos=2 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In (1c), the left context of the lexical head - the	page=2 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	sequence of tokens on the left of difficile	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	(difficult) - is reduced to Il est (it is). However,	page=2 xpos=0 ypos=3 left-column full-justified aligned-line tailchar-comma
+I-Body	sentences such as (3a) or (3b), in which the left	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	context of the lexical head is more complex, are	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	frequently found in real texts. In (3a), the left	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	context includes (from right to left) the adverb	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	très (very) which modifies the adjective, the verb	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	paraître (seem) in the infinitive form which is a	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	“light verb” for adjectives, the pronoun lui (to	page=2 xpos=0 ypos=4 left-column full-justified aligned-line
+I-Body	him) and finally the modal verb peut (may)	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	preceded by il (it). In (3b), it includes the light	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	verb s'avérer conjugated in a compound tense	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	(s'est avéré) and negated (ne s'est pas avéré).	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Listitem	(3)a Il peut lui paraître très difficile de	page=2 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-double-space line-space
+I-Listitem	résoudre ce problème (It may seem very	page=2 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Listitem	difficult to him to solve this problem)	page=2 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	b Il ne s'est pas avéré difficile de résoudre	page=2 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Listitem	ce problème (It didn't turn out to be difficult	page=2 xpos=0 ypos=6 left-column left-indent hanged-line headchar-lower
+I-Listitem	to solve this problem)	page=2 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	As a consequence, for each type of the lexical	page=2 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	heads (adjectival, verbal) that anchors an	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	impersonal clause, all the elements that may	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	occur in the left-context have to be determined	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	and integrated in patterns. This raises no real	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	difficulty, though it is time consuming <sup>3</sup> . In	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	contrast, we are faced with tough ambiguities	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	when coming to the right context, as we are	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	going to show it.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the rest of the paper, patterns are presented	page=2 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	with simplified left-contexts - as in (2) - for the	page=2 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+E-Body	sake of readability.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Footnote	3	page=2 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail line-blank-line line-double-space line-space numeric-only
+I-Footnote	ILIMP can be re-used in a tool which aims at identifying the	page=2 xpos=0 ypos=8 left-column left-indent font-smallest indented-line longer-tail headchar-capital
+I-Footnote	lexical head of a clause.	page=2 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period column-bottom
+B-SubsectionHeader	3.2 Right context of the lexical head	page=2 xpos=5 ypos=0 right-column right-indent font-larger column-top numbered-heading2 above-double-space above-line-space
+B-SubsubsectionHeader	Syntactic ambiguities	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	There is a number of syntactic ambiguities in the	page=2 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	right context since, as is well known, a sequence	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	of parts of speech may receive several syntactic	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	analyses. As an illustration, consider the pattern	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	in (4a), in which the symbol Ω matches any non-	page=2 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	empty sequence of tokens. This pattern	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	corresponds to two syntactic analyses: (4b) in	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	which il is impersonal and the infinitival phrase	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	de <V:K> is subcategorized by difficile, and (4c)	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	in which il is anaphoric and the infinitival phrase	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	is part of an NP. These two analyses are	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	illustrated in (4d) and (4e) respectively - these	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	sentences differ only in the adverb ici/juste.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	(4)a Il est difficile pour Ω de <V:K>	page=2 xpos=5 ypos=2 right-column left-indent right-indent font-largest indented-line shorter-tail line-space above-double-space above-line-space
+B-Listitem	b Il[IMP] est difficile pour [Ω] <sub>NP</sub> de	page=2 xpos=5 ypos=3 right-column left-indent font-larger indented-line longer-tail line-double-space line-space itemization headchar-lower
+B-Listitem	<V:K>	page=2 xpos=5 ypos=3 right-column left-indent right-indent hanged-line shorter-tail above-double-space above-line-space
+B-Listitem	c Il[ANA] est difficile pour [Ω de	page=2 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-double-space line-space itemization headchar-lower
+B-Listitem	<V:K>] <sub>NP</sub>	page=2 xpos=5 ypos=3 right-column left-indent right-indent font-larger hanged-line shorter-tail above-double-space above-line-space
+B-Listitem	d Il est difficile pour [les étudiants qui	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Listitem	viennent ici] <sub>NP</sub> de résoudre ce problème (It is	page=2 xpos=5 ypos=4 right-column left-indent font-larger hanged-line headchar-lower
+I-Listitem	difficult for the students who came here to	page=2 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower
+I-Listitem	solve this problem)	page=2 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	e Il est difficile pour [les étudiants qui	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Listitem	viennent juste de résoudre ce problème] <sub>NP</sub> (It	page=2 xpos=5 ypos=4 right-column left-indent font-larger hanged-line headchar-lower
+I-Listitem	is difficult for the students who have just	page=2 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower
+I-Listitem	solved this problem)	page=2 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	To deal with syntactic ambiguities, one solution	page=2 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	is to state explicitly that a pattern such as (4a) is	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	ambiguous by means of the tag [AMB] which is	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	to be interpreted as “ ILIMP cannot determine	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	whether il is anaphoric or impersonal”. However	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	this tag may be of no help for later processing,	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	especially if it is used too often. Another solution	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	is to rely upon heuristics based on frequencies.	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For example, sentences which follow the pattern	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	in (4a) are more frequently analyzed as (4b) than	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	as (4c). Therefore il in (4a) can be tagged as	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	[IMP] despite some rare errors. I have adopted	page=2 xpos=5 ypos=7 right-column full-justified aligned-line
+I-Body	this latter solution. The heuristics I use are either	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	based on my linguistic knowledge and intuition	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	and/or on quantitative studies on corpora.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	Lexical ambiguities	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	In about ten cases, a lexical item may anchor	page=2 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	both impersonal and personal clauses with the	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	same subcategorization frame, e.g. the adjective	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	75	page=2 xpos=4 ypos=9 single-column left-indent right-indent font-largest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	certain (certain) with a clausal complement as	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	illustrated in sentence (5a). Since both readings	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	of (5a) seem equally frequent, il in the pattern	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	(5b) is tagged as [AMB].	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Listitem	(5)a Il est certain que Fred viendra (He/it is	page=3 xpos=0 ypos=0 left-column left-indent indented-line longer-tail line-double-space line-space
+I-Listitem	certain that Fred will come)	page=3 xpos=0 ypos=0 left-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	b Il[AMB] est certain que S <sup>4</sup>	page=3 xpos=0 ypos=1 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space itemization headchar-lower above-double-space above-line-space
+B-SubsubsectionHeader	Other difficulties	page=3 xpos=0 ypos=1 left-column right-indent hanged-line shorter-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	A last type of difficulties is found with	page=3 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	impersonal clauses with an extraposed nominal	page=3 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	subject. See the pair in (6a-b) in which the only	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	difference is du/de, whereas (6a) is impersonal	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	and (6b) personal. Along the same lines, see the	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	pair in (6c-d) in which the only difference is	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	valise/priorité, whereas (6c) is impersonal and	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	(6d) personal.	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Listitem	(6)a Il manque du poivre (dans cette maison)	page=3 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-double-space line-space
+I-Listitem	(There is pepper missing (in this house))	page=3 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail above-double-space above-line-space
+B-Listitem	b Il manque de poivre (ce rôti de porc) (It	page=3 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Listitem	is lacking pepper (this roasting pork))	page=3 xpos=0 ypos=3 left-column left-indent right-indent hanged-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	c Il reste la valise du chef (dans la voiture)	page=3 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Listitem	(There remains the boss' suitcase (in the car))	page=3 xpos=0 ypos=4 left-column left-indent right-indent hanged-line above-double-space above-line-space
+B-Listitem	d Il reste la priorité du chef (le chômage)	page=3 xpos=0 ypos=4 left-column left-indent indented-line line-double-space line-space itemization headchar-lower
+I-Listitem	(It remains the boss' priority (unemployment))	page=3 xpos=0 ypos=4 left-column left-indent right-indent hanged-line above-double-space above-line-space
+B-Body	I have tried to set up heuristics to deal with these	page=3 xpos=0 ypos=4 left-column full-justified hanged-line line-double-space line-space headchar-capital
+I-Body	subtle differences. However, I did not attempt	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	(perilous) enterprises such as using the feature [±	page=3 xpos=0 ypos=5 left-column full-justified aligned-line
+E-Body	abstract] for nouns.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In conclusion, ILIMP relies on a number of	page=3 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	heuristics so as to avoid a too frequent use of	page=3 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	[AMB]. These heuristics may lead to errors,	page=3 xpos=0 ypos=5 left-column full-justified aligned-line tailchar-comma
+E-Body	which are going to be examined.	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Evaluation	page=3 xpos=0 ypos=6 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	I have worked on the French newspaper Le	page=3 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	Monde. More precisely, I have worked on a	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	corpus of 3.782.613 tokens extracted from the	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	corpus Le Monde'94. Unitex segments this	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	corpus into 71.293 sentences. It contains 13.611	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	occurrences of token il, and 20.549 occurrences	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of third person subject pronouns, i.e. il, elle, ils,	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	elles (he, she, it, they). So il is the most frequent	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	third person subject pronoun, with a rate of 66%.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Footnote	<sup>4</sup> S is the symbol for the pattern aiming at representing a	page=3 xpos=0 ypos=8 left-column full-justified aligned-line line-blank-line line-double-space line-space headchar-super
+I-Footnote	sentence. This pattern is made up of a non-empty sequence	page=3 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	of tokens which includes a finite verb.	page=3 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	From this corpus, 8544 sentences which	page=3 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	include at least one occurrence of il have been	page=3 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	extracted, and they add up to around 10.000	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	occurrences of il (a complex sentence with	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	embedded clauses may include several	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	occurrences of il). These sentences have been	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	given as input to ILIMP and the results - the tags	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	[IMP], [ANA] and [AMB]- have been manually	page=3 xpos=5 ypos=1 right-column full-justified aligned-line
+I-Body	evaluated. The evaluators were asked to follow	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	only their intuition.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The result of this evaluation is the following:	page=3 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-colon
+I-Body	the precision rate is 97,5\%. We are going to	page=3 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+E-Body	examine the 2,5\% errors, putting aside [AMB].	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Errors from morphological ambiguities	page=3 xpos=5 ypos=2 right-column right-indent font-larger aligned-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Errors coming from morphological ambiguities	page=3 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	are (of course) counted as the other errors coming	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	from the realization of ILIMP (which are	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	examined in the next sections). Recall (Section	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	2.2) that the pre-processing in Unitex does not	page=3 xpos=5 ypos=3 right-column full-justified aligned-line
+I-Body	include any disambiguation: it is not a tagger. To	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	illustrate the consequences of this point, consider	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the pattern in (7a) in which <V6:W> targets	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	verbs of Table 6 in the past participle, e.g. choisi	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	(chosen), and S a sequence of tokens which	page=3 xpos=5 ypos=4 right-column full-justified aligned-line
+I-Body	includes a finite verb (see note 3). This pattern	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	aims at targeting impersonal clauses such as (7b).	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Nevertheless, it also targets (7c), in which the	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	pronoun il is thus wrongly tagged as [IMP]. This	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	error comes from the fact that the dictionary	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	DELAF rightly includes two entries for the word	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	mètres - finite form of the verb métrer and plural	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	form of the noun mètre - and Unitex does not	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	make any distinction between these two entries.	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Therefore, the sequence le béton pour soutenir	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	une toiture de 170 mètres is interpreted as	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	including a finite verb, and hence follows pattern	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	S.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Listitem	(7)a Il[IMP] <avoir.V:3s> été <V6:W>	page=3 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-double-space line-space
+I-Listitem	(ADV) que S	page=3 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail above-double-space above-line-space
+B-Listitem	b Il a été choisi que les séances se feraient	page=3 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Listitem	le matin vers 9h (It has been chosen that	page=3 xpos=5 ypos=7 right-column left-indent hanged-line headchar-lower
+I-Listitem	sessions would take place around 9 am)	page=3 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	c Il a été choisi plutôt que le béton pour	page=3 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Listitem	soutenir une toiture de 170 mètres (It has been	page=3 xpos=5 ypos=7 right-column left-indent hanged-line headchar-lower
+I-Listitem	chosen rather than concrete to support a 170	page=3 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower
+I-Listitem	meter roof)	page=3 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Any tagger should tag the word mètres in (7c) as	page=3 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	a noun. Taking as input not a raw text pre-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	processed by Unitex but the output of a tagger	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	76	page=3 xpos=4 ypos=9 single-column left-indent right-indent font-largest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	would avoid the error on il in (7c). However	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	ILIMP would be dependent of the errors of a	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	tagger. What is best? More generally, assuming	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	that a syntactic parser relies upon a modular	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	approach in which a set of modules - tagger,	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	named entity recognition module, ILIMP ,	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	chunker, etc. – collaborates, the question of the	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	order in which the modules should be chained	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	arises.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Let us have this question open, and come	page=4 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	back to the errors of ILIMP taking as input a raw	page=4 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+E-Body	text.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 il wrongly tagged as [IMP] instead of	page=4 xpos=0 ypos=2 left-column full-justified font-larger aligned-line longer-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	[ANA]: 0,3\%	page=4 xpos=0 ypos=2 left-column left-indent right-indent indented-line shorter-tail above-double-space above-line-space
+B-Body	Very few errors: 33. This is surprising when	page=4 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	considering the frequent appeal to “brutal”	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	heuristics. As an illustration, il in the pattern Il y	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	a is systematically tagged as [IMP]. This	page=4 xpos=0 ypos=3 left-column full-justified aligned-line itemization headchar-lower
+I-Body	heuristic gives two errors, as in (8a), but around	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	1500 right tags, as in (8b).	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Listitem	(8)a Il revient de Rimini. Il y a donné la	page=4 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-double-space line-space
+I-Listitem	réplique à Madeleine. (He is back from	page=4 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower
+I-Listitem	Rimini. He gave there the cue to Madeleine.)	page=4 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-capital above-double-space above-line-space
+B-Listitem	b Il y a beaucoup de trafic à 8h (There is a	page=4 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Listitem	lot of traffic at 8 am)	page=4 xpos=0 ypos=4 left-column left-indent right-indent hanged-line shorter-tail headchar-lower above-double-space above-line-space
+B-SubsectionHeader	4.3 il wrongly tagged as [ANA] instead of	page=4 xpos=0 ypos=4 left-column full-justified font-larger hanged-line longer-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	[IMP]: 2\%	page=4 xpos=0 ypos=5 left-column left-indent right-indent indented-line shorter-tail above-double-space above-line-space
+B-Body	More errors. This type of errors comes from the	page=4 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	fact that [ANA] is the default value. These errors	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	are thus directly imputable to gaps in the patterns	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	making up ILIMP .	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Among these gaps, there are first those	page=4 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	coming from my laziness/tiredness/lack of time.	page=4 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	For example, I have introduced quotation marks	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	at some places in patterns but not everywhere.	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Hence, il is wrongly tagged as [ANA] in (9a) just	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	because of the quotation marks. Similarly, I	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	wrote some patterns for cases with subject	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	inversion, but I did not take time to write all of	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	them, hence the error in (9b).	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	(9)a Il[ANA] était “même souhaitable” que	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-double-space line-space
+I-Listitem	celui-ci soit issu … (It was “even desirable”	page=4 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Listitem	that this one be from …)	page=4 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	b Est-il [ANA] inconcevable … (Is it	page=4 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-double-space line-space itemization headchar-lower
+I-Listitem	inconceivable that …)	page=4 xpos=0 ypos=8 left-column left-indent right-indent hanged-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Secondly, there are lexical gaps. In particular,	page=4 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	some adjectives which can be the head of	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	impersonal clauses are missing: the list of 682	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	adjectives I have compiled needs to be	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+E-Body	completed.	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Thirdly, there are syntactic gaps. In particular,	page=4 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	I have considered any extraposed clausal subject	page=4 xpos=5 ypos=0 right-column full-justified hanged-line headchar-capital
+I-Body	as obligatory, whereas there exist cases where	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	such a subject is not realized, for example, in	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	phrases introduced by comme (as), (10). I have	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	created a pattern to take into account such	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	phrases but it does not handle all of them.	page=4 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	(10) comme il a été annoncé (as it has been	page=4 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-double-space line-space itemization
+I-Listitem	said	page=4 xpos=5 ypos=1 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Finally, gaps are found for impersonal clauses	page=4 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	with a nominal extraposed subject. In particular, I	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	have written no pattern for verbs in the passive	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	form used in a refined register, see section 2.1.	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To conclude this section on the occurrences of	page=4 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	il wrongly tagged as [ANA], I would like to add	page=4 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	that though the first three types of errors can be	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	avoided with a little effort, this is not the case for	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	the last type.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.4 Other errors: 0,2\%	page=4 xpos=5 ypos=3 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Some errors come from the fact that the word il	page=4 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	is not used as a subject pronoun but as part of a	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	named entity in a foreign language, see (11) <sup>5</sup> .	page=4 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	(10) Elle a publié cette revue appelée Il[ANA]	page=4 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-double-space line-space itemization
+I-Listitem	Caffé (She published this magazine called Il	page=4 xpos=5 ypos=4 right-column left-indent aligned-line headchar-capital
+I-Listitem	Caffé)	page=4 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-capital above-double-space above-line-space
+B-SubsectionHeader	4.5 Evaluation on other corpora	page=4 xpos=5 ypos=5 right-column right-indent font-larger hanged-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	An evaluation of ILIMP has also been realized on	page=4 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	French literary texts written in the XIXth	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	century. It concerns 1858 occurrences of il. The	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	precision rate falls compared to the journalistic	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	genre: it goes from 97,5\% to 96,8\%. This fall	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	comes, on the one hand, from impersonal	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	expressions which are not used anymore, (11), on	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the other hand, from a high number of sentences	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	with subject inversion, as in (9b) in Section 4.3.	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Recall that I have not handled subject inversion	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+E-Body	systematically.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	(11) Mais peut-être était-il un peu matin pour	page=4 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-double-space line-space itemization
+I-Listitem	organiser un concert (But maybe was it a	page=4 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower
+I-Listitem	little bit morning to organize a concert)	page=4 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	The percentage of impersonal il in literary texts	page=4 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	increases compared to Le Monde corpus: it goes	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	from 42\% to 49,8\%. In a more general way, I	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+B-Footnote	<sup>5</sup> This kind of error would be avoided if ILIMP took as input a	page=4 xpos=5 ypos=8 right-column full-justified aligned-line line-blank-line line-double-space line-space headchar-super
+I-Footnote	text in which the named entities are recognized.	page=4 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	77	page=4 xpos=4 ypos=9 single-column left-indent right-indent font-largest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	expect important differences on the percentage of	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	il with an impersonal use according to the genre	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	of corpora <sup>6</sup> , though I don't expect significant	page=5 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	differences on the precision rate of ILIMP	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	(especially if the three first types of errors	page=5 xpos=0 ypos=0 left-column full-justified aligned-line
+I-Body	described in Section 4.2 are corrected). This is	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	because the list of lexical heads for impersonal	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	clauses is closed and stable.	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusion and future work	page=5 xpos=0 ypos=1 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The method used in ILIMP to locate the	page=5 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	occurrences of il in an impersonal use, which	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	gives good results, can be used for other	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	languages and for other tasks. For English, ILIMP	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	can be straightforwardly adapted to disambiguate	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the impersonal versus anaphoric use of it as a	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	subject pronoun. It has already been said (Section	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	3.1) that a tool derived from ILIMP can be	page=5 xpos=0 ypos=3 left-column full-justified aligned-line
+I-Body	designed to identify the lexical head of a clause.	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Another tool can be designed to enhance a	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	module in charge of the computation of syntactic	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	functions, thanks to the notion of “deep	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	extraposed subject”, which is relevant for	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	impersonal clauses. Finally, the method I have	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	proposed to disambiguate an ambiguous and very	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	frequent word as il can be used for other	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	ambiguous frequent functional words such as the	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	(French) word que (which can be a	page=5 xpos=0 ypos=4 left-column full-justified aligned-line
+I-Body	complementizer, a relative pronoun, or an adverb	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	in discontinuous restrictive or comparative	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	expressions) (Jacques 2005).	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	The goal or ILIMP or related “little” tools is	page=5 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	obviously modest and restricted when compared	page=5 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	to the goal of a robust parser which would give	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	for any sentence THE correct and complete	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	analysis, with a precision rate closed to 98\%.	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	However, it has to be acknowledged that such an	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	ideal parser does not exist, neither for French nor	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	for English, despite many years of effort. So it	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	could be a wise strategy to follow the saying	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	which goes Many a little makes a mickle. If this	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	strategy is followed, research effort is needed	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	first to develop such “little” tools, second to	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	determine how to order them in an efficient	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	sequential processing chain.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Footnote	<sup>6</sup> Le Monde contains a number of long papers which	page=5 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-super
+I-Footnote	describe in detail the life and work of famous individuals.	page=5 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower tailchar-period
+I-Footnote	These papers, when they describe the life of a man, link up	page=5 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-capital
+I-Footnote	numerous occurrences of anaphoric il (he) referring to the	page=5 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	man concerned. One may expect that the percentage of	page=5 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	impersonal il increases in newspaper handling only news or	page=5 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	economy.	page=5 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+ReferenceHeader	References	page=5 xpos=5 ypos=0 right-column right-indent font-largest column-top string-reference headchar-capital above-double-space above-line-space
+B-Reference	C OURTOIS B. ( 2004), Dictionnaires électroniques	page=5 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	DELAF, Syntax, Lexis and Lexicon-Grammar.	page=5 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-capital tailchar-period
+I-Reference	Papers in honour of Maurice Gross , Lingvisticæ	page=5 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Investigationes Supplementa 24,	page=5 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	Amsterdam/Philadelphia: Benjamins, pp. 113–133.	page=5 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	D ANLOS L. (1980), Représentation d'informations	page=5 xpos=5 ypos=1 right-column full-justified hanged-line line-double-space line-space year headchar-capital
+I-Reference	linguistiques: les constructions N être Prép X.	page=5 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	Thèse de troisième cycle, Paris: Université Paris 7.	page=5 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	E VANS R. (2001), Applying Machine	page=5 xpos=5 ypos=1 right-column full-justified font-larger hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Learning toward an Automatic	page=5 xpos=5 ypos=1 right-column left-indent font-larger indented-line headchar-capital
+I-Reference	Classification of it, Literary and Linguistic	page=5 xpos=5 ypos=2 right-column left-indent font-larger aligned-line headchar-capital
+I-Reference	Computing, Vol. 16-1 pp. 45-57.	page=5 xpos=5 ypos=2 right-column left-indent right-indent font-larger aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	G ROSS M. (1975), Méthode en syntaxe, Paris,	page=5 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-comma
+I-Reference	Hermann.	page=5 xpos=5 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	G ROSS M. (1993), Les phrases figées en français,	page=5 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-comma
+I-Reference	L'information grammaticale 59, Paris, pp. 36-41.	page=5 xpos=5 ypos=3 right-column centered left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	G ROSS M . (1994), Constructing Lexicon-Grammars,	page=5 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-comma
+I-Reference	Computational Approaches to the Lexicon, Oxford,	page=5 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-capital tailchar-comma
+I-Reference	Oxford University Press, pp. 213-263.	page=5 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	J ACQUES M.P. (2005), Que : la valse des étiquettes,	page=5 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-comma
+I-Reference	Actes de TALN 05, Dourdan.	page=5 xpos=5 ypos=4 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	K ENNEDY C., B OGURAEV B. (1996), Anaphora for	page=5 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Eveyone; Pronominal Anaphora Resolution without	page=5 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	a Parser, in COLING'96, Copenhagen.	page=5 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail itemization headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	L APIN S., L EASS H.J. (1994), An algorithm for	page=5 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	pronominal anaphora resolution, Computational	page=5 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Linguistics, 20(4), pp. 535-561.	page=5 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	L ECLÈRE . C. (2003), The lexicon-grammar of	page=5 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	French verbs: a syntactic database, In Proceedings	page=5 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	of the First International Conference on Linguistic	page=5 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Informatics, Kawaguchi Y. et alii (eds.), UBLI,	page=5 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	Tokyo University of Foreign Studies.	page=5 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	N ASR A. (2004), Analyse syntaxique probabiliste pour	page=5 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	grammaires de dépendances extraites	page=5 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	automatiquement, Habilitation à diriger des	page=5 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	recherches, Université Paris 7	page=5 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Reference	S ILBERSTEIN M. (1994), INTEX: a corpus	page=5 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	processing system, in COLING'94, Kyoto, Japon,	page=5 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	vol. 1, pp. 579-583.	page=5 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	78	page=5 xpos=4 ypos=9 single-column left-indent right-indent font-largest column-top line-blank-line line-double-space line-space numeric-only

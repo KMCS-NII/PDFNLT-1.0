@@ -1,0 +1,648 @@
+Title	Generation of Relative Referring Expressions based on Perceptual Grouping	page=0 xpos=0 ypos=0 single-column centered right-indent font-largest page-top headchar-capital column-bottom above-double-space above-line-space
+Author	Kotaro FUNAKOSHI	page=0 xpos=1 ypos=0 left-column left-indent right-indent font-larger column-top line-double-space line-space headchar-capital
+B-Affiliation	Department of Computer Science	page=0 xpos=1 ypos=0 left-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Affiliation	Tokyo Institute of Technology	page=0 xpos=1 ypos=0 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-line-space
+Address	Meguro Ôokayama 2-12-1,	page=0 xpos=1 ypos=0 left-column left-indent right-indent font-larger indented-line shorter-tail line-space headchar-capital tailchar-comma
+Address	Tokyo 152-8552, Japan	page=0 xpos=1 ypos=1 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Email	koh@cl.cs.titech.ac.jp	page=0 xpos=1 ypos=1 left-column left-indent right-indent font-larger symbol-atmark headchar-lower above-double-space above-line-space
+Author	Naoko KURIYAMA	page=0 xpos=1 ypos=1 left-column left-indent right-indent font-larger line-double-space line-space headchar-capital
+B-Affiliation	Department of Human System Science	page=0 xpos=0 ypos=1 left-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Affiliation	Tokyo Institute of Technology	page=0 xpos=1 ypos=2 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-line-space
+Address	Meguro Ôokayama 2-12-1,	page=0 xpos=1 ypos=2 left-column left-indent right-indent font-larger indented-line shorter-tail line-space headchar-capital tailchar-comma
+Address	Tokyo 152-8552, Japan	page=0 xpos=1 ypos=2 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Email	kuriyama@hum.titech.ac.jp	page=0 xpos=1 ypos=2 left-column left-indent right-indent font-larger hanged-line longer-tail symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=3 left-column left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	Past work of generating referring expressions	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	mainly utilized attributes of objects and bi-	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	nary relations between objects. However, such	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	an approach does not work well when there	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	is no distinctive attribute among objects. To	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	overcome this limitation, this paper proposes a	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	method utilizing the perceptual groups of ob-	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	jects and n-ary relations among them. The key	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	is to identify groups of objects that are natu-	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	rally recognized by humans. We conducted psy-	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	chological experiments with 42 subjects to col-	page=0 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	lect referring expressions in such situations, and	page=0 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	built a generation algorithm based on the re-	page=0 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sults. The evaluation using another 23 subjects	page=0 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	showed that the proposed method could effec-	page=0 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tively generate proper referring expressions.	page=0 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-larger hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In the last two decades, many researchers have stud-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ied the generation of referring expressions to enable	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	computers to communicate with humans about con-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	crete objects in the world.	page=0 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For that purpose, most past work (Appelt, 1985;	page=0 xpos=0 ypos=7 left-column left-indent indented-line longer-tail year headchar-capital tailchar-semicolon
+I-Body	Dale and Haddock, 1991; Dale, 1992; Dale and	page=0 xpos=0 ypos=7 left-column full-justified hanged-line year headchar-capital
+I-Body	Reiter, 1995; Heeman and Hirst, 1995; Horacek,	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-capital tailchar-comma
+I-Body	1997; Krahmer and Theune, 2002; van Deemter,	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year tailchar-comma
+I-Body	2002; Krahmer et al., 2003) makes use of attributes	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year
+I-Body	of an intended object (the target) and binary rela-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions between the target and others (distractors) to	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	distinguish the target from distractors. Therefore,	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	these methods cannot generate proper referring ex-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pressions in situations where no significant surface	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	difference exists between the target and distractors,	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and no binary relation is useful to distinguish the	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	target. Here, a proper referring expression means	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	a concise and natural linguistic expression enabling	page=0 xpos=0 ypos=9 left-column full-justified aligned-line itemization headchar-lower
+E-Body	hearers to distinguish the target from distractors.	page=0 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+Author	Satoru WATANABE	page=0 xpos=6 ypos=0 right-column left-indent right-indent font-larger column-top headchar-capital
+B-Affiliation	Department of Computer Science	page=0 xpos=5 ypos=0 right-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Affiliation	Tokyo Institute of Technology	page=0 xpos=5 ypos=0 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-line-space
+Address	Meguro Ôokayama 2-12-1,	page=0 xpos=5 ypos=0 right-column left-indent right-indent font-larger indented-line shorter-tail line-space headchar-capital tailchar-comma
+Address	Tokyo 152-8552, Japan	page=0 xpos=5 ypos=1 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Email	satoru w@cl.cs.titech.ac.jp	page=0 xpos=5 ypos=1 right-column left-indent right-indent font-larger hanged-line longer-tail symbol-atmark headchar-lower above-double-space above-line-space
+Author	Takenobu TOKUNAGA	page=0 xpos=5 ypos=1 right-column left-indent right-indent font-larger indented-line line-double-space line-space headchar-capital
+B-Affiliation	Department of Computer Science	page=0 xpos=5 ypos=1 right-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Affiliation	Tokyo Institute of Technology	page=0 xpos=5 ypos=2 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-line-space
+Address	Meguro Ôokayama 2-12-1,	page=0 xpos=5 ypos=2 right-column left-indent right-indent font-larger indented-line shorter-tail line-space headchar-capital tailchar-comma
+Address	Tokyo 152-8552, Japan	page=0 xpos=5 ypos=2 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Email	take@cl.cs.titech.ac.jp	page=0 xpos=6 ypos=2 right-column left-indent right-indent font-larger symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+B-Body	For example, consider indicating object b to per-	page=0 xpos=5 ypos=3 right-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	son P in the situation shown in Figure 1. Note that	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	person P does not share the label information such	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	as a and b with the speaker. Because object b is	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	not distinguishable from objects a or c by means of	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	their appearance, one would try to use a binary re-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lation between object b and the table, i.e., “A ball	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to the right of the table”. <sup>1</sup> However, “to the right	page=0 xpos=5 ypos=4 right-column centered right-indent font-largest aligned-line headchar-lower
+I-Body	of ” is not a discriminatory relation, for objects a	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	and c are also located to the right of the table. Us-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing a and c as a reference object instead of the ta-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ble does not make sense, since a and c cannot be	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	uniquely identified because of the same reason that	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	b cannot be identified. Such situations have never	page=0 xpos=5 ypos=5 right-column full-justified aligned-line itemization headchar-lower
+I-Body	drawn much attention, but can occur easily and fre-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quently in some domains such as object arrange-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ment (Tanaka et al., 2004).	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Body	van der Sluis and Krahmer (2000) proposed us-	page=0 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space year headchar-lower tailchar-hiphen
+I-Body	ing gestures such as pointing in situations like those	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	shown in Figure 1. However, pointing and gazing	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	are not always available depending on the positional	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	relation between the speaker and the hearer.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In the situation shown in Figure 1, a speaker can	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	indicate object b to person P with a simple expres-	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sion “the front ball” without using any gesture. In	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	order to generate such an expression, one must be	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	able to recognize the salient perceptual group of the	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	objects and use the n-ary relative relations in the	page=0 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	group. <sup>2</sup>	page=0 xpos=5 ypos=8 right-column right-indent font-largest aligned-line shorter-tail headchar-lower above-line-space
+B-Body	In this paper, we propose a method of generat-	page=0 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen above-blank-line above-double-space above-line-space
+B-Footnote	<sup>1</sup> In this paper, we simply assume that all participants share	page=0 xpos=5 ypos=8 right-column left-indent right-indent font-smaller line-blank-line line-double-space line-space headchar-super
+I-Footnote	the appropriate reference frame (Levinson, 2003). We mention	page=0 xpos=5 ypos=9 right-column centered right-indent font-smallest hanged-line year headchar-lower
+I-Footnote	this issue in the last section.	page=0 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>2</sup> Although Krahmer et al. claim that their method can han-	page=0 xpos=5 ypos=9 right-column left-indent right-indent font-smaller indented-line longer-tail headchar-super tailchar-hiphen
+I-Footnote	dle n-ary relations (Krahmer et al., 2003), they provide no de-	page=0 xpos=5 ypos=9 right-column centered right-indent font-larger hanged-line year headchar-lower tailchar-hiphen
+I-Footnote	tails. We think their method cannot directly handle situations	page=0 xpos=5 ypos=9 right-column centered right-indent font-smallest aligned-line headchar-lower
+I-Footnote	we discuss here.	page=0 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+I-Body	ing referring expressions that utilizes n-ary relations	page=1 xpos=0 ypos=0 left-column full-justified font-largest page-top headchar-lower
+I-Body	among members of a group. Our method recognizes	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	groups by using Thórisson’s algorithm (Thórisson,	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1994). As the first step of our research project, we	page=1 xpos=0 ypos=0 left-column full-justified aligned-line year
+I-Body	deal with the limited situations where only homoge-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	neous objects are randomly arranged (see Figure 2).	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Therefore, we handle positional n-ary relation only,	page=1 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-capital tailchar-comma
+I-Body	and other types of n-ary relation such as size, e.g.,	page=1 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+E-Body	“the biggest one”, are not mentioned.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	Speakers often refer to multiple groups in the	page=1 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	course of referring to the target. In these cases, we	page=1 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	can observe two types of relations: the intra-group	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	relation such as “the front two among the five near	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the desk”, and the inter-group relation such as “the	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	two to the right of the five”. We define that a sub-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sumption relation between two groups is an intra-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	group relation.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In what follows, Section 2 explains the exper-	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	iments conducted to collect expressions in which	page=1 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	perceptual groups are used. The proposed method is	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	described and evaluated in Section 3. In Section 4,	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we examine a possibility to predict the adequacy of	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	an expression in terms of perceptual grouping. Fi-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	nally, we conclude the paper in Section 5.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 1__	page=1 xpos=1 ypos=4 left-column left-indent right-indent box indented-line shorter-tail line-double-space line-space figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: An example of problematic situations	page=1 xpos=0 ypos=6 left-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-SectionHeader	2 Data Collection	page=1 xpos=0 ypos=6 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-line-space
+B-Body	We conducted a psychological experiment with 42	page=1 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	Japanese undergraduate students to collect referring	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	expressions in which perceptual groups are used. In	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	order to evaluate the collected expressions, we con-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ducted another experiment with a different group of	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	44 Japanese undergraduate students. There is no	page=1 xpos=0 ypos=7 left-column full-justified aligned-line numbered-heading1
+I-Body	overlap between the subjects of those two experi-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments. Details of this experiment are described in	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	the following subsections.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.1 Collecting Referring Expressions	page=1 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	Method Subjects were presented 2-dimensional	page=1 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	bird’s-eye images in which several objects of the	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	same color and the same size were arranged and the	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	subjects were requested to convey a target object to	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the third person drawn in the same image. We used	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	12 images of arrangements. In each image, three	page=1 xpos=0 ypos=9 left-column full-justified aligned-line numbered-heading1 column-bottom
+I-Body	to nine objects were arranged manually so that the	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	objects distributes non-uniformly. An example of	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	images presented to subjects is shown in Figure 2.	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Labels a, . . . , f, x in the image are assigned for pur-	page=1 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	poses of illustration and are not assigned in the ac-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tual images presented to the subjects. Each subject	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	was asked to describe a command so that the person	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	in the image picks a target object that is enclosed	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	with dotted lines. When a subject could not think	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	of a proper expression, she/he was allowed to aban-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	don that arrangement and proceed to the next one.	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Referring expressions designating the target object	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+E-Body	were collected from these subjects’ commands.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Figure 2__	page=1 xpos=6 ypos=2 right-column left-indent right-indent box indented-line shorter-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 2: A visual stimulus of the experiment	page=1 xpos=5 ypos=4 right-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-Body	Analysis We presented 12 arrangements to 42	page=1 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	subjects and obtained 476 referring expressions.	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Twenty eight judgments were abandoned in the ex-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	periment. Observing the collected expressions, we	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	found that starting from a group with all of the ob-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	jects, subjects generally narrow down the group to	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	a singleton group that has the target object. There-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	fore, a referring expression can be formalized as a	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	sequence of groups (SOG) reflecting the subject’s	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	narrowing down process.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The following example shows an observed ex-	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	pression describing the target x in Figure 2 with the	page=1 xpos=5 ypos=6 right-column full-justified font-largest hanged-line headchar-lower
+E-Body	corresponding SOG representation below it.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Quote	“hidari oku ni aru mittu no tama no uti no	page=1 xpos=5 ypos=7 right-column centered left-indent right-indent indented-line longer-tail line-blank-line line-double-space line-space
+I-Quote	itiban migi no tama.”	page=1 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-lower
+I-Quote	(the rightmost ball among the three balls	page=1 xpos=5 ypos=7 right-column centered left-indent right-indent aligned-line longer-tail
+I-Quote	at the back left)	page=1 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+I-Quote	SOG:[{a, b, c, d, e, f, x}, {a, b, x}, {x}] 3	page=1 xpos=5 ypos=8 right-column left-indent right-indent font-largest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Quote	where	page=1 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-lower
+I-Quote	{a, b, c, d, e, f, x} denotes all objects in	page=1 xpos=5 ypos=8 right-column centered left-indent right-indent font-largest aligned-line longer-tail
+I-Quote	the image (total set),	page=1 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-comma
+I-Quote	{a, b, x} denotes the three objects at the	page=1 xpos=5 ypos=8 right-column centered left-indent right-indent font-largest aligned-line longer-tail
+I-Quote	back left, and	page=1 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail headchar-lower
+I-Quote	{x} denotes the target.	page=1 xpos=5 ypos=9 right-column left-indent right-indent font-largest aligned-line longer-tail tailchar-period above-double-space above-line-space
+B-Footnote	<sup>3</sup> We denote an SOG representation by enclosing groups	page=1 xpos=5 ypos=9 right-column left-indent right-indent font-smaller hanged-line longer-tail line-double-space line-space headchar-super
+I-Footnote	with square brackets.	page=1 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Body	Since narrowing down starts from the total set,	page=2 xpos=0 ypos=0 left-column left-indent page-top headchar-capital tailchar-comma
+I-Body	the SOG representation starts with a set of all ob-	page=2 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	jects and ends with a singleton group with the tar-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	get. Translating the collected referring expressions	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	into the SOG representation enables us to abstract	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	and classify the expressions. On average, we ob-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tained about 40 expressions for each arrangement,	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and classified them into 8.4 different SOG represen-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tations.	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Although there are two types of relations be-	page=2 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tween groups as we mentioned in Section 1, the ex-	page=2 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	pressions using only intra-group relations made up	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	about 70% of the total.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 Evaluating the Collected Expressions	page=2 xpos=0 ypos=2 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Method Subjects were presented expressions col-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	lected in the experiment described in Section 2.1 to-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gether with the corresponding images, and were re-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quested to indicate objects referred to by the expres-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sions. The presented images are the same as those	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	used in the previous experiment except that there are	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	no marks on the targets. At the same time, subjects	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	were requested to express their confidence in select-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the target, and evaluate the conciseness, and the	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	naturalness of the given expressions on a scale of 1	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	to 8.	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Because the number of expressions that we could	page=2 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	evaluate with subjects was limited, we chose a max-	page=2 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	imum of 10 frequent expressions for each arrange-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment. The expressions were chosen so that as many	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	different SOG representations were included as pos-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sible. If an arrangement had SOGs less than 10,	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	several expressions that had the same SOG but dif-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent surface realizations were chosen. The resul-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tant 117 expressions were evaluated by 49 subjects.	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+E-Body	Each subject evaluated about 29.5 expressions.	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Body	Analysis Discarding incomplete answers, we ob-	page=2 xpos=0 ypos=6 left-column centered right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tained 1,429 evaluations in total. 12.2 evaluations	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	were obtained for each expression on average.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We measured the quality of each expression in	page=2 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	terms of an evaluation value that is defined in (1).	page=2 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	This measure is used to analyze what kind of ex-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	pressions are preferred and to set up a scoring func-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion (6) for machine-generated expressions as de-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	scribed in Section 3.1.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	(evaluation value)	page=2 xpos=1 ypos=8 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space
+I-Equation	= (accuracy ) × (confidence )	page=2 xpos=0 ypos=8 left-column left-indent right-indent font-largest hanged-line longer-tail
+I-Equation	× (naturalness ) + (conciseness) (1)	page=2 xpos=0 ypos=8 left-column left-indent right-indent font-largest aligned-line longer-tail
+I-Equation	2	page=2 xpos=2 ypos=9 left-column left-indent right-indent font-largest indented-line shorter-tail numeric-only above-double-space above-line-space
+B-Body	According to our analysis, the expressions with	page=2 xpos=0 ypos=9 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	only intra-group relations (84 samples) obtained	page=2 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower
+I-Body	high accuracies (Ave. 79.3%) and high evaluation	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	values (Ave. 33.1), while the expressions with inter-	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	group relations (33 samples) obtained lower accura-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cies (Ave. 69.1%) and lower evaluation values (Ave.	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-period
+E-Body	19.7).	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	The expressions with only intra-group relations	page=2 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	are observed more than double as many as the ex-	page=2 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	pressions with inter-group relations. We provide a	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	couple of example expressions indicating object x	page=2 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	in Figure 2 to contrast those two types of expres-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sions below.	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	• without inter-group relations	page=2 xpos=5 ypos=1 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space itemization above-double-space above-line-space
+B-Listitem	– “the rightmost ball among the three balls	page=2 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-double-space line-space
+I-Listitem	at the back left”	page=2 xpos=6 ypos=2 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	• with inter-group relations	page=2 xpos=5 ypos=2 right-column left-indent right-indent font-largest hanged-line longer-tail line-double-space line-space itemization above-double-space above-line-space
+B-Listitem	– “the ball behind the two front balls”	page=2 xpos=5 ypos=3 right-column left-indent right-indent indented-line longer-tail line-double-space line-space above-double-space above-line-space
+B-Body	In addition, expressions explicitly mentioning all	page=2 xpos=5 ypos=3 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	the objects obtained lower evaluation values. Con-	page=2 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sidering these observations, we built a generation	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	algorithm using only intra-group relations and did	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	not mention all the objects explicitly.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Among these expressions, we selected those with	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	which the subjects successfully identified the target	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	with more than 90% accuracy. These expressions	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	are used to extract parameters of our generation al-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	gorithm in the following sections.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Generating Referring Expressions	page=2 xpos=5 ypos=5 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	3.1 Generation Algorithm	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	Given an arrangement of objects and a target, our al-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	gorithm generates referring expressions by the fol-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lowing three steps:	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	Step 1: enumerate perceptual groups based on the	page=2 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Listitem	proximity between objects	page=2 xpos=5 ypos=6 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	Step 2: generate the SOG representations by com-	page=2 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Listitem	bining the groups	page=2 xpos=5 ypos=7 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	Step 3: translate the SOG representations into lin-	page=2 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Listitem	guistic expressions	page=2 xpos=5 ypos=7 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	In the rest of this section, we illustrate how these	page=2 xpos=5 ypos=8 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	three steps generate referring expressions in the sit-	page=2 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+E-Body	uation shown in Figure 2.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Step 1: Enumerating Perceptual Groups.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period above-line-space
+I-Body	To generate perceptual groups from an arrangement,	page=2 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-comma
+E-Body	Thórisson’s algorithm (Thórisson, 1994) is adopted.	page=2 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-capital tailchar-period
+B-Body	Given a list of objects in an arrangement, the al-	page=2 xpos=5 ypos=9 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Body	gorithm generates groups based on the proximity of	page=2 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Body	the objects and returns a list of groups. Only groups	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	containing the target, that is x, are chosen because	page=2 xpos=5 ypos=9 right-column full-justified font-largest aligned-line headchar-lower page-bottom
+Figure	__Figure 3__	page=3 xpos=0 ypos=-2 single-column left-indent right-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 3: An example of surface realization	page=3 xpos=2 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Body	we handle intra-group relations only as mentioned	page=3 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower
+I-Body	before, and that implies that all groups mentioned	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	in an expression must include the target. Then, the	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	groups are sorted in descending order of the group	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	size. Finally a singleton group consisting of the tar-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	get is added to the end of the list if such a group is	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	missing in the list. The resultant group list, GL, is	page=3 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	the output of Step 1.	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For example, the algorithm recognizes the fol-	page=3 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	lowing groups given the arrangement shown in Fig-	page=3 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ure 2:	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	{{a, b, c, d, e, f, x}, {a, b, c, d, x},	page=3 xpos=0 ypos=2 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space tailchar-comma
+I-Equation	{a, b, x}, {c, d}, {e, f }}.	page=3 xpos=2 ypos=3 left-column left-indent right-indent font-largest indented-line longer-tail tailchar-period above-double-space above-line-space
+B-Body	After filtering out the groups without the target and	page=3 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	adding a singleton group with the target, we obtain	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the following list:	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	{{a, b, c, d, e, f, x}, {a, b, c, d, x}, {a, b, x}, {x}}.	page=3 xpos=0 ypos=4 left-column left-indent right-indent font-largest longer-tail line-double-space line-space tailchar-period
+I-Equation	(2)	page=3 xpos=4 ypos=4 left-column left-indent right-indent indented-line longer-tail above-double-space above-line-space
+B-Body	Step 2: Generating the SOG Representations.	page=3 xpos=0 ypos=4 left-column right-indent hanged-line shorter-tail line-double-space line-space headchar-capital tailchar-period above-line-space
+I-Body	In this step, the SOG representations introduced in	page=3 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	Section 2 are generated from the GL of Step 1,	page=3 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-capital tailchar-comma
+I-Body	which generally has a form like (3), where G i de-	page=3 xpos=0 ypos=5 left-column right-indent font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	notes a group, and G 0 is a group of all the objects.	page=3 xpos=0 ypos=5 left-column centered right-indent font-largest aligned-line headchar-lower tailchar-period
+I-Body	Here, we narrow down the objects starting from the	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+E-Body	total set (G 0 ) to the target ({x}).	page=3 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	[G <sub>0</sub> , G 1 , . . . , G m−2 , {x}] (3)	page=3 xpos=1 ypos=6 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space above-double-space above-line-space
+B-Body	Given a group list GL, all possible SOGs are gen-	page=3 xpos=0 ypos=6 left-column left-indent font-largest hanged-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	erated. From a group list of size m, 2 <sup>m−2</sup> SOG	page=3 xpos=0 ypos=7 left-column right-indent font-largest hanged-line headchar-lower
+I-Body	representations can be generated since G 0 and {x}	page=3 xpos=0 ypos=7 left-column right-indent font-largest aligned-line headchar-lower
+I-Body	should be included in the SOG representation. For	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	example, from a group list of {G <sub>0</sub> , G 1 , G 2 , {x}},	page=3 xpos=0 ypos=7 left-column right-indent font-largest aligned-line headchar-lower tailchar-comma
+I-Body	we obtain four SOGs: [G <sub>0</sub> , {x}], [G 0 , G 1 , {x}],	page=3 xpos=0 ypos=7 left-column right-indent font-largest aligned-line headchar-lower tailchar-comma
+E-Body	[G <sub>0</sub> , G 2 , {x}], and [G 0 , G 1 , G 2 , {x}].	page=3 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail tailchar-period
+B-Body	For example, one of the SOG representations	page=3 xpos=0 ypos=8 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	generated from list (2) is	page=3 xpos=0 ypos=8 left-column right-indent hanged-line shorter-tail headchar-lower above-double-space above-line-space
+B-Equation	[{a, b, c, d, e, f, x}, {a, b, x}, {x}]. (4)	page=3 xpos=0 ypos=8 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space above-double-space above-line-space
+B-Body	Note that any two groups G i and G j in a list of	page=3 xpos=0 ypos=9 left-column left-indent right-indent font-largest hanged-line line-double-space line-space headchar-capital
+I-Body	groups generated by Thórisson’s algorithm with re-	page=3 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	gard to one feature, e.g., proximity in this paper, are	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	mutually disjoint (G i ∩G j = φ), otherwise one sub-	page=3 xpos=5 ypos=0 right-column centered right-indent font-largest column-top headchar-lower tailchar-hiphen
+I-Body	sumes the other (G i ⊂ G j or G j ⊂ G i ). No inter-	page=3 xpos=5 ypos=0 right-column centered right-indent font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	secting groups without a subsumption relation are	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	generated.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Step 3: Generating Linguistic Expressions.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period above-line-space
+I-Body	In the last step, the SOG representations are trans-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	lated into linguistic expressions. Since Japanese is	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	a head-final language, the order of linguistic ex-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	pressions for groups are retained in the final lin-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guistic expression for the SOG representation. That	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	is, an SOG representation [G <sub>0</sub> , G 1 , . . . , G n−2 , {x}]	page=3 xpos=5 ypos=2 right-column right-indent font-largest aligned-line headchar-lower
+I-Body	can be realized as shown in (5), where E(X) de-	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	notes a linguistic expression for X, R(X, Y ) de-	page=3 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	notes a relation between X and Y , and ‘+’ is a	page=3 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	string concatenation operator.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	E(G 0 ) + E(R(G 0 , G 1 )) + E(G 1 ) + . . .	page=3 xpos=5 ypos=3 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Equation	+E(R(G <sub>n−2</sub> , {x})) + E({x}) (5)	page=3 xpos=6 ypos=4 right-column left-indent right-indent font-largest indented-line longer-tail above-double-space above-line-space
+B-Body	As described in Section 2.2, expressions that ex-	page=3 xpos=5 ypos=4 right-column left-indent hanged-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	plicitly mention all the objects obtain lower evalu-	page=3 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ation values, and expressions using intra-group re-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lations obtain high evaluation values. Considering	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	these observations, our algorithm does not use the	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	linguistic expression corresponding to all the ob-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	jects, that is E(G 0 ), and only uses intra-group re-	page=3 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	lations for R(X, Y ).	page=3 xpos=5 ypos=6 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Possible expressions of X are collected from the	page=3 xpos=5 ypos=6 right-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	experimental data in Section 2.1, and the first ap-	page=3 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	plicable expression is selected when realizing a lin-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guistic expression for X, i.e., E(X). Therefore,	page=3 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	this algorithm produces one linguistic expression	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	for each SOG even though there are some other pos-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sible expressions.	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For example, the SOG representation (4) is real-	page=3 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+E-Body	ized as shown in Figure 3.	page=3 xpos=5 ypos=7 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-period
+B-Body	Note that there is no mention of all the objects,	page=3 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+E-Body	{a, b, c, d, e, f, x}, in the linguistic expression.	page=3 xpos=5 ypos=8 right-column right-indent font-largest hanged-line shorter-tail tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Evaluation of Generated Expressions	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	We implemented the algorithm described in Sec-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tion 3.1, and evaluated the output with 23 under-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	graduate students. The subjects were different from	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	those of the previous experiments but were of the	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	same age group, and the experimental environment	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Table	__Table 1__	page=4 xpos=0 ypos=-2 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: Summary of evaluation	page=4 xpos=3 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Body	was the same. The evaluation of the output was per-	page=4 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+E-Body	formed in the same manner as that of Section 2.2.	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The results are shown in Table 1. “Human-	page=4 xpos=0 ypos=0 left-column left-indent right-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	12-all” shows the average values of all expres-	page=4 xpos=0 ypos=1 left-column full-justified hanged-line tailchar-hiphen
+I-Body	sions collected from humans with 12 arrangements	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	as described in Section 2.2. “Human-12-90” and	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	“Human-12-100” show the average values of ex-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line tailchar-hiphen
+I-Body	pressions by humans that gained more than 90%	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	and 100% in accuracy in the same evaluation ex-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	periment respectively.	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	“System-12” shows the average values of expres-	page=4 xpos=0 ypos=2 left-column left-indent indented-line longer-tail tailchar-hiphen
+I-Body	sions generated by the algorithm for the 12 arrange-	page=4 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ments used in the data collection experiment de-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scribed in Section 2.1. The algorithm generated 18	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	expressions for the 12 arrangements, which were	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	presented to each subject in random order for eval-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	uation.	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	“System-20” shows the average values of expres-	page=4 xpos=0 ypos=4 left-column left-indent indented-line longer-tail tailchar-hiphen
+I-Body	sions generated by the algorithm for 20 randomly	page=4 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	generated arrangements that generate at least two	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	linguistic expressions each. The algorithm gen-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erated 48 expressions for these 20 arrangements,	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which were evaluated in the same manner as that	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	of “System-12”.	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	“System-Average” shows the micro average of	page=4 xpos=0 ypos=5 left-column left-indent indented-line longer-tail
+I-Body	expressions of both “System-12” and “System-20”.	page=4 xpos=0 ypos=5 left-column centered right-indent hanged-line headchar-lower tailchar-period
+I-Body	“Accuracy” shows the rates at which the sub-	page=4 xpos=0 ypos=6 left-column left-indent indented-line tailchar-hiphen
+I-Body	jects could identify the correct target objects from	page=4 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	the given expressions. Comparing the accuracies of	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	“Human-12-*” and “System-12”, we find that the	page=4 xpos=0 ypos=6 left-column full-justified aligned-line
+I-Body	algorithm generates good expressions. Moreover,	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the algorithm is superior to human in terms of “Nat-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	uralness” and “Conciseness”. However, this result	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	should be interpreted carefully. Further investiga-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of the expressions revealed that humans often	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	sacrificed naturalness and conciseness in order to	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	describe the target as precisely as possible for com-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	plex arrangements.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Scoring SOG Representations	page=4 xpos=0 ypos=8 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The algorithm presented in the previous section out-	page=4 xpos=0 ypos=9 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	puts several possible expressions. Therefore, we	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	have to choose one of the expressions by calculat-	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ing their scores.	page=4 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	The scores can be computed using various mea-	page=4 xpos=5 ypos=0 right-column left-indent column-top headchar-capital tailchar-hiphen
+I-Body	sures, such as complexity of expressions, and	page=4 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	salience of referent objects. In this section, we in-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vestigate whether the adequacies of the courses of	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	narrowing down can be predicted: that is, whether	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	meaningful scores of SOG representations can be	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	calculated.	page=4 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Method for SOG Scoring	page=4 xpos=5 ypos=2 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	An SOG representation has a form as stated in (3).	page=4 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-period
+I-Body	We presumed that, when a speaker tries to narrow	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	down an object group from G i to G i+1 , there is	page=4 xpos=5 ypos=2 right-column centered right-indent font-largest aligned-line headchar-lower
+I-Body	an optimal ratio between the dimensions of G i and	page=4 xpos=5 ypos=2 right-column centered right-indent font-largest aligned-line headchar-lower
+I-Body	G i+1 . In other words, narrowing down a group from	page=4 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-capital
+I-Body	a very big one to a very small one might cause hear-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+E-Body	ers to become confused.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For example, consider the following two expres-	page=4 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	sions that both indicate object x in Figure 2. Hearers	page=4 xpos=5 ypos=4 right-column full-justified font-largest hanged-line headchar-lower
+E-Body	would prefer (i) to (ii) though (ii) is simpler than (i).	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	(i) “the rightmost ball among the three balls at the	page=4 xpos=5 ypos=4 right-column left-indent indented-line line-double-space line-space itemization
+I-Listitem	back left”	page=4 xpos=5 ypos=4 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	(ii) “the fourth ball from the right”	page=4 xpos=5 ypos=5 right-column left-indent right-indent hanged-line longer-tail line-double-space line-space above-double-space above-line-space
+B-Body	In fact, we found (i) among the expressions col-	page=4 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	lected in Section 2.1, but did not find (ii) among	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	them. Our algorithm generated both (i) and (ii)	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	in Section 3.2, and the two expressions gained the	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	evaluation values of 44.4 and 32.1 respectively.	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	If our presumption is correct, we can expect	page=4 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	to choose better expressions by choosing expres-	page=4 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sions that have adequate dimension ratios between	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	groups.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Calculation Formula	page=4 xpos=5 ypos=7 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital above-line-space
+I-Body	The total score of an SOG representation is calcu-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	lated by averaging the scores given by functions f 1	page=4 xpos=5 ypos=7 right-column right-indent font-largest aligned-line headchar-lower
+I-Body	and f 2 whose parameters are dimension ratios be-	page=4 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	tween two consecutive groups as given in (6), where	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	n is the number of groups in the SOG.	page=4 xpos=5 ypos=8 right-column right-indent font-largest aligned-line shorter-tail itemization headchar-lower tailchar-period
+B-Equation	1 <sup>n−3</sup>   dim(G <sub>i+1</sub> ) 	page=4 xpos=7 ypos=8 right-column left-indent right-indent font-largest indented-line longer-tail numbered-heading1
+I-Equation	{ f <sub>1</sub> dim(G <sub>i</sub> )	page=4 xpos=7 ypos=9 right-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	score(SOG) =	page=4 xpos=5 ypos=9 right-column left-indent right-indent font-largest hanged-line shorter-tail headchar-lower
+I-Equation	n − 1	page=4 xpos=7 ypos=9 right-column left-indent right-indent font-largest indented-line longer-tail itemization headchar-lower
+I-Equation	 <sup>i=0</sup> 	page=4 xpos=7 ypos=9 right-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	+ f <sub>2</sub> dim(G dim({x}) <sub>n−2</sub> ) }	page=4 xpos=6 ypos=9 right-column left-indent right-indent font-largest hanged-line longer-tail
+I-Equation	(6)	page=4 xpos=9 ypos=9 right-column left-indent right-indent indented-line longer-tail page-bottom
+B-Body	The dimension of a group dim is defined as the	page=5 xpos=0 ypos=0 left-column left-indent right-indent font-largest page-top headchar-capital
+I-Body	average distance between the centroid of the group	page=5 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	and that of each object. The dimension of the sin-	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gleton group {x} is defined as a constant value. Be-	page=5 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	cause of this idiosyncrasy of the singleton group	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	{x} compared to other groups, f <sub>2</sub> was introduced	page=5 xpos=0 ypos=0 left-column centered right-indent font-largest aligned-line
+I-Body	separately from f 1 even though both functions rep-	page=5 xpos=0 ypos=1 left-column centered right-indent font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	resent the same concept, as described below.	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The optimal ratio between two groups, and that	page=5 xpos=0 ypos=1 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	from a group to the target were found through the	page=5 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	quadratic regression analysis of data collected in the	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	experiment described in Section 2.2. f 1 and f 2 are	page=5 xpos=0 ypos=2 left-column right-indent font-largest aligned-line headchar-lower
+I-Body	the two regression curves found through analysis	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	representing correlations between dimension ratios	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	and values calculated based on human evaluation as	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	in formula (1).We could not find direct correlations	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	between dimension ratios and accuracies.	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Results	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	We checked to what extent the scores of generated	page=5 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	expressions given by formula (6) conformed with	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the human evaluation given by formula (1) as agree-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment. Agreement was calculated as follows using	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	20 randomly generated arrangements described in	page=5 xpos=0 ypos=4 left-column full-justified aligned-line numbered-heading1
+E-Body	Section 3.2.	page=5 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	First, the generated expressions were ordered ac-	page=5 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	cording to the score given by formula (6) and the	page=5 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	human evaluation given by formula (1). All binary	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	order relations between two expressions were ex-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tracted from these two ordered lists of expressions.	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The agreement was defined as the ratio of the same	page=5 xpos=0 ypos=5 left-column centered right-indent aligned-line headchar-capital
+I-Body	binary order relations among all binary order rela-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tions.	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The agreement between scores and the human	page=5 xpos=0 ypos=6 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	evaluation was 45.8%. The score did not predict	page=5 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	SOG representations that would generate better ex-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	pressions very well. Further research is required to	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	conclusively rule out the use of dimension ratios for	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	prediction or whether other factors are involved.	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Concluding Remarks and Future Work	page=5 xpos=0 ypos=7 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	This paper proposed an algorithm that generates re-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ferring expressions using perceptual groups and n-	page=5 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ary relations among them. The algorithm was built	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	on the basis of the analysis of expressions that were	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	collected through psychological experiments. The	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	performance of the algorithm was evaluated by 23	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	subjects and it generated promising results.	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the following, we look at future work to be	page=5 xpos=0 ypos=8 left-column left-indent right-indent indented-line longer-tail headchar-capital
+E-Body	done.	page=5 xpos=0 ypos=9 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Recognizing salient geometric formations:	page=5 xpos=0 ypos=9 left-column centered right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-colon
+I-Body	Thórisson’s algorithm (Thórisson, 1994) cannot	page=5 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-capital
+I-Body	recognize a linear arrangement of objects as a	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	group, although such arrangements are quite salient	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	for humans. This is one of the reasons for the	page=5 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	disconformity between the evaluations given by the	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	algorithm and those of the humans subjects.	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We can enumerate most of such geometric ar-	page=5 xpos=5 ypos=0 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	rangements salient for human subject by referring to	page=5 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	geometric terms found in lexicons and thesauri such	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	as ”line”, ”circle”, ”square” and so on. Thórisson’s	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	algorithm should be extended to recognize these ar-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	rangements.	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Using relations other than positional relations:	page=5 xpos=5 ypos=1 right-column centered right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-colon
+I-Body	In this paper, we focused on positional relations of	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	perceptual groups. Other relations such as degree of	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	color and size should be treated in the same manner.	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period above-line-space
+B-Body	Thórisson’s original algorithm (Thórisson, 1994)	page=5 xpos=5 ypos=2 right-column left-indent indented-line line-space year headchar-capital
+I-Body	takes into account these relations as well as posi-	page=5 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tional relations of objects when calculating similar-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity between objects to generate groups. However, if	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	we generate groups using multiple relations simul-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	taneously, the assumption used in Step 1 of our al-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gorithm that any pair of groups in an output list do	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	not intersect without a subsumption relation cannot	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	be held. Therefore, the mechanism generating SOG	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	representations (Step 2 in Section 3.1) must be re-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	considered.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Resolving reference frames and differences of	page=5 xpos=5 ypos=4 right-column centered right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	perspective: We assumed that all participants in	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	a conversation shared the same reference frame.	page=5 xpos=5 ypos=4 right-column full-justified aligned-line itemization headchar-lower tailchar-period
+I-Body	However, when we apply our method to conversa-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tional agent systems, e.g., (Cavazza et al., 2002;	page=5 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Tanaka et al., 2004), reference frames must be prop-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	erly determined each time to generate referring ex-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pressions. Although there are many studies con-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cerning reference frames, e.g., (Clark, 1973; Her-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	skovits, 1986; Levinson, 2003), little attention has	page=5 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Body	been paid to how reference frames are determined in	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	terms of the perceptual groups and their elements.	page=5 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In addition to reference frames, differences of	page=5 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	perspective also have to be taken into account to	page=5 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	produce proper referring expressions since humans	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	often view spatial relations between objects in a	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	3-dimensional space by projecting them on a 2-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line tailchar-hiphen
+I-Body	dimensional plane. In the experiments, we pre-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sented the subjects with 2-dimensional bird’s-eye	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	images. The result might have been different if we	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	had used 3-dimensional images instead, because the	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	projection changes the sizes of objects and spatial	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	relations among them.	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Integration with conventional methods: In this	page=5 xpos=5 ypos=8 right-column centered right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	paper, we focused on a limited situation where in-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	herent attributes of objects do not serve any identi-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fying function, but this is not the case in general. An	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	algorithm integrating conventional attribute-based	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	methods and the proposed method should be formu-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+E-Body	lated to achieve the end goal.	page=6 xpos=0 ypos=0 left-column right-indent page-top headchar-lower tailchar-period above-line-space
+B-Body	A possible direction would be to enhance the al-	page=6 xpos=0 ypos=0 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	gorithm proposed by Krahmer et al. (Krahmer et	page=6 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	al., 2003). They formalize an object arrangement	page=6 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower
+I-Body	(scene) as a labeled directed graph in which ver-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line tailchar-hiphen
+I-Body	tices model objects and edges model attributes and	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	binary relations, and regard content selection as a	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	subgraph construction problem. Their algorithm	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	performs searches directed by a cost function on a	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	graph to find a unique subgraph.	page=6 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	If we consider a perceptual group as an ordinary	page=6 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	object as shown in Figure 4, their algorithm is appli-	page=6 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	cable. It will be able to handle not only intra-group	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	relations (e.g., the edges with labels “front”, “mid-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dle”, and “back” in Figure 4) but also inter-group re-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lations (e.g., the edge from “Group 1” to “Table” in	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	Figure 4). However, introducing perceptual groups	page=6 xpos=0 ypos=2 left-column full-justified aligned-line string-figure headchar-capital
+I-Body	as vertices makes it difficult to design the cost func-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. A well-designed cost function is indispensable	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	for generating concise and comprehensible expres-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sions. Otherwise, an expression like “a ball in front	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	of a ball in front of a ball” for the situation shown in	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	Figure 1 would be generated.	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail string-figure headchar-capital tailchar-period above-double-space above-line-space
+Figure	__Figure 4__	page=6 xpos=0 ypos=4 left-column left-indent right-indent box indented-line longer-tail line-double-space line-space figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 4: A simplified graph with a group vertex for	page=6 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital
+E-Caption	the situation shown in Figure 1	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=6 xpos=0 ypos=7 left-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Douglas E. Appelt. 1985. Planning English refer-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ring expressions. Artificial Intelligence, 26:1–33.	page=6 xpos=0 ypos=7 left-column left-indent indented-line headchar-lower tailchar-period above-line-space
+B-Reference	Mark Cavazza, Fred Charles, and Steven J. Mead.	page=6 xpos=0 ypos=8 left-column centered right-indent hanged-line line-space headchar-capital tailchar-period
+I-Reference	2002. Character-based interactive stroytelling.	page=6 xpos=0 ypos=8 left-column left-indent indented-line year tailchar-period
+I-Reference	IEEE Intelligent Systems, 17(4):17–24.	page=6 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Herbert H. Clark. 1973. Space, time, semantics,	page=6 xpos=0 ypos=8 left-column centered right-indent hanged-line longer-tail line-space year headchar-capital tailchar-comma
+I-Reference	and the child. In T. E. Moore, editor, Cogni-	page=6 xpos=0 ypos=8 left-column left-indent right-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	tive development and the acquisition of language,	page=6 xpos=0 ypos=9 left-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	pages 65–110. Academic Press.	page=6 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Robert Dale and Nicholas Haddock. 1991. Gener-	page=6 xpos=0 ypos=9 left-column full-justified hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	ating referring expressions involving relations. In	page=6 xpos=0 ypos=9 left-column left-indent indented-line headchar-lower
+I-Reference	Proceedings of the Fifth Conference of the Eu-	page=6 xpos=0 ypos=9 left-column left-indent aligned-line headchar-capital tailchar-hiphen column-bottom
+I-Reference	ropean Chapter of the Association for Computa-	page=6 xpos=5 ypos=0 right-column left-indent column-top headchar-lower tailchar-hiphen
+I-Reference	tional Linguistics(EACL’91), pages 161–166.	page=6 xpos=5 ypos=0 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Robert Dale and Ehud Reiter. 1995. Computational	page=6 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	interpretations of the gricean maxims in the gen-	page=6 xpos=5 ypos=0 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	eration of referring expressions. Cognitive Sci-	page=6 xpos=5 ypos=0 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ence, 19(2):233–263.	page=6 xpos=5 ypos=0 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Robert Dale. 1992. Generating referring expres-	page=6 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	sions: Constructing descriptions in a domain of	page=6 xpos=5 ypos=1 right-column left-indent indented-line headchar-lower
+I-Reference	objects and processes. MIT Press, Cambridge.	page=6 xpos=5 ypos=1 right-column centered left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Peter Heeman and Graem Hirst. 1995. Collabo-	page=6 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	rating referring expressions. Computational Lin-	page=6 xpos=5 ypos=1 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	guistics, 21(3):351–382.	page=6 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Annette Herskovits. 1986. Language and Spa-	page=6 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tial cognition: an interdisciplinary study of the	page=6 xpos=5 ypos=2 right-column left-indent indented-line headchar-lower
+I-Reference	prepositions in English. Cambridge University	page=6 xpos=5 ypos=2 right-column left-indent aligned-line headchar-lower
+I-Reference	Press.	page=6 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Helmut Horacek. 1997. An algorithm for gener-	page=6 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ating referential descriptions with flexible inter-	page=6 xpos=5 ypos=3 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	faces. In Proceedings of the 35th Annual Meeting	page=6 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower
+I-Reference	of the Association for Computational Linguistics,	page=6 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	pages 206–213.	page=6 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Emiel Krahmer and Mariët Theune. 2002. Efficient	page=6 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	context-sensitive generation of descriptions. In	page=6 xpos=5 ypos=4 right-column left-indent indented-line headchar-lower
+I-Reference	Kees van Deemter and Rodger Kibble, editors,	page=6 xpos=5 ypos=4 right-column left-indent aligned-line headchar-capital tailchar-comma
+I-Reference	Information Sharing: Givenness and Newness in	page=6 xpos=5 ypos=4 right-column left-indent aligned-line headchar-capital
+I-Reference	Language Processing. CSLI Publications, Stan-	page=6 xpos=5 ypos=4 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	ford, California.	page=6 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Emiel Krahmer, Sebastiaan van Erk, and André	page=6 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail headchar-capital
+I-Reference	Verleg. 2003. Graph-based generation of re-	page=6 xpos=5 ypos=5 right-column left-indent indented-line year headchar-capital tailchar-hiphen
+I-Reference	ferring expressions. Computational Linguistics,	page=6 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	29(1):53–72.	page=6 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail tailchar-period
+B-Reference	Stephen C. Levinson, editor. 2003. Space in Lan-	page=6 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	guage and Cognition. Cambridge University	page=6 xpos=5 ypos=5 right-column left-indent indented-line headchar-lower
+I-Reference	Press.	page=6 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Hozumi Tanaka, Takenobu Tokunaga, and Yusuke	page=6 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail headchar-capital
+I-Reference	Shinyama. 2004. Animated agents capable of	page=6 xpos=5 ypos=6 right-column left-indent indented-line year headchar-capital
+I-Reference	understanding natural language and perform-	page=6 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ing actions. In Helmut Prendinger and Mituru	page=6 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower
+I-Reference	Ishizuka, editors, Life-Like Characters, pages	page=6 xpos=5 ypos=7 right-column left-indent aligned-line headchar-capital
+I-Reference	429–444. Springer.	page=6 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail tailchar-period
+B-Reference	Kristinn R. Thórisson. 1994. Simulated perceptual	page=6 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	grouping: An application to human-computer in-	page=6 xpos=5 ypos=7 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	teraction. In Proceedings of the Sixteenth An-	page=6 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	nual Conference of the Cognitive Science Society,	page=6 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	pages 876–881.	page=6 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Kees van Deemter. 2002. Generating referring ex-	page=6 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	pressions: Boolean extensions of the incremental	page=6 xpos=5 ypos=8 right-column left-indent indented-line headchar-lower
+I-Reference	algorithm. Computational Linguistics, 28(1):37–	page=6 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower
+I-Reference	52.	page=6 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail tailchar-period
+B-Reference	Ielka van der Sluis and Emiel Krahmer. 2000.	page=6 xpos=5 ypos=9 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Generating referring expressions in a multimodal	page=6 xpos=5 ypos=9 right-column left-indent indented-line headchar-capital
+I-Reference	context: An empirically oriented approach. Pre-	page=6 xpos=5 ypos=9 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	sented at the CLIN meeting 2000, Tilburg.	page=6 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period

@@ -1,0 +1,573 @@
+Title	Feature Vector Quality and Distributional Similarity	page=0 xpos=1 ypos=0 single-column left-indent right-indent font-largest page-top headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Author	Maayan Geffet Ido Dagan	page=0 xpos=2 ypos=0 left-column left-indent right-over column-top line-blank-line line-double-space line-space headchar-capital column-bottom
+B-Affiliation	School of Computer Science and Engineering, Department of Computer Science,	page=0 xpos=1 ypos=0 single-column left-indent right-indent column-top headchar-capital tailchar-comma column-bottom
+I-Affiliation	Hebrew University	page=0 xpos=2 ypos=0 left-column left-indent right-indent column-top headchar-capital above-line-space
+Address	Givat Ram Campus,	page=0 xpos=2 ypos=1 left-column left-indent right-indent longer-tail line-space headchar-capital tailchar-comma above-line-space
+Address	Jerusalem, Israel, 91904	page=0 xpos=2 ypos=1 left-column left-indent right-indent hanged-line longer-tail line-space year headchar-capital above-line-space
+Email	mary@cs.huji.ac.il	page=0 xpos=2 ypos=1 left-column left-indent right-indent indented-line shorter-tail line-space symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	We suggest a new goal and evaluation criterion for	page=0 xpos=0 ypos=2 left-column left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	word similarity measures. The new criterion -	page=0 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	meaning-entailing substitutability - fits the needs	page=0 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	of semantic-oriented NLP applications and can be	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	evaluated directly (independent of an application)	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	at a good level of human agreement. Motivated by	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	this semantic criterion we analyze the empirical	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	quality of distributional word feature vectors and	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	its impact on word similarity results, proposing an	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	objective measure for evaluating feature vector	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	quality. Finally, a novel feature weighting and se-	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	lection function is presented, which yields superior	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	feature vectors and better word similarity perform-	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ance.	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-larger hanged-line longer-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Distributional Similarity has been an active re-	page=0 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	search area for more than a decade (Hindle, 1990),	page=0 xpos=0 ypos=5 left-column full-justified hanged-line year headchar-lower tailchar-comma
+I-Body	(Ruge, 1992), (Grefenstette, 1994), (Lee, 1997),	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year tailchar-comma
+I-Body	(Lin, 1998), (Dagan et al., 1999), (Weeds and	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year
+I-Body	Weir, 2003). Inspired by Harris distributional hy-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	pothesis (Harris, 1968), similarity measures com-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	pare a pair of weighted feature vectors that	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	characterize two words. Features typically corre-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	spond to other words that co-occur with the charac-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	terized word in the same context. It is then	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	assumed that different words that occur within	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	similar contexts are semantically similar.	page=0 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As it turns out, distributional similarity captures	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	a somewhat loose notion of semantic similarity	page=0 xpos=0 ypos=8 left-column full-justified hanged-line itemization headchar-lower
+I-Body	(see Table 1). By construction, if two words are	page=0 xpos=0 ypos=8 left-column full-justified aligned-line
+I-Body	distributionally similar then the occurrence of one	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	word in some contexts indicates that the other	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	word is also likely to occur in such contexts. But it	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	does not ensure that the meaning of the first word	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	is preserved when replacing it with the other one in	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the given context. For example, words of similar	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	semantic types, such as company – government,	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-comma column-bottom
+I-Affiliation	Bar-Ilan University	page=0 xpos=6 ypos=0 right-column left-indent right-indent column-top headchar-capital above-line-space
+Address	Ramat-Gan, Israel, 52900	page=0 xpos=6 ypos=1 right-column left-indent right-indent hanged-line longer-tail line-space headchar-capital above-blank-line above-double-space above-line-space
+Email	dagan@cs.biu.ac.il	page=0 xpos=6 ypos=1 right-column left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+I-Body	tend to come up as distributionally similar, even	page=0 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	though they are not substitutable in a meaning pre-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	serving sense.	page=0 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	On the other hand, many semantic-oriented appli-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Body	cations, such as Question Answering, Paraphrasing	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	and Information Extraction, do need to recognize	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	which words may substitute each other in a mean-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing preserving manner. For example, a question	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	about company may be answered by a sentence	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	about firm, but not about government. Such appli-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cations usually utilize reliable taxonomies or on-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tologies like WordNet, but cannot rely on the	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	“loose” type of output of distributional similarity	page=0 xpos=5 ypos=4 right-column full-justified aligned-line
+E-Body	measures.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In recent work Dagan and Glickman (2004) ob-	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail year headchar-capital tailchar-hiphen
+I-Body	serve that applications usually do not require a	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	strict meaning preserving criterion between text	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	expressions, but rather need to recognize that the	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	meaning of one expression entails the other. En-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tailment modeling is thus proposed in their work as	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	a generic (application-independent) framework for	page=0 xpos=5 ypos=5 right-column full-justified aligned-line itemization headchar-lower
+I-Body	practical semantic inference. We suggest adopting	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	such (directional) entailment criterion at the lexical	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	level for judging whether one word can be substi-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tuted by another one. For example, certain ques-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions about companies might be answered by	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	sentences about automakers, since the meaning of	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	automaker entails the meaning of company (though	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	not vice versa). In this paper we adapt this new	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	criterion, termed meaning entailing substitutability,	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	as a direct evaluation criterion for the "correctness"	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	of the output of word similarity measures (as op-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	posed to indirect evaluations through WSD or dis-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tance in WordNet).	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our eventual research goal is improving word	page=0 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	similarity measures to predict better the more deli-	page=0 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	cate meaning entailment relationship between	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	words. As a first step it was necessary to analyze	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	the typical behavior of current similarity measures	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	and categorize their errors (Section 3). Our main	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	observation is that the quality of similarity scores	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Table	__Table 1__	page=1 xpos=0 ypos=-2 single-column left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: The 20 top most similar words of country (and their ranks) in the similarity list by Lin98,	page=1 xpos=0 ypos=0 single-column left-indent right-indent shorter-tail line-double-space line-space string-table headchar-capital tailchar-comma
+I-Caption	followed by the next 4 words in the similarity list that are judged as correct. Incorrect similarities,	page=1 xpos=0 ypos=0 single-column left-indent right-indent aligned-line headchar-lower tailchar-comma
+E-Caption	under the substitutability criterion, are marked with ‘*’.	page=1 xpos=0 ypos=0 single-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-double-space above-line-space
+I-Body	is often hurt by improper feature weights, which	page=1 xpos=0 ypos=0 left-column full-justified column-top line-double-space line-space headchar-lower
+I-Body	yield rather noisy feature vectors. We quantify this	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	problem by a new measure for feature vector qual-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity, which is independent of any particular vector	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	similarity measure.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To improve feature vector quality a novel fea-	page=1 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ture weighting function is introduced, called rela-	page=1 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tive feature focus (RFF) (Section 4). While having	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	a simple (though non-standard) definition, this	page=1 xpos=0 ypos=2 left-column full-justified aligned-line itemization headchar-lower
+I-Body	function yields improved performance relative to	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the two suggested evaluation criteria – for vector	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	quality and for word similarity. The underlying	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	idea is that a good characteristic feature for a word	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	w should characterize also multiple words that are	page=1 xpos=0 ypos=3 left-column full-justified aligned-line itemization headchar-lower
+I-Body	highly similar to w. In other words, such feature	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	should have a substantial "focus" within the close	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	semantic vicinity of w.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Applying RFF weighting achieved about 10%	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	improvement in predicting meaning entailing sub-	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	stitutability (Section 5). Further analysis shows	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	that RFF also leads to "cleaner" characteristic fea-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture vectors, which may be useful for additional	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	feature-based tasks like clustering.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Background and Definitions	page=1 xpos=0 ypos=6 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In the distributional similarity scheme each word	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	w is represented by a feature vector, where an entry	page=1 xpos=0 ypos=7 left-column full-justified hanged-line itemization headchar-lower
+I-Body	in the vector corresponds to a feature f. Each fea-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture represents another word (or term) with which	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	w co-occurs, and possibly specifies also the syntac-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	tic relation between the two words. The value of	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	each entry is determined by some weight function	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	weight(w,f), which quantifies the degree of statisti-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cal association between the feature and the corre-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sponding word.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Typical feature weighting functions include the	page=1 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	logarithm of the frequency of word-feature co-	page=1 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	occurrence (Ruge, 1992), and the conditional prob-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ability of the feature given the word (within prob-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	abilistic-based measures) (Pereira et al., 1993),	page=1 xpos=5 ypos=0 right-column full-justified column-top year headchar-lower tailchar-comma
+I-Body	(Lee, 1997), (Dagan et al., 1999). Probably the	page=1 xpos=5 ypos=1 right-column full-justified aligned-line year
+I-Body	most widely used association weight function is	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	(point-wise) Mutual Information (MI) (Church et	page=1 xpos=5 ypos=1 right-column full-justified aligned-line
+I-Body	al., 1990), (Hindle, 1990), (Lin, 1998), (Dagan,	page=1 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2000), defined by:	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail year tailchar-colon
+B-Equation	MI ( w , f ) = log <sub>2</sub> <sub>P</sub> <sup>P</sup> ( w <sup>(</sup> w ) P , ( f ) f )	page=1 xpos=5 ypos=2 right-column left-indent right-indent font-largest indented-line longer-tail headchar-capital above-line-space
+B-Body	A known weakness of MI is its tendency to assign	page=1 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Body	high weights for rare features. Yet, similarity	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	measures that utilize MI showed good perform-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ance. In particular, a common practice is to filter	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	out features by minimal frequency and weight	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	thresholds. A word's vector is then constructed	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	from the remaining features, which we call here	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	active features.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Once feature vectors have been constructed, the	page=1 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	similarity between two words is defined by some	page=1 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	vector similarity metric. Different metrics have	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	been used in the above cited papers, such as	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	Weighted Jaccard (Dagan, 2000), cosine (Ruge,	page=1 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-capital tailchar-comma
+I-Body	1992), various information theoretic measures	page=1 xpos=5 ypos=5 right-column full-justified aligned-line year
+I-Body	(Lee, 1997), and others. We picked the widely	page=1 xpos=5 ypos=5 right-column full-justified aligned-line year
+I-Body	cited and competitive (e.g. (Weeds and Weir,	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2003)) measure of Lin (1998) as a representative	page=1 xpos=5 ypos=6 right-column full-justified aligned-line year
+I-Body	case, and utilized it for our analysis and as a start-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ing point for improvement.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.1 Lin's (‘98) Similarity Measure	page=1 xpos=5 ypos=7 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Lin's similarity measure between two words, w	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	and v, is defined as follows:	page=1 xpos=5 ypos=7 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon
+B-Equation	sim ( w , v ) =	page=1 xpos=5 ypos=8 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower
+I-Equation	∑ <sub>f</sub> <sub>∈</sub> F ( w ) ∩ F ( v ) weight ( w , f ) + weight ( v , f )	page=1 xpos=5 ypos=8 right-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	∑ <sub>f</sub> <sub>∈</sub> F ( w ) weight ( w , f ) + ∑ f ∈ F ( v ) weight ( v , f ) <sup>,</sup>	page=1 xpos=5 ypos=8 right-column centered left-indent right-indent font-largest hanged-line longer-tail above-line-space
+I-Body	where F(w) and F(v) are the active features of the	page=1 xpos=5 ypos=9 right-column full-justified hanged-line longer-tail line-space headchar-lower
+I-Body	two words and the weight function is defined as	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	MI. A feature is defined as a pair <term, syntac-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital tailchar-hiphen page-bottom
+Table	__Table 2__	page=2 xpos=0 ypos=-3 left-column left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 2: The top-10 ranking features for	page=2 xpos=0 ypos=0 left-column left-indent right-indent longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	country.	page=2 xpos=0 ypos=0 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+I-Body	pany” the feature <earnings_report, gen ↓ > (geni-	page=2 xpos=0 ypos=0 left-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	tic_relation>. For example, given the word “com-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+I-Body	tive) corresponds to the phrase “company’s	page=2 xpos=0 ypos=1 left-column full-justified aligned-line line-blank-line line-double-space line-space headchar-lower
+I-Body	earnings report”, and <profit, pcomp ↓ > (preposi-	page=2 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	tional complement) corresponds to “the profit of	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the company”. The syntactic relations are gener-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ated by the Minipar dependency parser (Lin,	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1993). The arrows indicate the direction of the syn-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	tactic dependency: a downward arrow indicates	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	that the feature is the parent of the target word, and	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	the upward arrow stands for the opposite.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In our implementation we filtered out features	page=2 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	with overall frequency lower than 10 in the corpus	page=2 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	and with MI weights lower than 4. (In the tuning	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	experiments the filtered version showed 10% im-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	provement in precision over no feature filtering.)	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	From now on we refer to this implementation as	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+E-Body	Lin98.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Empirical Analysis of Lin98 and	page=2 xpos=0 ypos=5 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1
+I-SectionHeader	Vector Quality Measure	page=2 xpos=0 ypos=6 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	To gain better understanding of distributional	page=2 xpos=0 ypos=6 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	similarity we first analyzed the empirical behavior	page=2 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	of Lin98, as a representative case for state of the	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	art (see Section 5.1 for corpus details).	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As mentioned in the Introduction, distributional	page=2 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	similarity may not correspond very tightly to	page=2 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	meaning entailing substitutability. Under this	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	judgment criterion two main types of errors occur:	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-colon
+I-Body	(1) word pairs that are of similar semantic types,	page=2 xpos=0 ypos=8 left-column full-justified aligned-line itemization tailchar-comma
+I-Body	but are not substitutable, like firm and government;	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-semicolon
+I-Body	and (2) word pairs that are of different semantic	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	types, like firm and contract, which might (or	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	might not) be related only at a topical level. Table	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	1 shows the top most similar words for the target	page=2 xpos=0 ypos=9 left-column full-justified aligned-line numbered-heading1 column-bottom
+Table	__Table 3__	page=2 xpos=5 ypos=-3 right-column left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 3: The top-10 common features for the	page=2 xpos=5 ypos=0 right-column centered left-indent right-indent shorter-tail line-double-space line-space string-table headchar-capital
+I-Caption	word pairs country-state and country-economy,	page=2 xpos=5 ypos=0 right-column left-indent right-indent aligned-line longer-tail headchar-lower tailchar-comma
+I-Caption	along with their corresponding ranks in the	page=2 xpos=5 ypos=0 right-column left-indent right-indent aligned-line headchar-lower
+E-Caption	sorted feature lists of the two words.	page=2 xpos=5 ypos=0 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+I-Body	word country according to Lin98 . The two error	page=2 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-space headchar-lower
+I-Body	types are easily recognized, e.g. world and city for	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	the first type, and economy for the second.	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	A deeper look at the word feature vectors re-	page=2 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	veals typical reasons for such errors. In many	page=2 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	cases, high ranking features in a word vector, when	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	sorting the features by their weight, do not seem	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	very characteristic for the word meaning. This is	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	demonstrated in Table 2, which shows the top-10	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	features in the vector of country. As can be seen,	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	some of the top features are either too specific	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	(landlocked, airspace), and so are less reliable, or	page=2 xpos=5 ypos=3 right-column full-justified aligned-line
+I-Body	too general (destination, ambition), and hence not	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	indicative and may co-occur with many different	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	types of words. On the other hand, more character-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	istic features, like population and governor, occur	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	further down the list, at positions 461 and 832.	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Overall, features that characterize well the word	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	meaning are scattered across the ranked list, while	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	many non-indicative features receive high weights.	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This may yield high similarity scores for less simi-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	lar word pairs, while missing other correct similari-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ties.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	An objective indication of the problematic fea-	page=2 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ture ranking is revealed by examining the common	page=2 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	features that contribute mostly to the similarity	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	score of a pair of similar words. We look at the	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	common features of the two words and sort them	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	by the sum of their weights in the two word vectors	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	(which is the enumerator of Lin's sim formula in	page=2 xpos=5 ypos=8 right-column full-justified aligned-line
+I-Body	Section 2.1). Table 3 shows the top-10 common	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	features for a pair of substitutable words (country -	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	state) and non-substitutable words (country - econ-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	omy). In both cases the common features are scat-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tered across each feature vector, making it difficult	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	to distinguish between similar and non-similar	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+E-Body	word pairs.	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We suggest that the desired behavior of feature	page=3 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	ranking is that the common features of truly similar	page=3 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	words will be concentrated at the top ranks of their	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	vectors. The common features for non-similar	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	words are expected to be scattered all across each	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	of the vectors. More formally, given a pair of simi-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lar words (judged as substitutable) w and v we de-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fine the top joint feature rank criterion for	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	evaluating feature vector quality:	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	top − rank ( w , v , n ) =	page=3 xpos=0 ypos=2 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower above-line-space
+I-Equation	<sup>1</sup> ∑	page=3 xpos=0 ypos=2 left-column left-indent right-indent font-largest shorter-tail line-space headchar-super
+I-Equation	1	page=3 xpos=1 ypos=2 left-column left-indent right-indent font-smaller indented-line longer-tail numeric-only
+I-Equation	n <sup>f</sup> <sup>∈</sup> top − n ( F ( w ) ∩ F ( v )) 2 <sup>[</sup> rank ( w , f ) + rank ( v , f ) ],	page=3 xpos=0 ypos=2 left-column left-indent right-indent font-largest hanged-line longer-tail itemization headchar-lower tailchar-comma
+I-Body	where rank(w,f) is the feature’s position in the	page=3 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail headchar-lower
+I-Body	sorted vector of the word w, and n is the number of	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	top joint features to consider (top-n), when sorted	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	by the sum of their weights in the two word vec-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tors. We thus expect that a good weighting func-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion would yield (on average) a low top-rank score	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	for truly similar words.	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Relative Feature Focus (RFF)	page=3 xpos=0 ypos=4 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Motivated by the observations above we propose	page=3 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	a new feature weight function, called relative fea-	page=3 xpos=0 ypos=4 left-column full-justified hanged-line itemization headchar-lower tailchar-hiphen
+I-Body	ture focus (RFF). The basic idea is to promote fea-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures which characterize many words that are	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	highly similar to w. These features are considered	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	as having a strong "focus" around w's meaning.	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Features which do not characterize sufficiently	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	many words that are sufficiently similar to w are	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	demoted. Even if such features happen to have a	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	strong direct association with w they are not con-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sidered reliable, as they do not have sufficient sta-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tistical mass in w's semantic vicinity.	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 RFF Definition	page=3 xpos=0 ypos=7 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	RFF is defined as follows. First, a standard	page=3 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	word similarity measure sim is computed to obtain	page=3 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	initial approximation of the similarity space (Lin98	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	was used in this work). Then, we define the word	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	set of a feature f, denoted by WS(f), as the set of	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	words for which f is an active feature. The seman-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic neighborhood of w, denoted by N(w), is defined	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	as the set of all words v which are considered suf-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ficiently similar to w, satisfying sim(w,v)>s where	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	s is a threshold (0.04 in our experiments). RFF is	page=3 xpos=0 ypos=9 left-column full-justified aligned-line itemization headchar-lower
+I-Body	then defined by:	page=3 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	RFF ( w , f ) = ∑ v <sub>∈</sub> WS ( f ) ∩ N ( w ) sim ( w , v ) .	page=3 xpos=0 ypos=9 left-column left-indent right-indent font-largest indented-line longer-tail headchar-capital tailchar-period column-bottom
+I-Body	That is, we identify all words v that are in the se-	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-capital tailchar-hiphen
+I-Body	mantic neighborhood of w and are also character-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ized by f and sum their similarities to w.	page=3 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Notice that RFF is a sum of word similarity val-	page=3 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ues rather than being a direct function of word-	page=3 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	feature association values (which is the more com-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mon approach). It thus does not depend on the ex-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	act co-occurrence level between w and f. Instead, it	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	depends on a more global assessment of the asso-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ciation between f and the semantic vicinity of w.	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Unlike the entropy measure, used in (Grefenstette,	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	1994), our "focused" global view is relative to	page=3 xpos=5 ypos=2 right-column full-justified aligned-line year
+I-Body	each individual word w and is not a global inde-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	pendent function of the feature.	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We notice that summing the above similarity	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	values captures simultaneously a desired balance	page=3 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	between feature specificity and generality, address-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the observations in Section 3. Some features	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	might characterize just a single word that is very	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	similar to w. But then the sum of similarities will	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	include a single element, yielding a relatively low	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	weight. <sup>1</sup> General features may characterize more	page=3 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	words within N(f), but then on average the similar-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity with w over multiple words is likely to become	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	lower, contributing smaller values to the sum. A	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	reliable feature has to characterize multiple words	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	(not too specific) that are highly similar to w (not	page=3 xpos=5 ypos=5 right-column full-justified aligned-line
+E-Body	too general).	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Re-computing Similarities	page=3 xpos=5 ypos=5 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Once RFF weights have been computed they are	page=3 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	sufficiently accurate to allow for aggressive feature	page=3 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	reduction. In our experiments it sufficed to use	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	only the top 100 features for each word in order to	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	obtain optimal results, since the most informative	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	features now have the highest weights. Similarity	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	between words is then recomputed over the re-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	duced vectors using Lin's sim function (in Section	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	2.1), with RFF replacing MI as the new weight	page=3 xpos=5 ypos=7 right-column full-justified aligned-line
+E-Body	function.	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Footnote	<sup>1</sup> This is why the sum of similarities is used rather than	page=3 xpos=5 ypos=9 right-column right-indent font-largest aligned-line longer-tail line-blank-line line-double-space line-space headchar-super
+I-Footnote	an average value, which might become too high by	page=3 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower
+I-Footnote	chance when computed over just a single element (or	page=3 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line longer-tail headchar-lower
+I-Footnote	very few elements).	page=3 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-SectionHeader	5 Evaluation	page=4 xpos=0 ypos=0 left-column right-indent font-larger page-top numbered-heading1 above-blank-line above-double-space above-line-space
+B-SubsectionHeader	5.1 Experimental Setting	page=4 xpos=0 ypos=0 left-column right-indent font-larger aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The performance of the RFF-based similarity	page=4 xpos=0 ypos=0 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	measure was evaluated for a sample of nouns and	page=4 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	compared with that of Lin98. The experiment was	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	conducted using an 18 million tokens subset of the	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	Reuters RCV1 corpus, <sup>2</sup> parsed by Lin’s Minipar	page=4 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-capital
+I-Body	dependency parser (Lin, 1993). We considered first	page=4 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower
+I-Body	an evaluation based on WordNet data as a gold	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	standard, as in (Lin, 1998; Weeds and Weir, 2003).	page=4 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	However, we found that many word pairs from the	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	Reuters Corpus that are clearly substitutable are	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+E-Body	not linked appropriately in WordNet.	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We therefore conducted a manual evaluation	page=4 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	based on the judgments of two human subjects.	page=4 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	The judgment criterion follows common evalua-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tions of paraphrase acquisition (Lin and Pantel,	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2001), (Barzilay and McKeown, 2001), and corre-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	sponds to the meaning-entailing substitutability	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	criterion discussed in Section 1. Two words are	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	judged as substitutable (correct similarity) if there	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	are some contexts in which one of the words can	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	be substituted by the other, such that the meaning	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	of the original word can be inferred from the new	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	one.	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Typically substitutability corresponds to certain	page=4 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	ontological relations. Synonyms are substitutable	page=4 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	in both directions. For example, worker and em-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ployee entail each other's meanings, as in the con-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	text “high salaried worker/employee”. Hyponyms	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	typically entail their hypernyms. For example, dog	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	entails animal, as in “I have a dog” which entails	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	“I have an animal” (but not vice versa). In some	page=4 xpos=0 ypos=6 left-column full-justified aligned-line
+I-Body	cases part-whole and member-set relations satisfy	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the meaning-entailing substitutability criterion. For	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	example, a discussion of division entails in many	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	contexts the meaning of company. Similarly, the	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	plural form of employee(s) often entails the mean-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing of staff. On the other hand, non-synonymous	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	words that share a common hypernym (co-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	hyponyms) like company and government, or	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	country and city, are not substitutable since they	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	always refer to different meanings (such as differ-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ent entities).	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our test set included a sample of 30 randomly	page=4 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	selected nouns whose corpus frequency is above	page=4 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>2</sup> Known as Reuters Corpus, Volume 1, English Lan-	page=4 xpos=0 ypos=9 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	guage, 1996-08-20 to 1997-08-19.	page=4 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period column-bottom
+Table	__Table 4__	page=4 xpos=5 ypos=0 right-column left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 4: Precision values for Top-N similar	page=4 xpos=5 ypos=1 right-column left-indent right-indent shorter-tail line-double-space line-space string-table headchar-capital
+E-Caption	words by the RFF / Lin98 methods.	page=4 xpos=5 ypos=1 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+I-Body	500. For each noun we computed the top 40 most	page=4 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-space
+I-Body	similar words by both similarity measures, yielding	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	a total set of about 1600 (different) suggested word	page=4 xpos=5 ypos=2 right-column full-justified aligned-line itemization headchar-lower
+I-Body	similarity pairs. Two independent assessors were	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	assigned, each judging half of the test set (800	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	pairs). The output pairs from both methods were	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	mixed so the assessor could not relate a pair with	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	the method that suggested it.	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.2 Similarity Results	page=4 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The evaluation results are displayed in Table 4.	page=4 xpos=5 ypos=3 right-column left-indent right-over indented-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Body	As can be seen RFF outperformed Lin98 by 9-10	page=4 xpos=5 ypos=3 right-column centered right-over hanged-line headchar-capital
+I-Body	percentage points of precision at all Top-N levels,	page=4 xpos=5 ypos=4 right-column centered right-over aligned-line headchar-lower tailchar-comma
+I-Body	by both judges. Overall, RFF extracted 111 (21%)	page=4 xpos=5 ypos=4 right-column centered right-over aligned-line headchar-lower
+I-Body	more correct similarity pairs than Lin98. The	page=4 xpos=5 ypos=4 right-column centered right-over aligned-line headchar-lower
+I-Body	overall relative recall <sup>3</sup> of RFF is quite high (89%),	page=4 xpos=5 ypos=4 right-column centered right-over font-largest aligned-line headchar-lower tailchar-comma
+I-Body	exceeding Lin98 by 16% (73%). These figures in-	page=4 xpos=5 ypos=4 right-column centered right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	dicate that our method covers most of the correct	page=4 xpos=5 ypos=5 right-column centered right-over aligned-line headchar-lower
+I-Body	similarities found by Lin98, while identifying	page=4 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower
+E-Body	many additional correct pairs.	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We note that the obtained precision values for	page=4 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	both judges are very close at all table rows. To fur-	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ther assess human agreement level for this task the	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	first author of this paper judged two samples of	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	100 word pairs each, which were selected ran-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line tailchar-hiphen
+I-Body	domly from the two test sets of the original judges.	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The proportions of matching decisions between the	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	author's judgments and the original ones were	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	91.3% (with Judge 1) and 88.9% (with Judge 2).	page=4 xpos=5 ypos=7 right-column full-justified aligned-line tailchar-period
+I-Body	The corresponding Kappa values are 0.83 (“very	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+E-Body	good agreement”) and 0.75 (“good agreement”).	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As for feature reduction, vector sizes were re-	page=4 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	duced on average to about one third of their origi-	page=4 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	nal size in the Lin98 method (recall that standard	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	feature reduction, tuned for the corpus, was already	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	applied to the Lin98 vectors).	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Footnote	<sup>3</sup> Relative recall shows the percentage of correct word	page=4 xpos=5 ypos=9 right-column right-indent font-largest aligned-line longer-tail line-blank-line line-double-space line-space headchar-super
+I-Footnote	similarities found by each method relative to the joint	page=4 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line headchar-lower
+I-Footnote	set of similarities that were extracted by both methods.	page=4 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-period page-bottom
+Table	__Table 5__	page=5 xpos=0 ypos=-3 left-column left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 5: Top-10 features of country by	page=5 xpos=0 ypos=0 left-column left-indent right-indent aligned-line shorter-tail line-double-space line-space string-table headchar-capital
+E-Caption	RFF.	page=5 xpos=1 ypos=0 left-column left-indent right-indent indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.3 Empirical Observations for RFF	page=5 xpos=0 ypos=0 left-column right-indent font-larger hanged-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We now demonstrate the typical behavior of	page=5 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	RFF relative to the observations and motivations	page=5 xpos=0 ypos=1 left-column full-justified hanged-line headchar-capital
+E-Body	of Section 3 (through the same example).	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Table 5 shows the top-10 features of country.	page=5 xpos=0 ypos=1 left-column left-indent indented-line longer-tail string-table headchar-capital tailchar-period
+I-Body	We observe (subjectively) that the list now con-	page=5 xpos=0 ypos=2 left-column full-justified hanged-line headchar-capital tailchar-hiphen
+I-Body	tains quite indicative and reliable features, where	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	too specific (anecdotal) and too general features	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	were demoted (compare with Table 2).	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	More objectively, Table 6 shows that most of	page=5 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	the top-10 common features for country-state are	page=5 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	now ranked highly for both words. On the other	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	hand, there are only two common features for the	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	incorrect pair country-economy, both with quite	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	low ranks (compare with Table 3). Overall, given	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the set of all the correct (judged as substitutable)	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	word similarities produced by both methods, the	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	average top joint feature rank of the top-10 com-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mon features by RFF is 21, satisfying the desired	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	behavior which was suggested in Section 3. The	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	same figure is much larger for the Lin98 vectors,	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which have an average top joint feature rank of	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	105.	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	Consequently, Table 7 shows a substantial im-	page=5 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	provement in the similarity list for country, where	page=5 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	most incorrect words, like economy and company,	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	disappeared. Instead, additional correct similari-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ties, like kingdom and land, were promoted (com-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pare with Table 1). Some semantically related but	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	non-substitutable words, like “world” and “city”,	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	still remain in the list, but somewhat demoted. In	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	this case all errors correspond to quite close se-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mantic relatedness, being geographic concepts.	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The remaining errors are mostly of the first type	page=5 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	discussed in Section 3 – pairs of words that are	page=5 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower column-bottom
+Table	__Table 6__	page=5 xpos=5 ypos=-3 right-column left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 6: RFF weighting: Top-10 common	page=5 xpos=5 ypos=0 right-column left-indent right-indent line-double-space line-space string-table headchar-capital
+I-Caption	features for country-state and country-	page=5 xpos=5 ypos=0 right-column left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Caption	economy along with their corresponding	page=5 xpos=5 ypos=0 right-column left-indent right-indent aligned-line headchar-lower
+E-Caption	ranks in the two (sorted) feature vectors.	page=5 xpos=5 ypos=1 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+I-Body	ontologically or thematically related but are not	page=5 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	substitutable. Typical examples are co-hyponyms	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	(country - city) or agent-patient and agent-action	page=5 xpos=5 ypos=1 right-column full-justified aligned-line
+I-Body	pairs (industry – product, worker – job). Usually,	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	such word pairs also have highly ranked common	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	features since they naturally appear with similar	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	characteristic features. It may therefore be difficult	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	to filter out such non-substitutable similarities	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	solely by the standard distributional similarity	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	scheme, suggesting that additional mechanisms are	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	required.	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Conclusions and Future Work	page=5 xpos=5 ypos=4 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	This paper proposed the following contributions:	page=5 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-colon above-double-space above-line-space
+B-Listitem	1. Considering meaning entailing substitutability	page=5 xpos=5 ypos=5 right-column full-justified hanged-line line-double-space line-space itemization
+I-Listitem	as a target goal and evaluation criterion for word	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Listitem	similarity. This criterion is useful for many seman-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tic-oriented NLP applications, and can be evalu-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ated directly by human subjects.	page=5 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	2. A thorough empirical error analysis of state of	page=5 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail itemization
+I-Listitem	the art performance was conducted. The main ob-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	servation was deficient quality of the feature vec-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tors which reduces the quality of similarity	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Listitem	measures.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	3. Inspired by the qualitative observations we iden-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail itemization tailchar-hiphen
+I-Listitem	tified a new qualitative condition for feature vector	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Listitem	evaluation – top joint feature rank. Thus, feature	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Listitem	vector quality can be measured independently of	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Listitem	the final similarity output.	page=5 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	4. Finally, we presented a novel feature weighting	page=5 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail itemization
+I-Listitem	function, relative feature focus. This measure was	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Listitem	designed based on error analysis insights and im-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+Table	__Table 7__	page=6 xpos=0 ypos=-2 single-column left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 7: Top-20 most similar words for country and their ranks in the similarity list by the	page=6 xpos=0 ypos=0 single-column left-indent right-indent shorter-tail line-double-space line-space string-table headchar-capital
+E-Caption	RFF-based measure. Incorrect similarities (non-substitutable) are marked with ‘*’.	page=6 xpos=0 ypos=0 single-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period column-bottom above-double-space above-line-space
+I-Listitem	proves performance over all the above criteria.	page=6 xpos=0 ypos=0 left-column full-justified column-top line-double-space line-space headchar-lower tailchar-period
+B-Body	We intend to further investigate the contribution	page=6 xpos=0 ypos=0 left-column left-indent indented-line headchar-capital
+I-Body	of our measure to word sense disambiguation and	page=6 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+E-Body	to evaluate its performance for clustering methods.	page=6 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower tailchar-period
+B-Body	Error analysis suggests that it might be difficult	page=6 xpos=0 ypos=1 left-column left-indent indented-line headchar-capital
+I-Body	to improve similarity output further within the	page=6 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	common distributional similarity schemes. We	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	need to seek additional criteria and data types, such	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	as identifying evidence for non-similarity, or ana-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	lyzing more carefully disjoint features.	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Further research is suggested to extend the	page=6 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	learning framework towards richer notions of on-	page=6 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tology generation. We would like to distinguish	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	between different ontological relationships that	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	correspond to the substitutability criterion, such as	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	identifying the entailment direction, which was	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	ignored till now. Towards these goals we plan to	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	investigate combining unsupervised distributional	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	similarity with supervised methods for learning	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	ontological relationships, and with paraphrase ac-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	quisition methods.	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=6 xpos=0 ypos=5 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Barzilay, Regina and Kathleen McKeown. 2001.	page=6 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Extracting Paraphrases from a Parallel Corpus.	page=6 xpos=0 ypos=6 left-column left-indent indented-line headchar-capital tailchar-period
+I-Reference	In Proc. of ACL/EACL, 2001.	page=6 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Church, Kenneth W. and Hanks Patrick. 1990.	page=6 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Word association norms, mutual information,	page=6 xpos=0 ypos=7 left-column left-indent indented-line headchar-capital tailchar-comma
+I-Reference	and Lexicography. Computational Linguistics,	page=6 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	16(1), pp. 22–29.	page=6 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Dagan, Ido. 2000. Contextual Word Similarity, in	page=6 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Rob Dale, Hermann Moisl and Harold Somers	page=6 xpos=0 ypos=8 left-column left-indent indented-line headchar-capital
+I-Reference	(Eds.), Handbook of Natural Language Process-	page=6 xpos=0 ypos=8 left-column left-indent aligned-line tailchar-hiphen
+I-Reference	ing, Marcel Dekker Inc, 2000, Chapter 19, pp.	page=6 xpos=0 ypos=8 left-column left-indent aligned-line year headchar-lower tailchar-period
+I-Reference	459-476.	page=6 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Dagan, Ido and Oren Glickman. 2004. Probabilis-	page=6 xpos=0 ypos=9 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tic Textual Entailment: Generic Applied Model-	page=6 xpos=0 ypos=9 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	ing of Language Variability. PASCAL	page=6 xpos=0 ypos=9 left-column left-indent aligned-line headchar-lower
+I-Reference	Workshop on Text Understanding and Mining.	page=6 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period column-bottom
+B-Reference	Dagan, Ido, Lillian Lee and Fernando Pereira.	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-capital tailchar-period
+I-Reference	1999. Similarity-based models of cooccurrence	page=6 xpos=5 ypos=0 right-column left-indent indented-line year
+I-Reference	probabilities. Machine Learning, 1999, Vol.	page=6 xpos=5 ypos=1 right-column left-indent aligned-line year headchar-lower tailchar-period
+I-Reference	34(1-3), special issue on Natural Language	page=6 xpos=5 ypos=1 right-column left-indent
+I-Reference	Learning, pp. 43-69.	page=6 xpos=5 ypos=1 right-column left-indent right-indent shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Grefenstette, Gregory. 1994. Exploration in Auto-	page=6 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	matic Thesaurus Discovery. Kluwer Academic	page=6 xpos=5 ypos=2 right-column left-indent indented-line headchar-lower
+I-Reference	Publishers.	page=6 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Harris, Zelig S. 1968. Mathematical structures of	page=6 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	language. Wiley, 1968.	page=6 xpos=5 ypos=2 right-column left-indent right-indent indented-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Hindle, D. 1990. Noun classification from predi-	page=6 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	cate-argument structures. In Proc. of ACL, pp.	page=6 xpos=5 ypos=3 right-column left-indent indented-line headchar-lower tailchar-period
+I-Reference	268–275.	page=6 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Lee, Lillian. 1997. Similarity-Based Approaches to	page=6 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Natural Language Processing. Ph.D. thesis, Har-	page=6 xpos=5 ypos=4 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Reference	vard University, Cambridge, MA.	page=6 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Lin, Dekang. 1993. Principle-Based Parsing with-	page=6 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	out Overgeneration. In Proc. of ACL-93, pages	page=6 xpos=5 ypos=5 right-column left-indent indented-line headchar-lower
+I-Reference	112-120, Columbus, Ohio, 1993.	page=6 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Reference	Lin, Dekang. 1998. Automatic Retrieval and Clus-	page=6 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tering of Similar Words. In Proc. of COLING–	page=6 xpos=5 ypos=5 right-column left-indent indented-line headchar-lower
+I-Reference	ACL98, Montreal, Canada, August, 1998.	page=6 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Lin, Dekang and Patrick Pantel. 2001. Discovery	page=6 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	of Inference Rules for Question Answering.	page=6 xpos=5 ypos=6 right-column left-indent indented-line headchar-lower tailchar-period
+I-Reference	Natural Language Engineering 7(4), pp. 343-	page=6 xpos=5 ypos=6 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	360, 2001.	page=6 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Reference	Pereira, Fernando, Tishby Naftali, and Lee Lillian.	page=6 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	1993. Distributional clustering of English	page=6 xpos=5 ypos=7 right-column left-indent indented-line year
+I-Reference	words. In Proc. of ACL-93, pp. 183–190.	page=6 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Ruge, Gerda. 1992. Experiments on linguisti-	page=6 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	cally-based term associations. Information	page=6 xpos=5 ypos=8 right-column left-indent indented-line headchar-lower
+I-Reference	Processing & Management, 28(3), pp. 317–332.	page=6 xpos=5 ypos=8 right-column left-indent right-indent aligned-line headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Weeds, Julie and David Weir. 2003. A General	page=6 xpos=5 ypos=9 right-column full-justified hanged-line line-double-space line-space year headchar-capital
+I-Reference	Framework for Distributional Similarity. In	page=6 xpos=5 ypos=9 right-column left-indent indented-line headchar-capital
+I-Reference	Proc. of EMNLP-03. Spain.	page=6 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period

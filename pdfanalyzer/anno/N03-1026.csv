@@ -1,0 +1,645 @@
+B-Header	Proceedings of HLT-NAACL 2003	page=0 xpos=6 ypos=0 right-column left-indent font-smallest page-top year headchar-capital
+I-Header	Main Papers , pp. 118-125	page=0 xpos=7 ypos=0 right-column left-indent font-smallest indented-line headchar-capital
+I-Header	Edmonton, May-June 2003	page=0 xpos=7 ypos=0 right-column left-indent font-smallest indented-line year headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Title	Statistical Sentence Condensation using Ambiguity Packing and Stochastic	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space headchar-capital
+Title	Disambiguation Methods for Lexical-Functional Grammar	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+Author	Stefan Riezler and Tracy H. King and Richard Crouch and Annie Zaenen	page=0 xpos=0 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Palo Alto Research Center, 3333 Coyote Hill Rd., Palo Alto, CA 94304	page=0 xpos=1 ypos=1 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-line-space
+Email	{riezler|thking|crouch|zaenen}@parc.com	page=0 xpos=2 ypos=2 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-space symbol-atmark column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=3 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-blank-line above-double-space above-line-space
+B-Abstract	We present an application of ambiguity pack-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	ing and stochastic disambiguation techniques	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	for Lexical-Functional Grammars (LFG) to the	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	domain of sentence condensation. Our system	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	incorporates a linguistic parser/generator for	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	LFG, a transfer component for parse reduc-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	tion operating on packed parse forests, and a	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	maximum-entropy model for stochastic output	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	selection. Furthermore, we propose the use of	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	standard parser evaluation methods for auto-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	matically evaluating the summarization qual-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ity of sentence condensation systems. An ex-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	perimental evaluation of summarization qual-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ity shows a close correlation between the au-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tomatic parse-based evaluation and a manual	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	evaluation of generated strings. Overall sum-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	marization quality of the proposed system is	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	state-of-the-art, with guaranteed grammatical-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ity of the system output due to the use of a	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	constraint-based parser/generator.	page=0 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=7 left-column right-indent font-largest hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Recent work in statistical text summarization has put for-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ward systems that do not merely extract and concate-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nate sentences, but learn how to generate new sentences	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	from hSummary, T exti tuples. Depending on the cho-	page=0 xpos=0 ypos=8 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	sen task, such systems either generate single-sentence	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	“headlines” for multi-sentence text (Witbrock and Mittal,	page=0 xpos=0 ypos=8 left-column full-justified aligned-line tailchar-comma
+I-Body	1999), or they provide a sentence condensation module	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year
+I-Body	designed for combination with sentence extraction sys-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems (Knight and Marcu, 2000; Jing, 2000). The chal-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	lenge for such systems is to guarantee the grammatical-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity and summarization quality of the system output, i.e.	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	the generated sentences need to be syntactically well-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formed and need to retain the most salient information of	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	the original document. For example a sentence extraction	page=0 xpos=5 ypos=3 right-column full-justified column-top headchar-lower
+I-Body	system might choose a sentence like:	page=0 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Quote	The UNIX operating system, with implementations	page=0 xpos=5 ypos=3 right-column centered left-indent right-indent font-smallest indented-line longer-tail line-double-space line-space headchar-capital above-line-space
+I-Quote	from Apples to Crays, appears to have the advan-	page=0 xpos=5 ypos=3 right-column centered left-indent right-indent font-smallest aligned-line line-space headchar-lower tailchar-hiphen above-line-space
+I-Quote	tage.	page=0 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail line-space headchar-lower tailchar-period above-double-space above-line-space
+I-Body	from a document, which could be condensed as:	page=0 xpos=5 ypos=4 right-column right-indent hanged-line longer-tail line-double-space line-space headchar-lower tailchar-colon above-double-space above-line-space
+B-Quote	UNIX appears to have the advantage.	page=0 xpos=5 ypos=4 right-column left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+B-Body	In the approach of Witbrock and Mittal (1999), selec-	page=0 xpos=5 ypos=4 right-column left-indent hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Body	tion and ordering of summary terms is based on bag-	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	of-words models and n-grams. Such models may well	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	produce summaries that are indicative of the original’s	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	content; however, n-gram models seem to be insufficient	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	to guarantee grammatical well-formedness of the system	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	output. To overcome this problem, linguistic parsing and	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	generation systems are used in the sentence condensation	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	approaches of Knight and Marcu (2000) and Jing (2000).	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	In these approaches, decisions about which material to in-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	clude/delete in the sentence summaries do not rely on rel-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ative frequency information on words, but rather on prob-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ability models of subtree deletions that are learned from	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	a corpus of parses for sentences and their summaries.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period
+B-Body	A related area where linguistic parsing systems	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	have been applied successfully is sentence simplifica-	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tion. Grefenstette (1998) presented a sentence reduction	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	method that is based on finite-state technology for lin-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guistic markup and selection, and Carroll et al. (1998)	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	present a sentence simplification system based on linguis-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic parsing. However, these approaches do not employ	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	statistical learning techniques to disambiguate simplifi-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cation decisions, but iteratively apply symbolic reduction	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	rules, producing a single output for each sentence.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The goal of our approach is to apply the fine-grained	page=0 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	tools for stochastic Lexical-Functional Grammar (LFG)	page=0 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Body	parsing to the task of sentence condensation. The system	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	presented in this paper is conceptualized as a tool that can	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	be used as a standalone system for sentence condensation	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	or simplification, or in combination with sentence extrac-	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	tion for text-summarization beyond the sentence-level. In	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	our system, to produce a condensed version of a sen-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence, the sentence is first parsed using a broad-coverage	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	LFG grammar for English. The parser produces a set of	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	functional (f )-structures for an ambiguous sentence in a	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	packed format. It presents these to the transfer compo-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nent in a single packed data structure that represents in	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	one place the substructures shared by several different in-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	terpretations. The transfer component operates on these	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	packed representations and modifies the parser output to	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	produce reduced f -structures. The reduced f -structures	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	are then filtered by the generator to determine syntac-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic well-formedness. A stochastic disambiguator using a	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	maximum entropy model is trained on parsed and manu-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ally disambiguated f -structures for pairs of sentences and	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	their condensations. Using the disambiguator, the string	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	generated from the most probable reduced f -structure	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	produced by the transfer system is chosen. In contrast	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	to the approaches mentioned above, our system guaran-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tees the grammaticality of generated strings through the	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	use of a constraint-based generator for LFG which uses	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	a slightly tighter version of the grammar than is used by	page=1 xpos=0 ypos=4 left-column full-justified aligned-line itemization headchar-lower
+I-Body	the parser. As shown in an experimental evaluation, sum-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	marization quality of our system is high, due to the com-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bination of linguistically fine-grained analysis tools and	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	expressive stochastic disambiguation models.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	A second goal of our approach is to apply the standard	page=1 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	evaluation methods for parsing to an automatic evaluation	page=1 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	of summarization quality for sentence condensation sys-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems. Instead of deploying costly and non-reusable hu-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	man evaluation, or using automatic evaluation methods	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	based on word error rate or n-gram match, summariza-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion quality can be evaluated directly and automatically	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	by matching the reduced f -structures that were produced	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	by the system against manually selected f -structures that	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	were produced by parsing a set of manually created con-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	densations. Such an evaluation only requires human labor	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	for the construction and manual structural disambigua-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of a reusable gold standard test set. Matching against	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the test set can be done automatically and rapidly, and	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	is repeatable for development purposes and system com-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	parison. As shown in an experimental evaluation, a close	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	correspondence can be established for rankings produced	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	by the f -structure based automatic evaluation and a man-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ual evaluation of generated strings.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	2 Statistical Sentence Condensation in the	page=1 xpos=0 ypos=8 left-column right-indent font-largest aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading1
+I-SectionHeader	LFG Framework	page=1 xpos=0 ypos=9 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+B-Body	In this section, each of the system components will be	page=1 xpos=0 ypos=9 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+E-Body	described in more detail.	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-SubsectionHeader	2.1 Parsing and Transfer	page=1 xpos=5 ypos=0 right-column right-indent column-top numbered-heading2 above-double-space above-line-space
+B-Body	In this project, a broad-coverage LFG gram-	page=1 xpos=5 ypos=0 right-column right-over aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	mar and parser for English was employed (see	page=1 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower
+I-Body	Riezler et al. (2002)). The parser produces a set of	page=1 xpos=5 ypos=0 right-column right-over aligned-line year headchar-capital
+I-Body	context-free constituent (c-)structures and associated	page=1 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower
+I-Body	functional (f -)structures for each input sentence, repre-	page=1 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	sented in packed form (see Maxwell and Kaplan (1989)).	page=1 xpos=5 ypos=1 right-column right-over aligned-line year headchar-lower tailchar-period
+I-Body	For sentence condensation we are only interested in the	page=1 xpos=5 ypos=1 right-column right-over aligned-line headchar-capital
+I-Body	predicate-argument structures encoded in f -structures.	page=1 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower tailchar-period
+I-Body	For example, Fig. 1 shows an f -structure manually	page=1 xpos=5 ypos=1 right-column right-over aligned-line headchar-capital
+I-Body	selected out of the 40 f -structures for the sentence:	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Quote	A prototype is ready for testing, and Leary hopes to	page=1 xpos=5 ypos=2 right-column left-indent font-smallest indented-line line-double-space line-space headchar-capital
+I-Quote	set requirements for a full system by the end of the	page=1 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Quote	year.	page=1 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The transfer component for the sentence condensation	page=1 xpos=5 ypos=2 right-column left-indent right-over hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	system is based on a component previously used in a ma-	page=1 xpos=5 ypos=3 right-column right-over hanged-line headchar-lower tailchar-hiphen
+I-Body	chine translation system (see Frank (1999)). It consists	page=1 xpos=5 ypos=3 right-column right-over aligned-line year headchar-lower
+I-Body	of an ordered set of rules that rewrite one f -structure	page=1 xpos=5 ypos=3 right-column right-over aligned-line headchar-lower
+I-Body	into another. Structures are broken down into flat lists	page=1 xpos=5 ypos=3 right-column right-over aligned-line headchar-lower
+I-Body	of facts, and rules may add, delete, or change individ-	page=1 xpos=5 ypos=3 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	ual facts. Rules may be optional or obligatory. In the case	page=1 xpos=5 ypos=3 right-column right-over aligned-line headchar-lower
+I-Body	of optional rules, transfer of a single input structure may	page=1 xpos=5 ypos=4 right-column right-over aligned-line headchar-lower
+I-Body	lead to multiple alternate output structures. The transfer	page=1 xpos=5 ypos=4 right-column right-over aligned-line headchar-lower
+I-Body	component is designed to operate on packed input from	page=1 xpos=5 ypos=4 right-column right-over aligned-line headchar-lower
+I-Body	the parser and can also produce packed representations	page=1 xpos=5 ypos=4 right-column right-over aligned-line headchar-lower
+I-Body	of the condensation alternatives, using methods adapted	page=1 xpos=5 ypos=4 right-column right-over aligned-line headchar-lower
+E-Body	from parse packing. <sup>1</sup>	page=1 xpos=5 ypos=5 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+B-Body	An example rule that (optionally) removes an adjunct	page=1 xpos=5 ypos=5 right-column left-indent right-over indented-line longer-tail headchar-capital
+I-Body	is shown below:	page=1 xpos=5 ypos=5 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	+adjunct(X,Y), in-set(Z,Y) ?=>	page=1 xpos=5 ypos=5 right-column right-indent font-smallest aligned-line longer-tail line-double-space line-space
+I-Listitem	delete-node(Z,r1), rule-trace(r1,del(Z,X)).	page=1 xpos=5 ypos=5 right-column right-over font-smallest aligned-line longer-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	This rule eliminates an adjunct, Z, by deleting the fact that	page=1 xpos=5 ypos=6 right-column right-over aligned-line shorter-tail line-double-space line-space headchar-capital
+I-Body	Z is contained within the set of adjuncts, Y, associated	page=1 xpos=5 ypos=6 right-column right-over aligned-line headchar-capital
+I-Body	with the expression X. The + before the adjunct(X,Y)	page=1 xpos=5 ypos=6 right-column right-over aligned-line headchar-lower
+I-Body	fact marks this fact as one that needs to be present for the	page=1 xpos=5 ypos=6 right-column right-over aligned-line headchar-lower
+I-Body	rule to be applied, but which is left unaltered by the rule	page=1 xpos=5 ypos=6 right-column right-over aligned-line headchar-lower
+I-Body	application. The in-set(Z,Y) fact is deleted. Two	page=1 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower
+I-Body	new facts are added. delete-node(Z,r1) indicates	page=1 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower
+I-Body	that the structure rooted at node Z is to be deleted, and	page=1 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower
+I-Body	rule-trace(r1,del(Z,X)) adds a trace of this	page=1 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower
+I-Body	rule to an accumulating history of rule applications. This	page=1 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower
+I-Body	history records the relation of transferred f -structures to	page=1 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower
+I-Body	the original f -structure and is available for stochastic dis-	page=1 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower tailchar-hiphen
+E-Body	ambiguation.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Rules used in the sentence condensation transfer sys-	page=1 xpos=5 ypos=8 right-column left-indent right-over indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tem include the optional deletion of all intersective ad-	page=1 xpos=5 ypos=8 right-column right-over hanged-line headchar-lower tailchar-hiphen
+I-Body	juncts (e.g., He slept in the bed. can become He slept.,	page=1 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower tailchar-comma
+I-Body	but He did not sleep. cannot become He did sleep. or He	page=1 xpos=5 ypos=9 right-column right-over aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> The packing feature of the transfer component could not	page=1 xpos=5 ypos=9 right-column left-indent right-over font-largest indented-line line-double-space line-space headchar-super
+I-Footnote	be employed in these experiments since the current interface	page=1 xpos=5 ypos=9 right-column right-over font-smallest hanged-line headchar-lower
+I-Footnote	to the generator and stochastic disambiguation component still	page=1 xpos=5 ypos=9 right-column right-over font-smallest aligned-line headchar-lower
+I-Footnote	requires unpacked representations.	page=1 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Figure	__Figure 1__	page=2 xpos=1 ypos=-13 single-column left-indent right-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: F -structure for non-condensed sentence.	page=2 xpos=2 ypos=0 single-column left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	slept.), the optional deletion of parts of coordinate struc-	page=2 xpos=0 ypos=1 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	tures (e.g., They laughed and giggled. can become They	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	giggled.), and certain simplifications (e.g. It is clear that	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the earth is round. can become The earth is round. but	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	It seems that he is asleep. cannot become He is asleep.).	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	For example, one possible post-transfer output of the sen-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	tence in Fig. 1 is shown in Fig. 2.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	2.2 Stochastic Selection and Generation	page=2 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The transfer rules are independent of the grammar and are	page=2 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	not constrained to preserve the grammaticality or well-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formedness of the reduced f-structures. Some of the re-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	duced structures therefore may not correspond to any En-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	glish sentence, and these are eliminated from future con-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sideration by using the generator as a filter. The filter-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing is done by running each transferred structure through	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the generator to see whether it produces an output string.	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	If it does not, the structure is rejected. For example, for	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	the f -structure in Fig. 1, the transfer system proposed	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	32 possible reductions. After filtering these structures by	page=2 xpos=0 ypos=9 left-column full-justified aligned-line numbered-heading1
+I-Body	generation, 16 reduced f -structures comprising possible	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+Figure	__Figure 2__	page=2 xpos=5 ypos=2 right-column left-indent right-over box column-top figure-area above-blank-line above-double-space above-line-space
+B-Body	Figure 2: Gold standard f -structure reduction.	page=2 xpos=5 ypos=8 right-column left-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-period page-bottom
+I-Body	condensations of the input sentence survive. The 16 well-	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	formed structures correspond to the following strings that	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	were outputted by the generator (note that a single struc-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture may correspond to more than one string and a given	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	string may correspond to more than one structure):	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	A prototype is ready.	page=3 xpos=0 ypos=1 left-column left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space headchar-capital tailchar-period
+B-Listitem	A prototype is ready for testing.	page=3 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-capital tailchar-period
+I-Listitem	Leary hopes to set requirements for a full system.	page=3 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-capital tailchar-period
+B-Listitem	A prototype is ready and Leary hopes to set require-	page=3 xpos=0 ypos=1 left-column centered left-indent right-indent font-smallest aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Listitem	ments for a full system.	page=3 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	A prototype is ready for testing and Leary hopes to	page=3 xpos=0 ypos=1 left-column centered left-indent right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Listitem	set requirements for a full system.	page=3 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	Leary hopes to set requirements for a full system by	page=3 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Listitem	the end of the year.	page=3 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	A prototype is ready and Leary hopes to set require-	page=3 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Listitem	ments for a full system by the end of the year.	page=3 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	A prototype is ready for testing and Leary hopes to	page=3 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Listitem	set requirements for a full system by the end of the	page=3 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Listitem	year.	page=3 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	In order to guarantee non-empty output for the over-	page=3 xpos=0 ypos=3 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	all condensation system, the generation component has	page=3 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	to be fault-tolerant in cases where the transfer system op-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erates on a fragmentary parse, or produces non-valid f -	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structures from valid input f -structures. Robustness tech-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	niques currently applied to the generator include insertion	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	and deletion of features in order to match invalid transfer-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	output to the grammar rules and lexicon. Furthermore,	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	repair mechanisms such as repairing subject-verb agree-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment from the subject’s number value are employed. As	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	a last resort, a fall-back mechanism to the original un-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	condensed f -structure is used. These techniques guaran-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tee that a non-empty set of reduced f -structures yielding	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	grammatical strings in generation is passed on to the next	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	system component. In case of fragmentary input to the	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	transfer component, grammaticaliy of the output is guar-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	anteed for the separate fragments. In other words, strings	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	generated from a reduced fragmentary f -structure will be	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	as grammatical as the string that was fed into the parsing	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	component.	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	After filtering by the generator, the remaining f -	page=3 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	structures were weighted by the stochastic disambigua-	page=3 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tion component. Similar to stochastic disambiguation for	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	constraint-based parsing (Johnson et al., 1999; Riezler et	page=3 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	al., 2002), an exponential (a.k.a. log-linear or maximum-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	entropy) probability model on transferred structures is es-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	timated from a set of training data. The data for estima-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion consists of pairs of original sentences y and gold-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	standard summarized f -structures s which were manu-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ally selected from the transfer output for each sentence.	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For training data {(s <sub>j</sub> , y j )} <sup>m</sup> <sub>j=1</sub> and a set of possible sum-	page=3 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	marized structures S(y) for each sentence y, the objective	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	was to maximize a discriminative criterion, namely the	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	conditional likelihood L(λ) of a summarized f -structure	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	given the sentence. Optimization of the function shown	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	below was performed using a conjugate gradient opti-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	mization routine:	page=3 xpos=5 ypos=0 right-column right-indent column-top headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	m	page=3 xpos=7 ypos=0 right-column left-indent right-indent font-smallest indented-line longer-tail line-double-space line-space headchar-lower
+I-Equation	L(λ) = log <sup>Y</sup> <sub>P</sub> <sup>e</sup> <sup>λ·f</sup> (s j ) .	page=3 xpos=6 ypos=0 right-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital tailchar-period
+I-Equation	j=1 s∈S(y j ) e <sup>λ·f</sup> (s)	page=3 xpos=7 ypos=0 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	At the core of the exponential probability model is a vec-	page=3 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tor of property-functions f to be weighted by parameters	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	λ. For the application of sentence condensation, 13,000	page=3 xpos=5 ypos=1 right-column full-justified aligned-line
+I-Body	property-functions of roughly three categories were used:	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	• Property-functions indicating attributes, attribute-	page=3 xpos=5 ypos=1 right-column left-indent font-larger indented-line line-double-space line-space itemization tailchar-hiphen
+I-Listitem	combinations, or attribute-value pairs for f -structure	page=3 xpos=5 ypos=2 right-column left-indent indented-line headchar-lower
+I-Listitem	attributes (≈ 1,000 properties)	page=3 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	• Property-functions indicating co-occurences of verb	page=3 xpos=5 ypos=2 right-column left-indent font-larger hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	stems and subcategorization frames (≈ 12,000 prop-	page=3 xpos=5 ypos=2 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	erties)	page=3 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	• Property-functions indicating transfer rules used to	page=3 xpos=5 ypos=3 right-column left-indent font-larger hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	arrive at the reduced f - structures (≈ 60 properties).	page=3 xpos=5 ypos=3 right-column left-indent indented-line headchar-lower tailchar-period above-double-space above-line-space
+B-Body	A trained probability model is applied to unseen data	page=3 xpos=5 ypos=3 right-column left-indent hanged-line line-double-space line-space headchar-capital
+I-Body	by selecting the most probable transferred f -structure,	page=3 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	yielding the string generated from the selected struc-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture as the target condensation. The transfered f -structure	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	chosen for our current example is shown in Fig. 3.	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 3__	page=3 xpos=5 ypos=4 right-column centered box aligned-line longer-tail line-double-space line-space figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 3: Transferred f -structure chosen by system.	page=3 xpos=5 ypos=6 right-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-Body	This structure was produced by the following set of	page=3 xpos=5 ypos=7 right-column left-indent aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	transfer rules, where var refers to the indices in the rep-	page=3 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	resentation of the f -structure:	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	rtrace(r13,keep(var(98),of)),	page=3 xpos=5 ypos=7 right-column left-indent right-indent font-smallest indented-line longer-tail line-double-space line-space headchar-lower tailchar-comma
+B-Listitem	rtrace(r161,keep(system,var(85))),	page=3 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-comma
+B-Listitem	rtrace(r1,del(var(91),set,by)),	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-comma
+B-Listitem	rtrace(r1,del(var(53),be,for)),	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-comma
+B-Listitem	rtrace(r20,equal(var(1),and)),	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-comma
+B-Listitem	rtrace(r20,equal(var(2),and)),	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-comma
+B-Listitem	rtrace(r2,del(var(1),hope,and)),	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-comma
+B-Listitem	rtrace(r22,delb(var(0),and)).	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	These rules delete the adjunct of the first conjunct (for	page=3 xpos=5 ypos=9 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	testing), the adjunct of the second conjunct (by the end	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	of the year), the rest of the second conjunct (Leary hopes	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	to set requirements for a full system), and the conjunction	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	itself (and).	page=3 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-SectionHeader	3 A Method for Automatic Evaluation of	page=4 xpos=0 ypos=0 left-column right-indent font-largest page-top numbered-heading1
+I-SectionHeader	Sentence Summarization	page=4 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	Evaluation of quality of sentence condensation systems,	page=4 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	and of text summarization and simplification systems in	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	general, has mostly been conducted as intrinsic evalua-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion by human experts. Recently, Papineni et al.’s (2001)	page=4 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower
+I-Body	proposal for an automatic evaluation of translation sys-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems by measuring n-gram matches of the system out-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put against reference examples has become popular for	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	evaluation of summarization systems. In addition, an au-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tomatic evaluation method based on context-free deletion	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	decisions has been proposed by Jing (2000). However, for	page=4 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Body	summarization systems that employ a linguistic parser as	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	an integral system component, it is possible to employ	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the standard evaluation techniques for parsing directly	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	to an evaluation of summarization quality. A parsing-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based evaluation allows us to measure the semantic as-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pects of summarization quality in terms of grammatical-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	functional information provided by deep parsers. Further-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	more, human expertise was necessary only for the cre-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ation of condensed versions of sentences, and for the	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	manual disambiguation of parses assigned to those sen-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences. Given such a gold standard, summarization qual-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity of a system can be evaluated automatically and re-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	peatedly by matching the structures of the system out-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put against the gold standard structures. The standard	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	metrics of precision, recall, and F-score from statisti-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cal parsing can be used as evaluation metrics for mea-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	suring matching quality: Precision measures the number	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	of matching structural items in the parses of the sys-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem output and the gold standard, out of all structural	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	items in the system output’s parse; recall measures the	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	number of matches, out of all items in the gold stan-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dard’s parse. F-score balances precision and recall as	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	(2 × precision × recall)/(precision + recall).	page=4 xpos=0 ypos=6 left-column right-indent font-larger aligned-line shorter-tail tailchar-period above-line-space
+B-Body	For the sentence condensation system presented above,	page=4 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-comma
+I-Body	the structural items to be matched consist of rela-	page=4 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tion(predicate, argument) triples. For example, the gold-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	standard f -structure of Fig. 2 corresponds to 23 depen-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dency relations, the first 14 of which are shared with the	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	reduced f -structure chosen by the stochastic disambigua-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion system:	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	tense(be:0, pres),	page=4 xpos=0 ypos=8 left-column left-indent right-indent font-smallest indented-line longer-tail line-double-space line-space headchar-lower tailchar-comma
+B-Listitem	mood(be:0, indicative),	page=4 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-comma
+B-Listitem	subj(be:0, prototype:2),	page=4 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-comma
+B-Listitem	xcomp(be:0, ready:1),	page=4 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-comma
+B-Listitem	stmt_type(be:0, declarative),	page=4 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-comma
+B-Listitem	vtype(be:0, copular),	page=4 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-comma
+B-Listitem	subj(ready:1, prototype:2),	page=4 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-comma
+B-Listitem	adegree(ready:1, positive),	page=4 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-comma
+B-Listitem	atype(ready:1, predicative),	page=4 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-comma
+B-Listitem	det(prototype:2, a:7),	page=4 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-comma
+B-Listitem	num(prototype:2, sg),	page=4 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-comma
+B-Listitem	pers(prototype:2, 3),	page=4 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-comma
+B-Listitem	det_form(a:7, a),	page=4 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-comma column-bottom
+B-Listitem	det_type(a:7, indef),	page=4 xpos=5 ypos=0 right-column left-indent right-indent font-smallest column-top headchar-lower tailchar-comma
+B-Listitem	adjunct(be:0, for:12),	page=4 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-comma
+B-Listitem	obj(for:12, test:14),	page=4 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-comma
+B-Listitem	adv_type(for:12, vpadv),	page=4 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-comma
+B-Listitem	psem(for:12, unspecified),	page=4 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-comma
+B-Listitem	ptype(for:12, semantic),	page=4 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-comma
+B-Listitem	num(test:14, sg),	page=4 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-comma
+B-Listitem	pers(test:14, 3),	page=4 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line headchar-lower tailchar-comma
+B-Listitem	pform(test:14, for),	page=4 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-comma
+B-Listitem	vtype(test:14, main).	page=4 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line longer-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Matching these f -structures against each other corre-	page=4 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	sponds to a precision of 1, recall of .61, and F-score of	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	.76.	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail tailchar-period above-line-space
+B-Body	The fact that our method does not rely on a compar-	page=4 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ison of the characteristics of surface strings is a clear	page=4 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	advantage. Such comparisons are bad at handling exam-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ples which are similar in meaning but differ in word or-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	der or vary structurally, such as in passivization or nom-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	inalization. Our method handles such examples straight-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	forwardly. Fig. 4 shows two serialization variants of the	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	condensed sentence of Fig. 2. The f -structures for these	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	examples are similar to the f -structure assigned to the	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	gold standard condensation shown in Fig. 2 (except for	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the relations ADJUNT-TYPE:parenthetical ver-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sus ADV-TYPE:vpadv versus ADV-TYPE:sadv). An	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	evaluation of summarization quality that is based on	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	matching f -structures will treat these examples equally,	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	whereas an evaluation based on string matching will yield	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	different quality scores for different serializations.	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 4__	page=4 xpos=5 ypos=5 right-column left-indent right-over box indented-line longer-tail line-double-space line-space figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 4: F -structure for word-order variants of gold	page=4 xpos=5 ypos=9 right-column full-justified hanged-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital
+E-Caption	standard condensation.	page=4 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Body	In the next section, we present experimental results	page=5 xpos=0 ypos=0 left-column left-indent page-top headchar-capital
+I-Body	of an automatic evaluation of the sentence condensation	page=5 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	system described above. These results show a close cor-	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	respondence between automatically produced evaluation	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	results and human judgments on the quality of generated	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	condensed strings.	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Experimental Evaluation	page=5 xpos=0 ypos=1 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The sentences and condensations we used are taken from	page=5 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	data for the experiments of Knight and Marcu (2000),	page=5 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	which were provided to us by Daniel Marcu. These data	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	consist of pairs of sentences and their condensed versions	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	that have been extracted from computer-news articles and	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	abstracts of the Ziff-Davis corpus. Out of these data, we	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	parsed and manually disambiguated 500 sentence pairs.	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	These included a set of 32 sentence pairs that were used	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	for testing purposes in Knight and Marcu (2000). In or-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	der to control for the small corpus size of this test set, we	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	randomly extracted an additional 32 sentence pairs from	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the 500 parsed and disambiguated examples as a second	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	test set. The rest of the 436 randomly selected sentence	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	pairs were used to create training data. For the purpose	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	of discriminative training, a gold-standard of transferred	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	f -structures was created from the transfer output and the	page=5 xpos=0 ypos=4 left-column full-justified aligned-line itemization headchar-lower
+I-Body	manually selected f -structures for the condensed strings.	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This was done automatically by selecting for each exam-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ple the transferred f -structure that best matched the f -	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	structure annotated for the condensed string.	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the automatic evaluation of f -structure match, three	page=5 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	different system variants were compared. Firstly, ran-	page=5 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	domly chosen transferred f -structures were matched	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	against the manually selected f -structures for the man-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ually created condensations. This evaluation constitutes	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	a lower bound on the F-score against the given gold	page=5 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower
+I-Body	standard. Secondly, matching results for transferred f -	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structures yielding the maximal F-score against the gold	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	standard were recorded, giving an upper bound for the	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	system. Thirdly, the performance of the stochastic model	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	within the range of the lower bound and upper bound was	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	measured by recording the F-score for the f -structure that	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	received highest probability according to the learned dis-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tribution on transferred structures.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In order to make our results comparable to the re-	page=5 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	sults of Knight and Marcu (2000) and also to investigate	page=5 xpos=0 ypos=8 left-column full-justified hanged-line year headchar-lower
+I-Body	the correspondence between the automatic evaluation and	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	human judgments, a manual evaluation of the strings gen-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erated by these system variants was conducted. Two hu-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	man judges were presented with the uncondensed sur-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	face string and five condensed strings that were displayed	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	in random order for each test example. The five con-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	densed strings presented to the human judges contained	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	(1) strings generated from three randomly selected f -	page=5 xpos=0 ypos=9 left-column full-justified aligned-line itemization tailchar-hiphen
+I-Body	structures, (2) the strings generated from the f -structures	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	which were selected by the stochastic model, and (3) the	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	manually created gold-standard condensations extracted	page=5 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	from the Ziff-Davis abstracts. The judges were asked	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	to judge summarization quality on a scale of increasing	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	quality from 1 to 5 by assessing how well the generated	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	strings retained the most salient information of the orig-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	inal uncondensed sentences. Grammaticality of the sys-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem output is optimal and not reported separately. Results	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	for both evaluations are reported for two test corpora of	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	32 examples each. Testset I contains the sentences and	page=5 xpos=5 ypos=1 right-column full-justified aligned-line numbered-heading1
+I-Body	condensations used to evaluate the system described in	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	Knight and Marcu (2000). Testset II consists of another	page=5 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-capital
+I-Body	randomly extracted 32 sentence pairs from the same do-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	main, prepared in the same way.	page=5 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Fig. 5 shows evaluation results for a sentence conden-	page=5 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	sation run that uses manually selected f -structures for	page=5 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	the original sentences as input to the transfer component.	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	These results demonstrate how the condenstation system	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	performs under the optimal circumstances when the parse	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	chosen as input is the best available. Fig. 6 applies the	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	same evaluation data and metrics to a sentence conden-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sation experiment that performs transfer from packed f -	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structures, i.e. transfer is performed on all parses for an	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	ambiguous sentence instead of on a single manually se-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lected parse. Alternatively, a single input parse could be	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	selected by stochastic models such as the one described	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	in Riezler et al. (2002). A separate phase of parse disam-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	biguation, and perhaps the effects of any errors that this	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	might introduce, can be avoided by transferring from all	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	parses for an ambiguous sentence. This approach is com-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	putationally feasible, however, only if condensation can	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	be carried all the way through without unpacking. Our	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	technology is not yet able to do this (in particular, as men-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tioned earlier, we have not yet implemented a method for	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	stochastic disambiguation on packed f -structures). How-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ever, we conducted a preliminary assessment of this pos-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sibility by unpacking and enumerating the transferred f -	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structures. For many sentences this resulted in more can-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	didates than we could operate on in the available time	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	and space, and in those cases we arbitrarily set a cut-off	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	on the number of transferred f -structures we considered.	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Since transferred f -structures are produced according to	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	the number of rules applied to transfer them, in this setup	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the transfer system produces smaller f -structures first,	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and cuts off less condensed output. The result of this ex-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	periment, shown in Fig. 6, thus provides a conservative	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	estimate on the quality of the condensations we might	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	achieve with a full-packing implementation.	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In Figs. 5 and 6, the first row shows F-scores for a	page=5 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	random selection, the system selection, and the best pos-	page=5 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sible selection from the transfer output against the gold	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	standard. The second rows show summarization quality	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	scores for generations from a random selection and the	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	system selection, and for the human-written condensa-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. The third rows report compression ratios. As can	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Figure	__Figure 5__	page=6 xpos=0 ypos=-3 left-column centered left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 5: Sentence condensation from manually selected	page=6 xpos=0 ypos=0 left-column full-justified line-double-space line-space string-figure headchar-capital
+E-Caption	f -structure for original uncondensed sentences.	page=6 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	be seen from these tables, the ranking of system variants	page=6 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	produced by the automatic and manual evaluation con-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	firm a close correlation between the automatic evaluation	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	and human judgments. A comparison of evaluation re-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults across colums, i.e. across selection variants, shows	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	that a stochastic selection of transferred f -structures is	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	indeed important. Even if all f -structures are transferred	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	from the same linguistically rich source, and all gener-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ated strings are grammatical, a reduction in error rate of	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	around 50% relative to the upper bound can be achieved	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	by stochastic selection. In contrast, a comparison be-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tween transfer runs with and without perfect disambigua-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of the original string shows a decrease of about 5% in	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	F-score, and of only .1 points for summarization quality	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	when transferring from packed parses instead of from the	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	manually selected parse. This shows that it is more im-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	portant to learn what a good transferred f -structure looks	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	like than to have a perfect f -structure to transfer from.	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The compression rates associated with the systems that	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	used stochastic selection is around 60%, which is accept-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	able, but not as aggressive as human-written condensa-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions. Note that in our current implementation, in some	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	cases the transfer component was unable to operate on	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the packed representation. In those cases a parse was cho-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sen at random as a conservative estimate of transfer from	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	all parses. This fall-back mechanism explains the drop in	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	F-score for the upper bound in comparing Figs. 5 and 6.	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusion	page=6 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We presented an approach to sentence condensation	page=6 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	that employs linguistically rich LFG grammars in a	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	parsing/generation-based stochastic sentence condensa-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion system. Fine-grained dependency structures are out-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put by the parser, then modified by a highly expressive	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	transfer system, and filtered by a constraint-based gener-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ator. Stochastic selection of generation-filtered reduced	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	structures uses a powerful Maximum-Entropy model.	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	As shown in an experimental evaluation, summarization	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital column-bottom
+Figure	__Figure 6__	page=6 xpos=5 ypos=-3 right-column centered left-indent right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 6: Sentence condensation from packed f -	page=6 xpos=5 ypos=0 right-column full-justified line-double-space line-space string-figure headchar-capital tailchar-hiphen
+E-Caption	structures for original uncondensed sentences.	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	quality of the system output is state-of-the-art, and gram-	page=6 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	maticality of condensed strings is guaranteed. Robustness	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	techniques for parsing and generation guarantee that the	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	system produces non-empty output for unseen input.	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Overall, the summarization quality achieved by	page=6 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	our system is similar to the results reported in	page=6 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	Knight and Marcu (2000). This might seem disappoint-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	ing considering the more complex machinery employed	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	in our approach. It has to be noted that these re-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults are partially due to the somewhat artificial na-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture of the data that were used in the experiments of	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	Knight and Marcu (2000) and therefore in our experi-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	ments: The human-written condensations in the data set	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	extracted from the Ziff-Davis corpus show the same	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	word order as the original sentences and do not exhibit	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	any structural modification that are common in human-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	written summaries. For example, humans tend to make	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	use of structural modifications such as nominalization	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	and verb alternations such as active/passive or transi-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive/intransitive alternations in condensation. Such alter-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nations can easily be expressed in our transfer-based	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	approach, whereas they impose severe problems to ap-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proaches that operate only on phrase structure trees. In	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the given test set, however, the condensation task re-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stricted to the operation of deletion. A creation of addi-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tional condensations for the original sentences other than	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the condensed versions extracted from the human-written	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	abstracts would provide a more diverse test set, and fur-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	thermore make it possible to match each system output	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	against any number of independent human-written con-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	densations of the same original sentence. This idea of	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	computing matching scores to multiple reference exam-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ples was proposed by Alshawi et al. (1998), and later by	page=6 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	Papineni et al. (2001) for evaluation of machine transla-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	tion systems. Similar to these proposals, an evaluation	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	of condensation quality could consider multiple reference	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	condensations and record the matching score against the	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	most similar example.	page=6 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Another desideratum for future work is to carry	page=6 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital page-bottom
+I-Body	condensation all the way through without unpacking	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	at any stage. Work on employing packing techniques	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	not only for parsing and transfer, but also for genera-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion and stochastic selection is currently underway (see	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	Geman and Johnson (2002)). This will eventually lead to	page=7 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-capital
+I-Body	a system whose components work on packed represen-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	tations of all or n-best solutions, but completely avoid	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	costly unpacking of representations.	page=7 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=1 left-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Hiyan Alshawi, Srinivas Bangalore, and Shona Douglas.	page=7 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	1998. Automatic acquisition of hierarchical trans-	page=7 xpos=0 ypos=2 left-column left-indent indented-line year tailchar-hiphen
+I-Reference	duction models for machine translation. In Proceed-	page=7 xpos=0 ypos=2 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ings of the 36th Annual Meeting of the Association for	page=7 xpos=0 ypos=2 left-column left-indent aligned-line headchar-lower
+I-Reference	Computational Linguistics (ACL’98), Montreal, Que-	page=7 xpos=0 ypos=2 left-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	bec, Canada.	page=7 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	John Carroll, Guido Minnen, Yvonne Canning, Siobhan	page=7 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Devlin, and John Tait. 1998. Practical simplification	page=7 xpos=0 ypos=3 left-column left-indent indented-line year headchar-capital
+I-Reference	of english newspaper text to assist aphasic readers. In	page=7 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower
+I-Reference	Proceedings of the AAAI Workshop on Integrating Arti-	page=7 xpos=0 ypos=3 left-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	ficial Intelligence and Assistive Technology, Madison,	page=7 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	WI.	page=7 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Anette Frank. 1999. From parallel grammar develop-	page=7 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ment towards machine translation. In Proceedings of	page=7 xpos=0 ypos=4 left-column left-indent indented-line headchar-lower
+I-Reference	the MT Summit VII. MT in the Great Translation Era,	page=7 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	pages 134–142. Kent Ridge Digital Labs, Singapore.	page=7 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Stuart Geman and Mark Johnson. 2002. Dynamic	page=7 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	programming for parsing and estimation of stochas-	page=7 xpos=0 ypos=5 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	tic unification-based grammars. In Proceedings of the	page=7 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Reference	40th Annual Meeting of the Association for Computa-	page=7 xpos=0 ypos=5 left-column left-indent aligned-line tailchar-hiphen
+I-Reference	tional Linguistics (ACL’02), Philadelphia, PA.	page=7 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Gregory Grefenstette. 1998. Producing intelligent tele-	page=7 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	graphic text reduction to provide an audio scanning	page=7 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower
+I-Reference	service for the blind. In Proceedings of the AAAI	page=7 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Reference	Spring Workshop on Intelligent Text Summarization,	page=7 xpos=0 ypos=6 left-column left-indent aligned-line headchar-capital tailchar-comma
+I-Reference	Stanford, CA.	page=7 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Hongyan Jing. 2000. Sentence reduction for automatic	page=7 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	text summarization. In Proceedings of the 6th Applied	page=7 xpos=0 ypos=7 left-column left-indent indented-line headchar-lower
+I-Reference	Natural Language Processing Conference (ANLP’00),	page=7 xpos=0 ypos=7 left-column left-indent aligned-line headchar-capital tailchar-comma
+I-Reference	Seattle, WA.	page=7 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Mark Johnson, Stuart Geman, Stephen Canon, Zhiyi Chi,	page=7 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	and Stefan Riezler. 1999. Estimators for stochastic	page=7 xpos=0 ypos=8 left-column left-indent indented-line year headchar-lower
+I-Reference	“unification-based” grammars. In Proceedings of the	page=7 xpos=0 ypos=8 left-column left-indent aligned-line
+I-Reference	37th Annual Meeting of the Association for Computa-	page=7 xpos=0 ypos=8 left-column left-indent aligned-line tailchar-hiphen
+I-Reference	tional Linguistics (ACL’99), College Park, MD.	page=7 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Kevin Knight and Daniel Marcu. 2000. Statistics-based	page=7 xpos=0 ypos=9 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	summarization—step one: Sentence compression. In	page=7 xpos=0 ypos=9 left-column left-indent indented-line headchar-lower
+I-Reference	Proceedings of the 17th National Conference on Arti-	page=7 xpos=0 ypos=9 left-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	ficial Intelligence (AAAI-2000), Austin, TX.	page=7 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period column-bottom
+B-Reference	John Maxwell and Ronald M. Kaplan. 1989. An	page=7 xpos=5 ypos=0 right-column full-justified column-top year headchar-capital
+I-Reference	overview of disjunctive constraint satisfaction. In Pro-	page=7 xpos=5 ypos=0 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	ceedings of the International Workshop on Parsing	page=7 xpos=5 ypos=0 right-column left-indent aligned-line headchar-lower
+I-Reference	Technologies, Pittsburgh, PA.	page=7 xpos=5 ypos=0 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Kishore Papineni, Salim Roukos, Todd Ward, and Wei-	page=7 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	Jing Zhu. 2001. Bleu: a method for automatic evalua-	page=7 xpos=5 ypos=0 right-column left-indent indented-line year headchar-capital tailchar-hiphen
+I-Reference	tion of machine translation. Technical Report IBM Re-	page=7 xpos=5 ypos=1 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	search Division Technical Report, RC22176 (W0190-	page=7 xpos=5 ypos=1 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	022), Yorktown Heights, N.Y.	page=7 xpos=5 ypos=1 right-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Stefan Riezler, Tracy H. King, Ronald M. Kaplan,	page=7 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	Richard Crouch, John T. Maxwell, and Mark John-	page=7 xpos=5 ypos=1 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Reference	son. 2002. Parsing the Wall Street Journal using a	page=7 xpos=5 ypos=2 right-column left-indent aligned-line year headchar-lower
+I-Reference	Lexical-Functional Grammar and discriminative esti-	page=7 xpos=5 ypos=2 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	mation techniques. In Proceedings of the 40th Annual	page=7 xpos=5 ypos=2 right-column left-indent aligned-line headchar-lower
+I-Reference	Meeting of the Association for Computational Linguis-	page=7 xpos=5 ypos=2 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	tics (ACL’02), Philadelphia, PA.	page=7 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Michael J. Witbrock and Vibhu O. Mittal. 1999. Ultra-	page=7 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	summarization: A statistical approach to generating	page=7 xpos=5 ypos=3 right-column left-indent indented-line headchar-lower
+I-Reference	highly condensed non-extractive summaries. In Pro-	page=7 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ceedings of the 22nd ACM SIGIR Conference on Re-	page=7 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	search and Development in Information Retrieval,	page=7 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	Berkeley, CA.	page=7 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period

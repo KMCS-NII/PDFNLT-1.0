@@ -1,0 +1,661 @@
+B-Header	Proceedings of HLT-NAACL 2003	page=0 xpos=6 ypos=0 right-column left-indent font-smallest page-top year headchar-capital
+I-Header	Main Papers , pp. 55-62	page=0 xpos=7 ypos=0 right-column left-indent font-smallest indented-line headchar-capital
+I-Header	Edmonton, May-June 2003	page=0 xpos=7 ypos=0 right-column left-indent font-smallest aligned-line year headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Title	A Generative Probabilistic OCR Model for NLP Applications	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+Author	Okan Kolak William Byrne Philip Resnik	page=0 xpos=1 ypos=1 single-column left-indent right-indent font-largest line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Computer Science and UMIACS CLSP Linguistics and UMIACS	page=0 xpos=0 ypos=1 single-column left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+I-Affiliation	University of Maryland The Johns Hopkins University University of Maryland	page=0 xpos=0 ypos=1 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+Address	College Park, MD 20742, USA Baltimore, MD 21218, USA College Park, MD 20742, USA	page=0 xpos=0 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail year headchar-capital above-line-space
+Email	okan@umiacs.umd.edu byrne@jhu.edu resnik@umiacs.umd.edu	page=0 xpos=0 ypos=2 single-column left-indent right-indent font-larger indented-line line-space symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=3 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	In this paper, we introduce a generative prob-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	abilistic optical character recognition (OCR)	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	model that describes an end-to-end process in	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	the noisy channel framework, progressing from	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	generation of true text through its transforma-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion into the noisy output of an OCR system.	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	The model is designed for use in error correc-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	tion, with a focus on post-processing the output	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	of black-box OCR systems in order to make	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	it more useful for NLP tasks. We present an	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	implementation of the model based on finite-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	state models, demonstrate the model’s ability	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	to significantly reduce character and word er-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ror rate, and provide evaluation results involv-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing automatic extraction of translation lexicons	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	from printed text.	page=0 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-largest hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Although a great deal of text is now available in elec-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tronic form, vast quantities of information still exist pri-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	marily (or only) in print. Critical applications of NLP	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	technology, such as rapid, rough document translation in	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the field (Holland and Schlesiger, 1998) or information	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	retrieval from scanned documents (Croft et al., 1994), can	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	depend heavily on the quality of optical character recog-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nition (OCR) output. Doermann (1998) comments, ”Al-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	though the concept of a raw document image database is	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	attractive, comprehensive solutions which do not require	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	complete and accurate conversion to a machine-readable	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	form continue to be elusive for practical systems.”	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Body	Unfortunately, the output of commercial OCR systems	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	is far from perfect, especially when the language in ques-	page=0 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tion is resource-poor (Kanungo et al., in revision). And	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	efforts to acquire new language resources from hardcopy	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	using OCR (Doermann et al., 2002) face something of a	page=0 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower
+I-Body	chicken-and-egg problem. The problem is compounded	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	by the fact that most OCR system are black boxes that do	page=0 xpos=5 ypos=3 right-column full-justified column-top headchar-lower
+I-Body	not allow user tuning or re-training — Baird (1999, re-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ported in (Frederking, 1999)) comments that the lack of	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	ability to rapidly retarget OCR/NLP applications to new	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	languages is “largely due to the monolithic structure of	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	current OCR technology, where language-specific con-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	straints are deeply enmeshed with all the other code.”	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower above-line-space
+B-Body	In this paper, we describe a complete probabilistic,	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-comma
+I-Body	generative model for OCR, motivated specifically by (a)	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	the need to deal with monolithic OCR systems, (b) the fo-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cus on OCR as a component in NLP applications, and (c)	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the ultimate goal of using OCR to help acquire resources	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	for new languages from printed text. After presenting	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the model itself, we discuss the model’s implementation,	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	training, and its use for post-OCR error correction. We	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	then present two evaluations: one for standalone OCR	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	correction, and one in which OCR is used to acquire a	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	translation lexicon from printed text. We conclude with	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	a discussion of related research and directions for future	page=0 xpos=5 ypos=6 right-column full-justified aligned-line itemization headchar-lower
+E-Body	work.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 The Model	page=0 xpos=5 ypos=6 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Generative “noisy channel” models relate an observable	page=0 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	string to an underlying sequence, in this case recog-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nized  <sub>.</sub> This character relationship strings is and modeled underlying by  word   sequences ,  decom- 	page=0 xpos=5 ypos=7 right-column full-justified box aligned-line headchar-lower
+I-Body	posed by Bayes’s Rule   into   steps <sub>(comprising</sub> modeled by sub-steps  gen- (the	page=0 xpos=5 ypos=7 right-column full-justified box aligned-line headchar-lower
+I-Body	source model) and     erating from ). Each step and sub-step is completely	page=0 xpos=5 ypos=8 right-column full-justified box aligned-line headchar-lower
+I-Body	modular, so one can flexibly make use of existing sub-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	models or devise new ones as necessary. <sup>1</sup>	page=0 xpos=5 ypos=8 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	illustrated     <sup>We</sup> begin in with Figure <sub>corresponds</sub> preliminary 1. A to true a definitions true word character sequence and sequence notation, 	page=0 xpos=5 ypos=8 right-column full-justified box aligned-line longer-tail headchar-lower above-line-space
+B-Footnote	<sup>1</sup> Note that the process of “generating”  from  is a math-	page=0 xpos=5 ypos=9 right-column left-indent font-largest indented-line line-space headchar-super tailchar-hiphen
+I-Footnote	ematical abstraction, not necessarily related to the operation of	page=0 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	any particular OCR system.	page=0 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Figure	__Figure 1__	page=1 xpos=1 ypos=-1 left-column centered left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 1: Word and character segmentation	page=1 xpos=0 ypos=1 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+B-Body	       <sub>,</sub> and the OCR	page=1 xpos=0 ypos=1 left-column left-indent right-indent font-largest shorter-tail line-double-space line-space
+I-Body	acter sequence is given by   system’s    output  . char-	page=1 xpos=0 ypos=1 left-column full-justified font-largest hanged-line longer-tail headchar-lower tailchar-hiphen
+B-Body	 <sup>A</sup> <sub>subsequences</sub> segmentation is represented of the true as character      sequence   . Seg- into	page=1 xpos=0 ypos=2 left-column full-justified box aligned-line
+I-Body	ment boundaries are only allowed between characters.	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	<sup>Subsequences</sup>        are    denoted   , where using segmentation   ,   positions , and	page=1 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-super
+I-Body	  	page=1 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail
+I-Body	   . The   . (The define number character of segments subsequences  need not	page=1 xpos=0 ypos=3 left-column centered left-indent box aligned-line longer-tail
+E-Body	in .) equal  the number of words ! and need not be a word	page=1 xpos=0 ypos=3 left-column full-justified box headchar-lower above-line-space
+B-Body	Correspondingly, a segmentation of the OCR’d	page=1 xpos=0 ypos=3 left-column left-indent indented-line line-space headchar-capital
+I-Body	character        $# sequence  into " subsequences is given by	page=1 xpos=0 ypos=3 left-column full-justified box hanged-line headchar-lower
+I-Body	  %    % #    . , where Subsequences %'&   are %'&    denoted , %  by  , % and	page=1 xpos=0 ypos=4 left-column centered left-indent box
+I-Body	% *) # ,+- (  . .) The ,+/ <sub>.</sub> % define character subsequences &	page=1 xpos=0 ypos=4 left-column right-indent box aligned-line shorter-tail
+E-Body		page=1 xpos=0 ypos=4 left-column left-indent right-indent font-largest aligned-line shorter-tail
+B-Body	OCR subsequences: Alignment chunks   are  pairs  <sub>,</sub> of 0 2 corresponding 1    . 2 truth and	page=1 xpos=0 ypos=4 left-column full-justified box longer-tail headchar-capital above-double-space above-line-space
+B-SubsectionHeader	2.1 Generation of True Word Sequence	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2
+B-Body	The generative process  begins with production      of the true	page=1 xpos=0 ypos=5 left-column full-justified box aligned-line longer-tail headchar-capital
+I-Body	word  sequence   354 0-6  0-6    with  8 7 : 9  probability (  < ; 7   . Modeling ; for the example, under-	page=1 xpos=0 ypos=5 left-column full-justified box aligned-line headchar-lower tailchar-hiphen
+I-Body	lying sequence at the word level facilitates integration	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	with NLP models, which   is our ultimate goal. For  exam-	page=1 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ple, the distribution  can be defined using -grams,	page=1 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	parse structure, or any other tool in the language model-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ing arsenal.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	<sup>2.2</sup> <sup>From</sup> <sup>Words</sup> <sup>to</sup> <sup>Characters</sup> 	page=1 xpos=0 ypos=7 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space headchar-super
+B-Body	The first step in transforming to   is  generation  <sub>.</sub> This of step a	page=1 xpos=0 ypos=7 left-column full-justified font-largest aligned-line longer-tail headchar-capital
+I-Body	character sequence , modeled as 	page=1 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	accommodates the character-based nature of OCR sys-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail headchar-lower tailchar-hiphen
+I-Body	tems, and provides a place to model the mapping of dif-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent character sequences to the same word sequence	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	(case/font variation) or vice versa (e.g. ambiguous word	page=1 xpos=0 ypos=8 left-column full-justified aligned-line
+I-Body	segmentation in Chinese). If the language in question	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	provides explicit word boundaries (e.g. words are sep-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	arated by spaces when printed) then we output ‘#’ to rep-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	resent visible  word boundaries. One possible for our example is = “This#is#an#example.”	page=1 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower
+B-Footnote	<sup>2</sup> The model is easily modified to permit =? @B > A .	page=1 xpos=0 ypos=9 left-column left-indent right-indent font-largest indented-line shorter-tail symbol-atmark headchar-super tailchar-period column-bottom
+B-SubsectionHeader	2.3 Segmentation	page=1 xpos=5 ypos=0 right-column right-indent column-top numbered-heading2 above-double-space above-line-space
+B-Body	<sup>Subsequences</sup> <sup>are</sup> <sup>generated</sup>  from by choosing a	page=1 xpos=5 ypos=0 right-column full-justified font-largest aligned-line longer-tail line-double-space line-space headchar-super
+I-Body	set of   boundary    <sub>,</sub> is motivated positions, by . the This fact sub-step, that most modeled OCR sys- by	page=1 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	 	page=1 xpos=5 ypos=0 right-column right-indent font-largest aligned-line shorter-tail
+I-Body	tems first perform image segmentation, and then perform	page=1 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail headchar-lower
+E-Body	recognition on a word by word basis.	page=1 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For a language with clear word boundaries (or reli-	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	able tokenization or segmentation algorithms), one could	page=1 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	simply use spaces to segment the character sequence in	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	a non-probabilistic way. However, OCR systems may	page=1 xpos=5 ypos=1 right-column full-justified aligned-line itemization headchar-lower
+I-Body	make segmentation errors and resulting subsequences	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	may or may not be words. Therefore, a probabilistic seg-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mentation model that accommodates word merge/split er-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	rors is necessary.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	If a segment boundary coincides with a word boundary,	page=1 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	the word boundary marker ‘#’ is considered a part of the	page=1 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	<sup>segment</sup> <sup>on</sup>  both ,   sides. C  D11  E1E A F  possible   segmentation for $G our	page=1 xpos=5 ypos=2 right-column full-justified box aligned-line headchar-super
+I-Body	example $H is	page=1 xpos=5 ypos=3 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	“#an#”, = “#ex”, JI = , “ample.” i.e. = Notice “This#is#”, the merge =	page=1 xpos=5 ypos=3 right-column full-justified font-largest aligned-line longer-tail
+I-Body	error in segment 1 and the split error involving segments	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	3 and 4.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail numbered-heading1 tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.4 Character Sequence Transformation	page=1 xpos=5 ypos=4 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	Our characterization of the final step, transformation into	page=1 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	an observed character sequence, is motivated by the need	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to model OCR systems’ character-level recognition er-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rors. We model each subsequence as being trans-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formed into an OCR subsequence   , so	page=1 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+B-Equation	  %            #        	page=1 xpos=5 ypos=5 right-column left-indent right-indent box indented-line longer-tail above-double-space above-line-space
+I-Body	and we assume each is transformed independently, al-	page=1 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	lowing	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Equation	      #       LK  M 	page=1 xpos=5 ypos=5 right-column left-indent right-indent box indented-line longer-tail
+I-Equation	           	page=1 xpos=5 ypos=5 right-column left-indent right-indent box hanged-line longer-tail above-double-space above-line-space
+B-Body	Any character-level    <sub>;</sub> for example string error Brill model and Moore can be (2000) used to or	page=1 xpos=5 ypos=6 right-column left-indent font-largest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Body	define 	page=1 xpos=5 ypos=6 right-column right-indent font-largest hanged-line shorter-tail headchar-lower
+I-Body	Kolak and Resnik (2002). This is also a logical place to	page=1 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail year headchar-capital
+I-Body	make use of confidence values if provided by the OCR	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	system. We assume that # is always deleted (modeling	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	merge errors), and can never be inserted. Boundary mark-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ers at segment boundaries are re-inserted when segments	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	are put together to create , since they will be part of	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the OCR output (not as #, but most likely as spaces).	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For   our example G , a possible JH result for *I this step is:	page=1 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-capital tailchar-colon
+I-Body	% <sup>=</sup>   QP “Tlmsis”,  D 1 :   D 1 : F  . The = final “an”, generated = “cx”, string would = “amp1e.”; there-	page=1 xpos=5 ypos=8 right-column full-justified box aligned-line tailchar-hiphen
+E-Body	fore be = “Tlmsis#an#cx#am1e.”.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Assuming independence of the individual steps, the	page=1 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	complete model estimates joint probability	page=1 xpos=5 ypos=9 right-column right-indent hanged-line shorter-tail headchar-lower
+B-Equation	  %      	page=1 xpos=5 ypos=9 right-column left-indent right-indent box indented-line shorter-tail
+I-Equation	  %                       	page=1 xpos=5 ypos=9 right-column left-indent right-indent box indented-line longer-tail page-bottom
+B-Body	        can be computed by summing over all possible	page=2 xpos=0 ypos=0 left-column full-justified box page-top
+I-Body	%  that can transform  to :	page=2 xpos=0 ypos=0 left-column right-indent box aligned-line shorter-tail tailchar-colon
+B-Equation	      )      %      	page=2 xpos=0 ypos=0 left-column left-indent right-indent box indented-line longer-tail above-double-space above-line-space
+B-SectionHeader	3 Implementation	page=2 xpos=0 ypos=1 left-column right-indent font-largest hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We have implemented the generative model using a	page=2 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	weighted finite state model (FSM) framework, which	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	provides a strong theoretical foundation, ease of integra-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion for different components, and reduced implementa-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion time thanks to available toolkits such as the AT&T	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	FSM Toolkit (Mohri et al., 1998). Each step is repre-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	sented and trained as a separate FSM, and the resulting	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	FSMs are then composed together to create a single FSM	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	that encodes the whole model. Details of parameter esti-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mation and decoding follow.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 Parameter Estimation	page=2 xpos=0 ypos=3 left-column right-indent aligned-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The specific model definition and estimation methods	page=2 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	assume     that  <sub>triples.</sub> a training corpus is available, containing	page=2 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower above-double-space above-line-space
+B-Body	Generation of True Word Sequence. We use an n-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	gram language model as the source model for the origi-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nal word sequence: an open vocabulary, trigram language	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	model with back-off generated using CMU-Cambridge	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	trained on the from the training data using the Witten- Toolkit (Clarkson  and Rosenfeld, 1997). The model is	page=2 xpos=0 ypos=5 left-column full-justified font-largest aligned-line year headchar-lower
+I-Body	Bell discounting option for smoothing, and encoded as	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	a simple FSM. We made a closed vocabulary assump-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	tion to evaluate the effectiveness of our model when all	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	correct words are in its lexicon. Therefore, although the	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	language model is trained on only the training data, the	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	words in the test set are included in the language model	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	FSM, and treated as unseen vocabulary.	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Body	From Words to Characters. We generate three dif-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	per  ferent <sub>THIS,</sub> case, character this, lower case, sequence This and leading variants case for each (e.g. word: this up- 	page=2 xpos=0 ypos=6 left-column full-justified box aligned-line headchar-lower
+I-Body	bution over case variations  ). is For learned each from word, the the    distri- 	page=2 xpos=0 ypos=7 left-column full-justified box aligned-line headchar-lower
+I-Body	pairs in the training corpus. For words that do not ap-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pear in the corpus, or do not have enough number of oc-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	currences to allow a reliable estimation, we back off to	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	word-independent case variant probabilities. <sup>3</sup>	page=2 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Segmentation. Our current implementation makes an	page=2 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	independent decision for each character pair whether to	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	insert a boundary between them. To reduce the search	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	space associated with the model, we limit the number of	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>3</sup> Currently, we assume a Latin alphabet. Mixed case text is	page=2 xpos=0 ypos=9 left-column left-indent font-largest indented-line line-double-space line-space headchar-super
+I-Footnote	not included since it increases the number of alternatives drasti-	page=2 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower tailchar-hiphen
+I-Footnote	cally; at run time mixed-case words are normalized as a prepro-	page=2 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	cessing step.	page=2 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+I-Body	boundary insertions to one per word, allowing at most	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	two-way word-level splits. The probability of insert-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing a segment boundary between two characters, condi-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tioned on the character pair, is estimated from the training	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	corpus, with Witten-Bell discounting (Witten and Bell,	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	1991) used to handle unseen character pairs.	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Body	Character Sequence Transformation. This step is	page=2 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	implemented as a probabilistic string edit process. The	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	confusion tables for edit   operations   <sub>pairs</sub> in are training estimated data. using Our Viterbi style training on	page=2 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	current implementation allows for substitution, deletion,	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and insertion errors, and does not use context characters. <sup>4</sup>	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	Figure   2 shows  <sub>:</sub> it shows a fragment how the of a observed weighted FSM haner model could for	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line string-figure headchar-capital
+I-Body		page=2 xpos=5 ypos=2 right-column right-indent font-largest aligned-line shorter-tail
+E-Body	be generated by underlying banker or hacker. <sup>5</sup>	page=2 xpos=5 ypos=2 right-column right-indent font-largest aligned-line longer-tail headchar-lower above-double-space above-line-space
+B-Body	Final Cleanup. At this stage, special symbols that were	page=2 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	inserted into the character sequence are removed and the	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	final output sequence is formed. For instance, segment	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	boundary symbols are removed or replaced with spaces	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	depending on the language.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Decoding	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2
+Unknown		page=2 xpos=9 ypos=4 right-column left-indent right-indent font-largest indented-line longer-tail
+B-Body	Decoding    is  the  %  , process namely of finding the “best” for an	page=2 xpos=5 ypos=4 right-column full-justified box hanged-line longer-tail headchar-capital
+I-Body	<sup>observed</sup>          	page=2 xpos=5 ypos=4 right-column right-indent box aligned-line shorter-tail headchar-super
+B-Equation	    %                        	page=2 xpos=5 ypos=5 right-column left-indent right-indent box indented-line longer-tail above-line-space
+B-Body	Decoding within the FSM framework is straightforward:	page=2 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-space headchar-capital tailchar-colon
+I-Body	we first compose all the components of the model in or-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	der, and then invert the resulting FSM. This produces a	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	single transducer that takes a sequence of OCR characters	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	as input, and returns all possible sequences of truth words	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	as output, along with their weights. One can then simply	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	encode OCR character sequences as FSMs and compose	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	them with the model transducer to perform decoding.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Note that the same output sequence can be generated	page=2 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	through multiple paths, and we need to sum over all paths	page=2 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	to find the overall probability of that sequence. This can	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	be achieved by determinizing the output FSM generated	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	we chose to first find the  -best paths in the resulting	page=2 xpos=5 ypos=7 right-column full-justified box aligned-line headchar-lower
+I-Body	by the decoding process. However, for practical reasons,	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma above-double-space above-line-space
+I-Body	FSM and then combine the ones that generate the same	page=2 xpos=5 ypos=8 right-column full-justified aligned-line line-double-space line-space headchar-capital
+B-Body	The resulting lattice or  -best list is easily integrated	page=2 xpos=5 ypos=8 right-column left-indent box indented-line headchar-capital
+I-Body	output.	page=2 xpos=5 ypos=8 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+I-Body	with other probabilistic models over words, or the most	page=2 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-lower above-double-space above-line-space
+B-Footnote	<sup>4</sup> We are working on conditioning on neighbor characters,	page=2 xpos=5 ypos=8 right-column left-indent font-larger indented-line line-double-space line-space headchar-super tailchar-comma
+I-Footnote	and using character merge/split errors. These extensions are	page=2 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	trivial conceptually, however practical constraints such as the	page=2 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	FSM sizes make the problem more challenging.	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Footnote	<sup>5</sup> The probabilities are constructed for illustration, but realis-	page=2 xpos=5 ypos=9 right-column left-indent font-largest indented-line longer-tail headchar-super tailchar-hiphen
+I-Footnote	tic: notice how n is much more likely to be confused for c than	page=2 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	k is.	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail itemization headchar-lower tailchar-period page-bottom
+Figure	__Figure 2__	page=3 xpos=0 ypos=-2 single-column left-indent right-indent box page-top figure-area above-line-space
+B-Caption	Figure 2: Fragment of an FSM for 	page=3 xpos=3 ypos=0 single-column left-indent right-indent font-largest indented-line shorter-tail line-space string-figure headchar-capital
+E-Caption	.	page=3 xpos=6 ypos=0 single-column left-indent right-indent indented-line longer-tail tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	probable sequence can be used as the output of the post-	page=3 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+E-Body	OCR correction process.	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Experimental Evaluation	page=3 xpos=0 ypos=1 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We report on two experiments. In the first, we evalu-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ate the correction performance of our model on real OCR	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	data. In the second, we evaluate the effect of correction	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	in a representative NLP scenario, acquiring a translation	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	lexicon from hardcopy text.	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Training and Test Data	page=3 xpos=0 ypos=2 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Although most researchers are interested in improving	page=3 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the results of OCR on degraded documents, we are pri-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	marily interested in developing and improving OCR in	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	new languages for use in NLP. A possible approach to	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	retargeting OCR for a new language is to employ an ex-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	isting OCR system from a “nearby” language, and then	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	to apply our error correction framework. For these exper-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	iments, therefore, we created our experimental data by	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	scanning a hardcopy Bible using both an English and a	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	French OCR system. (See Kanungo et al. (in revision)	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	and Resnik et al. (1999) for discussion of the Bible as a	page=3 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	resource for multilingual OCR and NLP.) We have used	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the output of the English system run on French input to	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	simulate the situation where available resources of one	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	language are used to acquire resources in another lan-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	guage that is similar.	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	It was necessary to pre-process the data in order to	page=3 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	eliminate the differences between the on-line version that	page=3 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	we used as the ground truth and the hardcopy, such as	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	footnotes, glossary, cross-references, page numbers. We	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	have not corrected hyphenations, case differences, etc.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our evaluation metrics for OCR performance are Word	page=3 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	Error Rate (WER) and Character Error Rate (CER),	page=3 xpos=0 ypos=7 left-column full-justified hanged-line headchar-capital tailchar-comma
+I-Body	which are defined as follows:	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	         	page=3 xpos=1 ypos=8 left-column left-indent right-indent box indented-line shorter-tail
+I-Equation	WER        !      0  3 0 6 3     7           	page=3 xpos=0 ypos=8 left-column left-indent right-indent box hanged-line longer-tail headchar-capital
+I-Equation	        	page=3 xpos=2 ypos=8 left-column left-indent right-indent box indented-line shorter-tail above-double-space above-line-space
+I-Equation	4  !   0  3 3    D7   	page=3 xpos=2 ypos=9 left-column left-indent right-indent box hanged-line longer-tail line-double-space line-space numbered-heading1
+I-Equation	CER      0   6	page=3 xpos=0 ypos=9 left-column left-indent right-indent box hanged-line shorter-tail headchar-capital column-bottom
+B-Body	Since we are interested in recovering the original word	page=3 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	sequence rather than the character sequence, evaluations	page=3 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	are performed on lowercased and tokenized data. Note,	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	however, that our system works on the original case OCR	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	data, and generates a sequence of word IDs, that are con-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	verted to a lowercase character sequence for evaluation.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We have divided the data, which has 29317 lines, into	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	10 equal size disjoint sets, and used the first 9 as the train-	page=3 xpos=5 ypos=2 right-column full-justified hanged-line numbered-heading1 tailchar-hiphen
+I-Body	ing data, and the first 500 lines of the last one as the test	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	data. <sup>6</sup> The WER and CER for the English OCR system	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	on the French test data were 18.31% and 5.01% respec-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tively. The error rates were 5.98% and 2.11% for the out-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put generated by the French OCR system on the same	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	input. When single characters and non-alphabetical to-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	kens are ignored, the WER and CER drop to 17.21% and	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	4.28% for the English OCR system; 4.96% and 1.68% for	page=3 xpos=5 ypos=3 right-column full-justified aligned-line
+E-Body	the French OCR system.	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Reduction of OCR Error Rates	page=3 xpos=5 ypos=4 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We evaluated the performance of our model by studying	page=3 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the reduction in WER and CER after correction. The in-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put to the system was original case, tokenized OCR out-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put, and the output of the system was a sequence of word	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	IDs that are converted to lowercase character sequences	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+E-Body	for evaluation.	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	All the results are summarized in Table 1. The condi-	page=3 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tions side gives various parameters for each experiment.	page=3 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	The language model (LM) is either (word) unigram or tri-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	gram. Word to character conversion (WC) can allow the	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	three case variations mentioned earlier, or simply pick	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the most probable variant for each word. Segmentation	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	(SG) can be disabled, or 2-way splits and merges may be	page=3 xpos=5 ypos=7 right-column full-justified aligned-line
+I-Body	allowed. Finally, the character level error model (EM)	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	may be trained on various subsets of training data. <sup>7</sup> Ta-	page=3 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ble 2 gives the adjusted results when ignoring all single	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	characters and tokens that do not contain any alphabetical	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	character.	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As can be seen from the tables, as we increase the train-	page=3 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ing size of the character error model from one section to	page=3 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	five sections, the performance increases. However, there	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>6</sup> Each line contains a verse, so they can actually span several	page=3 xpos=5 ypos=9 right-column left-indent font-largest indented-line line-double-space line-space headchar-super
+I-Footnote	lines on a page.	page=3 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>7</sup> Other sub-models are always trained on all 9 training sec-	page=3 xpos=5 ypos=9 right-column left-indent font-largest indented-line longer-tail headchar-super tailchar-hiphen
+I-Footnote	tions.	page=3 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period page-bottom
+Table	__Table 1__	page=4 xpos=0 ypos=-3 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: Post-correction WER and CER and their reduction rates under various conditions	page=4 xpos=1 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+Table	__Table 2__	page=4 xpos=0 ypos=0 single-column centered left-indent right-indent box hanged-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 2: WER, CER, and reduction rates ignoring single characters and non-alphabetical tokens	page=4 xpos=0 ypos=2 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Body	is a slight decrease in performance when the training size	page=4 xpos=0 ypos=3 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower
+I-Body	is increased to 9 sections. This suggests that our training	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	procedures, while effective, may require refinement as	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	additional training data becomes available. When we re-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	place the unigram language model with a trigram model,	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the results improve as expected. However, the most inter-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	esting case is the last experiment, where word merge/split	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	errors are allowed.	page=4 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Word merge/split errors cause  an exponential increase	page=4 xpos=0 ypos=4 left-column left-indent font-largest indented-line longer-tail line-space headchar-capital
+I-Body	in the search space. If there are words that   needs   to be	page=4 xpos=0 ypos=4 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	corrected together, they  can be grouped   to  in a single different token.	page=4 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	For each of those groups, ( there are ways; ranging from distinct tokens  possible correct	page=4 xpos=0 ypos=5 left-column full-justified box aligned-line headchar-capital
+I-Body	word sequences where is the number of tokens in that	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	group,  is the maximum number of words that can merge	page=4 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	together, and  is the vocabulary size. Although it is	page=4 xpos=0 ypos=6 left-column full-justified box aligned-line headchar-lower
+I-Body	possible to avoid some computation using dynamic pro-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gramming, doing so would require some deviation from	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	the FSM framework.	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We have instead used several restrictions to reduce the	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	search space. First, we allowed only 2-way merge and	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	split errors, restricting the search space to bigrams. We	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	further reduce the search space by searching through only	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the bigrams that are seen in the training data. We also in-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	troduced character error thresholds, letting us eliminate	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	candidates based on their length. For instance, if we are	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	trying to correct a sequence of 10 characters and have set	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	a threshold of 0.2, we only need check candidates whose	page=4 xpos=0 ypos=9 left-column full-justified aligned-line itemization headchar-lower
+I-Body	length is between 8 and 12. The last restriction we im-	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	posed is to force selection of the most likely case for	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	each word rather than allowing all three case variations.	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period column-bottom
+I-Body	Despite all these limitations, the ability to handle word	page=4 xpos=5 ypos=3 right-column full-justified column-top headchar-capital
+E-Body	merge/split errors improves performance significantly.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	It is notable that our model allows global interactions	page=4 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	between the distinct components. As an example, if the	page=4 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	input is “ter- re”, the system returns “mer se” as the most	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	probable correction. When “la ter- re” is given as the in-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put, interaction between the language model, segmenta-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion model, and the character error model chooses the	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	correct sequence “la terre”. In this example, the lan-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage model overcomes the preference of the segmen-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tation model to insert word boundaries at whitespaces.	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.3 Translation Lexicon Generation	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We used the problem of unsupervised creation of trans-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	lation lexicons from automatically generated word align-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment of parallel text as a representative NLP task to eval-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	uate the impact of OCR correction on usability of OCR	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	text. We assume that the English side of the parallel text	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	is online and its foreign language translation is generated	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	using an OCR system. <sup>8</sup> Our goal is to apply our OCR	page=4 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	error correcting procedures prior to alignment so the re-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sulting translation lexicon has the same quality as if it had	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	been derived from error-free text.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We trained an IBM style translation model (Brown et	page=4 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	al., 1990) using GIZA++ (Och and Ney, 2000) on the 500	page=4 xpos=5 ypos=8 right-column full-justified hanged-line year headchar-lower
+I-Body	test lines used in our experiments paired with correspond-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing English lines from an online Bible. Word level align-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments generated by GIZA++ were used to extract cross-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	language word co-occurrence frequencies, and candidate	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>8</sup> Alternatively, the English side can be obtained via OCR	page=4 xpos=5 ypos=9 right-column left-indent font-largest indented-line line-double-space line-space headchar-super
+I-Footnote	and corrected.	page=4 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period page-bottom
+I-Body	translation lexicon entries were scored according to the	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	log likelihood ratio (Dunning, 1993) (cf. (Resnik and	page=5 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower
+E-Body	Melamed, 1997)).	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period
+B-Body	We generated three such lexicons by pairing the En-	page=5 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	glish with the French ground truth, uncorrected OCR out-	page=5 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	put, and its corrected version. All text was tokenized,	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	lowercased, and single character tokens and tokens with	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	no letters were removed. This method of generating a	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	translation lexicon works well; as Table 3 illustrates with	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the top twenty entries from the lexicon generated using	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	ground truth French.	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 3__	page=5 xpos=0 ypos=2 left-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 3: Translation lexicon entries extracted using	page=5 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	ground truth French	page=5 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-Body	Figure 3 gives the precision-recall curves for the trans-	page=5 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-hiphen
+I-Body	lation lexicons generated from OCR using the English	page=5 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	OCR system on French hardcopy input with and without	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	correction, using the top 1000 entries of the lexicon gen-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erated from ground truth as the target set. Since we are	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	interested in the effect of OCR, independent of the per-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance of the lexicon generation method, the lexicon	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	auto-generated from the ground truth provides a reason-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	able target set. (More detailed evaluation of translation	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	lexicon acquisition is a topic for future work.)	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+Figure	__Figure 3__	page=5 xpos=0 ypos=6 left-column left-indent right-indent box indented-line longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 3: Effect of correction on translation lexicon ac-	page=5 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space string-figure headchar-capital tailchar-hiphen
+E-Caption	quisition	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-Body	The graph clearly illustrates that the precision of the	page=5 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	translation lexicon generated using original OCR data de-	page=5 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	grades quickly as recall increases, whereas the corrected	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	version maintains its precision above 90% up to a recall	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	of 80%.	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-SectionHeader	5 Related Work	page=5 xpos=5 ypos=0 right-column right-indent font-largest column-top numbered-heading1 above-double-space above-line-space
+B-Body	There has been considerable research on automatically	page=5 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	correcting words in text in general, and correction of	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	OCR output in particular. Kukich (1992) provides a gen-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	eral survey of the research in the area. Unfortunately,	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	there is no commonly used evaluation base for OCR error	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	correction, making comparison of experimental results	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	difficult.	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Some systems integrate the post-processor with the ac-	page=5 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tual character recognizer to allow interaction between the	page=5 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	two. In an early study, Hanson et al. (1976) reports a	page=5 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower
+I-Body	word error rate of about 2% and a reject rate of 1%, with-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	out a dictionary. Sinha and Prasada (1988) achieve 97%	page=5 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower
+I-Body	word recognition, ignoring punctuation, using an aug-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mented dictionary, a Viterbi style algorithm, and manual	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	heuristics.	page=5 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Many systems treat OCR as a black  box, generally em-	page=5 xpos=5 ypos=3 right-column left-indent font-largest indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ploying word and/or character level -grams along with	page=5 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	character confusion probabilities. Srihari et al. (1983)	page=5 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	is one typical example and reports up to 87% error cor-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rection on artificial data, relying (as we do) on a lexicon	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	for correction. Goshtasby and Ehrich (1988) presents a	page=5 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	method based on probabilistic relaxation labeling, using	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	context characters to constrain the probability of each	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	character. They do not use a lexicon but do require	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the probabilities assigned to individual characters by the	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	OCR system.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Body	Jones et al. (1991) describe an OCR post-processing	page=5 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space year headchar-capital
+I-Body	system comparable to ours, and report error reductions	page=5 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	of 70-90%. Their system is designed around a stratified	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	algorithm. The first phase performs isolated word cor-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rection using rewrite rules, allowing words that are not in	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the lexicon. The second phase attempts correcting word	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	split errors, and the last phase uses word bigram proba-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bilities to improve correction. The three phases interact	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	with each other to guide the search. In comparison to	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	our work, the main difference is our focus on an end-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	to-end generative model versus their stratified algorithm	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	centered around correction.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Perez-Cortes et al. (2000) describes a system that uses	page=5 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space year headchar-capital
+I-Body	a stochastic FSM that accepts the smallest k-testable lan-	page=5 xpos=5 ypos=7 right-column full-justified hanged-line itemization headchar-lower tailchar-hiphen
+I-Body	guage consistent with a representative language sample.	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Depending on the value of k, correction can be restricted	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	to sample language, or variations may be allowed. They	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	report reducing error rate from 33% to below 2% on OCR	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	output of hand-written Spanish names from forms.	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Pal et al. (2000) describes a method for OCR error cor-	page=5 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Body	rection of an inflectional Indian language using morpho-	page=5 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	logical parsing, and reports correcting 84% of the words	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	with a single character error. Although it is limited to sin-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gle errors, the system demonstrates the possibility of cor-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	recting OCR errors in morphologically rich languages.	page=5 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Taghva and Stofsky (2001) takes a different approach	page=5 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-space year headchar-capital page-bottom
+I-Body	to post-processing and proposes an interactive spelling	page=6 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	correction system specifically designed for OCR error	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	correction. The system uses multiple information re-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sources to propose correction candidates and lets the user	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	review the candidates and make corrections.	page=6 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Although segmentation errors have been addressed to	page=6 xpos=0 ypos=0 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	some degree in previous work, to the best of our knowl-	page=6 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	edge our model is the first that explicitly incorporates	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	segmentation. Similarly, many systems make use of a	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	language model, a character confusion model, etc., but	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	none have developed an end-to-end model that formally	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	describes the OCR process from the generation of the true	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	word sequence to the output of the OCR system in a man-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ner that allows for statistical parameter estimation. Our	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	model is also the first to explicitly model the conversion	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	of a sequence of words into a character sequence.	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Conclusions and Future Work	page=6 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We have presented a flexible, modular, probabilistic gen-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	erative OCR model designed specifically for ease of in-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tegration with probabilistic models of the sort commonly	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	found in recent NLP work, and for rapid retargeting of	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	OCR and NLP technology to new languages.	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Body	In a rigorous evaluation of post-OCR error correction	page=6 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	on real data, illustrating a scenario where a black-box	page=6 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	commercial English OCR system is retargeted to work	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	with French data, we obtained a 70% reduction in word	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	error rate over the English-on-French baseline, with a re-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sulting word accuracy of 97%. It is worth noting that our	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	post-OCR correction of the English OCR on French text	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	led to better performance than a commercial French OCR	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	system run on the same text.	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We also evaluated the impact of error correction in a	page=6 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	resource-acquisition scenario involving translation lex-	page=6 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	icon acquisition from OCR output. The results show	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	that our post-OCR correction framework significantly	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	improves performance. We anticipate applying the tech-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nique in order to retarget cross-language IR technology	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	— the results of Resnik et al. (2001) demonstrate that	page=6 xpos=0 ypos=7 left-column full-justified aligned-line year
+I-Body	even noisy extensions to dictionary-based translation lex-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	icons, acquired from parallel text, can have a positive	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	impact on cross language information retrieval perfor-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mance.	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We are currently working on improving the correc-	page=6 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tion performance of the system, and extending our error	page=6 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	model implementation to include character context and	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	allow for character merge/split errors. We also intend to	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	relax the requirement of having a word list, so that the	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	model handles valid word errors.	page=6 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We are also exploring the possibility of tuning a statis-	page=6 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tical machine translation model to be used with our model	page=6 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower
+I-Body	to exploit parallel text. If a translation of the OCR’d text	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	is available, a translation model can be used to provide	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	us with a candidate-word list that contains most of the	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+E-Body	correct words, and very few irrelevant words.	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Finally, we plan to challenge our model with other lan-	page=6 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	guages, starting with Arabic, Turkish, and Chinese. Ara-	page=6 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	bic and Turkish have phonetic alphabets, but also pose	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	the problem of rich morphology. Chinese will require	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	more work due to the size of its character set. We are	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	optimistic that the power and flexibility of our modeling	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	framework will allow us to develop the necessary tech-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	niques for these languages, as well as many others.	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgments	page=6 xpos=5 ypos=1 right-column right-indent font-largest aligned-line shorter-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	This research was supported in part by National Science	page=6 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Acknowledgement	Foundation grant EIA0130422, Department of Defense	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Acknowledgement	contract RD-02-5700, DARPA/ITO Cooperative Agree-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Acknowledgement	ment N660010028910, and Mitre agreement 010418-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Acknowledgement	7712.	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail tailchar-period
+B-Acknowledgement	We are grateful to Mohri et al. for the AT&T FSM	page=6 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Acknowledgement	Toolkit, Clarkson and Rosenfeld for CMU-Cambridge	page=6 xpos=5 ypos=3 right-column full-justified hanged-line headchar-capital
+I-Acknowledgement	Toolkit, and David Doermann for providing the OCR out-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Acknowledgement	put and useful discussion.	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=6 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Eric Brill and Robert C. Moore. 2000. An improved	page=6 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	model for noisy channel spelling correction. In 38th	page=6 xpos=5 ypos=4 right-column left-indent indented-line headchar-lower
+I-Reference	Annual Meeting of the Association for Computational	page=6 xpos=5 ypos=4 right-column left-indent aligned-line headchar-capital
+I-Reference	Linguistics, pages 286–293, Hong Kong, China, Octo-	page=6 xpos=5 ypos=5 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	ber.	page=6 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Peter F. Brown, John Cocke, Stephen A. Della Pietra,	page=6 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	Vincent J. Della Pietra, Fredrick Jelinek, John D. Laf-	page=6 xpos=5 ypos=5 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Reference	ferty, Robert L. Mercer, and Paul S. Roossin. 1990. A	page=6 xpos=5 ypos=5 right-column left-indent aligned-line year headchar-lower
+I-Reference	statistical approach to machine translation. Computa-	page=6 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	tional Linguistics, 16(2):79–85.	page=6 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Philip Clarkson and Ronald Rosenfeld. 1997. Statis-	page=6 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tical language modeling using the CMU-Cambridge	page=6 xpos=5 ypos=6 right-column left-indent indented-line headchar-lower
+I-Reference	Toolkit. In ESCA Eurospeech, Rhodes, Greece.	page=6 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	W. B. Croft, S. M. Harding, K. Taghva, and J. Borsack.	page=6 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	1994. An evaluation of information retrieval accuracy	page=6 xpos=5 ypos=7 right-column left-indent indented-line year
+I-Reference	with simulated OCR output. In Symposium of Docu-	page=6 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ment Analysis and Information Retrieval, ISRI-UNLV.	page=6 xpos=5 ypos=7 right-column left-indent right-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	David Doermann, Huanfeng Ma, Burcu Karagöl-Ayan,	page=6 xpos=5 ypos=7 right-column full-justified hanged-line line-double-space line-space headchar-capital tailchar-comma
+I-Reference	and Douglas W. Oard. 2002. Translation lexicon ac-	page=6 xpos=5 ypos=8 right-column left-indent indented-line year headchar-lower tailchar-hiphen
+I-Reference	quisition from bilingual dictionaries. In Ninth SPIE	page=6 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower
+I-Reference	Symposium on Document Recognition and Retrieval,	page=6 xpos=5 ypos=8 right-column left-indent aligned-line headchar-capital tailchar-comma
+I-Reference	San Jose, CA.	page=6 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	David Doermann. 1998. The indexing and retrieval of	page=6 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	document images: A survey. Computer Vision and Im-	page=6 xpos=5 ypos=9 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	age Understanding: CVIU, 70(3):287–298.	page=6 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Ted Dunning. 1993. Accurate methods for the statistics	page=6 xpos=5 ypos=9 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	of surprise and coincidence. Computational Linguis-	page=6 xpos=5 ypos=9 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	tics, 19(1):61–74, March.	page=6 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Reference	Robert Frederking. 1999. Summary of the MI-	page=7 xpos=0 ypos=0 left-column full-justified page-top year headchar-capital tailchar-hiphen
+I-Reference	DAS session on handling multilingual speech,	page=7 xpos=0 ypos=0 left-column left-indent indented-line headchar-capital tailchar-comma
+I-Reference	document images, and video OCR, August.	page=7 xpos=0 ypos=0 left-column left-indent aligned-line headchar-lower tailchar-period
+I-Reference	http://www.clis2.umd.edu/conferences/midas/papers/	page=7 xpos=0 ypos=0 left-column left-indent right-indent aligned-line shorter-tail headchar-lower
+I-Reference	frederking.txt.	page=7 xpos=0 ypos=0 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Ardeshir Goshtasby and Roger W. Ehrich. 1988. Con-	page=7 xpos=0 ypos=1 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	textual word recognition using probabilistic relaxation	page=7 xpos=0 ypos=1 left-column left-indent indented-line headchar-lower
+I-Reference	labeling. Pattern Recognition, 21(5):455–462.	page=7 xpos=0 ypos=1 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Allen R. Hanson, Edward M. Riseman, and Edward G.	page=7 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Fisher. 1976. Context in word recognition. Pattern	page=7 xpos=0 ypos=2 left-column left-indent indented-line year headchar-capital
+I-Reference	Recognition, 8:33–45.	page=7 xpos=0 ypos=2 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Melissa Holland and Chris Schlesiger. 1998. High-	page=7 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	modality machine translation for a battlefield environ-	page=7 xpos=0 ypos=3 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	ment. In NATO/RTO Systems Concepts and Integra-	page=7 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	tion Symposium, Monterey, CA, April. 15/1-3. Hull,	page=7 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	Canada: CCG, Inc. (ISBN 92-837-1006-1).	page=7 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Mark A. Jones, Guy A. Story, and Bruce W. Ballard.	page=7 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	1991. Integrating multiple knowledge sources in a	page=7 xpos=0 ypos=4 left-column left-indent indented-line year
+I-Reference	Bayesian OCR post-processor. In IDCAR-91, pages	page=7 xpos=0 ypos=4 left-column left-indent aligned-line headchar-capital
+I-Reference	925–933, St. Malo, France.	page=7 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Tapas Kanungo, Philip Resnik, Song Mao, Doe wan Kim,	page=7 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	and Qigong Zheng. in revision. The Bible, truth, and	page=7 xpos=0 ypos=5 left-column left-indent indented-line headchar-lower
+I-Reference	multilingual optical character recognition.	page=7 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Okan Kolak and Philip Resnik. 2002. OCR error correc-	page=7 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tion using a noisy channel model. In Human Language	page=7 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower
+I-Reference	Technology Conference (HLT 2002), San Diego, CA,	page=7 xpos=0 ypos=6 left-column left-indent aligned-line year headchar-capital tailchar-comma
+I-Reference	March.	page=7 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Karen Kukich. 1992. Techniques for automatically	page=7 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	correcting words in text. ACM Computing Surveys,	page=7 xpos=0 ypos=7 left-column left-indent indented-line headchar-lower tailchar-comma
+I-Reference	24(4):377–439, December.	page=7 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Mehryar Mohri, Fernando C. N. Pereira, and Michael Ri-	page=7 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	ley. 1998. A rational design for a weighted finite-state	page=7 xpos=0 ypos=8 left-column left-indent indented-line year headchar-lower
+I-Reference	transducer library. Lecture Notes in Computer Science,	page=7 xpos=0 ypos=8 left-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	1436.	page=7 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Franz. J. Och and Hermann Ney. 2000. Improved sta-	page=7 xpos=0 ypos=9 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tistical alignment models. In ACL00, pages 440–447,	page=7 xpos=0 ypos=9 left-column left-indent indented-line headchar-lower tailchar-comma
+I-Reference	Hongkong, China, October.	page=7 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period column-bottom
+B-Reference	U. Pal, P. K. Kundu, and B. B. Chaudhuri. 2000. OCR er-	page=7 xpos=5 ypos=0 right-column full-justified column-top year headchar-capital tailchar-hiphen
+I-Reference	ror correction of an inflectional indian language using	page=7 xpos=5 ypos=0 right-column left-indent indented-line headchar-lower
+I-Reference	morphological parsing. Journal of Information Sci-	page=7 xpos=5 ypos=0 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ence and Engineering, 16(6):903–922, November.	page=7 xpos=5 ypos=0 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Juan Carlos Perez-Cortes, Juan-Carlos Amengual,	page=7 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	Joaquim Arlandis, and Rafael Llobet. 2000. Stochas-	page=7 xpos=5 ypos=1 right-column left-indent indented-line year headchar-capital tailchar-hiphen
+I-Reference	tic error-correcting parsing for OCR post-processing.	page=7 xpos=5 ypos=1 right-column left-indent aligned-line headchar-lower tailchar-period
+I-Reference	In ICPR, pages 4405–4408, Barcelona, Spain, Septem-	page=7 xpos=5 ypos=1 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	ber.	page=7 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Philip Resnik and I. Dan Melamed. 1997. Semi-	page=7 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	automatic acquisition of domain-specific translation	page=7 xpos=5 ypos=2 right-column left-indent indented-line headchar-lower
+I-Reference	lexicons. In Fifth Conference on Applied Natural Lan-	page=7 xpos=5 ypos=2 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	guage Processing, Washington, D.C.	page=7 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Philip Resnik, Mari Broman Olsen, and Mona Diab.	page=7 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	1999. The Bible as a parallel corpus: Annotating the	page=7 xpos=5 ypos=3 right-column left-indent indented-line year
+I-Reference	‘Book of 2000 Tongues’. Computers and the Human-	page=7 xpos=5 ypos=3 right-column left-indent aligned-line year tailchar-hiphen
+I-Reference	ities, 33:129–153.	page=7 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Philip Resnik, Douglas Oard, and Gina Levow. 2001.	page=7 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Improved cross-language retrieval using backoff trans-	page=7 xpos=5 ypos=4 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Reference	lation. In Human Language Technology Conference	page=7 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower
+I-Reference	(HLT-2001), San Diego, CA, March.	page=7 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Reference	R. M. K. Sinha and Biendra Prasada. 1988. Visual	page=7 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	text recognition through contextual processing. Pat-	page=7 xpos=5 ypos=5 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	tern Recognition, 21(5):463–479.	page=7 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Sargur N. Srihari, Jonathan J. Hull, and Ramesh Choud-	page=7 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	hari. 1983. Integrating diverse knowledge sources in	page=7 xpos=5 ypos=6 right-column left-indent indented-line year headchar-lower
+I-Reference	text recognition. ACM Transactions on Office Infor-	page=7 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	mation Systems, 1(1):68–87, January.	page=7 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Kazem Taghva and Eric Stofsky. 2001. OCRSpell: an	page=7 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	interactive spelling correction system for OCR errors	page=7 xpos=5 ypos=7 right-column left-indent indented-line headchar-lower
+I-Reference	in text. IJDAR, 3(3):125–137.	page=7 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Ian H. Witten and Timothy C. Bell. 1991. The zero-	page=7 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	frequency problem: Estimating the probabilities of	page=7 xpos=5 ypos=8 right-column left-indent indented-line headchar-lower
+I-Reference	novel events in adaptive text compression. IEEE	page=7 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower
+I-Reference	Transactions on Information Theory, 37(4):1085–	page=7 xpos=5 ypos=9 right-column left-indent aligned-line headchar-capital
+I-Reference	1093, July.	page=7 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail tailchar-period

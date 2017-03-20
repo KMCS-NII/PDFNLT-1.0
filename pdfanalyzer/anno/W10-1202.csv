@@ -1,0 +1,634 @@
+Title	Experts’ Retrieval with Multiword-Enhanced Author Topic Model	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Nikhil Johri Dan Roth Yuancheng Tu	page=0 xpos=2 ypos=0 single-column left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Dept. of Computer Science Dept. of Linguistics	page=0 xpos=2 ypos=0 single-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Affiliation	University of Illinois at Urbana-Champaign	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Email	{njohri2,danr,ytu}@illinois.edu	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail symbol-atmark column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	In this paper, we propose a multiword-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	enhanced author topic model that clusters au-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	thors with similar interests and expertise, and	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	apply it to an information retrieval system that	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	returns a ranked list of authors related to a key-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	word. For example, we can retrieve Eugene	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	Charniak via search for statistical parsing.	page=0 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+I-Abstract	The existing works on author topic model-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Abstract	ing assume a “bag-of-words” representation.	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Abstract	However, many semantic atomic concepts are	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-capital
+I-Abstract	represented by multiwords in text documents.	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Abstract	This paper presents a pre-computation step as	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-capital
+I-Abstract	a way to discover these multiwords in the cor-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent font-smallest aligned-line itemization headchar-lower tailchar-hiphen
+I-Abstract	pus automatically and tags them in the term-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	document matrix. The key advantage of this	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	method is that it retains the simplicity and	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	the computational efficiency of the unigram	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	model. In addition to a qualitative evaluation,	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Abstract	we evaluate the results by using the topic mod-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	els as a component in a search engine. We ex-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	hibit improved retrieval scores when the docu-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ments are represented via sets of latent topics	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	and authors.	page=0 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=7 left-column right-indent font-larger hanged-line longer-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	This paper addresses the problem of searching peo-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ple with similar interests and expertise without in-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	putting personal names as queries. Many existing	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	people search engines need people’s names to do a	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	“keyword” style search, using a person’s name as a	page=0 xpos=0 ypos=8 left-column full-justified aligned-line
+I-Body	query. However, in many situations, such informa-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion is impossible to know beforehand. Imagine a	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	scenario where the statistics department of a univer-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sity invited a world-wide known expert in Bayesian	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	10	page=0 xpos=4 ypos=9 left-column left-indent right-over indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	statistics and machine learning to give a keynote	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower
+I-Body	speech; how can the department head notify all the	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	people on campus who are interested without spam-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ming those who are not? Our paper proposes a solu-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion to the aforementioned scenario by providing a	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	search engine which goes beyond “keyword” search	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	and can retrieve such information semantically. The	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	department head would only need to input the do-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	main keyword of the keynote speaker, i.e. Bayesian	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	statistics, machine learning, and all professors and	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	students who are interested in this topic will be	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	retrieved. Specifically, we propose a Multiword-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	enhanced Author-Topic Model (MATM), a proba-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bilistic generative model which assumes two steps	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	of generation process when producing a document.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Statistical topical modeling (Blei and Lafferty,	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-comma
+I-Body	2009a) has attracted much attention recently due to	page=0 xpos=5 ypos=5 right-column full-justified hanged-line year
+I-Body	its broad applications in machine learning, text min-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing and information retrieval. In these models, se-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantic topics are represented by multinomial distri-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bution over words. Typically, the content of each	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	topic is visualized by simply listing the words in or-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	der of decreasing probability and the “meaning” of	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	each topic is reflected by the top 10 to 20 words in	page=0 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	that list. The Author-Topic Model (ATM) (Steyvers	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	et al., 2004; Rosen-Zvi et al., 2004) extends the ba-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	sic topical models to include author information in	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	which topics and authors are modeled jointly. Each	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	author is a multinomial distribution over topics and	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	each topic is a multinomial distribution over words.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower tailchar-period above-line-space
+B-Body	Our contribution to this paper is two-fold. First	page=0 xpos=5 ypos=8 right-column left-indent indented-line line-space headchar-capital
+I-Body	of all, our model, MATM, extends the original ATM	page=0 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	by adding semantically coherent multiwords into the	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	term-document matrix to relax the model’s “bag-of-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of the NAACL HLT 2010 Workshop on Semantic Search, pages 10–18,	page=0 xpos=1 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space year headchar-capital tailchar-comma
+I-Footer	Los Angeles, California, June 2010.  2010 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column centered left-indent right-indent font-smallest hanged-line longer-tail year headchar-capital page-bottom
+I-Body	words” assumption. Each multiword is discovered	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	via statistical measurement and filtered by its part of	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	speech pattern via an off-line way. One key advan-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tage of tagging these semantic atomic units off-line,	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	is the retention of the flexibility and computational	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	efficiency in using the simpler word exchangeable	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	model, while providing better interpretation of the	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	topics author distribution.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Secondly, to the best of our knowledge, this is	page=1 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	the first proposal to apply the enhanced author topic	page=1 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	modeling in a semantic retrieval scenario, where	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	searching people is associated with a set of hid-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	den semantically meaningful topics instead of their	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	names. While current search engines cannot sup-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	port interactive and exploratory search effectively,	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	search based on our model serves very well to an-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	swer a range of exploratory queries about the doc-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ument collections by semantically linking the inter-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ests of the authors to the topics of the collection, and	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	ultimately to the distribution of the words in the doc-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	uments.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The rest of the paper is organized as follows. We	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	present some related work on topic modeling, the	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	original author-topic model and automatic phrase	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	discovery methods in Sec. 2. Then our model is de-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scribed in Sec. 3. Sec. 4 presents our experiments	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	and the evaluation of our method on expert search.	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We conclude this paper in Sec. 5 with some discus-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	sion and several further developments.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Related Work	page=1 xpos=0 ypos=6 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Author topic modeling, originally proposed	page=1 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	in (Steyvers et al., 2004; Rosen-Zvi et al., 2004), is	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Body	an extension of another popular topic model, Latent	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	Dirichlet Allocation (LDA) (Blei et al., 2003), a	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-capital
+I-Body	probabilistic generative model that can be used to	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	estimate the properties of multinomial observations	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	via unsupervised learning. LDA represents each	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	document as a mixture of probabilistic topics and	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	each topic as a multinomial distribution over words.	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The Author topic model adds an author layer over	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	LDA and assumes that the topic proportion of a	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+E-Body	given document is generated by the chosen author.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Both LDA and the author topic model assume	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	bag-of-words representation. As shown by many	page=1 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower
+I-Body	previous works (Blei et al., 2003; Steyvers et al.,	page=1 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2004), even such unrealistic assumption can actu-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line year tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	11	page=1 xpos=4 ypos=9 left-column left-indent right-over indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	ally lead to a reasonable topic distribution with rel-	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	atively simple and computationally efficient infer-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence algorithm. However, this unigram represen-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tation also poses major handicap when interpreting	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	and applying the hidden topic distributions. The	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	proposed MATM is an effort to try to leverage this	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	problem in author topic modeling. There have been	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	some works on Ngram topic modeling over the orig-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	inal LDA model (Wallach, 2006; Wang and McCal-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	lum, 2005; Wang et al., 2007; Griffiths et al., 2007).	page=1 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	However, to the best of our knowledge, this paper	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	is the first to embed multiword expressions into the	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	author topic model.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Many of these Ngram topic models (Wang and	page=1 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	McCallum, 2005; Wang et al., 2007; Griffiths et	page=1 xpos=5 ypos=2 right-column full-justified hanged-line year headchar-capital
+I-Body	al., 2007) improves the base model by adding a new	page=1 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	indicator variable x <sub>i</sub> to signify if a bigram should	page=1 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	be generated. If x <sub>i</sub> = 1, the word w i is gener-	page=1 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ated from a distribution that depends only on the	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	previous word to form an Ngram. Otherwise, it is	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	generated from a distribution only on the topic pro-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	portion (Griffiths et al., 2007) or both the previous	page=1 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	words and the latent topic (Wang and McCallum,	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2005; Wang et al., 2007). However, these complex	page=1 xpos=5 ypos=4 right-column full-justified aligned-line year
+I-Body	models not only increase the parameter size to V	page=1 xpos=5 ypos=4 right-column centered right-indent font-largest aligned-line headchar-lower
+I-Body	times larger than the size of the original LDA model	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	parameters (V is the size of the vocabulary of the	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	document collection) <sup>1</sup> , it also faces the problem of	page=1 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	choosing which word to be the topic of the potential	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	Ngram. In many text retrieval tasks, the humongous	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	size of data may prevent us using such complicated	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	computation on-line. However, our model retains	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the computational efficiency by adding a simple tag-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ging process via pre-computation.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Another effort in the current literature to interpret	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	the meaning of the topics is to label the topics via	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	a post-processing way (Mei et al., 2007; Blei and	page=1 xpos=5 ypos=7 right-column full-justified aligned-line itemization year headchar-lower
+I-Body	Lafferty, 2009b; Magatti et al., 2009). For example,	page=1 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital tailchar-comma
+I-Body	Probabilistic topic labeling (Mei et al., 2007) first	page=1 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital
+I-Body	extracts a set of candidate label phrases from a refer-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence collection and represents each candidate label-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing phrase with a multinomial distribution of words.	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Then KL divergence is used to rank the most prob-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	able labels for a given topic. This method needs not	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	only extra reference text collection, but also facing	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> LDA collocation models and topic Ngram models also have	page=1 xpos=5 ypos=9 right-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	parameters for the binomial distribution of the indicator variable	page=1 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	<sup>x</sup> i for each word in the vocabulary.	page=1 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-super tailchar-period page-bottom
+I-Body	the problem of finding discriminative and high cov-	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	erage candidate labels. Blei and Lafferty (Blei and	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	Lafferty, 2009b) proposed a method to annotate each	page=2 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-capital
+I-Body	word of the corpus by its posterior word topic distri-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bution and then cast a statistical co-occurrence anal-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ysis to extract the most significant Ngrams for each	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	topic and visualize the topic with these Ngrams.	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	However, they only applied their method to basic	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+E-Body	LDA model.	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Body	In this paper, we applied our multiword extension	page=2 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	to the author topic modeling and no extra reference	page=2 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	corpora are needed. The MATM, with an extra pre-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	computing step to add meaningful multiwords into	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the term-document matrix, enables us to retain the	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	flexibility and computational efficiency to use the	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	simpler word exchangeable model, while providing	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	better interpretation of the topics and author distri-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	bution.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Multiword-enhanced Author-Topic	page=2 xpos=0 ypos=3 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1
+I-SectionHeader	Model	page=2 xpos=0 ypos=3 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	The MATM is an extension of the original ATM	page=2 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	(Rosen-Zvi et al., 2004; Steyvers et al., 2004) by	page=2 xpos=0 ypos=4 left-column full-justified aligned-line year
+I-Body	semantically tagging collocations or multiword ex-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pressions, which represent atomic concepts in doc-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	uments in the term-document matrix of the model.	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Such tagging procedure enables us to retain compu-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tational efficiency of the word-level exchangeabil-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity of the orginal ATM while provides more sensi-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ble topic distributions and better author topic coher-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence. The details of our model are presented in Al-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	gorithm 1.	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 Beyond Bag-of-Words Tagging	page=2 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The first for loop in Algorithm 1 is the procedure	page=2 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	of our multiword tagging. Commonly used ngrams,	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	or statistically short phrases in text retrieval, or	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	so-called collocations in natural language process-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing have long been studied by linguistics in vari-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ous ways. Traditional collocation discovery meth-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ods range from frequency to mean and variance,	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	from statistical hypothesis testing, to mutual infor-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation (Manning and Schtze, 1999). In this pa-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	per, we use a simple statistical hypothesis testing	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	method, namely Pearson’s chi-square test imple-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mented in Ngram Statistic Package (Banerjee and	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	Pedersen, 2003), enhanced by passing the candidate	page=2 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-capital above-blank-line above-double-space above-line-space
+Page	12	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	phrases through some pre-defined part of speech	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	patterns that are likely to be true phrases. This	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	very simple heuristic has been shown to improve the	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	counting based methods significantly (Justenson and	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	Katz, 1995).	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period
+B-Body	The χ 2 test is chosen since it does not assume any	page=2 xpos=5 ypos=0 right-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	normally distributed probabilities and the essence	page=2 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	of this test is to compare the observed frequencies	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	with the frequencies expected for independence. We	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	choose this simple statistic method since in many	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	text retrieval tasks the volume of data we see al-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ways makes it impractical to use very sophisticated	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	statistical computations. We also focus on nominal	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	phrases, such as bigram and trigram noun phrases	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	since they are most likely to function as semantic	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	atomic unit to directly represent the concepts in text	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	documents.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Author Topic Modeling	page=2 xpos=5 ypos=3 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The last three generative procedures described in Al-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	gorithm 1 jointly model the author and topic infor-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation. This generative model is adapted directly	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	from (Steyvers et al., 2004). Graphically, it can be	page=2 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+E-Body	visualized as shown in Figure 1.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 1__	page=2 xpos=6 ypos=4 right-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: Plate notation of our model: MATM	page=2 xpos=5 ypos=6 right-column centered left-indent right-indent font-smallest hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+B-Body	The four plates in Fiture 1 represent topic (T), au-	page=2 xpos=5 ypos=7 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	thor (A), document (D) and Words in each document	page=2 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	(N <sub>d</sub> ) respectively. Each author is associated with a	page=2 xpos=5 ypos=7 right-column full-justified font-largest aligned-line
+I-Body	multinomial distribution over all topics, θ ~ <sub>a</sub> and each	page=2 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	topic is a multinomial distribution over all words, φ ~ <sub>t</sub> .	page=2 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	Each of these distribution has a symmetric Dirichlet	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	prior over it, ~η and ~ β respectively. When generat-	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ing a document, an author k is first chosen according	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	to a uniform distribution. Then this author chooses	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the topic from his/her associated multinomial distri-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bution over topics and then generates a word from	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	the multinomial distribution of that topic over the	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+E-Body	words.	page=3 xpos=0 ypos=0 left-column right-indent page-top headchar-lower tailchar-period above-double-space above-line-space
+B-Algorithm	Algorithm 1: MATM: A, T , D, N are four	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital
+I-Algorithm	plates as shown in Fig. 1. The first for loop is the	page=3 xpos=0 ypos=0 left-column left-indent right-indent aligned-line headchar-lower
+I-Algorithm	off-line process of multiword expressions. The	page=3 xpos=0 ypos=0 left-column left-indent right-indent aligned-line headchar-lower
+I-Algorithm	rest of the algorithm is the generative process of	page=3 xpos=0 ypos=0 left-column left-indent right-indent aligned-line headchar-lower
+I-Algorithm	the author topic modeling.	page=3 xpos=0 ypos=1 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+I-Algorithm	Data: A, T , D, N	page=3 xpos=0 ypos=1 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+I-Algorithm	for all documents d ∈ D do	page=3 xpos=0 ypos=1 left-column left-indent right-indent font-largest aligned-line longer-tail headchar-lower
+I-Algorithm	Part-of-Speech tagging ;	page=3 xpos=0 ypos=1 left-column left-indent right-indent indented-line headchar-capital tailchar-semicolon
+I-Algorithm	Bigram extraction ;	page=3 xpos=0 ypos=2 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-semicolon
+I-Algorithm	Part-of Speech Pattern Filtering ;	page=3 xpos=0 ypos=2 left-column left-indent right-indent aligned-line longer-tail headchar-capital tailchar-semicolon
+I-Algorithm	Add discovered bigrams into N ;	page=3 xpos=0 ypos=2 left-column left-indent right-indent font-largest aligned-line headchar-capital tailchar-semicolon above-line-space
+I-Algorithm	for each author a ∈ A do	page=3 xpos=0 ypos=2 left-column left-indent right-indent font-largest hanged-line shorter-tail line-space headchar-lower
+I-Algorithm	draw a distribution over topics:	page=3 xpos=0 ypos=2 left-column left-indent right-indent indented-line longer-tail headchar-lower tailchar-colon
+I-Algorithm	θ ~ <sub>a</sub> ∼ Dir T (~ η ) ;	page=3 xpos=0 ypos=2 left-column left-indent right-indent font-largest aligned-line shorter-tail tailchar-semicolon above-line-space
+I-Algorithm	for each topic t ∈ T do	page=3 xpos=0 ypos=3 left-column left-indent right-indent font-largest hanged-line longer-tail line-space headchar-lower
+I-Algorithm	draw a distribution over words:	page=3 xpos=0 ypos=3 left-column left-indent right-indent indented-line longer-tail headchar-lower tailchar-colon
+I-Algorithm	φ ~ <sub>t</sub> ∼ Dir N ( ~ β) ;	page=3 xpos=0 ypos=3 left-column left-indent right-indent font-largest aligned-line shorter-tail tailchar-semicolon above-line-space
+I-Algorithm	for each document d ∈ D and k authors ∈ d do	page=3 xpos=0 ypos=3 left-column left-indent right-indent font-largest hanged-line longer-tail line-space headchar-lower
+I-Algorithm	for each word w ∈ d do	page=3 xpos=0 ypos=4 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower
+I-Algorithm	choose an author k ∼ uniformly;	page=3 xpos=0 ypos=4 left-column left-indent right-indent font-largest indented-line longer-tail headchar-lower tailchar-semicolon
+I-Algorithm	draw a topic assignment i given the	page=3 xpos=0 ypos=4 left-column left-indent right-indent font-larger aligned-line longer-tail headchar-lower
+I-Algorithm	author: z <sub>k,i</sub> |k ∼ M ultinomial(θ a ) ;	page=3 xpos=0 ypos=4 left-column left-indent right-indent font-largest aligned-line longer-tail headchar-lower tailchar-semicolon
+I-Algorithm	draw a word from the chosen topic:	page=3 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+E-Algorithm	w <sub>d,k,i</sub> |z k,i ∼ M ultinomial(φ z <sub>k,i</sub> ) ;	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-largest aligned-line itemization headchar-lower tailchar-semicolon above-blank-line above-double-space above-line-space
+B-Body	MATM includes two sets of parameters. The T	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-largest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	topic distribution over words, φ <sub>t</sub> which is similar to	page=3 xpos=0 ypos=5 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	that in LDA. However, instead of a document-topic	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	distribution, author topic modeling has the author-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	topic distribution, θ <sub>a</sub> . Using a matrix factorization	page=3 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	interpretation, similar to what Steyvers, Griffiths and	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	Hofmann have pointed out for LDA (Steyvers and	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	Griffiths, 2007) and PLSI (Hofmann, 1999), a word-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	author co-occurrence matrix in author topic model	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	can be split into two parts: a word-topic matrix φ	page=3 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	and a topic-author matrix θ. And the hidden topic	page=3 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	serves as the low dimensional representation for the	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	content of the document.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Although the MATM is a relatively simple model,	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	finding its posterior distribution over these hidden	page=3 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	variables is still intractable. Many efficient ap-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proximate inference algorithms have been used to	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	solve this problem including Gibbs sampling (Grif-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fiths and Steyvers, 2004; Steyvers and Griffiths,	page=3 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower tailchar-comma above-blank-line above-double-space above-line-space
+Page	13	page=3 xpos=4 ypos=9 left-column left-indent right-over indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	2007; Griffiths et al., 2007) and mean-field vari-	page=3 xpos=5 ypos=0 right-column full-justified column-top year tailchar-hiphen
+I-Body	ational methods (Blei et al., 2003). Gibbs sam-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	pling is a special case of Markov-Chain Monte Carlo	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	(MCMC) sampling and often yields relatively sim-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line tailchar-hiphen
+I-Body	ple algorithms for approximate inference in high di-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mensional models.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In our MATM, we use a collapsed Gibbs sam-	page=3 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	pler for our parameter estimation. In this Gibbs	page=3 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	sampler, we integrated out the hidden variables θ	page=3 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	and φ as shown by the delta function in equation 2.	page=3 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower tailchar-period
+I-Body	This Dirichlet delta function with a M dimentional	page=3 xpos=5 ypos=2 right-column full-justified font-larger aligned-line headchar-capital
+I-Body	symmetric Dirichlet prior is defined in Equation 1.	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For the current state j, the conditional probability	page=3 xpos=5 ypos=2 right-column full-justified font-larger aligned-line headchar-capital
+I-Body	of drawing the k <sup>th</sup> author K <sub>j</sub> k and the i th topic Z j i	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	pair, given all the hyperparameters and all the obe-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	served documents and authors except the current as-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	signment (the exception is denoted by the symbol	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	¬j), is defined in Equation 2.	page=3 xpos=5 ypos=3 right-column right-indent font-largest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Equation	Γ λ <sup>M</sup> 	page=3 xpos=7 ypos=3 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space
+I-Equation	∆ <sub>M</sub> (λ) = (1)	page=3 xpos=6 ypos=3 right-column left-indent font-largest hanged-line longer-tail
+I-Equation	Γ (M λ)	page=3 xpos=7 ypos=4 right-column left-indent right-indent font-largest indented-line shorter-tail above-double-space above-line-space
+I-Equation	P (Z <sub>j</sub> <sup>i</sup> , K j k |W j = w, Z ¬j , K ¬j , W ¬j , A d , β, <sup>~</sup> η ~ )	page=3 xpos=5 ypos=4 right-column centered left-indent right-indent font-largest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Equation	∆ ( n Z + <sup>~</sup> β ) ∆(n <sub>K</sub> +~ η )	page=3 xpos=5 ypos=4 right-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	∝ ∆ ( n Z,¬j + β ~ ) ∆ ( n K,¬j +~ η )	page=3 xpos=5 ypos=4 right-column left-indent right-indent font-largest hanged-line longer-tail
+I-Equation	<sup>=</sup> P V <sub>w=1</sub> <sup>n</sup> <sup>w</sup> i,¬j n w <sub>i,¬j</sub> + β +V <sup>~</sup> w β ~ w P T i=1 n ik,¬j n ik,¬j + η ~ +T i η ~ i	page=3 xpos=5 ypos=5 right-column left-indent right-indent font-largest aligned-line longer-tail headchar-super
+I-Equation	(2)	page=3 xpos=9 ypos=5 right-column left-indent indented-line longer-tail above-blank-line above-double-space above-line-space
+B-Body	And the parameter sets φ and θ can be interpreted	page=3 xpos=5 ypos=5 right-column left-indent font-larger hanged-line line-blank-line line-double-space line-space headchar-capital
+I-Body	as sufficient statistics on the state variables of the	page=3 xpos=5 ypos=5 right-column full-justified headchar-lower
+I-Body	Markov Chain due to the Dirichlet conjugate priors	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	we used for the multinomial distributions. The two	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	formulars are shown in Equation 3 and Equation 4 in	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	which n <sub>i</sub> <sup>w</sup> is defined as the number of times that the	page=3 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	word w is generated by topic i and n ik is defined as	page=3 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	the number of times that topic i is generated by au-	page=3 xpos=5 ypos=7 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	thor k. The Gibbs sampler used in our experiments	page=3 xpos=5 ypos=7 right-column full-justified font-larger aligned-line headchar-lower
+E-Body	is from the Matlab Topic Modeling Toolbox <sup>2</sup> .	page=3 xpos=5 ypos=7 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	φ <sub>w,i</sub> = <sub>V</sub> <sup>n</sup> i <sup>w</sup> + β <sup>~</sup> w	page=3 xpos=6 ypos=7 right-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space
+I-Equation	(3)	page=3 xpos=9 ypos=8 right-column left-indent indented-line longer-tail
+I-Equation	P w=1 n <sup>w</sup> i + V β <sup>~</sup> w	page=3 xpos=7 ypos=8 right-column left-indent right-indent font-largest hanged-line shorter-tail headchar-capital above-double-space above-line-space
+I-Equation	n ik + ~ η i	page=3 xpos=7 ypos=8 right-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space itemization headchar-lower
+I-Equation	θ <sub>k,i</sub> = <sub>T</sub> <sub>i</sub>	page=3 xpos=6 ypos=8 right-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	(4)	page=3 xpos=9 ypos=8 right-column left-indent indented-line longer-tail
+I-Equation	P i=1 n k + T ~ η i	page=3 xpos=7 ypos=8 right-column left-indent right-indent font-largest hanged-line shorter-tail headchar-capital above-double-space above-line-space
+B-Footnote	<sup>2</sup> http://psiexp.ss.uci.edu/research/programs data/toolbox.htm	page=3 xpos=5 ypos=9 right-column left-indent right-over hanged-line longer-tail line-double-space line-space headchar-super page-bottom
+B-SectionHeader	4 Experiments and Analysis	page=4 xpos=0 ypos=0 left-column right-indent font-larger page-top numbered-heading1 above-double-space above-line-space
+B-Body	In this section, we describe the empirical evaluation	page=4 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	of our model qualitatively and quantitatively by ap-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plying our model to a text retrieval system we call	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	Expert Search. This search engine is intended to re-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	trieve groups of experts with similar interests and ex-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pertise by inputting only general domain key words,	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	such as syntactic parsing, information retrieval.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We first describe the data set, the retrieval system	page=4 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	and the evaluation metrics. Then we present the em-	page=4 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+E-Body	pirical results both qualitatively and quantitatively.	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Data	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We crawled from ACL anthology website and col-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	lected seven years of annual ACL conference papers	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	as our corpus. The reference section is deleted from	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	each paper to reduce some noisy vocabulary, such	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	as idiosyncratic proper names, and some coding er-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rors caused during the file format conversion pro-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cess. We applied a part of speech tagger <sup>3</sup> to tag	page=4 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the files and retain in our vocabulary only content	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	words, i.e., nouns, verbs, adjectives and adverbs.	page=4 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The ACL anthology website explicitly lists each	page=4 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	paper together with its title and author information.	page=4 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	Therefore, the author information of each paper can	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	be obtained accurately without extracting from the	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	original paper. We transformed all pdf files to text	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	files and normalized all author names by eliminating	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	their middle name initials if they are present in the	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	listed names. There is a total of 1,326 papers in the	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	collected corpus with 2, 084 authors. Then multi-	page=4 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	words (in our current experiments, the bigram collo-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cations) are discovered via the χ 2 statistics and part	page=4 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	of speech pattern filtering. These multiwords are	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	then added into the vocabulary to build our model.	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Some basic statistics about this corpus is summa-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	rized in Table 1.	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Two sets of results are evaluated use the retrieval	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	system in our experiments: one set is based on un-	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	igram vocabulary and the other with the vocabulary	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	expanded by the multiwords.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Evaluation on Expert Search	page=4 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We designed a preliminary retrieval system to eval-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	uate our model. The functionality of this search is	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>3</sup> The tagger is from:	page=4 xpos=0 ypos=9 left-column left-indent right-indent indented-line shorter-tail line-double-space line-space headchar-super tailchar-colon
+I-Footnote	http://l2r.cs.uiuc.edu/∼cogcomp/software.php	page=4 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line longer-tail headchar-lower above-blank-line above-double-space above-line-space
+Page	14	page=4 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Table	__Table 1__	page=4 xpos=5 ypos=-1 right-column left-over right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 1: Description of the ACL seven-year collection in	page=4 xpos=5 ypos=1 right-column full-justified font-smallest longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	our experiments	page=4 xpos=5 ypos=1 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	to associate words with individual authors, i.e., we	page=4 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	rank the joint probability of the query words and the	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	target author P (W, a). This probability is marginal-	page=4 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ized over all topics in the model to rank all authors	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	in our corpus. In addition, the model assumes that	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the word and the author is conditionally indepen-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dent given the topic. Formally, we define the ranking	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	function of our retrieval system in Equation 5:	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	P (W, a) = X α i X P (w i , a|t)P (t)	page=4 xpos=5 ypos=3 right-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space headchar-capital
+I-Equation	w <sub>i</sub> t	page=4 xpos=6 ypos=4 right-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower above-line-space
+I-Equation	= X α i X P (w i |t)P (a|t)P (t) (5)	page=4 xpos=6 ypos=4 right-column left-indent font-largest hanged-line longer-tail line-space
+I-Equation	w <sub>i</sub> t	page=4 xpos=6 ypos=4 right-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower above-double-space above-line-space
+B-Body	W is the input query, which may contain one or	page=4 xpos=5 ypos=4 right-column left-indent font-larger hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	more words. If a multiword is detected within the	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	query, it is added into the query. The final score is	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the sum of all words in this query weighted by their	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	inverse document frequency α <sub>i</sub> The inverse docu-	page=4 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	ment frequency is defined as Equation 6.	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	1	page=4 xpos=7 ypos=6 right-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space numeric-only
+I-Equation	α <sub>i</sub> = (6)	page=4 xpos=6 ypos=6 right-column left-indent font-largest hanged-line longer-tail
+I-Equation	DF (w <sub>i</sub> )	page=4 xpos=7 ypos=6 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-line-space
+B-Body	In our experiments, we chose ten queries which	page=4 xpos=5 ypos=6 right-column left-indent hanged-line longer-tail line-space headchar-capital
+I-Body	covers several most popular research areas in com-	page=4 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	putational linguistics and natural language process-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing. In our unigram model, query words are treated	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	token by token. However, in our multiword model,	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	if the query contains a multiword inside our vocabu-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lary, it is treated as an additional token to expand the	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	query. For each query, top 10 authors are returned	page=4 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	from the system. We manually label the relevance	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	of these 10 authors based on the papers they submit-	page=4 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ted to these seven-year ACL conferences collected	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	in our corpus. Two evaluation metrics are used to	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	measure the precision of the retrieving results. First	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	we evaluate the precision at a given cut-off rank,	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	namely precision at K with K ranging from 1 to 10.	page=4 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower tailchar-period page-bottom
+B-Body	We also calculate the average precision (AP) for	page=5 xpos=0 ypos=0 left-column left-indent page-top headchar-capital
+I-Body	each query and the mean average precision (MAP)	page=5 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	for all the 10 queries. Average precision not only	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	takes ranking as consideration but also emphasizes	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	ranking relevant documents higher. Different from	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	precision at K, it is sensitive to the ranking and cap-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures some recall information since it assumes the	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	precision of the non-retrieved documents to be zero.	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	It is defined as the average of precisions computed	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	at the point of each of the relevant documents in the	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	ranked list as shown in equation 7.	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	AP = P r=1 <sup>n</sup> (P recision(r) × rel(r)) (7)	page=5 xpos=0 ypos=2 left-column left-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital
+I-Equation	P relevant documents	page=5 xpos=1 ypos=2 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	Currently in our experiments, we do not have a	page=5 xpos=0 ypos=2 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	pool of labeled authors to do a good evaluation of	page=5 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	recall of our system. However, as in the web brows-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing activity, many users only care about the first sev-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eral hits of the retrieving results and precision at K	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	and MAP measurements are robust measurements	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	for this purpose.	page=5 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.3 Results and Analysis	page=5 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In this section, we first examine the qualitative re-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	sults from our model and then report the evaluation	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	on the external expert search.	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	4.3.1 Qualitative Coherence Analysis	page=5 xpos=0 ypos=5 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading3 above-line-space
+B-Body	As have shown by other works on Ngram topic	page=5 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	modeling (Wallach, 2006; Wang et al., 2007; Grif-	page=5 xpos=0 ypos=5 left-column full-justified hanged-line year headchar-lower tailchar-hiphen
+I-Body	fiths et al., 2007), our model also demonstrated that	page=5 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Body	embedding multiword tokens into the simple author	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	topic model can always achieve more coherent and	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	better interpretable topics. We list top 15 words	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	from two topics of the multiword model and uni-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gram model respectively in Table 2. Unigram topics	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	contain more general words which can occur in ev-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ery topic and are usually less discriminative among	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	topics.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our experiments also show that embedding the	page=5 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	multiword tokens into the model achieves better	page=5 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	clustering of the authors and the coherence between	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	authors and topics. We demonstrate this qualita-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tively by listing two examples respectively from the	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	multiword models and the unigram model in Table 3.	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For example, for the topic on dependency pars-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ing, unigram model missed Ryan-McDonald and the	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	ranking of the authors are also questionable. Further	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	15	page=5 xpos=4 ypos=9 left-column left-indent right-over indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+Table	__Table 2__	page=5 xpos=5 ypos=-1 right-column centered left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 2: Comparison of the topic interpretation from the	page=5 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space string-table headchar-capital
+I-Caption	multiword-enhanced and the unigram models. Qualita-	page=5 xpos=5 ypos=6 right-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+E-Caption	tively, topics with multiwords are more interpretable.	page=5 xpos=5 ypos=6 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	quantitative measurement is listed in our quantita-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	tive evaluation section. However, qualitatively, mul-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tiword model seems less problematic.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Some of the unfamiliar author may not be easy to	page=5 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	make a relevance judgment. However, if we trace	page=5 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	all the papers the author wrote in our collected cor-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pus, many of the authors are coherently related to the	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	topic. We list all the papers in our corpus for three	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	authors from the machine translation topic derived	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	from the multiword model in Table 4 to demonstrate	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the coherence between the author and the related	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	topic. However, it is also obvious that our model	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	missed some real experts in the corresponding field.	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-period page-bottom
+Table	__Table 3__	page=6 xpos=0 ypos=-8 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 3: Two examples for topic and author coherece from multiword-enhanced model and unigram model. Top 10	page=6 xpos=0 ypos=0 single-column full-justified font-smallest hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	words and authors are listed accordingly for each model.	page=6 xpos=0 ypos=0 single-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	For example, we did not get Kevin Knight for the	page=6 xpos=0 ypos=1 left-column full-justified column-top line-blank-line line-double-space line-space headchar-capital
+I-Body	machine translation topic. This may be due to the	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	limitation of our corpus since we only collected pa-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pers from one conference in a limited time, or be-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cause usually these experts write more divergent on	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	various topics.	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Another observation in our experiment is that	page=6 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	some experts with many papers may not be ranked	page=6 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	at the very top by our system. However, they have	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	pretty high probability to associate with several top-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ics. Intuitively this makes sense, since many of these	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	famous experts write papers with their students in	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	various topics. Their scores may therefore not be as	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	high as authors who have fewer papers in the corpus	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	which are concentrated in one topic.	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	4.3.2 Results from Expert Search	page=6 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading3 above-line-space
+B-Body	One annotator labeled the relevance of the re-	page=6 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	trieval results from our expert search system. The	page=6 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	annotator was also given all the paper titles of each	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	corresponding retrieved author to help make the bi-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nary judgment. We experimented with ten queries	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	and retrieved the top ten authors for each query.	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	16	page=6 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Body	We first used the precision at K for evaluation. we	page=6 xpos=5 ypos=1 right-column left-indent column-top headchar-capital
+I-Body	calculate the precision at K for both of our multi-	page=6 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	word model and the unigram model and the results	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	are listed in Table 5. It is obvious that at every rank	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	position, the multiword model works better than the	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	unigram model. In order to focus more on relevant	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	retrieval results, we then calculate the average preci-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sion for each query and mean average precision for	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	both models. The results are in Table 6.	page=6 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	When only comparing the mean average precision	page=6 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	(MAP), the multiword model works better. How-	page=6 xpos=5 ypos=4 right-column full-justified hanged-line tailchar-hiphen
+I-Body	ever, when examining the average precision of each	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	query within these two models, the unigram model	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	also works pretty well with some queries. How the	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	query words may interact with our model deserves	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	further investigation.	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Discussion and Further Development	page=6 xpos=5 ypos=7 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper, we extended the existing author topic	page=6 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	model with multiword term-document input and ap-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plied it to the domain of expert retrieval. Although	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	our study is preliminary, our experiments do return	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower page-bottom
+Table	__Table 4__	page=7 xpos=0 ypos=-5 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 4: Papers in our ACL corpus for three authors related to the “machine translation” topic in Table 3.	page=7 xpos=0 ypos=0 single-column centered left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space string-table headchar-capital tailchar-period column-bottom above-double-space above-line-space
+Table	__Table 5__	page=7 xpos=-1 ypos=0 left-column left-over right-indent box column-top line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 5: Precision at K evaluation of the multiword-	page=7 xpos=0 ypos=4 left-column full-justified font-smallest longer-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+E-Caption	enhanced model and the unigram model.	page=7 xpos=0 ypos=4 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	promising results, demonstrating the effectiveness	page=7 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	of our model in improving coherence in topic clus-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ters. In addition, the use of the MATM for expert	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	retrieval returned some useful preliminary results,	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	which can be further improved in a number of ways.	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Body	One immediate improvement would be an exten-	page=7 xpos=0 ypos=6 left-column left-indent indented-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	sion of our corpus. In our experiments, we consid-	page=7 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ered only ACL papers from the last 7 years. If we	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	extend our data to cover papers from additional con-	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferences, we will be able to strengthen author-topic	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	associations for authors who submit papers on the	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	same topics to different conferences. This will also	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	allow more prominent authors to come to the fore-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	front in our search application. Such a modifica-	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	17	page=7 xpos=4 ypos=9 left-column left-indent right-over indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+Table	__Table 6__	page=7 xpos=5 ypos=0 right-column centered left-over right-over box column-top table-area above-double-space above-line-space
+B-Caption	Table 6: Average Precision (AP) for each query and Mean	page=7 xpos=5 ypos=4 right-column full-justified font-smallest line-double-space line-space string-table headchar-capital
+I-Caption	Average Precision (MAP) of the multiword-enhanced	page=7 xpos=5 ypos=4 right-column full-justified font-smallest aligned-line headchar-capital
+E-Caption	model and the unigram model.	page=7 xpos=5 ypos=4 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	tion would require us to further increase the model’s	page=7 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	computational efficiency to handle huge volumes of	page=7 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	data encountered in real retrieval systems.	page=7 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Another further development of this paper is the	page=7 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	addition of citation information to the model as a	page=7 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	layer of supervision for the retrieval system. For in-	page=7 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stance, an author who is cited frequently could have	page=7 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	a higher weight in our system than one who isn’t,	page=7 xpos=5 ypos=7 right-column full-justified aligned-line itemization headchar-lower tailchar-comma
+E-Body	and could occur more prominently in query results.	page=7 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower tailchar-period above-line-space
+B-Body	Finally, we can provide a better evaluation of our	page=7 xpos=5 ypos=8 right-column left-indent indented-line line-space headchar-capital
+I-Body	system through a measure of recall and a simple	page=7 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	baseline system founded on keyword search of pa-	page=7 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	per titles. Recall can be computed via comparison to	page=7 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	a set of expected prominent authors for each query.	page=7 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period page-bottom
+AcknowledgementHeader	Acknowledgments	page=8 xpos=0 ypos=0 left-column right-indent font-larger page-top string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	The research in this paper was supported by the Mul-	page=8 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Acknowledgement	timodal Information Access & Synthesis Center at	page=8 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	UIUC, part of CCICADA, a DHS Science and Tech-	page=8 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Acknowledgement	nology Center of Excellence.	page=8 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=8 xpos=0 ypos=1 left-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	S. Banerjee and T. Pedersen. 2003. The design, im-	page=8 xpos=0 ypos=1 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	plementation, and use of the Ngram Statistic Package.	page=8 xpos=0 ypos=1 left-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In Proceedings of the Fourth International Conference	page=8 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	on Intelligent Text Processing and Computational Lin-	page=8 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	guistics, pages 370–381.	page=8 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	D. Blei and J. Lafferty. 2009a. Topic models. In A. Sri-	page=8 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	vastava and M. Sahami, editors, Text Mining: Theory	page=8 xpos=0 ypos=2 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	and Applications. Taylor and Francis.	page=8 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	D. Blei and J. Lafferty. 2009b. Visualiz-	page=8 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ing topics with multi-word expressions. In	page=8 xpos=0 ypos=3 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	http://arxiv.org/abs/0907.1013.	page=8 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	D. Blei, A. Ng, and M. Jordan. 2003. Latent dirichlet	page=8 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	allocation. Journal of Machine Learning Research.	page=8 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period
+B-Reference	T. Griffiths and M. Steyvers. 2004. Finding scientific	page=8 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	topic. In Proceedings of the National Academy of Sci-	page=8 xpos=0 ypos=4 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ence.	page=8 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	T. Griffiths, M. Steyvers, and J. Tenenbaum. 2007. Top-	page=8 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ics in semantic representation. Psychological Review.	page=8 xpos=0 ypos=4 left-column left-indent right-indent font-smallest indented-line headchar-lower tailchar-period
+B-Reference	T. Hofmann. 1999. Probabilistic latent semantic index-	page=8 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line year headchar-capital tailchar-hiphen
+I-Reference	ing. In Proceedings of SIGIR.	page=8 xpos=0 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period
+B-Reference	J. Justenson and S. Katz. 1995. Technical terminology:	page=8 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-colon
+I-Reference	some linguistic properties and an algorithm for inden-	page=8 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tification in text. Natural Language Engineering.	page=8 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	D. Magatti, S. Calegari, D. Ciucci, and F. Stella. 2009.	page=8 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Automatic labeling of topics. In ISDA, pages 1227–	page=8 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	1232.	page=8 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Christopher D. Manning and Hinrich Schtze. 1999.	page=8 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Foundations of Statistical Natural Language Process-	page=8 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	ing. Cambridge, Massachusetts.	page=8 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Q. Mei, X. Shen, and C. Zhai. 2007. Automatic la-	page=8 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	beling of multinomial topic models. In Proceedings	page=8 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of the 13th ACM SIGKDD international conference	page=8 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	on Knowledge discovery and data mining, pages 490–	page=8 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	499.	page=8 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	M. Rosen-Zvi, T. Griffiths, M. Steyvers, and P. Smyth.	page=8 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-period
+I-Reference	2004. the author-topic model for authors and docu-	page=8 xpos=0 ypos=8 left-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	ments. In Proceedings of UAI.	page=8 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	M. Steyvers and T. Griffiths. 2007. Probabilistic topic	page=8 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	models. In Handbook of Latent Semantic Analysis.	page=8 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	Lawrence Erlbaum Associates.	page=8 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	M. Steyvers, P. Smyth, and T. Griffiths. 2004. Proba-	page=8 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	bilistic author-topic models for information discovery.	page=8 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In Proceedings of KDD.	page=8 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+Page	18	page=8 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Reference	H. Wallach. 2006. Topic modeling; beyond bag	page=8 xpos=5 ypos=0 right-column full-justified font-smallest column-top year headchar-capital
+I-Reference	of words. In International Conference on Machine	page=8 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Learning.	page=8 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	X. Wang and A. McCallum. 2005. A note on topical n-	page=8 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	grams. Technical report, University of Massachusetts.	page=8 xpos=5 ypos=0 right-column left-indent right-indent font-smallest indented-line headchar-lower tailchar-period
+B-Reference	X. Wang, A. McCallum, and X. Wei. 2007. Topical n-	page=8 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line year headchar-capital tailchar-hiphen
+I-Reference	grams: Phrase and topic discoery with an application	page=8 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	to information retrieval. In Proceedings of ICDM.	page=8 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period

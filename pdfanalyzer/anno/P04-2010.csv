@@ -1,0 +1,446 @@
+Title	A Machine Learning Approach to German Pronoun Resolution	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Beata Kouchnir	page=0 xpos=4 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Department of Computational Linguistics	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Affiliation	Tübingen University	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Address	72074 Tübingen, Germany	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail year
+Email	kouchnir@sfs.uni-tuebingen.de	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-smaller hanged-line longer-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	This paper presents a novel ensemble	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	learning approach to resolving German	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	pronouns. Boosting, the method in	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	question, combines the moderately ac-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	curate hypotheses of several classifiers	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	to form a highly accurate one. Exper-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	iments show that this approach is su-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	perior to a single decision-tree classi-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	fier. Furthermore, we present a stan-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	dalone system that resolves pronouns in	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	unannotated text by using a fully auto-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	matic sequence of preprocessing mod-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ules that mimics the manual annotation	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	process. Although the system performs	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	well within a limited textual domain,	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-comma
+I-Abstract	further research is needed to make it	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	effective for open-domain question an-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	swering and text summarisation.	page=0 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=7 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Automatic coreference resolution, pronominal and	page=0 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	otherwise, has been a popular research area in	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	Natural Language Processing for more than two	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	decades, with extensive documentation of both	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the rule-based and the machine learning approach.	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For the latter, good results have been achieved	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	with large feature sets (including syntactic, se-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantic, grammatical and morphological informa-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion) derived from handannotated corpora. How-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ever, for applications that work with plain text (e.g.	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	question answering, text summarisation), this ap-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	proach is not practical.	page=0 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	The system presented in this paper resolves	page=0 xpos=5 ypos=2 right-column left-indent column-top headchar-capital
+I-Body	German pronouns in free text by imitating the	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-capital
+I-Body	manual annotation process with off-the-shelf lan-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage sofware. As the avalability and reliability of	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	such software is limited, the system can use only	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	a small number of features. The fact that most	page=0 xpos=5 ypos=3 right-column full-justified aligned-line itemization headchar-lower
+I-Body	German pronouns are morphologically ambiguous	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+E-Body	proves an additional challenge.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The choice of boosting as the underlying ma-	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	chine learning algorithm is motivated both by its	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	theoretical concept as well as its performance for	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	other NLP tasks. The fact that boosting uses the	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	method of ensemble learning, i.e. combining the	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	decisions of several classifiers, suggests that the	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	combined hypothesis will be more accurate than	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	one learned by a single classifier. On the practical	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	side, boosting has distinguished itself by achieving	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	good results with small feature sets.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Related Work	page=0 xpos=5 ypos=6 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Although extensive research has been conducted	page=0 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	on statistical anaphora resolution, the bulk of	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the work has concentrated on the English lan-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage. Nevertheless, comparing different strate-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gies helped shape the system described in this pa-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	per.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	(McCarthy and Lehnert, 1995) were among	page=0 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space year
+I-Body	the first to use machine learning for coreference	page=0 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	resolution. RESOLVE was trained on data from	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	MUC-5 English Joint Venture (EJV) corpus and	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital
+I-Body	used the C4.5 decision tree algorithm (Quinlan,	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1993) with eight features, most of which were tai-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	lored to the joint venturte domain. The system	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	achieved an F-measure of 86.5 for full coreference	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	resolution (no values were given for pronouns).	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-period
+I-Body	Although a number this high must be attributed to	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	the specific textual domain, RESOLVE also out-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	performed the authors’ rule-based algorithm by	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	7.6 percentage points, which encouraged further	page=1 xpos=0 ypos=0 left-column full-justified aligned-line numbered-heading2
+E-Body	reseach in this direction.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Unlike the other systems presented in this sec-	page=1 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tion, (Morton, 2000) does not use a decision tree	page=1 xpos=0 ypos=1 left-column full-justified hanged-line year headchar-lower
+I-Body	algorithm but opts instead for a maximum entropy	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	model. The model is trained on a subset of the	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	Wall Street Journal, comprising 21 million tokens.	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	The reported F-measure for pronoun resolution is	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	81.5. However, (Morton, 2000) only attempts to	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year
+I-Body	resolve singular pronouns, and there is no mention	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	of what percentage of total pronouns are covered	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	by this restriction.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	(Soon et al., 2001) use the C4.5 algorithm with	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space year
+I-Body	a set of 12 domain-independent features, ten syn-	page=1 xpos=0 ypos=3 left-column full-justified hanged-line itemization headchar-lower tailchar-hiphen
+I-Body	tactic and two semantic. Their system was trained	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	on both the MUC-6 and the MUC-7 datasets, for	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	which it achieved F-scores of 62.6 and 60.4, re-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	spectively. Although these results are far worse	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	than the ones reported in (McCarthy and Lehnert,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1995), they are comparable to the best-performing	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year
+I-Body	rule-based systems in the respective competitions.	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	As (McCarthy and Lehnert, 1995), (Soon et al.,	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-capital tailchar-comma
+E-Body	2001) do not report separate results for pronouns.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line year tailchar-period above-line-space
+B-Body	(Ng and Cardie, 2002) expanded on the work	page=1 xpos=0 ypos=5 left-column left-indent indented-line line-space year
+I-Body	of (Soon et al., 2001) by adding 41 lexical, se-	page=1 xpos=0 ypos=5 left-column full-justified hanged-line year headchar-lower tailchar-hiphen
+I-Body	mantic and grammatical features. However, since	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	using this many features proved to be detrimen-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tal to performance, all features that induced low	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	precision rules were discarded, leaving only 19.	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The final system outperformed that of (Soon et al.,	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	2001), with F-scores of 69.1 and 63.4 for MUC-6	page=1 xpos=0 ypos=7 left-column full-justified aligned-line year
+I-Body	and MUC-7, respectively. For pronouns, the re-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ported results are 74.6 and 57.8, respectively.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The experiment presented in (Strube et al.,	page=1 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-comma
+I-Body	2002) is one of the few dealing with the applica-	page=1 xpos=0 ypos=7 left-column full-justified hanged-line year tailchar-hiphen
+I-Body	tion of machine learning to German coreference	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	resolution covering definite noun phrases, proper	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	names and personal, possessive and demonstrative	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	pronouns. The research is based on the Heidelberg	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	Text Corpus (see Section 4), which makes it ideal	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	for comparison with our system. (Strube et al.,	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2002) used 15 features modeled after those used	page=1 xpos=0 ypos=9 left-column full-justified aligned-line year
+I-Body	by state-of-the-art resolution systems for English.	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The results for personal and possessive pronouns	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital column-bottom
+E-Body	are 82.79 and 84.94, respectively.	page=1 xpos=5 ypos=0 right-column right-indent column-top headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Boosting	page=1 xpos=5 ypos=0 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	All of the systems described in the previous sec-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tion use a single classifier to resolve coreference.	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Our intuition, however, is that a combination of	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	classifiers is better suited for this task. The con-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cept of ensemble learning (Dietterich, 2000) is	page=1 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower
+I-Body	based on the assumption that combining the hy-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	potheses of several classifiers yields a hypothesis	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	that is much more accurate than that of an individ-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ual classifier.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	One of the most popular ensemble learning	page=1 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	methods is boosting (Schapire, 2002). It is based	page=1 xpos=5 ypos=2 right-column full-justified hanged-line year headchar-lower
+I-Body	on the observation that finding many weak hy-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	potheses is easier than finding one strong hypothe-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sis. This is achieved by running a base learning al-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gorithm over several iterations. Initially, an impor-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tance weight is distributed uniformly among the	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	training examples. After each iteration, the weight	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	is redistributed, so that misclassified examples get	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	higher weights. The base learner is thus forced to	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	concentrate on difficult examples.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Although boosting has not yet been applied	page=1 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	to coreference resolution, it has outperformed	page=1 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	stateof-the-art systems for NLP tasks such as part-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ofspeech tagging and prepositional phrase attach-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment (Abney et al., 1999), word sense disam-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	biguation (Escudero et al., 2000), and named en-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+E-Body	tity recognition (Carreras et al., 2002).	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	The implementation used for this project is	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	BoosTexter (Schapire and Singer, 2000), a toolkit	page=1 xpos=5 ypos=6 right-column full-justified hanged-line year headchar-capital
+I-Body	freely available for research purposes. In addition	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	to labels, BoosTexter assigns confidence weights	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	that reflect the reliability of the decisions.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 System Description	page=1 xpos=5 ypos=7 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Our system resolves pronouns in three stages:	page=1 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-colon
+I-Body	preprocessing, classification, and postprocessing.	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Figure 1 gives an overview of the system archi-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line string-figure headchar-capital tailchar-hiphen
+I-Body	tecture, while this section provides details of each	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	component.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Training and Test Data	page=1 xpos=5 ypos=9 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The system was trained with data from the Heidel-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	berg Text Corpus (HTC), provided by the Euro-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pean Media Laboratory in Heidelberg, Germany.	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-period page-bottom
+Figure	__Figure 1__	page=2 xpos=0 ypos=-7 single-column left-indent right-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: System Architecture	page=2 xpos=3 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Body	The HTC is a collection of 250 short texts (30-700	page=2 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-capital
+I-Body	tokens) describing architecture, historical events	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	and people associated with the city of Heidelberg.	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	To examine its domain (in)dependence, the system	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	was tested on 40 unseen HTC texts as well as on	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	25 articles from the Spiegel magazine, the topics	page=2 xpos=0 ypos=2 left-column full-justified aligned-line numbered-heading1
+I-Body	of which include current events, science, arts and	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	entertainment, and travel.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 The MMAX Annotation Tool	page=2 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The manual annotation of the training data was	page=2 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	done with the MMAX (Multi-Modal Annotation	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	in XML) annotation tool (Müller and Strube,	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2001). The fist step of coreference annotation is to	page=2 xpos=0 ypos=5 left-column full-justified aligned-line year
+I-Body	identify the markables, i.e. noun phrases that refer	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	to real-word entities. Each markable is annotated	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	with the following attributes:	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	np form: proper noun, definite NP, indefinite	page=2 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-double-space line-space headchar-lower
+I-Listitem	NP, personal pronoun, possessive pronoun, or	page=2 xpos=0 ypos=7 left-column left-indent aligned-line headchar-capital
+I-Listitem	demonstrative pronoun.	page=2 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	grammatical role: subject, object (direct or	page=2 xpos=0 ypos=8 left-column left-indent aligned-line longer-tail line-double-space line-space headchar-lower
+I-Listitem	indirect), or other.	page=2 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	agreement: this attribute is a combination of	page=2 xpos=0 ypos=9 left-column left-indent aligned-line longer-tail line-double-space line-space headchar-lower column-bottom
+I-Listitem	person, number and gender. The possible val-	page=2 xpos=5 ypos=0 right-column left-indent column-top headchar-lower tailchar-hiphen
+I-Listitem	ues are 1s, 1p, 2s, 2p, 3m, 3f, 3n, 3p.	page=2 xpos=5 ypos=1 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	semantic class: human, physical object (in-	page=2 xpos=5 ypos=1 right-column left-indent aligned-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Listitem	cludes animals), or abstract. When the se-	page=2 xpos=5 ypos=2 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	mantic class is ambiguous, the ”abstract” op-	page=2 xpos=5 ypos=2 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tion is chosen.	page=2 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	type: if the entity that the markable refers to	page=2 xpos=5 ypos=3 right-column left-indent aligned-line longer-tail line-double-space line-space headchar-lower
+I-Listitem	is new to the discourse, the value is ”none”. If	page=2 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower
+I-Listitem	the markable refers to an already mentioned	page=2 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower
+I-Listitem	entity, the value is ”anaphoric”. An anaphoric	page=2 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower
+I-Listitem	markable has another attribute for its rela-	page=2 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tion to the antecedent. The values for this at-	page=2 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tribute are ”direct”, ”pronominal”, and ”ISA”	page=2 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower
+I-Listitem	(hyponym-hyperonym).	page=2 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Body	To mark coreference, MMAX uses coreference	page=2 xpos=5 ypos=6 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	sets, such that every new reference to an already	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	mentioned entity is added to the set of that entity.	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Implicitly, there is a set for every entity in the dis-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	course - if an entity occurs only once, its set con-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tains one markable.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.3 Feature Vector	page=2 xpos=5 ypos=8 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The features used by our system are summarised	page=2 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	in Table 4.3. The individual features for anaphor	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Table	__Table 1__	page=3 xpos=-1 ypos=-1 left-column left-over right-over box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: Features used by our system. *-ed fea-	page=3 xpos=0 ypos=4 left-column full-justified shorter-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+I-Caption	tures were only used for 10-fold cross-validation	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Caption	on the manually annotated data	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	and antecedent - NP form, grammatical role, se-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	mantic class - are extracted directly from the an-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	notation. The relational features are generated by	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	comparing the individual ones. The binary tar-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	get function - coreferent, non-coreferent - is de-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	termined by comparing the values of the member	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	attribute. If both markables are members of the	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	same set, they are coreferent, otherwise they are	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	not.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Due to lack of resources, the semantic class at-	page=3 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tribute cannot be annotated automatically, and is	page=3 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	therefore used only for comparison with (Strube	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	et al., 2002).	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.4 Noun Phrase Chunking, NER and	page=3 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	POS-Tagging	page=3 xpos=0 ypos=8 left-column left-indent right-indent indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	To identify markables automatically, the sys-	page=3 xpos=0 ypos=9 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tem uses the noun phrase chunker described in	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	(Schmid and Schulte im Walde, 2000), which	page=3 xpos=0 ypos=9 left-column full-justified aligned-line year
+I-Body	displays case information along with the chunks.	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period column-bottom
+I-Body	The chunker is based on a head-lexicalised prob-	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-capital tailchar-hiphen
+I-Body	abilistic context free grammar (H-L PCFG) and	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	achieves an F-measure of 92 for range only and	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	83 for range and label, whereby a range of a noun	page=3 xpos=5 ypos=0 right-column full-justified aligned-line numbered-heading1
+I-Body	chunk is defined as ”all words from the beginning	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	of the noun phrase to the head noun”. This is dif-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent from manually annotated markables, which	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	can be complex noun phrases.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Despite good overall performance, the chunker	page=3 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	fails on multi-word proper names in which case it	page=3 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	marks each word as an individual chunk. <sup>1</sup> Since	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	many pronouns refer to named entities, the chun-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ker needs to be supplemented by a named entity	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	recogniser. Although, to our knowledge, there cur-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rently does not exist an off-the-shelf named entity	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	recogniser for German, we were able to obtain the	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	system submitted by (Curran and Clark, 2003) to	page=3 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	the 2003 CoNLL competition. In order to run the	page=3 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	recogniser, the data needs to be tokenised, tagged	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	and lemmatised, all of which is done by the Tree-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	Tagger (Schmid, 1995).	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.5 Markable Creation	page=3 xpos=5 ypos=4 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	After the markables are identified, they are auto-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	matically annotated with the attributes described	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	in Section 4.4. The NP form can be reliably deter-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mined by examining the output of the noun chun-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ker and the named entity recogniser. Pronouns and	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	named entities are already labeled during chunk-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing. The remaining markables are labelled as def-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	inite NPs if their first words are definite articles	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	or possessive determiners, and as indefinite NPs	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	otherwise. Grammatical role is determined by the	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	case assigned to the markable - subject if nomi-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	native, object if accusative. Although datives and	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	genitives can also be objects, they are more likely	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	to be adjuncts and are therefore assigned the value	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	”other”.	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	For non-pronominal markables, agreement is	page=3 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	determined by lexicon lookup of the head nouns.	page=3 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	Number ambiguities are resolved with the help of	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	the case information. Most proper names, except	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	for a few common ones, do not appear in the lexi-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	con and have to remain ambiguous. Although it is	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	impossible to fully resolve the agreement ambigu-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ities of pronominal markables, they can be classi-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>1</sup> An example is [Verteidigunsminister Donald]	page=3 xpos=5 ypos=9 right-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	[Rumsfeld] ([Minister of Defense Donald] [Rumsfeld]).	page=3 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail tailchar-period page-bottom
+I-Body	fied as either feminine/plural or masculine/neuter.	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-period
+I-Body	Therefore we added two underspecified values to	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	the agreement attribute: 3f 3p and 3m 3n. Each	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	of these values was made to agree with both of its	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	subvalues.	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.6 Antecedent Selection	page=4 xpos=0 ypos=1 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	After classification, one non-pronominal an-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tecedent has to be found for each pronoun. As	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	BoosTexter assigns confidence weights to its pre-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	dictions, we have a choice between selecting the	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	antecedent closest to the anaphor (closest-first)	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	and the one with the highest weight (best-first).	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Furthermore, we have a choice between ignoring	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	pronominal antecedents (and risking to discard all	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the correct antecedents within the window) and re-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	solving them (and risking multiplication of errors).	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In case all of the instances within the window have	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	been classified as non-coreferent, we choose the	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	negative instance with the lowest weight as the an-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tecedent. The following section presents the re-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sults for each of the selection strategies.	page=4 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Evaluation	page=4 xpos=0 ypos=4 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Before evaluating the actual system, we compared	page=4 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the performance of boosting to that of C4.5, as re-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ported in (Strube et al., 2002). Trained on the same	page=4 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	corpus and evaluated with the 10-fold crossvali-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dation method, boosting significantly outperforms	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	C4.5 on both personal and possessive pronouns	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	(see Table 2). These results support the intuition	page=4 xpos=0 ypos=6 left-column full-justified aligned-line
+I-Body	that ensemble methods are superior to single clas-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sifiers.	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To put the performance of our system into per-	page=4 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	spective, we established a baseline and an upper	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	bound for the task. The baseline chooses as the an-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tecedent the closest non-pronominal markable that	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	agrees in number and gender with the pronoun.	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The upper bound is the system’s performance on	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	the manually annotated (gold standard) data with-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	out the semantic features.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For the baseline, accuracy is significantly higher	page=4 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	for the gold standard data than for the two test	page=4 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	sets (see Table 3). This shows that agreement is	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the most important feature, which, if annotated	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	correctly, resolves almost half of the pronouns.	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The classification results of the gold standard data,	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	which are much lower than the ones in Table 2 also	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+Table	__Table 2__	page=4 xpos=5 ypos=-1 right-column centered left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 2: Comparison of classification perfor-	page=4 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+E-Caption	mance (F  ) with (Strube et al., 2002)	page=4 xpos=5 ypos=0 right-column right-indent font-largest aligned-line shorter-tail year headchar-lower above-blank-line above-double-space above-line-space
+I-Body	demonstrate the importance of the semantic fea-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	tures. As for the test sets, while the classifier sig-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nificantly outperformed the baseline for the HTC	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	set, it did nothing for the Spiegel set. This shows	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the limitations of an algorithm trained on overly	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	restricted data.	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Among the selection heuristics, the approach of	page=4 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	resolving pronominal antecedents proved consis-	page=4 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tently more effective than ignoring them, while	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the results for the closest-first and best-first strate-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gies were mixed. They imply, however, that the	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	bestfirst approach should be chosen if the classifier	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	performed above a certain threshold; otherwise the	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	closest-first approach is safer.	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Overall, the fact that 67.2 of the pronouns were	page=4 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	correctly resolved in the automatically annotated	page=4 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	HTC test set, while the upper bound is 82.0, vali-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	dates the approach taken for this system.	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Conclusion and Future Work	page=4 xpos=5 ypos=5 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The pronoun resolution system presented in this	page=4 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	paper performs well for unannotated text of a lim-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ited domain. While the results are encouraging	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	considering the knowledge-poor approach, exper-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	iments with a more complex textual domain show	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	that the system is unsuitable for wide-coverage	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	tasks such as question answering and summarisa-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To examine whether the system would yield	page=4 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	comparable results in unrestricted text, it needs to	page=4 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	be trained on a more diverse and possibly larger	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	corpus. For this purpose, Tüba-D/Z, a treebank	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	consisting of German newswire text, is presently	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	being annotated with coreference information. As	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the syntactic annotation of the treebank is richer	page=4 xpos=5 ypos=8 right-column left-indent indented-line headchar-lower
+I-Body	than that of the HTC corpus, additional features	page=4 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Body	may be derived from it. Experiments with Tüba-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	D/Z will show whether the performance achieved	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital
+E-Body	for the HTC test set is scalable.	page=4 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For future versions of the system, it might also	page=4 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital page-bottom
+Table	__Table 3__	page=5 xpos=1 ypos=-3 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 3: Accuracy of the different selection heuristics compared with baseline accuracy and classification	page=5 xpos=0 ypos=0 single-column centered right-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	F-score. HTC-Gold and HTC-Test stand for manually and automatically annotated test sets, respectively.	page=5 xpos=0 ypos=0 single-column centered right-indent aligned-line headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	be beneficial to use full parses instead of chunks.	page=5 xpos=0 ypos=0 left-column centered right-indent column-top line-blank-line line-double-space line-space headchar-lower tailchar-period
+I-Body	As most German verbs are morphologically un-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ambiguous, an analysis of them could help disam-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguate pronouns. However, due to the relatively	page=5 xpos=0 ypos=1 left-column centered right-indent aligned-line headchar-lower
+I-Body	free word order of the German language, this ap-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	proach requires extensive reseach.	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=5 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Steven Abney, Robert E. Schapire, and Yoram Singer.	page=5 xpos=0 ypos=3 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	1999. Boosting applied to tagging and PP attach-	page=5 xpos=0 ypos=3 left-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	ment. In Proceedings of the Joint SIGDAT Con-	page=5 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ference on Empirical Methods in Natural Language	page=5 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Processing and Very Large Corpora.	page=5 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Xavier Carreras, Lluı́s Màrquez, and Lluı́s Padró.	page=5 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2002. Named entity extraction using AdaBoost.	page=5 xpos=0 ypos=4 left-column left-indent font-smallest indented-line year tailchar-period
+I-Reference	In Proceedings of CoNLL-2002, pages 167–170,	page=5 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line year headchar-capital tailchar-comma
+I-Reference	Taipei, Taiwan.	page=5 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	James R. Curran and Stephen Clark. 2003. Language-	page=5 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	independent NER using a maximum entropy tagger.	page=5 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In Proceedings of CoNLL-2003, pages 164–167, Ed-	page=5 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line year headchar-capital tailchar-hiphen
+I-Reference	monton, Canada.	page=5 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Thomas G. Dietterich. 2000. Ensemble methods in	page=5 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	machine learning. In First International Workshop	page=5 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	on Multiple Classifier Systems, Lecture Notes in	page=5 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Computer Science, pages 1–15. Springer, New York.	page=5 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Gerard Escudero, Lluı́s Màrquez, and German Rigau.	page=5 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line line-double-space line-space headchar-capital tailchar-period
+I-Reference	2000. Boosting applied to word sense disambigua-	page=5 xpos=0 ypos=7 left-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	tion. In Proceedings of the 12th European Confer-	page=5 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ence on Machine Learning, pages 129–141.	page=5 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Joseph F. McCarthy and Wendy G. Lehnert. 1995. Us-	page=5 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ing decision trees for coreference resolution. In Pro-	page=5 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ceedings of the 14th International Joint Conference	page=5 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	on Artificial Intelligence (IJCAI’95), pages 1050–	page=5 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	1055, Montreal, Canada.	page=5 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Thomas S. Morton. 2000. Coreference for nlp appli-	page=5 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	cations. In Proceedings of the 38th Annual Meet-	page=5 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ing of the Association for Computational Linguistics	page=5 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	(ACL’00), Hong Kong.	page=5 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period column-bottom
+B-Reference	Christoph Müller and Michael Strube. 2001. Annotat-	page=5 xpos=5 ypos=0 right-column full-justified font-smallest column-top year headchar-capital tailchar-hiphen
+I-Reference	ing anaphoric and bridging relations with MMAX.	page=5 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In Proceedings of the 2nd SIGdial Workshop on Dis-	page=5 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	course and Dialogue, pages 90–95, Aalborg, Den-	page=5 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	mark.	page=5 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Vincent Ng and Claire Cardie. 2002. Improving ma-	page=5 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	chine learning approaches to coreference resolution.	page=5 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In Proceedings of the 40th Annual Meeting of the As-	page=5 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	sociation for Computational Linguistics (ACL’02),	page=5 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	pages 104–111, Philadelphia, PA, USA.	page=5 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	J. Ross Quinlan. 1993. C4.5: Programs for Machine	page=5 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Learning. Morgan Kaufman, San Mateo, CA.	page=5 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Robert E. Schapire and Yoram Singer. 2000. Boostex-	page=5 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ter: A boosting-based system for text categorization.	page=5 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	Machine Learning, 39(2/3):135–168.	page=5 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Robert E. Schapire. 2002. The boosting approach to	page=5 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	machine learning: an overview. In Proceedings of	page=5 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	the MSRI Workshop on Nonlinear Estimation and	page=5 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Classification.	page=5 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Helmut Schmid and Sabine Schulte im Walde. 2000.	page=5 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Robust German noun chunking with a probabilis-	page=5 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	tic context-free grammar. In Proceedings of	page=5 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	the 18th International Conference on Computa-	page=5 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tional Linguistics (COLING-00), pages 726–732,	page=5 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	Saarbrücken, Germany.	page=5 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Helmut Schmid. 1995. Improvements in part-of-	page=5 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	speech tagging with an application to German. In	page=5 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Proceedings of the ACL SIGDAT-Workshop.	page=5 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Wee Meng Soon, Hwee Tou Ng, and Daniel	page=5 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Chung Yong Lim. 2001. A machine learning ap-	page=5 xpos=5 ypos=7 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	proach to coreference resolution of noun phrases.	page=5 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	Computational Linguistics, 27(4):521–544.	page=5 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Michael Strube, Stefan Rapp, and Christoph Müller.	page=5 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2002. The influence of minimum edit distance	page=5 xpos=5 ypos=8 right-column left-indent font-smallest indented-line year
+I-Reference	on reference resolution. In Proceedings of the	page=5 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	2002 Conference on Empirical Methods in Natural	page=5 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line year
+I-Reference	Language Processing (EMNLP’02), pages 312–319,	page=5 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	Philadelphia, PA, USA.	page=5 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period

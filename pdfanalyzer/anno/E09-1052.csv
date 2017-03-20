@@ -1,0 +1,812 @@
+Title	A Logic of Semantic Representations for Shallow Parsing	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Author	Alexander Koller	page=0 xpos=1 ypos=0 left-column left-indent right-indent font-largest column-top line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Saarland University	page=0 xpos=1 ypos=0 left-column left-indent right-indent font-larger headchar-capital
+Address	Saarbrücken, Germany	page=0 xpos=1 ypos=0 left-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital above-line-space
+Email	koller@mmci.uni-saarland.de	page=0 xpos=0 ypos=1 left-column left-indent right-indent font-smallest hanged-line longer-tail line-space symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=1 left-column centered left-indent right-indent font-largest indented-line shorter-tail line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	One way to construct semantic represen-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	tations in a robust manner is to enhance	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	shallow language processors with seman-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tic components. Here, we provide a model	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	theory for a semantic formalism that is de-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	signed for this, namely Robust Minimal	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	Recursion Semantics ( RMRS ). We show	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	that RMRS supports a notion of entailment	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	that allows it to form the basis for compar-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing the semantic output of different parses	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	of varying depth.	page=0 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=4 left-column right-indent font-largest hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Representing semantics as a logical form that sup-	page=0 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ports automated inference and model construc-	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion is vital for deeper language engineering tasks,	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	such as dialogue systems. Logical forms can be	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	obtained from hand-crafted deep grammars (Butt	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	et al., 1999; Copestake and Flickinger, 2000) but	page=0 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	this lacks robustness: not all words and con-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structions are covered and by design ill-formed	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	phrases fail to parse. There has thus been a trend	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	recently towards robust wide-coverage semantic	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	construction (e.g., (Bos et al., 2004; Zettlemoyer	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Body	and Collins, 2007)). But there are certain seman-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tic phenomena that these robust approaches don’t	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	capture reliably, including quantifier scope, op-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tional arguments, and long-distance dependencies	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	(for instance, Clark et al. (2004) report that the	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year
+I-Body	parser used by Bos et al. (2004) yields 63% ac-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	curacy on object extraction; e.g., the man that I	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	met. . . ). Forcing a robust parser to make a de-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cision about these phenomena can therefore be	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	error-prone. Depending on the application, it may	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	be preferable to give the parser the option to leave	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	a semantic decision open when it’s not sufficiently	page=0 xpos=0 ypos=8 left-column full-justified aligned-line itemization headchar-lower
+I-Body	informed—i.e., to compute a partial semantic rep-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resentation and to complete it later, using informa-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion extraneous to the parser.	page=0 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+Author	Alex Lascarides	page=0 xpos=6 ypos=0 right-column left-indent right-indent font-largest column-top headchar-capital
+B-Affiliation	University of Edinburgh	page=0 xpos=5 ypos=0 right-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Address	Edinburgh, UK	page=0 xpos=6 ypos=0 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-line-space
+Email	alex@inf.ed.ac.uk	page=0 xpos=6 ypos=1 right-column left-indent right-indent font-smallest hanged-line longer-tail line-space symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+B-Body	In this paper, we focus on an approach to se-	page=0 xpos=5 ypos=1 right-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	mantic representation that supports this strategy:	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-colon
+I-Body	Robust Minimal Recursion Semantics ( RMRS ,	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	Copestake (2007a)). RMRS is designed to support	page=0 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-capital
+I-Body	underspecification of lexical information, scope,	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and predicate-argument structure. It is an emerg-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing standard for representing partial semantics,	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and has been applied in several implemented sys-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems. For instance, Copestake (2003) and Frank	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	(2004) use it to specify semantic components to	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year
+I-Body	shallow parsers ranging in depth from POS tag-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gers to chunk parsers and intermediate parsers	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	such as RASP (Briscoe et al., 2006). MRS anal-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	yses (Copestake et al., 2005) derived from deep	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	grammars, such as the English Resource Grammar	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	( ERG , (Copestake and Flickinger, 2000)) are spe-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	cial cases of RMRS . But RMRS , unlike MRS and re-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lated formalisms like dominance constraints (Egg	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	et al., 2001), is able to express semantic infor-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	mation in the absence of full predicate argument	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	structure and lexical subcategorisation.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The key contribution we make is to cast RMRS ,	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-comma
+I-Body	for the first time, as a logic with a well-defined	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	model theory. Previously, no such model theory	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	existed, and so RMRS had to be used in a some-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	what ad-hoc manner that left open exactly what	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	any given RMRS representation actually means.	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This has hindered practical progress, both in terms	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	of understanding the relationship of RMRS to other	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	frameworks such as MRS and predicate logic and	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in terms of the development of efficient algo-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rithms. As one application of our formalisation,	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we use entailment to propose a novel way of char-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	acterising consistency of RMRS analyses across	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	different parsers.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Section 2 introduces RMRS informally and illus-	page=0 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	trates why it is necessary and useful for represent-	page=0 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ing semantic information across deep and shallow	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	language processors. Section 3 defines the syntax	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	and model-theory of RMRS . We finish in Section 4	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	by pointing out some avenues for future research.	page=0 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of the 12th Conference of the European Chapter of the ACL, pages 451–459,	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Footer	Athens, Greece, 30 March – 3 April 2009.  2009 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail year headchar-capital above-blank-line above-double-space above-line-space
+Page	451	page=0 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest indented-line shorter-tail line-blank-line line-double-space line-space numeric-only page-bottom
+B-SectionHeader	2 Deep and shallow semantic	page=1 xpos=0 ypos=0 left-column right-indent font-largest page-top numbered-heading1
+I-SectionHeader	construction	page=1 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Consider the following (toy) sentence:	page=1 xpos=0 ypos=0 left-column right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-colon above-double-space above-line-space
+B-Quote	(1) Every fat cat chased some dog.	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail line-double-space line-space itemization tailchar-period above-double-space above-line-space
+B-Body	It exhibits several kinds of ambiguity, includ-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ing a quantifier scope ambiguity and lexical	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	ambiguities—e.g., the nouns “cat” and “dog” have	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	8 and 7 WordNet senses respectively. Simplifying	page=1 xpos=0 ypos=1 left-column full-justified aligned-line numbered-heading1
+I-Body	slightly by ignoring tense information, two of its	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	readings are shown as logical forms below; these	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	can be represented as trees as shown in Fig. 1.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	(2) every q 1(x, fat j 1(e ! , x) ∧ cat n 1(x),	page=1 xpos=0 ypos=2 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space itemization tailchar-comma
+I-Equation	some q 1(y, dog n 1(y),	page=1 xpos=0 ypos=2 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-comma above-line-space
+I-Equation	chase v 1(e, x, y)))	page=1 xpos=0 ypos=2 left-column left-indent right-indent font-smallest indented-line shorter-tail line-space headchar-lower
+B-Equation	(3) some q 1(y, dog n 2(y),	page=1 xpos=0 ypos=3 left-column right-indent hanged-line longer-tail itemization tailchar-comma
+I-Equation	every q 1(x, fat j 1(e ! , x) ∧ cat n 2(x),	page=1 xpos=0 ypos=3 left-column left-indent font-largest indented-line longer-tail headchar-lower tailchar-comma
+I-Equation	chase v 1(e, x, y)))	page=1 xpos=0 ypos=3 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Now imagine trying to extract semantic infor-	page=1 xpos=0 ypos=3 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	mation from the output of a part-of-speech ( POS )	page=1 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	tagger by using the word lemmas as lexical pred-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	icate symbols. Such a semantic representation	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	is highly partial. It will use predicate symbols	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	such as cat n, which might resolve to the pred-	page=1 xpos=0 ypos=4 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	icate symbols cat n 1 or cat n 2 in the com-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plete semantic representation. (Notice the dif-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent fonts for the ambiguous and unambiguous	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	predicate symbols.) But most underspecification	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	formalisms (e.g., MRS (Copestake et al., 2005) and	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	CLLS (Egg et al., 2001)) are unable to represent se-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	mantic information that is as partial as what we get	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	from a POS tagger because they cannot underspec-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ify predicate-argument structure. RMRS (Copes-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	take, 2007a) is designed to address this problem.	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	In RMRS , the information we get from the POS tag-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ger is as follows:	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	(4) l <sub>1</sub> : a 1 : every q(x 1 ),	page=1 xpos=0 ypos=7 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space itemization tailchar-comma
+I-Equation	l <sub>41</sub> : a 41 : fat j(e ! ),	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-larger indented-line shorter-tail itemization headchar-lower tailchar-comma
+I-Equation	l <sub>42</sub> : a 42 : cat n(x 3 )	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-larger aligned-line longer-tail itemization headchar-lower
+I-Equation	l <sub>5</sub> : a 5 : chase v(e),	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-larger aligned-line itemization headchar-lower tailchar-comma
+I-Equation	l <sub>6</sub> : a 6 : some q(x 6 ),	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-larger aligned-line longer-tail itemization headchar-lower tailchar-comma
+I-Equation	l <sub>9</sub> : a 9 : dog n(x 7 )	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-larger aligned-line shorter-tail itemization headchar-lower above-double-space above-line-space
+B-Body	This RMRS expresses only that certain predica-	page=1 xpos=0 ypos=8 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tions are present in the semantic representation—	page=1 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	it doesn’t say anything about semantic scope,	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	about most arguments of the predicates (e.g.,	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	chase v(e) doesn’t say who chases whom), or	page=1 xpos=0 ypos=8 left-column left-indent font-larger indented-line headchar-lower
+I-Body	about the coindexation of variables ( every q	page=1 xpos=0 ypos=9 left-column full-justified font-larger hanged-line headchar-lower column-bottom
+Figure	__Figure 1__	page=1 xpos=5 ypos=0 right-column left-indent right-over box column-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: Semantic representations (2) and (3) as	page=1 xpos=5 ypos=2 right-column full-justified shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital
+E-Caption	trees.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	binds the variable x <sub>1</sub> , whereas cat n speaks about	page=1 xpos=5 ypos=2 right-column full-justified font-larger aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	x <sub>3</sub> ), and it maintains the lexical ambiguities. Tech-	page=1 xpos=5 ypos=2 right-column full-justified font-larger aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	nically, it consists of six elementary predications	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	( EP s), one for each word lemma in the sentence;	page=1 xpos=5 ypos=3 right-column full-justified aligned-line tailchar-semicolon
+I-Body	each of them is prefixed by a label and an anchor,	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which are essentially variables that refer to nodes	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	in the trees in Fig. 1. We can say that the two trees	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	satisfy this RMRS because it is possible to map the	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	labels and anchors in (4) into nodes in each tree	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	and variable names like x <sub>1</sub> and x 3 into variable	page=1 xpos=5 ypos=4 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	names in the tree in such a way that the predica-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions of the nodes that labels and anchors denote	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	are consistent with those in the EP s of (4)—e.g., l <sub>1</sub>	page=1 xpos=5 ypos=4 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	and a <sub>1</sub> can map to the root of the first tree in Fig. 1,	page=1 xpos=5 ypos=4 right-column full-justified font-larger aligned-line headchar-lower tailchar-comma
+I-Body	x <sub>1</sub> to x, and the root label every q 1 is consistent	page=1 xpos=5 ypos=5 right-column full-justified font-larger aligned-line itemization headchar-lower
+E-Body	with the EP predicate every q.	page=1 xpos=5 ypos=5 right-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	There are of course many other trees (and thus,	page=1 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	fully specific semantic representations such as (2))	page=1 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	that are described equally well by the RMRS (4);	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-semicolon
+I-Body	this is not surprising, given that the semantic out-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	put from the POS tagger is so incomplete. If we	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	have information about subjects and objects from	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	a chunk parser like Cass (Abney, 1996), we can	page=1 xpos=5 ypos=6 right-column full-justified aligned-line itemization year headchar-lower
+I-Body	represent it in a more detailed RMRS :	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	(5) l <sub>1</sub> : a 1 : every q(x 1 ),	page=1 xpos=5 ypos=7 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space itemization tailchar-comma
+I-Equation	l <sub>41</sub> : a 41 : fat j(e ! ),	page=1 xpos=5 ypos=7 right-column left-indent right-indent font-larger indented-line shorter-tail itemization headchar-lower tailchar-comma
+I-Equation	l <sub>42</sub> : a 42 : cat n(x 3 )	page=1 xpos=5 ypos=7 right-column left-indent right-indent font-larger aligned-line longer-tail itemization headchar-lower
+I-Equation	l <sub>5</sub> : a 5 : chase v(e),	page=1 xpos=5 ypos=7 right-column left-indent right-indent font-larger aligned-line itemization headchar-lower tailchar-comma
+I-Equation	ARG <sub>1</sub> (a 5 , x 4 ), ARG 2 (a 5 , x 5 )	page=1 xpos=5 ypos=7 right-column left-indent right-indent font-larger indented-line longer-tail headchar-capital
+I-Equation	l <sub>6</sub> : a 6 : some q(x 6 ),	page=1 xpos=5 ypos=7 right-column left-indent right-indent font-larger hanged-line shorter-tail itemization headchar-lower tailchar-comma
+I-Equation	l <sub>9</sub> : a 9 : dog n(x 7 )	page=1 xpos=5 ypos=8 right-column left-indent right-indent font-larger aligned-line shorter-tail itemization headchar-lower
+I-Equation	x <sub>3</sub> = x 4 , x 5 = x 7	page=1 xpos=5 ypos=8 right-column left-indent right-indent font-larger aligned-line shorter-tail itemization headchar-lower above-double-space above-line-space
+B-Body	This introduces two new types of atoms. x <sub>3</sub> =	page=1 xpos=5 ypos=8 right-column left-indent font-larger hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	x <sub>4</sub> means that x 3 and x 4 map to the same variable	page=1 xpos=5 ypos=8 right-column full-justified font-larger hanged-line itemization headchar-lower
+I-Body	in any fully specific logical form; e.g., both to the	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	variable x in Fig. 1. ARG <sub>i</sub> (a, z) (and ARG i (a, h))	page=1 xpos=5 ypos=9 right-column full-justified font-larger aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	452	page=1 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	express that the i-th child (counting from 0) of the	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	node to which the anchor a refers is the variable	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	name that z denotes (or the node that the hole h	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	denotes). So unlike earlier underspecification for-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	malisms, RMRS can specify the predicate of an	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	atom separately from its arguments; this is nec-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	essary for supporting parsers where information	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	about lexical subcategorisation is absent. If we	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	also allow atoms of the form ARG {2,3} (a, x) to ex-	page=2 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	press uncertainty as to whether x is the second or	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	third child of the anchor a, then RMRS can even	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	specify the arguments to a predicate while under-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	specifying their position. This is useful for speci-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fying arguments to give v when a parser doesn’t	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	handle unbounded dependencies and is faced with	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	Which bone did you give the dog? vs. To which	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+E-Body	dog did you give the bone?	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Body	Finally, the RMRS (6) is a notational variant of	page=2 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	the MRS derived by the ERG , a wide-coverage deep	page=2 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	grammar:	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	(6) l <sub>1</sub> : a 1 : every q 1(x 1 ),	page=2 xpos=0 ypos=3 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space itemization tailchar-comma
+I-Equation	RSTR(a <sub>1</sub> , h 2 ), BODY(a 1 , h 3 )	page=2 xpos=0 ypos=3 left-column left-indent right-indent font-larger indented-line longer-tail headchar-capital
+I-Equation	l <sub>41</sub> : a 41 : fat j 1(e ! ), ARG 1 (a 41 , x 2 )	page=2 xpos=0 ypos=4 left-column left-indent right-indent font-larger hanged-line longer-tail itemization headchar-lower
+I-Equation	l <sub>42</sub> : a 42 : cat n 1(x 3 )	page=2 xpos=0 ypos=4 left-column left-indent right-indent font-larger aligned-line shorter-tail itemization headchar-lower
+I-Equation	l <sub>5</sub> : a 5 : chase v 1(e),	page=2 xpos=0 ypos=4 left-column left-indent right-indent font-larger aligned-line itemization headchar-lower tailchar-comma
+I-Equation	ARG <sub>1</sub> (a 5 , x 4 ), ARG 2 (a 5 , x 5 )	page=2 xpos=0 ypos=4 left-column left-indent right-indent font-larger indented-line longer-tail headchar-capital
+I-Equation	l <sub>6</sub> : a 6 : some q 1(x 6 ),	page=2 xpos=0 ypos=4 left-column left-indent right-indent font-larger hanged-line shorter-tail itemization headchar-lower tailchar-comma
+I-Equation	RSTR(a <sub>6</sub> , h 7 ), BODY(a 6 , h 8 )	page=2 xpos=0 ypos=4 left-column left-indent right-indent font-larger indented-line longer-tail headchar-capital
+I-Equation	l <sub>9</sub> : a 9 : dog n 1(x 7 )	page=2 xpos=0 ypos=5 left-column left-indent right-indent font-larger hanged-line shorter-tail itemization headchar-lower
+I-Equation	h <sub>2</sub> = q l 42 , l 41 = l 42 , h 7 = q l 9	page=2 xpos=0 ypos=5 left-column left-indent right-indent font-larger aligned-line longer-tail itemization headchar-lower
+I-Equation	x <sub>1</sub> = x 2 , x 2 = x 3 , x 3 = x 4 ,	page=2 xpos=0 ypos=5 left-column left-indent right-indent font-larger aligned-line shorter-tail itemization headchar-lower tailchar-comma
+I-Equation	x <sub>5</sub> = x 6 , x 5 = x 7	page=2 xpos=0 ypos=5 left-column left-indent right-indent font-larger aligned-line shorter-tail itemization headchar-lower above-double-space above-line-space
+B-Body	RSTR and BODY are conventional names for	page=2 xpos=0 ypos=5 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	the ARG <sub>1</sub> and ARG 2 of a quantifier predicate sym-	page=2 xpos=0 ypos=6 left-column full-justified font-larger hanged-line headchar-lower tailchar-hiphen
+I-Body	bol. Atoms like h <sub>2</sub> = q l 42 (“qeq”) specify a cer-	page=2 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	tain kind of “outscopes” relationship between the	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	hole and the label, and are used here to underspec-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ify the scope of the two quantifiers. Notice that the	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	labels of the EP s for “fat” and “cat” are stipulated	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	to be equal in (6), whereas the anchors are not. In	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the tree, it is the anchors that are mapped to the	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	nodes with the labels fat j 1 and cat n 1; the la-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bel is mapped to the conjunction node just above	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	them. In other words, the role of the anchor in an	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	EP is to connect a predicate to its arguments, while	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	the role of the label is to connect the EP to the sur-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rounding formula. Representing conjunction with	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	label sharing stems from MRS and provides com-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	pact representations.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Finally, (6) uses predicate symbols like	page=2 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	dog n 1 that are meant to be more specific than	page=2 xpos=0 ypos=9 left-column left-indent font-larger hanged-line headchar-lower column-bottom
+I-Body	symbols like dog n which the earlier RMRS s	page=2 xpos=5 ypos=0 right-column full-justified font-larger column-top headchar-lower
+I-Body	used. This reflects the fact that the deep gram-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mar performs some lexical disambiguation that the	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	chunker and POS tagger don’t. The fact that the	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	former symbol should be more specific than the	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	latter can be represented using SPEC atoms like	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	dog n 1 " dog n. Note that even a deep gram-	page=2 xpos=5 ypos=1 right-column left-indent font-largest indented-line headchar-lower tailchar-hiphen
+I-Body	mar will not fully disambiguate to semantic pred-	page=2 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	icate symbols, such as WordNet senses, and so	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	dog n 1 can still be consistent with multiple sym-	page=2 xpos=5 ypos=1 right-column left-indent font-larger indented-line headchar-lower tailchar-hiphen
+I-Body	bols like dog n 1 and dog n 2 in the semantic	page=2 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	representation. However, unlike the output of a	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	POS tagger, an RMRS symbol that’s output by a	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	deep grammar is consistent with symbols that all	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	have the same arity, because a deep grammar fully	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	determines lexical subcategorisation.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In summary, RMRS allows us to represent in a	page=2 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	uniform way the (partial) semantics that can be	page=2 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	extracted from a wide range of NLP tools. This	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	is useful for hybrid systems which exploit shal-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lower analyses when deeper parsing fails, or which	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	try to match deeply parsed queries against shal-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	low parses of large corpora; and in fact, RMRS is	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	gaining popularity as a practical interchange for-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mat for exactly these purposes (Copestake, 2003).	page=2 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	However, RMRS is still relatively ad-hoc in that its	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	formal semantics is not defined; we don’t know,	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	formally, what an RMRS means in terms of seman-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic representations like (2) and (3), and this hin-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ders our ability to design efficient algorithms for	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	processing RMRS . The purpose of this paper is to	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	lay the groundwork for fixing this problem.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Robust Minimal Recursion Semantics	page=2 xpos=5 ypos=5 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We will now make the basic ideas from Section	page=2 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	2 precise. We will first define the syntax of the	page=2 xpos=5 ypos=6 right-column full-justified aligned-line numbered-heading1
+I-Body	RMRS language; this is a notational variant of ear-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	lier definitions in the literature. We will then de-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fine a model theory for our version of RMRS , and	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	conclude this section by carrying over the notion	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	of solved forms from CLLS (Egg et al., 2001).	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 RMRS Syntax	page=2 xpos=5 ypos=7 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We define RMRS syntax in the style of CLLS (Egg	page=2 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	et al., 2001). We assume an infinite set of node	page=2 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	variables NVar = {X, Y, X 1 , . . .}, used as labels,	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	anchors, and holes; the distinction between these	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	will come from their position in the formulas. We	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	also assume an infinite set of base variables BVar,	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	consisting of individual variables {x, x 1 , y, . . .}	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	and event variables {e 1 , . . .}, and a vocabulary of	page=2 xpos=5 ypos=9 right-column full-justified font-largest aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	453	page=2 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	predicate symbols Pred = {P, Q, P 1 , . . .}. RMRS	page=3 xpos=0 ypos=0 left-column full-justified font-largest page-top headchar-lower
+E-Body	formulas are defined as follows.	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Definition	Definition 1. An RMRS is a finite set ϕ of atoms	page=3 xpos=0 ypos=0 left-column full-justified font-larger aligned-line longer-tail line-double-space line-space headchar-capital
+I-Definition	of one of the following forms; S ⊆ N is a set of	page=3 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Definition	numbers that is either finite or N itself (throughout	page=3 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Definition	the paper, we assume 0 ∈ N).	page=3 xpos=0 ypos=0 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Equation	A ::= X:Y :P	page=3 xpos=0 ypos=1 left-column left-indent right-indent indented-line shorter-tail headchar-capital
+I-Equation	| ARG S (X, v)	page=3 xpos=1 ypos=1 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	| ARG S (X, Y )	page=3 xpos=1 ypos=1 left-column left-indent right-indent font-largest aligned-line
+I-Equation	| X ! ∗ Y	page=3 xpos=1 ypos=1 left-column left-indent right-indent font-largest aligned-line shorter-tail
+I-Equation	| v 1 = v 2 | v 1 = % v 2	page=3 xpos=1 ypos=1 left-column left-indent right-indent font-largest aligned-line longer-tail
+I-Equation	| X = Y | X = % Y	page=3 xpos=1 ypos=2 left-column left-indent right-indent font-largest aligned-line shorter-tail
+I-Definition	A node | variable P " Q X is called a label iff ϕ con-	page=3 xpos=0 ypos=2 left-column left-indent font-largest hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Definition	tains an atom of the form X:Y :P or Y ! ∗ X; it	page=3 xpos=0 ypos=2 left-column full-justified font-largest hanged-line headchar-lower
+I-Definition	is an anchor iff ϕ contains an atom of the form	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Definition	Y :X:P or ARG <sub>S</sub> (X, i); and it is a hole iff ϕ con-	page=3 xpos=0 ypos=2 left-column full-justified font-larger aligned-line headchar-capital tailchar-hiphen
+I-Definition	tains an atom of the form ARG <sub>S</sub> (Y, X) or X ! ∗ Y .	page=3 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower tailchar-period above-line-space
+B-Body	Def. 1 combines similarities to earlier presen-	page=3 xpos=0 ypos=3 left-column left-indent indented-line line-space headchar-capital tailchar-hiphen
+I-Body	tations of RMRS (Copestake, 2003; Copestake,	page=3 xpos=0 ypos=3 left-column full-justified hanged-line year headchar-lower tailchar-comma
+I-Body	2007b) and to CLLS /dominance constraints (Egg	page=3 xpos=0 ypos=3 left-column full-justified aligned-line year
+I-Body	et al., 2001). For the most part, our syntax	page=3 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower
+I-Body	generalises that of older versions of RMRS : We	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	use ARG {i} (with a singleton set S) instead of	page=3 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	ARG <sub>i</sub> and ARG N instead of ARG n , and the EP	page=3 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-capital
+I-Body	l:a:P (v) (as in Section 2) is an abbreviation of	page=3 xpos=0 ypos=4 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	sume {l:a:P, that ARG labels, {0} (a, anchors, v)}. Similarly, and holes we are don’t syntacti- as-	page=3 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	cally different objects; they receive their function	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	from their positions in the formula. One major dif-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ference is that we use dominance (! ∗ ) rather than	page=3 xpos=0 ypos=5 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	qeq; see Section 3.4 for a discussion. Compared	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	to dominance constraints, the primary difference	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	is that we now have a mechanism for representing	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	lexical ambiguity, and we can specify a predicate	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	and its arguments separately.	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Model Theory	page=3 xpos=0 ypos=6 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The model theory formalises the relationship be-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tween an RMRS and the fully specific, alternative	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	logical forms that it describes, expressed in the	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	base language. We represent such a logical form	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	as a tree τ , such as the ones in Fig. 1, and we can	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	then define satisfaction of formulas in the usual	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	way, by taking the tree as a model structure that	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	interprets all predicate symbols specified above.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In this paper, we assume for simplicity that the	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	base language is as in MRS ; essentially, τ becomes	page=3 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	the structure tree of a formula of predicate logic.	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We assume that Σ is a ranked signature consist-	page=3 xpos=0 ypos=8 left-column full-justified font-larger aligned-line headchar-capital tailchar-hiphen
+I-Body	ing of the symbols of predicate logic: a unary con-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	structor ¬ and binary constructors ∧, →, etc.; a set	page=3 xpos=5 ypos=0 right-column full-justified font-largest column-top headchar-lower
+I-Body	of 3-place quantifier symbols such as every q 1	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	and some q 1 (with the children being the bound	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	variable, the restrictor, and the scope); and con-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structors of various arities for the predicate sym-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bols; e.g., chase v 1 is of arity 3. Other base lan-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guages may require a different signature Σ and/or	page=3 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	a different mapping between formulas and trees;	page=3 xpos=5 ypos=1 right-column full-justified aligned-line itemization headchar-lower tailchar-semicolon
+I-Body	the only strict requirement we make is that the	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	signature contains a binary constructor ∧ to rep-	page=3 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	resent conjunction. We write Σ <sub>i</sub> and Σ ≥i for the	page=3 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	set of all constructors in Σ with arity i and at least	page=3 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	i, respectively. We will follow the typographical	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	convention that non-logical symbols in Σ are writ-	page=3 xpos=5 ypos=2 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	ten in sans-serif, as opposed to the RMRS predicate	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	symbols like cat n and cat n 1.	page=3 xpos=5 ypos=2 right-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The models of RMRS are then defined to be fi-	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	nite constructor trees (see also (Egg et al., 2001)):	page=3 xpos=5 ypos=3 right-column centered right-indent hanged-line year headchar-lower tailchar-colon above-blank-line above-double-space above-line-space
+B-Definition	Definition 2. A finite constructor tree τ is a func-	page=3 xpos=5 ypos=3 right-column full-justified font-larger aligned-line line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Definition	tion τ : D → Σ such that D is a tree domain (i.e.,	page=3 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Definition	a subset of N ∗ which is closed under prefix and left	page=3 xpos=5 ypos=3 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Definition	sibling) and the number of children of each node	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Definition	u ∈ D is equal to the arity of τ (u).	page=3 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail itemization headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We write D(τ ) for the tree domain of a con-	page=3 xpos=5 ypos=4 right-column left-indent font-larger indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	structor tree τ , and further define the following re-	page=3 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	lations between nodes in a finite constructor tree:	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-blank-line above-double-space above-line-space
+B-Definition	Definition 3. u ! ∗ v (dominance) iff u is a prefix	page=3 xpos=5 ypos=5 right-column full-justified font-largest aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Definition	of v, i.e. the node u is equal to or above the node	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Definition	v in the tree. u ! ∗∧ v iff u ! ∗ v, and all symbols on	page=3 xpos=5 ypos=5 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Definition	the path from u to v (not including v) are ∧.	page=3 xpos=5 ypos=6 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The satisfaction relation between an RMRS ϕ	page=3 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	and a finite constructor tree τ is defined in terms	page=3 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	of several assignment functions. First, a node	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	variable assignment function α : NVar → D(τ )	page=3 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	maps the node variables in an RMRS to the nodes	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	of τ . Second, a base language assignment func-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion g : BVar → Σ 0 maps the base variables to	page=3 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	nullary constructors representing variables in the	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	base language. Finally, a function σ from Pred to	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the power set of Σ ≥1 maps each RMRS predicate	page=3 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	symbol to a set of constructors from Σ. As we’ll	page=3 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	see shortly, this function allows an RMRS to under-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	specify lexical ambiguities.	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Definition	Definition 4. Satisfaction of atoms is defined as	page=3 xpos=5 ypos=9 right-column full-justified font-larger aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	454	page=3 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Definition	follows:	page=4 xpos=0 ypos=0 left-column right-indent page-top headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	τ, α, g, σ |= X:Y :P iff	page=4 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space
+I-Equation	τ (α(Y )) ∈ σ(P ) and α(X) ! ∗∧ α(Y )	page=4 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	τ, α, g, σ |= ARG S (X, a) iff exists i ∈ S s.t.	page=4 xpos=0 ypos=0 left-column left-indent right-indent font-largest hanged-line tailchar-period
+I-Equation	α(X) · i ∈ D(τ ) and τ (α(X) · i) = g(a)	page=4 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	τ, α, g, σ |= ARG S (X, Y ) iff exists i ∈ S s.t.	page=4 xpos=0 ypos=1 left-column left-indent right-indent font-largest hanged-line shorter-tail tailchar-period
+I-Equation	α(X) · i ∈ D(τ ), α(X) · i = α(Y )	page=4 xpos=0 ypos=1 left-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	τ, α, g, σ |= X ! ∗ Y iff α(X) ! ∗ α(Y )	page=4 xpos=0 ypos=1 left-column left-indent right-indent font-largest hanged-line
+I-Equation	τ, α, g, σ |= X =/% = Y iff α(X) =/% = α(Y )	page=4 xpos=0 ypos=1 left-column left-indent right-indent font-largest aligned-line longer-tail
+I-Equation	τ, α, g, σ |= v 1 =/% = v 2 iff g(v 1 ) =/% = g(v 2 )	page=4 xpos=0 ypos=1 left-column left-indent right-indent font-largest aligned-line
+I-Equation	τ, α, g, σ |= P " Q iff σ(P ) ⊆ σ(Q)	page=4 xpos=0 ypos=1 left-column left-indent right-indent font-largest aligned-line shorter-tail above-line-space
+I-Definition	A 4-tuple τ, α, g, σ satisfies an RMRS ϕ (written	page=4 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Definition	τ, α, g, σ |= ϕ) iff it satisfies all of its elements.	page=4 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail tailchar-period
+B-Body	Notice that one RMRS may be satisfied by mul-	page=4 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tiple trees; we can take the RMRS to be a par-	page=4 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tial description of each of these trees. In partic-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ular, RMRS s may represent semantic scope ambi-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guities and/or missing information about seman-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic dependencies, lexical subcategorisation and	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	lexical senses. For j = {1, 2}, suppose that	page=4 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	τ <sub>j</sub> , α j , g j , σ |= ϕ. Then ϕ exhibits a semantic	page=4 xpos=0 ypos=3 left-column full-justified font-largest aligned-line
+I-Body	scope ambiguity if there are variables Y, Y ! ∈	page=4 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	NVar such that α <sub>1</sub> (Y ) ! ∗ α 1 (Y ! ) and α 2 (Y ! ) ! ∗	page=4 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-capital
+I-Body	α <sub>2</sub> (Y ). It exhibits missing information about se-	page=4 xpos=0 ypos=4 left-column full-justified font-larger aligned-line tailchar-hiphen
+I-Body	mantic dependencies if there are base-language	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	variables v, v ! ∈ BVar such that g 1 (v) = g 1 (v ! )	page=4 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	and g <sub>2</sub> (v) = % g 2 (v ! ). It exhibits missing lex-	page=4 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ical subcategorisation information if there is a	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	Y ∈ NVar such that τ 1 (α 1 (Y )) is a construc-	page=4 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	tor of a different type from τ <sub>2</sub> (α 2 (Y )) (i.e., the	page=4 xpos=0 ypos=5 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	constructors are of a different arity or they dif-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fer in whether their arguments are scopal vs. non-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scopal). And it exhibits missing lexical sense in-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation if τ <sub>1</sub> (α 1 (Y )) and τ 2 (α 2 (Y )) are differ-	page=4 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	ent base-language constructors, but of the same	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	type.	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Let’s look again at the RMRS (4). This is sat-	page=4 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	isfied by the trees in Fig. 1 (among others) to-	page=4 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	gether with some particular α, g, and σ. For in-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stance, consider the left-hand side tree in Fig. 1.	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The RMRS (4) satisfies this tree with an assign-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ment function α that maps the variables l <sub>1</sub> and a 1	page=4 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	to the root node, l <sub>41</sub> and l 42 to its second child	page=4 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	(labeled with “∧”), a <sub>41</sub> to the first child of that	page=4 xpos=0 ypos=8 left-column full-justified font-larger aligned-line
+I-Body	node (i.e. the node 21, labelled with “fat”) and	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	a <sub>42</sub> to the node 22, and so forth. g will map x 1	page=4 xpos=0 ypos=8 left-column full-justified font-larger aligned-line itemization headchar-lower
+I-Body	and x <sub>3</sub> to x, and x 6 and x 7 to y, and so on. And	page=4 xpos=0 ypos=8 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	σ will map each RMRS predicate symbol (which	page=4 xpos=0 ypos=8 left-column full-justified aligned-line
+I-Body	represents a word) to the set of its fully resolved	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	meanings, e.g. cat n to a set containing cat n 1	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+Figure	__Figure 2__	page=4 xpos=5 ypos=-1 right-column centered left-indent right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 2: Another tree which satisfies (6).	page=4 xpos=5 ypos=0 right-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+I-Body	and possibly others. It is then easy to verify	page=4 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	that every single atom in the RMRS is satisfied—	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	most interestingly, the EP s l <sub>41</sub> :a 41 : fat j(e ! ) and	page=4 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	l <sub>42</sub> :a 42 : cat n(x 3 ) are satisfied because α(l 41 ) ! ∗∧	page=4 xpos=5 ypos=1 right-column full-justified font-largest aligned-line itemization headchar-lower
+E-Body	α(a <sub>41</sub> ) and α(l 42 ) ! ∗∧ α(a 42 ).	page=4 xpos=5 ypos=2 right-column right-indent font-largest aligned-line shorter-tail tailchar-period
+B-Body	Truth, validity and entailment can now be de-	page=4 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	fined in terms of satisfiability in the usual way:	page=4 xpos=5 ypos=2 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Definition	Definition 5. truth: τ |= ϕ iff ∃α, g, σ such that	page=4 xpos=5 ypos=2 right-column full-justified font-largest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Definition	τ, α, g, σ |= ϕ	page=4 xpos=5 ypos=2 right-column left-indent right-indent font-largest indented-line shorter-tail above-line-space
+I-Definition	validity: |= ϕ iff ∀τ , τ |= ϕ.	page=4 xpos=5 ypos=3 right-column right-indent font-largest hanged-line longer-tail line-space headchar-lower tailchar-period above-line-space
+I-Definition	entailment: ϕ |= ϕ ! iff ∀τ , if τ |= ϕ then τ |= ϕ ! .	page=4 xpos=5 ypos=3 right-column full-justified font-largest aligned-line longer-tail line-space headchar-lower tailchar-period above-line-space
+B-SubsectionHeader	3.3 Solved Forms	page=4 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail line-space numbered-heading2 above-double-space above-line-space
+B-Body	One aspect in which our definition of RMRS is like	page=4 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	dominance constraints and unlike MRS is that any	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	satisfiable RMRS has an infinite number of mod-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els which only differ in the areas that the RMRS	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	didn’t “talk about”. Reading (6) as an MRS or as	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	an RMRS of the previous literature, this formula	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	is an instruction to build a semantic representa-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion out of the pieces for “every fat cat”, “some	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	dog”, and “chased”; a semantic representation as	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	in Fig. 2 would not be taken as described by this	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	RMRS . However, under the semantics we proposed	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	above, this tree is a correct model of (6) because	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	all atoms are still satisfied; the RMRS didn’t say	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	anything about “sleep” or “run”, but it couldn’t en-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	force that the tree shouldn’t contain those subfor-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mulas either.	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the context of robust semantic processing,	page=4 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	this is a desirable feature, because it means that	page=4 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	when we enrich an RMRS obtained from a shal-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	low processor with more semantic information—	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	such as the relation symbols introduced by syntac-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic constructions such as appositives, noun-noun	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	compounds and free adjuncts—we don’t change	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the set of models; we only restrict the set of mod-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els further and further towards the semantic rep-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resentation we are trying to reconstruct. Further-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	more, it has been shown in the literature that a	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	dominance-constraint style semantics for under-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	specified representations gives us more room to	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	455	page=4 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	manoeuvre when developing efficient solvers than	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+E-Body	an MRS -style semantics (Althaus et al., 2003).	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	However, enumerating an infinite number of	page=5 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	models is of course infeasible. For this reason,	page=5 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	we will now transfer the concept of solved forms	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	from dominance constraints to RMRS . An RMRS	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	in solved form is guaranteed to be satisfiable, and	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	thus each solved form represents an infinite class	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	of models. However, each satisfiable RMRS has	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	only a finite number of solved forms which parti-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion the space of possible models into classes such	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	that models within a class differ only in ‘irrele-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vant’ details. A solver can then enumerate the	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	solved forms rather than all models.	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Intuitively, an RMRS in solved form is fully	page=5 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	specified with respect to the predicate-argument	page=5 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	structure, all variable equalities and inequalities	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	and scope ambiguities have been resolved, and	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	only lexical sense ambiguities remain. This is	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	made precise below.	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Definition	Definition 6. An RMRS ϕ is in solved form iff:	page=5 xpos=0 ypos=3 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space headchar-capital tailchar-colon above-double-space above-line-space
+B-Listitem	1. every variable in ϕ is either a hole, a label or	page=5 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-double-space line-space itemization
+I-Listitem	an anchor (but not two of these);	page=5 xpos=0 ypos=4 left-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-semicolon above-double-space above-line-space
+B-Listitem	2. ϕ doesn’t contain equality, inequality, and	page=5 xpos=0 ypos=4 left-column left-indent hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	SPEC (") atoms;	page=5 xpos=0 ypos=4 left-column left-indent right-indent indented-line shorter-tail headchar-capital tailchar-semicolon above-double-space above-line-space
+B-Listitem	3. if ARG <sub>S</sub> (Y, i) is in ϕ, then |S| = 1;	page=5 xpos=0 ypos=4 left-column left-indent right-indent font-largest hanged-line longer-tail line-double-space line-space itemization tailchar-semicolon above-line-space
+B-Listitem	4. for any label Y and index set S, there are no	page=5 xpos=0 ypos=5 left-column left-indent aligned-line longer-tail line-space itemization
+I-Listitem	two atoms ARG <sub>S</sub> (Y, i) and ARG S (Y, i ! ) in ϕ;	page=5 xpos=0 ypos=5 left-column left-indent font-larger indented-line headchar-lower tailchar-semicolon above-double-space above-line-space
+B-Listitem	5. if Y is an anchor in some EP X:Y :P	page=5 xpos=0 ypos=5 left-column left-indent right-indent font-larger hanged-line line-double-space line-space itemization
+I-Listitem	and k is the maximum number such that	page=5 xpos=0 ypos=5 left-column left-indent indented-line headchar-lower
+I-Listitem	ARG {k} (X, i) is in ϕ for any i, then there is a	page=5 xpos=0 ypos=6 left-column left-indent font-largest aligned-line headchar-capital
+I-Listitem	constructor p ∈ σ(P ) whose arity is at least	page=5 xpos=0 ypos=6 left-column left-indent font-largest aligned-line headchar-lower
+I-Listitem	k;	page=5 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-semicolon above-double-space above-line-space
+B-Listitem	6. no label occurs on the right-hand side of two	page=5 xpos=0 ypos=6 left-column left-indent hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	different ! ∗ atoms.	page=5 xpos=0 ypos=6 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Because solved forms are so restricted, we can	page=5 xpos=0 ypos=7 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	‘read off’ at least one model from each solved	page=5 xpos=0 ypos=7 left-column full-justified hanged-line
+I-Body	form:	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Proposition	Proposition 1. Every RMRS in solved form is sat-	page=5 xpos=0 ypos=7 left-column full-justified font-larger aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Proposition	isfiable.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+I-Body	into holes is straightforward because no label is	page=5 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	dominated by more than one hole; and spaces	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	between the labels and anchors are filled with	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	conjunctions.	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We can now define the solved forms of an RMRS	page=5 xpos=5 ypos=0 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	ϕ; these finitely many RMRS s in solved form parti-	page=5 xpos=5 ypos=0 right-column full-justified hanged-line tailchar-hiphen
+I-Body	tion the space of models of ϕ into classes of mod-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	els with trivial differences.	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Definition	Definition 7. The syntactic dominance relation	page=5 xpos=5 ypos=1 right-column full-justified font-larger aligned-line longer-tail line-double-space line-space headchar-capital
+I-Definition	D(ϕ) in an RMRS ϕ is the reflexive, transitive clo-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Definition	sure of the binary relation	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Equation	{(X, Y ) | ϕ <sub>ARG</sub> contains <sub>S</sub> (X, Y X ) ! for ∗ Y some or S}	page=5 xpos=5 ypos=2 right-column centered left-indent right-indent font-largest indented-line longer-tail line-double-space line-space above-double-space above-line-space
+I-Definition	An RMRS ϕ ! is a solved form of the RMRS ϕ iff	page=5 xpos=5 ypos=2 right-column left-indent font-larger hanged-line longer-tail line-double-space line-space headchar-capital
+I-Definition	ϕ ! is in solved form and there is a substitution s	page=5 xpos=5 ypos=2 right-column full-justified font-larger hanged-line
+I-Definition	that maps the node and base variables of ϕ to the	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Definition	node and base variables of ϕ ! such that	page=5 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	1. ϕ ! contains the EP X ! :Y ! :P iff there are vari-	page=5 xpos=5 ypos=3 right-column left-indent font-larger indented-line longer-tail line-double-space line-space itemization tailchar-hiphen
+I-Listitem	ables X, Y such that X:Y :P is in ϕ, X ! =	page=5 xpos=5 ypos=3 right-column left-indent font-larger indented-line headchar-lower
+I-Listitem	s(X), and Y ! = s(Y );	page=5 xpos=5 ypos=3 right-column left-indent right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-semicolon above-double-space above-line-space
+B-Listitem	2. for every atom ARG <sub>S</sub> (X, i) in ϕ, there is	page=5 xpos=5 ypos=4 right-column left-indent font-larger hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	exactly one atom ARG <sub>S</sub> <sub>!</sub> (X ! , i ! ) in ϕ ! with	page=5 xpos=5 ypos=4 right-column left-indent font-largest indented-line headchar-lower
+I-Listitem	X ! = s(X), i ! = s(i), and S ! ⊆ S;	page=5 xpos=5 ypos=4 right-column left-indent right-indent font-largest aligned-line shorter-tail headchar-capital tailchar-semicolon above-line-space
+B-Listitem	3. D(ϕ ! ) ⊇ s(D(ϕ)).	page=5 xpos=5 ypos=4 right-column left-indent right-indent font-largest hanged-line shorter-tail line-space itemization tailchar-period above-line-space
+B-Proposition	Proposition 2. For every tuple (τ, α, g, σ) that	page=5 xpos=5 ypos=5 right-column full-justified font-larger hanged-line longer-tail line-space headchar-capital
+I-Proposition	satisfies some RMRS ϕ, there is a solved form ϕ !	page=5 xpos=5 ypos=5 right-column full-justified font-larger aligned-line headchar-lower
+I-Proposition	of ϕ such that (τ, α, g, σ) also satisfies ϕ ! .	page=5 xpos=5 ypos=5 right-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Proof. We construct the substitution s from α and	page=5 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	g. Then we add all dominance atoms that are satis-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fied by α and restrict the ARG atoms to those child	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	indices that are actually used in τ . The result is in	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	solved form because τ is a tree; it is a solved form	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	of ϕ by construction.	page=5 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Proposition	Proposition 3. Every RMRS ϕ has only a finite	page=5 xpos=5 ypos=7 right-column full-justified font-larger aligned-line longer-tail line-double-space line-space headchar-capital
+I-Proposition	number of solved forms, up to renaming of vari-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Proposition	ables.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Proof. Up to renaming of variables, there is only a	page=5 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	finite number of substitutions on the node and base	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	variables of ϕ. Let s be such a substitution. This	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower column-bottom
+B-Body	Proof (sketch; see also (Duchier and Niehren, 2000)). fixes the set of EP s of any solved form of ϕ that is	page=5 xpos=0 ypos=8 single-column full-justified column-top year headchar-capital column-bottom
+I-Body	For each EP , we choose to label the anchor with	page=5 xpos=0 ypos=8 left-column full-justified column-top headchar-capital
+I-Body	the constructor p of sufficiently high arity whose	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	existence we assumed; we determine the edges	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	between an anchor and its children from the	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	uniquely determined ARG atoms; plugging labels	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	based on s uniquely. There is only a finite set of	page=5 xpos=5 ypos=8 right-column full-justified column-top headchar-lower
+I-Body	choices for the subsets S ! in condition 2 of Def. 7,	page=5 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-lower tailchar-comma
+I-Body	and there is only a finite set of choices of new dom-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	inance atoms that satisfy condition 3. Therefore,	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	the set of solved forms of ϕ is finite.	page=5 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	456	page=5 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-Body	Let’s look at an example for all these defini-	page=6 xpos=0 ypos=0 left-column left-indent page-top headchar-capital tailchar-hiphen
+I-Body	tions. All the RMRS s presented in Section 2 (re-	page=6 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	placing = <sub>q</sub> by ! ∗ ) are in solved form; this is least	page=6 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	obvious for (6), but becomes clear once we notice	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	that no label is on the right-hand side of two dom-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	inance atoms. However, the model constructed in	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	the proof of Prop. 1 looks a bit like Fig. 2; both	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	models are problematic in several ways and in par-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ticular contain an unbound variable y even though	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	they also contains a quantifier that binds y. If we	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	restrict the class of models to those in which such	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	variables are bound (as Copestake et al. (2005)	page=6 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower
+I-Body	do), we can enforce that the quantifiers outscope	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	their bound variables without changing models of	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the RMRS further—i.e., we add the atoms h <sub>3</sub> ! ∗ l 5	page=6 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	and h <sub>8</sub> ! ∗ l 5 . Fig. 2 is no longer a model for the ex-	page=6 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	tended RMRS , which in turn is no longer in solved	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	form because the label l <sub>5</sub> is on the right-hand side	page=6 xpos=0 ypos=3 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	of two dominance atoms. Instead, it has the fol-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lowing two solved forms:	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	(7) l <sub>1</sub> :a 1 : every q 1(x 1 ),	page=6 xpos=0 ypos=3 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space itemization tailchar-comma
+I-Equation	RSTR(a <sub>1</sub> , h 2 ), BODY(a 1 , h 3 ),	page=6 xpos=0 ypos=3 left-column left-indent right-indent font-larger indented-line longer-tail headchar-capital tailchar-comma
+I-Equation	l <sub>41</sub> :a 41 : fat j 1(e ! ), ARG 1 (a 41 , x 1 ),	page=6 xpos=0 ypos=4 left-column left-indent right-indent font-larger hanged-line longer-tail itemization headchar-lower tailchar-comma
+I-Equation	l <sub>41</sub> :a 42 : cat n 1(x 1 ),	page=6 xpos=0 ypos=4 left-column left-indent right-indent font-larger aligned-line shorter-tail itemization headchar-lower tailchar-comma
+I-Equation	l <sub>6</sub> :a 6 : some q 1(x 6 ),	page=6 xpos=0 ypos=4 left-column left-indent right-indent font-larger aligned-line itemization headchar-lower tailchar-comma
+I-Equation	RSTR(a <sub>6</sub> , h 7 ), BODY(a 6 , h 8 ),	page=6 xpos=0 ypos=4 left-column left-indent right-indent font-larger indented-line longer-tail headchar-capital tailchar-comma
+I-Equation	l <sub>9</sub> :a 9 : dog n 1(x 6 ),	page=6 xpos=0 ypos=4 left-column left-indent right-indent font-larger hanged-line shorter-tail itemization headchar-lower tailchar-comma
+I-Equation	l <sub>5</sub> :a 5 : chase v 1(e),	page=6 xpos=0 ypos=4 left-column left-indent right-indent font-larger aligned-line itemization headchar-lower tailchar-comma
+I-Equation	ARG <sub>1</sub> (a 5 , x 1 ), ARG 2 (a 5 , x 6 ),	page=6 xpos=0 ypos=5 left-column left-indent right-indent font-larger indented-line longer-tail headchar-capital tailchar-comma
+I-Equation	h <sub>2</sub> ! ∗ l 41 , h 3 ! ∗ l 6 , h 7 ! ∗ l 9 , h 8 ! ∗ l 5	page=6 xpos=0 ypos=5 left-column left-indent right-indent font-largest hanged-line longer-tail itemization headchar-lower
+B-Equation	(8) l <sub>1</sub> :a 1 : every q 1(x 1 ),	page=6 xpos=0 ypos=5 left-column right-indent font-larger hanged-line shorter-tail itemization tailchar-comma
+I-Equation	RSTR(a <sub>1</sub> , h 2 ), BODY(a 1 , h 3 ),	page=6 xpos=0 ypos=5 left-column left-indent right-indent font-larger indented-line longer-tail headchar-capital tailchar-comma
+I-Equation	l <sub>41</sub> :a 41 : fat j 1(e ! ), ARG 1 (a 41 , x 1 ),	page=6 xpos=0 ypos=5 left-column left-indent right-indent font-larger hanged-line longer-tail itemization headchar-lower tailchar-comma
+I-Equation	l <sub>41</sub> :a 42 : cat n 1(x 1 ),	page=6 xpos=0 ypos=5 left-column left-indent right-indent font-larger aligned-line shorter-tail itemization headchar-lower tailchar-comma
+I-Equation	l <sub>6</sub> :a 6 : some q 1(x 6 ),	page=6 xpos=0 ypos=6 left-column left-indent right-indent font-larger aligned-line itemization headchar-lower tailchar-comma
+I-Equation	RSTR(a <sub>6</sub> , h 7 ), BODY(a 6 , h 8 ),	page=6 xpos=0 ypos=6 left-column left-indent right-indent font-larger indented-line longer-tail headchar-capital tailchar-comma
+I-Equation	l <sub>9</sub> :a 9 : dog n 1(x 6 ),	page=6 xpos=0 ypos=6 left-column left-indent right-indent font-larger hanged-line shorter-tail itemization headchar-lower tailchar-comma
+I-Equation	l <sub>5</sub> :a 5 : chase v 1(e),	page=6 xpos=0 ypos=6 left-column left-indent right-indent font-larger aligned-line itemization headchar-lower tailchar-comma
+I-Equation	ARG <sub>1</sub> (a 5 , x 1 ), ARG 2 (a 5 , x 6 ),	page=6 xpos=0 ypos=6 left-column left-indent right-indent font-larger indented-line longer-tail headchar-capital tailchar-comma
+I-Equation	h <sub>2</sub> ! ∗ l 41 , h 3 ! ∗ l 5 , h 7 ! ∗ l 9 , h 8 ! ∗ l 1	page=6 xpos=0 ypos=7 left-column left-indent right-indent font-largest hanged-line longer-tail itemization headchar-lower above-double-space above-line-space
+B-Body	Notice that we have eliminated all equalities by	page=6 xpos=0 ypos=7 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	unifying the variable names, and we have fixed the	page=6 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	relative scope of the two quantifiers. Each of these	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	solved forms now stands for a separate class of	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	models; for instance, the first model in Fig. 1 is	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	a model of (7), whereas the second is a model of	page=6 xpos=0 ypos=8 left-column full-justified aligned-line itemization headchar-lower
+E-Body	(8).	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.4 Extensions	page=6 xpos=0 ypos=8 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	So far we have based the syntax and semantics of	page=6 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	RMRS on the dominance relation from Egg et al.	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital tailchar-period column-bottom
+I-Body	(2001) rather than the qeq relation from Copestake	page=6 xpos=5 ypos=0 right-column full-justified column-top year
+I-Body	et al. (2005). This is partly because dominance is	page=6 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+I-Body	the weaker relation: If a dependency parser links a	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	determiner to a noun and this noun to a verb, then	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	we can use dominance but not qeq to represent that	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	the predicate introduced by the verb is outscoped	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	by the quantifier introduced by the determiner (see	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	earlier discussion). However, it is very straightfor-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ward to extend the syntax and semantics of the lan-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage to include the qeq relation. This extension	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	adds a new atom X = <sub>q</sub> Y to Def. 1, and τ, α, g, σ	page=6 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	will satisfy X = <sub>q</sub> Y iff α(X) ! ∗ α(Y ), each node	page=6 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	on the path is a quantifier, and each step in the path	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	goes to the rightmost child. All the above proposi-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions about solved forms still hold if “dominance”	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	is replaced with “qeq”.	page=6 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Furthermore, grammar developers such as those	page=6 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	in the DELPH - IN community typically adopt con-	page=6 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ventions that restrict them to a fragment of the lan-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage from Def. 1 (once qeq is added to it), or they	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	restrict attention to only a subset of the models	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	(e.g., ones with correctly bound variables, or ones	page=6 xpos=5 ypos=3 right-column full-justified aligned-line
+I-Body	which don’t contain extra material like Fig. 2).	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Our formalism provides a general framework into	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	which all these various fragments fit, and it’s a	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	matter of future work to explore these fragments	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	further.	page=6 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Another feature of the existing RMRS literature	page=6 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	is that each term of an RMRS is equipped with a	page=6 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	sort. In particular, individual variables x, event	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	variables e and holes h are arranged together with	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	their subsorts (e.g., e past ) and supersorts (e.g.,	page=6 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	sort i abstracts over x and e) into a sort hierar-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	chy S. For simplicity we defined RMRS without	page=6 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	sorts, but it is straightforward to add them. For	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	this, one assumes that the signature Σ is sorted, i.e.	page=6 xpos=5 ypos=6 right-column full-justified font-larger aligned-line headchar-lower tailchar-period
+I-Body	assigns a sort s <sub>1</sub> × . . . s n → s to each constructor,	page=6 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	where n is the constructor’s arity (possibly zero)	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	and s, s <sub>1</sub> , . . . , s n ∈ S are atomic sorts. We restrict	page=6 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	the models of RMRS to trees that are well-sorted in	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the usual sense, i.e. those in which we can infer a	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	sort for each subtree, and require that the variable	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	assignment functions likewise respect the sorts. If	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	we then modify Def. 6 such that the constructor p	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	of sufficiently high arity is also consistent with the	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	sorts of the known arguments—i.e., if p has sort	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	s <sub>1</sub> × . . . × s n → s and the RMRS contains an atom	page=6 xpos=5 ypos=8 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	ARG {k} (Y, i) and i is of sort s ! , then s ! is a sub-	page=6 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	sort of s <sub>k</sub> —all the above propositions about solved	page=6 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-lower
+E-Body	forms remain true.	page=6 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	457	page=6 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-SectionHeader	4 Future work	page=7 xpos=0 ypos=0 left-column right-indent font-largest page-top numbered-heading1 above-double-space above-line-space
+B-Body	The above definitions serve an important theoret-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ical purpose: they formally underpin the use of	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	RMRS in practical systems. Next to the peace of	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	mind that comes with the use of a well-understood	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	formalism, we hope that the work reported here	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	will serve as a starting point for future research.	page=7 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	One direction to pursue from this paper is the	page=7 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	development of efficient solvers for RMRS . As a	page=7 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	first step, it would be interesting to define a practi-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cally useful fragment of RMRS with polynomial-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	time satisfiability. Our definition is sufficiently	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	close to that of dominance constraints that we ex-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pect that it should be feasible to carry over the def-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	inition of normal dominance constraints (Althaus	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	et al., 2003) to RMRS ; neither the lexical ambigu-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ity of the node labels nor the separate specification	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	of predicates and arguments should make satisfia-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	bility harder.	page=7 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Furthermore, the above definition of RMRS pro-	page=7 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	vides new concepts which can help us phrase ques-	page=7 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tions of practical grammar engineering in well-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	defined formal terms. For instance, one crucial is-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sue in developing a hybrid system that combines	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	or compares the outputs of deep and shallow pro-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cessors is to determine whether the RMRS s pro-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	duced by the two systems are compatible. In the	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	new formal terms, we can characterise compati-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bility of a more detailed RMRS ϕ (perhaps from a	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	deep grammar) and a less detailed RMRS ϕ ! sim-	page=7 xpos=0 ypos=5 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	ply as entailment ϕ |= ϕ ! . If entailment holds,	page=7 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	this tells us that all claims that ϕ ! makes about the	page=7 xpos=0 ypos=5 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	semantic content of a sentence are consistent with	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	the claims that ϕ makes.	page=7 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	At this point, we cannot provide an efficient al-	page=7 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	gorithm for testing entailment of RMRS . However,	page=7 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	we propose the following novel syntactic charac-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	terisation as a starting point for research along	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	those lines. We call an RMRS ϕ ! an extension of	page=7 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	the RMRS ϕ if ϕ ! contains all the EP s of ϕ and	page=7 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower
+E-Body	D(ϕ ! ) ⊇ D(ϕ).	page=7 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail headchar-capital tailchar-period
+B-Proposition	Proposition 4. Let ϕ, ϕ ! be two RMRS s. Then	page=7 xpos=0 ypos=7 left-column full-justified font-larger aligned-line longer-tail headchar-capital
+I-Proposition	ϕ |= ϕ ! iff for every solved form S of ϕ, there is a	page=7 xpos=0 ypos=7 left-column full-justified font-largest aligned-line
+I-Proposition	solved form S ! of ϕ ! such that S is an extension of	page=7 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower
+I-Proposition	S ! .	page=7 xpos=0 ypos=8 left-column right-indent font-larger aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Body	Proof (sketch). “⇐” follows from Props. 1 and 2.	page=7 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Body	“⇒”: We construct a solved form for ϕ ! by	page=7 xpos=0 ypos=8 left-column left-indent font-larger indented-line
+I-Body	choosing a solved form for ϕ and appropriate sub-	page=7 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	stitutions for mapping the variables of ϕ and ϕ !	page=7 xpos=0 ypos=8 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	onto each other, and removing all atoms using	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	variables that don’t occur in ϕ ! . The hard part	page=7 xpos=5 ypos=0 right-column full-justified font-larger column-top headchar-lower
+I-Body	is the proof that the result is a solved form of ϕ ! ;	page=7 xpos=5 ypos=0 right-column full-justified font-larger aligned-line headchar-lower tailchar-semicolon
+I-Body	this step involves proving that if ϕ |= ϕ ! with the	page=7 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	same variable assignments, then all EP s in ϕ ! also	page=7 xpos=5 ypos=0 right-column full-justified font-larger aligned-line headchar-lower
+E-Body	occur in ϕ.	page=7 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusion	page=7 xpos=5 ypos=1 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper, we motivated and defined RMRS —a	page=7 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	semantic framework that has been used to repre-	page=7 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sent, compare, and combine semantic information	page=7 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	computed from deep and shallow parsers. RMRS	page=7 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	is designed to be maximally flexible on the type	page=7 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	of semantic information that can be left under-	page=7 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	specified, so that the semantic output of a shallow	page=7 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	parser needn’t over-determine or under-determine	page=7 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the semantics that can be extracted from the shal-	page=7 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	low syntactic analysis. Our key contribution was	page=7 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	to lay the formal foundations for a formalism that	page=7 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	is emerging as a standard in robust semantic pro-	page=7 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cessing.	page=7 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Although we have not directly provided new	page=7 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	tools for modelling or processing language, we	page=7 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	believe that a cleanly defined model theory for	page=7 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	RMRS is a crucial prerequisite for the future de-	page=7 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	velopment of such tools; this strategy was highly	page=7 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	successful for dominance constraints (Althaus et	page=7 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	al., 2003). We hope that future research will build	page=7 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	upon this paper to develop efficient algorithms and	page=7 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	implementations for solving RMRS s, performing	page=7 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	inferences that enrich RMRS s from shallow analy-	page=7 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ses with deeper information, and checking consis-	page=7 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tency of RMRS s that were obtained from different	page=7 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	parsers.	page=7 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Acknowledgement	Acknowledgments. We thank Ann Copestake,	page=7 xpos=5 ypos=6 right-column full-justified font-larger aligned-line longer-tail line-double-space line-space string-acknowledgement headchar-capital tailchar-comma
+I-Acknowledgement	Dan Flickinger, and Stefan Thater for extremely	page=7 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Acknowledgement	fruitful discussions and the reviewers for their	page=7 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Acknowledgement	comments. The work of Alexander Koller was	page=7 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Acknowledgement	funded by a DFG Research Fellowship and the	page=7 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Acknowledgement	Cluster of Excellence “Multimodal Computing	page=7 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+E-Acknowledgement	and Interaction”.	page=7 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=5 ypos=7 right-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	S. Abney. 1996. Partial parsing via finite-state cas-	page=7 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	cades. In John Carroll, editor, Workshop on Robust	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Parsing (ESSLLI-96), pages 8–15, Prague.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	E. Althaus, D. Duchier, A. Koller, K. Mehlhorn,	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	J. Niehren, and S. Thiel. 2003. An efficient graph	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	algorithm for dominance constraints. J. Algorithms,	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	48:194–219.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	458	page=7 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-Reference	J. Bos, S. Clark, M. Steedman, J. Curran, and J. Hock-	page=8 xpos=0 ypos=0 left-column full-justified font-smallest page-top headchar-capital tailchar-hiphen
+I-Reference	enmaier. 2004. Wide coverage semantic representa-	page=8 xpos=0 ypos=0 left-column left-indent font-smallest indented-line year headchar-lower tailchar-hiphen
+I-Reference	tions from a CCG parser. In Proceedings of the Inter-	page=8 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	national Conference on Computational Linguistics	page=8 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	(COLING 2004), Geneva, Switzerland.	page=8 xpos=0 ypos=0 left-column left-indent right-indent font-smallest aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Reference	E.J. Briscoe, J. Carroll, and R. Watson. 2006. The	page=8 xpos=0 ypos=0 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	second release of the rasp system. In Proceedings	page=8 xpos=0 ypos=0 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of the COLING/ACL 2006 Interaction Presentation	page=8 xpos=0 ypos=1 left-column left-indent font-smallest aligned-line year headchar-lower
+I-Reference	Sessions, Sydney, Australia.	page=8 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	M. Butt, T. Holloway King, M. Niño, and F. Segond.	page=8 xpos=0 ypos=1 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	1999. A Grammar Writer’s Cookbook. CSLI Publi-	page=8 xpos=0 ypos=1 left-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	cations.	page=8 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	S. Clark, M. Steedman, and J. Curran. 2004. Object	page=8 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	extraction and question parsing using CCG. In Pro-	page=8 xpos=0 ypos=2 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ceedings from the Conference on Empirical Methods	page=8 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	in Natural Language Processing (EMNLP), pages	page=8 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	111–118, Barcelona.	page=8 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	A. Copestake and D. Flickinger. 2000. An open-	page=8 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	source grammar development environment and en-	page=8 xpos=0 ypos=3 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	glish grammar using HPSG . In Proceedings of	page=8 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	the Second Conference on Language Resources and	page=8 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Evaluation ( LREC 2000), pages 591–600, Athens.	page=8 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	A. Copestake, D. Flickinger, I. Sag, and C. Pollard.	page=8 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2005. Minimal recursion semantics: An introduc-	page=8 xpos=0 ypos=3 left-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	tion. Research on Language and Computation, 3(2–	page=8 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	3):281–332.	page=8 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	A. Copestake. 2003. Report on the design of RMRS.	page=8 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Technical Report EU Deliverable for Project num-	page=8 xpos=0 ypos=4 left-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	ber IST-2001-37836, WP1a, Computer Laboratory,	page=8 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line year headchar-lower tailchar-comma
+I-Reference	University of Cambridge.	page=8 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	A. Copestake. 2007a. Applying robust semantics.	page=8 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	In Proceedings of the 10th Conference of the Pa-	page=8 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	cific Assocation for Computational Linguistics (PA-	page=8 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	CLING), pages 1–12, Melbourne. Invited talk.	page=8 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	A. Copestake. 2007b. Semantic composition with	page=8 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	(robust) minimal recursion semantics. In ACL-07	page=8 xpos=0 ypos=5 left-column left-indent font-smallest indented-line
+I-Reference	workshop on Deep Linguistic Processing, pages 73–	page=8 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	80, Prague.	page=8 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	D. Duchier and J. Niehren. 2000. Dominance con-	page=8 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	straints with set operators. In In Proceedings of the	page=8 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	First International Conference on Computational	page=8 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Logic (CL2000), LNCS, pages 326–341. Springer.	page=8 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	M. Egg, A. Koller, and J. Niehren. 2001. The con-	page=8 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	straint language for lambda structures. Journal of	page=8 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Logic, Language, and Information, 10:457–485.	page=8 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	A. Frank. 2004. Constraint-based RMRS construc-	page=8 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tion from shallow grammars. In Proceedings of the	page=8 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	International Conference in Computational Linguis-	page=8 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	tics (COLING 2004), Geneva, Switzerland.	page=8 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	L. Zettlemoyer and M. Collins. 2007. Online learn-	page=8 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ing of relaxed CCG grammars for parsing to log-	page=8 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ical form. In Proceedings of the 2007 Joint Con-	page=8 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line year headchar-lower tailchar-hiphen
+I-Reference	ference on Empirical Methods in Natural Language	page=8 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Processing and Computational Natural Language	page=8 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Learning (EMNLP-CoNLL), pages 678–687.	page=8 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	459	page=8 xpos=9 ypos=9 single-column left-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only

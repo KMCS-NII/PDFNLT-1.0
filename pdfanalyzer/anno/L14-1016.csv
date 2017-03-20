@@ -1,0 +1,336 @@
+Title	Bilingual Dictionary Construction with Transliteration Filtering	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-double-space above-line-space
+Author	John Richardson † , Toshiaki Nakazawa ‡ , Sadao Kurohashi †	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space symbol-dagger symbol-dagger headchar-capital above-double-space above-line-space
+B-Affiliation	† Graduate School of Informatics, Kyoto University, Kyoto 606-8501, Japan	page=0 xpos=1 ypos=0 single-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space symbol-dagger
+I-Affiliation	‡ Japan Science and Technology Agency, Chiyoda-ku, Tokyo 102-8666, Japan	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest hanged-line symbol-dagger
+Email	john@nlp.ist.i.kyoto-u.ac.jp, nakazawa@pa.jst.jp, kuro@i.kyoto-u.ac.jp	page=0 xpos=1 ypos=1 single-column centered left-indent right-indent indented-line shorter-tail symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=4 ypos=1 single-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-abstract headchar-capital above-line-space
+B-Abstract	In this paper we present a bilingual transliteration lexicon of 170K Japanese-English technical terms in the scientiﬁc	page=0 xpos=0 ypos=1 single-column full-justified font-smallest hanged-line longer-tail line-space headchar-capital
+I-Abstract	domain. Translation pairs are extracted by ﬁltering a large list of transliteration candidates generated automatically	page=0 xpos=0 ypos=1 single-column full-justified font-smallest aligned-line headchar-lower
+I-Abstract	from a phrase table trained on parallel corpora. Filtering uses a novel transliteration similarity measure based on a	page=0 xpos=0 ypos=1 single-column full-justified font-smallest aligned-line headchar-lower
+I-Abstract	discriminative phrase-based machine translation approach. We demonstrate that the extracted dictionary is accurate and	page=0 xpos=0 ypos=2 single-column full-justified font-smallest aligned-line headchar-lower
+I-Abstract	of high recall (F <sub>1</sub> -score 0.8). Our lexicon contains not only single words but also multi-word expressions, and is freely	page=0 xpos=0 ypos=2 single-column full-justified font-smaller aligned-line headchar-lower
+I-Abstract	available. Our experiments focus on Katakana-English lexicon construction, however it would be possible to apply the	page=0 xpos=0 ypos=2 single-column full-justified font-smallest aligned-line headchar-lower
+I-Abstract	proposed methods to transliteration extraction for a variety of language pairs.	page=0 xpos=0 ypos=2 single-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Abstract	Keywords: transliteration, lexicon, Katakana	page=0 xpos=0 ypos=2 left-column right-indent font-smallest column-top line-blank-line line-double-space line-space string-keyword headchar-capital above-blank-line above-double-space above-line-space
+B-SectionHeader	1. Introduction	page=0 xpos=1 ypos=3 left-column centered left-indent right-indent font-largest indented-line shorter-tail line-blank-line line-double-space line-space itemization above-double-space above-line-space
+B-Body	A large lexicon of technical terms is important for	page=0 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	many natural language processing applications, partic-	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ularly machine translation. The aim of this research	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	is to generate a large Japanese-English dictionary for	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	the scientiﬁc domain.	page=0 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The great majority of technical terms in Japanese are	page=0 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	transliterations of English words. It is therefore an in-	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	teresting option to consider designing a system specif-	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ically for transliteration extraction, as this allows us	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	to improve the accuracy greatly by making use of	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	a transliteration model, while sacriﬁcing only mini-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	mal coverage. Although we concentrate on Japanese-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	English in this paper, our model could easily be ex-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tended to generate dictionaries for other languages	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	that contain many transliterations, such as Arabic, Ko-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	rean and Russian.	page=0 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Transliterations in the Japanese language are written	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	with a special writing system (‘Katakana’) used pri-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	marily for transliterations, and this makes it relatively	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	simple to ﬁnd likely transliterations. There can be a	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	number of spelling variations for the same transliter-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ation. For example both konpyuuta コンピュータ and	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	konpyuutaa コンピューター are valid transliterations of	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	‘computer’. There is however often a preferred spelling.	page=0 xpos=0 ypos=7 left-column full-justified aligned-line tailchar-period above-line-space
+I-Body	Our method is to use a discriminative extension to	page=0 xpos=0 ypos=7 left-column full-justified aligned-line line-space headchar-capital
+I-Body	phrase-based statistical machine translation (PBSMT)	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	to ﬁlter a list of transliteration candidates. This model	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	is able to score transliterations with high accuracy.	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The candidates to be ﬁltered are generated automat-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ically by using a standard PBSMT system to extract	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	phrase pairs from a parallel corpus.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	It can be observed that alignment accuracy is relatively	page=0 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	high for transliterations compared to other words, as	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	a result of their rarity and relatively low ambiguity.	page=0 xpos=0 ypos=8 left-column full-justified aligned-line itemization headchar-lower tailchar-period
+I-Body	We believe therefore that the use of a phrase table is a	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	good choice for a source of high quality transliteration	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	candidates. Another motivation for the use of phrase-	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+Figure	__Figure 1__	page=0 xpos=5 ypos=3 right-column centered left-indent right-indent box column-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: Example of Katakana–English translitera-	page=0 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-hiphen
+E-Caption	tion phrase alignment.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	based SMT is that it is possible to consider multi-word	page=0 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+E-Body	expressions.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2. Transliteration Model	page=0 xpos=6 ypos=5 right-column centered left-indent right-indent font-largest indented-line longer-tail line-double-space line-space itemization above-line-space
+B-Body	We begin by constructing a transliteration model that	page=0 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Body	can be used to score candidate transliteration pairs. A	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	standard PBSMT decoder is designed to ﬁnd the best	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	translation of an input sentence, however we require a	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	discriminative model to measure the likelihood that a	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	candidate translation pair is correct. We therefore de-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sign a discriminative ﬁlter that can make use of phrase	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	translation probabilities.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The model learns probabilities P (f | e) of obtaining	page=0 xpos=5 ypos=7 right-column full-justified font-largest aligned-line longer-tail headchar-capital
+I-Body	the character sequence f = f <sub>1</sub> , ..., f m by transliter-	page=0 xpos=5 ypos=7 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	ating the sequence e = e <sub>1</sub> , ..., e n . We wish to learn	page=0 xpos=5 ypos=7 right-column full-justified font-larger aligned-line headchar-lower
+E-Body	probabilities such as those shown in Table 1.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The probabilities are learned from a set of translitera-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tion pairs using a grapheme-based machine translation	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	model. We model transliteration as a phrase-based	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	machine translation task on a character rather than	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	word level, treating character groups as phrases. The	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	model is trained by learning phrase alignments such	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	as that shown in Figure 1 from a training corpus (for	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	details see Section 4.1.).	page=0 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The ﬁeld of phrase-based SMT has been well studied	page=0 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	1013	page=0 xpos=4 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 1__	page=1 xpos=0 ypos=-1 left-column centered left-indent right-indent box page-top table-area above-blank-line above-double-space above-line-space
+B-Caption	Table 1: Examples of transliteration probabilities from	page=1 xpos=0 ypos=1 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital
+E-Caption	PBSMT model.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+I-Body	and there exists a standard toolset enabling the con-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	struction of such a model. Character alignment was	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	performed by GIZA++ (Och and Ney, 2003) with the	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Body	‘grow-diag-ﬁnal’ heuristic for training. We used the de-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line tailchar-hiphen
+I-Body	fault conﬁguration of the Moses (Koehn et al., 2007)	page=1 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower
+I-Body	tuning pipeline with the distortion limit set to 1 (as	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	transliteration requires monotonic alignment) to gen-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erate a phrase table for transliteration. The phrase	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	translation probabilities could then be extracted di-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	rectly from the phrase table.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.1. Scoring Metric	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail line-double-space line-space above-line-space
+B-Body	In order to measure the likelihood that an input word	page=1 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	pair is a correct transliteration, we deﬁne a translit-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eration likelihood score. This score makes use of the	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	probabilities (such as in Table 1) of a Japanese charac-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ter sequence f given some English character sequence	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	e, which we denote as P (f | e).	page=1 xpos=0 ypos=5 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The score of a candidate pair is calculated by con-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Body	sidering each possible segmentation of the English	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	and Japanese words s and t into n character groups	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	s <sub>1</sub> , ..., s n and t 1 , ..., t n , then calculating the product	page=1 xpos=0 ypos=5 left-column full-justified font-larger aligned-line itemization headchar-lower
+I-Body	<sup>of</sup> <sup>the</sup> <sup>translation</sup> <sup>probabilities</sup> ∏ of each corresponding	page=1 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-super
+I-Body	character sequence, i.e. <sup>n</sup> <sub>i=1</sub> P (t i | s i ). It is neces-	page=1 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	sary to ﬁnd the optimal segmentation a (containing	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	|a| character groups), giving the ﬁnal score as:	page=1 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail tailchar-colon above-double-space above-line-space
+B-Equation	∏ <sup>|a|</sup>	page=1 xpos=1 ypos=6 left-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space
+I-Equation	max P (t <sub>a,i</sub> | s a,i ) (1)	page=1 xpos=1 ypos=6 left-column left-indent font-largest hanged-line longer-tail headchar-lower
+I-Equation	a	page=1 xpos=1 ypos=7 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower
+I-Equation	i=1	page=1 xpos=1 ypos=7 left-column left-indent right-indent font-smallest indented-line longer-tail headchar-lower above-double-space above-line-space
+B-Body	In contrast to HMM-based models, we do not consider	page=1 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	the transition probability P (s <sub>i</sub> | s i−1 ) as it is given that	page=1 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the candidates are actual words (they were extracted	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	from a bilingual corpus). That is to say we make the	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	assumption that P (t <sub>i</sub> | s i ) does not depend on s i−1	page=1 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	or t <sub>i−1</sub> , which in practice is true if the segments are	page=1 xpos=0 ypos=8 left-column full-justified font-larger aligned-line headchar-lower
+E-Body	suﬃciently long.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Naturally the set of all possible segment pairs is very	page=1 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	large, and therefore some of the longer and rarer char-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	acter sequences do not appear in the training data.	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	These segment pairs will yield zero transliteration	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	probabilities. This issue is unavoidable, however it is	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	not such a serious problem as the model considers the	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	combination of shorter character groups. This achieves	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	an eﬀect similar to backoﬀ and interpolation smooth-	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+E-Body	ing methods used in language modeling.	page=1 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2. Finding an Optimal Segmentation	page=1 xpos=5 ypos=0 right-column right-indent aligned-line longer-tail line-double-space line-space above-double-space above-line-space
+B-Body	In Equation 1 we require the evaluation of every pos-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	sible segmentation. It is however impractical to use	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	brute-force search for long candidates, as the number	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	of possible segmentations is of the order O(4 <sup>n</sup> ) for a	page=1 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower
+E-Body	candidate pair of length (m, n) (m > n).	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	To improve the eﬃciency of score computation, we de-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	signed a k-best greedy segmentation algorithm. Begin-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ning with the entire words e and f , we ﬁnd the k-best	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	preﬁx segment pairs (e <sub>1,1</sub> , f 1,1 ), ..., (e 1,k , f 1,k ). The re-	page=1 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	mainder of the words are then split in a similar way	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	by ﬁnding the k-best preﬁx segments. This is repeated	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	until the candidate pair has been fully segmented. See	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	Figure 2 for an illustration of this algorithm.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail string-figure headchar-capital tailchar-period above-line-space
+B-Body	The complexity of the segmentation problem can now	page=1 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	be reduced to O(k <sup>n</sup> ) by considering the k-best preﬁxes	page=1 xpos=5 ypos=2 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	at each step or O(kn) by keeping a global k-best list.	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	While this is an approximate algorithm, it will always	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	give a lower bound, which is suitable for ﬁltering out	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	unlikely candidates. This bound can be improved by	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	using larger k.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In a practical implementation we can further in-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	crease the speed by using the cutoﬀ C that	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	will later be used for ﬁltering the candidates.	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Since it is always the case that score(t <sub>1</sub> , ..., t i |	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-capital
+I-Body	s <sub>1</sub> , ..., s i ) ≥ score(t 1 , ..., t i , t i+1 |s 1 , ..., s i , s i+1 ) (since	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	P (t <sub>i+1</sub> |s i+1 ) ≤ 1), we can skip any partial segmen-	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	tations with scores ≤ C. This works comfortably for	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	words of practical length (under ~40 characters).	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	3. Filtering	page=1 xpos=6 ypos=5 right-column centered left-indent right-indent font-largest indented-line shorter-tail line-blank-line line-double-space line-space itemization above-double-space above-line-space
+B-Body	We now introduce our ﬁltering process. We ﬁrst gen-	page=1 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	erate a large list of candidate translation pairs, then	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	ﬁlter these candidates with the transliteration likeli-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line tailchar-hiphen
+E-Body	hood score deﬁned in Section 2.1..	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The candidates are generated automatically by using	page=1 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	the standard PBSMT pipeline to align and extract	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	translation phrase pairs from a large parallel corpus.	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We consider only the phrase pairs containing translit-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	erations in the Japanese side by removing entries that	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	contain non-Katakana characters. Examples of ex-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tracted candidates are shown in Table 2. A beneﬁt of	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	using phrase-based SMT is that we are able to consider	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	multi-word expressions and not only single words.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Finally, the dictionary is created by ﬁltering the can-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	didates by score. We take C = 0.1 as the cutoﬀ, in-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cluding all candidates scoring higher than this thresh-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	old. For any given word we keep all possible trans-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lations that score higher than the cutoﬀ in order to	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	include all valid spelling variations. This is important	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	for Japanese, where there can be a number of such	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	variations appearing in unedited texts, such as on the	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	web. The value 0.1 was chosen to ensure a very high	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	precision, however this could be reduced if such a clean	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	dictionary is not required. The ease of selecting the re-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	quired precision/recall is a beneﬁt of this approach.	page=1 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	1014	page=1 xpos=4 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Figure	__Figure 2__	page=2 xpos=0 ypos=-4 single-column left-indent right-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 2: k-best greedy segmentation algorithm.	page=2 xpos=2 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-period above-double-space above-line-space
+Table	__Table 2__	page=2 xpos=0 ypos=0 single-column centered left-indent right-indent box hanged-line longer-tail line-double-space line-space table-area above-blank-line above-double-space above-line-space
+B-Caption	Table 2: Example candidate transliterations from phrase table.	page=2 xpos=2 ypos=2 single-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-table headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-SectionHeader	4. Dictionary Construction	page=2 xpos=0 ypos=3 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space itemization above-double-space above-line-space
+B-Body	The aim of this research is to provide a method of	page=2 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	generating a large bilingual lexicon that is simple to	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	implement. We constructed such a lexicon, a dictio-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nary of Katakana-English scientiﬁc terminology, in or-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	der to evaluate the proposed method. The dictionary	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	was evaluated based on its coverage and accuracy of	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	entries.	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	4.1. Data Sets	page=2 xpos=0 ypos=5 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space above-double-space above-line-space
+B-Body	The data used to train the transliteration model in Sec-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tion 2. consisted of Katakana-English dictionary en-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tries and aligned pairs of Japanese-English Wikipedia	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	article titles (69K entries in total).	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The phrase candidates for ﬁltering were extracted from	page=2 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	a large parallel corpus of research paper title pairs pro-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	vided by the Japan Science and Technology Agency.	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The corpus contained 24M parallel title pairs, gen-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	erating 7M Katakana-English phrase candidates after	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	removing entries that contained non-Katakana char-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	acters.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	4.2. Results and Evaluation	page=2 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space above-double-space above-line-space
+B-Body	Using the parallel corpus above to generate candidates,	page=2 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	we were able to build a dictionary containing 170K	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	entries. The extracted dictionary can be obtained for	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	free <sup>1</sup> . Some examples of extracted terms can be seen	page=2 xpos=5 ypos=3 right-column full-justified font-largest column-top headchar-lower
+E-Body	in Table 3.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In order to evaluate the quality and coverage of our dic-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tionary, we created a test set of candidate word pairs.	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We selected 1000 candidates generated from the pa-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	per abstracts corpus at random and tagged them as	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	‘translation’ or ‘not-translation’ by hand. The extrac-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line tailchar-hiphen
+I-Body	tion algorithm used to generate the full dictionary was	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	run on this test set and the extracted lexicon tested	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	against the reference labels.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The system achieved a precision of 1.000 and recall	page=2 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	of 0.667 (F <sub>1</sub> -score 0.8) using the cutoﬀ C = 0.1. By	page=2 xpos=5 ypos=5 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	changing the value of C it would be possible if required	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	to increase the recall by sacriﬁcing some precision. The	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	highest F <sub>1</sub> -score was around 0.85 with C ≈ 0.005. See	page=2 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	Figure 3 for the precision-recall curve.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail string-figure headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	5. Related Work	page=2 xpos=6 ypos=6 right-column centered left-indent right-indent font-largest indented-line line-double-space line-space itemization above-line-space
+B-Body	The automatic construction of bilingual lexicons has	page=2 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Body	been one of the most studied areas in the ﬁeld of Nat-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ural Language Processing in recent years, especially	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	with the hope of harnessing the vast sum of data avail-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	able on the web. A variety of approaches have been	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	proposed, most of which focus on the extraction of	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	generic lexicons, however in this paper we focus on	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> http://orchid.kuee.kyoto-u.ac.jp/	page=2 xpos=5 ypos=8 right-column left-indent right-indent font-larger indented-line shorter-tail line-double-space line-space headchar-super
+I-Footnote	~john/ﬁles/lrec2014.tar.bz2	page=2 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail year column-bottom above-blank-line above-double-space above-line-space
+Page	1015	page=2 xpos=4 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 3__	page=3 xpos=0 ypos=-2 single-column centered left-indent right-indent box page-top table-area above-blank-line above-double-space above-line-space
+B-Caption	Table 3: Example entries from extracted lexicon.	page=3 xpos=2 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-table headchar-capital tailchar-period above-double-space above-line-space
+Figure	__Figure 3__	page=3 xpos=1 ypos=0 single-column left-indent right-indent box hanged-line longer-tail line-double-space line-space figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 3: Precision-recall curve for various thresholds (C).	page=3 xpos=2 ypos=4 single-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	the subtask of transliteration extraction.	page=3 xpos=0 ypos=5 left-column right-indent column-top line-blank-line line-double-space line-space headchar-lower tailchar-period above-double-space above-line-space
+B-Body	There has been much work on the task of transliter-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ation generation, i.e. predicting the correct translit-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eration of some given input word. This research be-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gan with the introduction of Machine Transliteration	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	(Knight and Graehl, 1998), which has progressed to	page=3 xpos=0 ypos=6 left-column full-justified aligned-line year
+I-Body	consider a variety of methods ranging from simple edit	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	distance and noisy-channel models (Brill et al., 2001)	page=3 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Body	to conditional random ﬁelds (Ganesh et al., 2008) and	page=3 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+E-Body	ﬁnite state automata (Noeman and Madkour, 2010).	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Body	The PBSMT-based transliteration system described in	page=3 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	Section 2. was implemented as speciﬁed in previous	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	work on transliteration extraction such as Richardson	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	et al. (2013) (Japanese and Korean), Matthews (2007)	page=3 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	(Chinese and Arabic), and Antony et al. (2010) (Kan-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line year tailchar-hiphen
+E-Body	nada).	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The task of identifying and extracting correct translit-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	eration pairs however is less explored. This classiﬁca-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion problem is the key to using ﬁltering for bilingual	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	lexicon extraction, and we have proposed a novel ap-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	proach to score transliteration candidates.	page=3 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-SectionHeader	6. Conclusion and Future Work	page=3 xpos=5 ypos=5 right-column centered left-indent right-indent font-largest column-top itemization above-double-space above-line-space
+B-Body	In this paper we have introduced an approach to ex-	page=3 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tracting a large dictionary of Japanese-English techni-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cal terms using a transliteration-based approach. The	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	core of our method is a discriminative transliteration	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	model based on the framework of statistical machine	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	translation.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Analysis of our extraction lexicon show that	page=3 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	transliteration-based ﬁltering is able to generate re-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sources with high precision and recall. It is possible to	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	extract not only single words, as is the case in many	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	previous studies, but also multi-word expressions. An	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	additional beneﬁt of our approach is that is it simple	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	to adjust the required precision/recall ratio by setting	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	the cutoﬀ.	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In the future we would like to extend our system to	page=3 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	extract dictionaries for other language pairs, such as	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	Chinese-English, using a similar transliteration model.	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	The identiﬁcation of transliterations is non-trivial for	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	some languages, so this is a further consideration to be	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	made in future work. It is also important to consider	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	1016	page=3 xpos=4 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	how to generate as large a candidate list as possible,	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-comma
+I-Body	ideally from non-parallel data, as this is the main fac-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tor in determining the size of the extracted dictionary.	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgments	page=4 xpos=2 ypos=0 left-column centered left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space string-acknowledgement headchar-capital above-line-space
+B-Acknowledgement	We would like to thank the Japan Science and Tech-	page=4 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Acknowledgement	nology Agency for the use of their bilingual research	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	paper title pairs corpus. The ﬁrst author is supported	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	by a Japanese Government (MEXT) research scholar-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Acknowledgement	ship. Thank you also to the anonymous reviewers for	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Acknowledgement	their useful feedback.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	7. References	page=4 xpos=2 ypos=1 left-column centered left-indent right-indent font-largest indented-line longer-tail line-double-space line-space string-reference itemization above-line-space
+B-Reference	P.J. Antony, V.P. Ajith, and K.P. Soman 2010. Sta-	page=4 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	tistical Method for English to Kannada Translitera-	page=4 xpos=0 ypos=2 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	tion. BAIP 2010, CCIS 70, pp. 356–362.	page=4 xpos=0 ypos=2 left-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Reference	Eric Brill, Gary Kacmarcik and Chris Brockett. 2001.	page=4 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Automatically Harvesting Katakana-English Term	page=4 xpos=0 ypos=2 left-column left-indent indented-line headchar-capital
+I-Reference	Pairs from Search Engine Query Logs In Proceed-	page=4 xpos=0 ypos=2 left-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	ings of the Sixth Natural Language Processing Pa-	page=4 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ciﬁc Rim Symposium, 2001.	page=4 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Reference	Surya Ganesh, Sree Harsha, Prasad Pingali, Vasudeva	page=4 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail headchar-capital
+I-Reference	Varma. 2008. Statistical Transliteration for Cross	page=4 xpos=0 ypos=3 left-column left-indent indented-line year headchar-capital
+I-Reference	Language Information Retrieval using HMM align-	page=4 xpos=0 ypos=3 left-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	ment model and CRF. In 2nd International Work-	page=4 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	shop on Cross Language Information Access, IJC-	page=4 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	NLP 2008.	page=4 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	Philipp Koehn, Hieu Hoang, Alexandra Birch, Chris	page=4 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail headchar-capital
+I-Reference	Callison-Burch, Marcello Federico, Nicola Bertoldi,	page=4 xpos=0 ypos=4 left-column left-indent indented-line headchar-capital tailchar-comma
+I-Reference	Brooke Cowan, Wade Shen, Christine Moran,	page=4 xpos=0 ypos=4 left-column left-indent aligned-line headchar-capital tailchar-comma
+I-Reference	Richard Zens, Chris Dyer, Ondrej Bojar, Alexandra	page=4 xpos=0 ypos=4 left-column left-indent aligned-line headchar-capital
+I-Reference	Constantin and Evan Herbst 2007. Moses: Open	page=4 xpos=0 ypos=4 left-column left-indent aligned-line year headchar-capital
+I-Reference	Source Toolkit for Statistical Machine Translation.	page=4 xpos=0 ypos=5 left-column left-indent aligned-line headchar-capital tailchar-period
+I-Reference	In ACL 2007.	page=4 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	Kevin Knight and Jonathan Graehl. 1998. Machine	page=4 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	Transliteration. Computational Linguistics, 24.	page=4 xpos=0 ypos=5 left-column left-indent right-indent indented-line shorter-tail headchar-capital tailchar-period
+B-Reference	David Matthews. 2007. Machine Transliteration of	page=4 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	Proper Names. Masters Thesis, School of Informat-	page=4 xpos=0 ypos=5 left-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Reference	ics, University of Edinburgh.	page=4 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Sara Noeman and Amgad Madkour. 2010. Language	page=4 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	independent transliteration mining system using ﬁ-	page=4 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	nite state automata framework.	page=4 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+I-Reference	In Proceedings of the 2010 Named Entities Work-	page=4 xpos=0 ypos=6 left-column left-indent longer-tail year headchar-capital tailchar-hiphen
+I-Reference	shop.	page=4 xpos=0 ypos=6 left-column left-indent right-indent shorter-tail headchar-lower tailchar-period
+B-Reference	Franz Och and Hermann Ney. 2003. A Systematic	page=4 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	Comparison of Various Statistical Alignment Mod-	page=4 xpos=0 ypos=7 left-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Reference	els. In Computational Linguistics 2003.	page=4 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Reference	John Richardson, Toshiaki Nakazawa and Sadao Kuro-	page=4 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Reference	hashi. 2013. Robust Transliteration Mining from	page=4 xpos=0 ypos=7 left-column left-indent indented-line year headchar-lower
+I-Reference	Comparable Corpora with Bilingual Topic Models.	page=4 xpos=0 ypos=7 left-column left-indent aligned-line headchar-capital tailchar-period
+I-Reference	In IJCNLP 2013.	page=4 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	1017	page=4 xpos=9 ypos=9 single-column left-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only

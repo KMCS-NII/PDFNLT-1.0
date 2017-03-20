@@ -1,0 +1,570 @@
+Title	Unsupervised Learning of Arabic Stemming using a Parallel Corpus	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Author	†	page=0 xpos=2 ypos=0 left-column left-indent right-indent font-largest column-top line-blank-line line-double-space line-space symbol-dagger column-bottom
+Author	Monica Rogati Scott McCarley Yiming Yang	page=0 xpos=0 ypos=0 single-column left-indent right-indent font-larger column-top headchar-capital
+B-Affiliation	Computer Science Department, IBM TJ Watson Language Technologies Institute,	page=0 xpos=0 ypos=1 single-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital tailchar-comma
+I-Affiliation	Carnegie Mellon University Research Center Carnegie Mellon University	page=0 xpos=0 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Email	mrogati@cs.cmu.edu jsmc@watson.ibm.com yiming@cs.cmu.edu	page=0 xpos=0 ypos=1 single-column left-indent right-indent font-smaller shorter-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	This paper presents an unsupervised learn-	page=0 xpos=0 ypos=3 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	ing approach to building a non-English	page=0 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower
+I-Abstract	(Arabic) stemmer. The stemming model	page=0 xpos=0 ypos=3 left-column left-indent aligned-line
+I-Abstract	is based on statistical machine translation	page=0 xpos=0 ypos=3 left-column left-indent aligned-line headchar-lower
+I-Abstract	and it uses an English stemmer and a small	page=0 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower
+I-Abstract	(10K sentences) parallel corpus as its sole	page=0 xpos=0 ypos=4 left-column left-indent aligned-line
+I-Abstract	training resources. No parallel text is	page=0 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower
+I-Abstract	needed after the training phase. Mono-	page=0 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	lingual, unannotated text can be used to	page=0 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower
+I-Abstract	further improve the stemmer by allow-	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing it to adapt to a desired domain or	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Abstract	genre. Examples and results will be given	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Abstract	for Arabic , but the approach is applica-	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ble to any language that needs affix re-	page=0 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	moval. Our resource-frugal approach re-	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sults in 87.5% agreement with a state of	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Abstract	the art, proprietary Arabic stemmer built	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Abstract	using rules, affix lists, and human anno-	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tated text, in addition to an unsupervised	page=0 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Abstract	component. Task-based evaluation using	page=0 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Abstract	Arabic information retrieval indicates an	page=0 xpos=0 ypos=7 left-column left-indent aligned-line headchar-capital
+I-Abstract	improvement of 22-38% in average pre-	page=0 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cision over unstemmed text, and 96% of	page=0 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Abstract	the performance of the proprietary stem-	page=0 xpos=0 ypos=8 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	mer above.	page=0 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=8 left-column right-indent font-larger hanged-line longer-tail line-blank-line line-double-space line-space numbered-heading1 column-bottom
+I-Body	information retrieval point of view, prefixes and suf-	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	fixes add little or no additional meaning; in most	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	cases, both the efficiency and effectiveness of text	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	processing applications such as information retrieval	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	and machine translation are improved.	page=0 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Building a rule-based stemmer for a new, arbitrary	page=0 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	language is time consuming and requires experts	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	with linguistic knowledge in that particular lan-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage. Supervised learning also requires large quan-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tities of labeled data in the target language, and qual-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity declines when using completely unsupervised	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	methods. We would like to reach a compromise	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	by using a few inexpensive and readily available re-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sources in conjunction with unsupervised learning.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Our goal is to develop a stemmer generator that	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	is relatively language independent (to the extent that	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	the language accepts stemming) and is trainable us-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing little, inexpensive data. This paper presents	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	an unsupervised learning approach to non-English	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	stemming. The stemming model is based on statisti-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cal machine translation and it uses an English stem-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mer and a small (10K sentences) parallel corpus as	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	its sole training resources.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	A parallel corpus is a collection of sentence pairs	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	with the same meaning but in different languages	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	(i.e. United Nations proceedings, bilingual newspa-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line tailchar-hiphen
+I-Body	pers, the Bible). Table 1 shows an example that uses	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the Buckwalter transliteration (Buckwalter, 1999).	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	Usually, entire documents are translated by humans,	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	and the sentence pairs are subsequently aligned by	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom
+B-Body	Stemming is the process of normalizing word vari-	page=0 xpos=0 ypos=9 single-column right-indent column-top headchar-capital tailchar-hiphen column-bottom
+I-Body	automatic means. A small parallel corpus can be	page=0 xpos=5 ypos=9 right-column full-justified column-top headchar-lower column-bottom
+I-Body	ations by removing prefixes and suffixes. From an	page=0 xpos=0 ypos=9 single-column right-indent column-top headchar-lower above-line-space
+B-Footnote	†	page=0 xpos=0 ypos=9 single-column left-indent right-indent font-smallest indented-line shorter-tail line-space symbol-dagger column-bottom
+I-Body	available when native speakers and translators are	page=0 xpos=5 ypos=9 right-column full-justified column-top headchar-lower column-bottom
+I-Footnote	Work done while a summer intern at IBM TJ Watson Re- not, which makes building a stemmer out of such	page=0 xpos=0 ypos=9 single-column left-indent font-largest column-top headchar-capital column-bottom
+I-Footnote	search Center corpus a preferable direction.	page=0 xpos=0 ypos=9 left-column right-over column-top headchar-lower tailchar-period page-bottom
+Table	__Table 1__	page=1 xpos=-1 ypos=-1 left-column left-over right-over box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: A Tiny Arabic-English Parallel Corpus	page=1 xpos=0 ypos=2 left-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-line-space
+B-Body	We describe our approach towards reaching this	page=1 xpos=0 ypos=2 left-column left-indent longer-tail line-space headchar-capital
+I-Body	goal in section 2. Although we are using resources	page=1 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	other than monolingual data, the unsupervised na-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture of our approach is preserved by the fact that	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	no direct information about non-English stemming	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	is present in the training data.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Monolingual, unannotated text in the target lan-	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	guage is readily available and can be used to further	page=1 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	improve the stemmer by allowing it to adapt to a de-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sired domain or genre. This optional step is closer to	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the traditional unsupervised learning paradigm and	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	is described in section 2.4, and its impact on stem-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mer quality is described in 3.1.4.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our approach (denoted by UNSUP in the rest of	page=1 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	the paper) is evaluated in section 3.1 by compar-	page=1 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ing it to a proprietary Arabic stemmer (denoted by	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	GOLD). The latter is a state of the art Arabic stem-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	mer, and was built using rules, suffix and prefix lists,	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and human annotated text. GOLD is an earlier ver-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sion of the stemmer described in (Lee et al., ).	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The task-based evaluation section 3.2 compares	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	the two stemmers by using them as a preprocessing	page=1 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	step in the TREC Arabic retrieval task. This section	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	also presents the improvement obtained over using	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	unstemmed text.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	1.1 Arabic details	page=1 xpos=0 ypos=7 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In this paper, Arabic was the target language but the	page=1 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	approach is applicable to any language that needs	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	affix removal. In Arabic, unlike English, both pre-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fixes and suffixes need to be removed for effective	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	stemming. Although Arabic provides the additional	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	challenge of infixes, we did not tackle them because	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	they often substantially change the meaning. Irregu-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lar morphology is also beyond the scope of this pa-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	per. As a side note for readers with linguistic back-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ground (Arabic in particular), we do not claim that	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	the resulting stems are units representing the entire	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	paradigm of a lexical item. The main purpose of	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	stemming as seen in this paper is to conflate the to-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ken space used in statistical methods in order to im-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	prove their effectiveness. The quality of the result-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing tokens as perceived by humans is not as impor-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tant, since the stemmed output is intended for com-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	puter consumption.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	1.2 Related Work	page=1 xpos=5 ypos=1 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The problem of unsupervised stemming or morphol-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ogy has been studied using several different ap-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proaches. For Arabic, good results have been ob-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tained for plural detection (Clark, 2001). (Gold-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	smith, 2001) used a minimum description length	page=1 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower
+I-Body	paradigm to build Linguistica, a system for which	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the reported accuracy for European languages is cca.	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	83%. Note that the results in this section are not di-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line tailchar-hiphen
+I-Body	rectly comparable to ours, since we are focusing on	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	Arabic.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	A notable contribution was published by Snover	page=1 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	(Snover, 2002), who defines an objective function to	page=1 xpos=5 ypos=4 right-column full-justified hanged-line year
+I-Body	be optimized and performs a search for the stemmed	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	configuration that optimizes the function over all	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	stemming possibilities of a given text.	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Rule-based stemming for Arabic is a problem	page=1 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	studied by many researchers; an excellent overview	page=1 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+E-Body	is provided by (Larkey et al., ).	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Morphology is not limited to prefix and suffix re-	page=1 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	moval; it can also be seen as mapping from a word to	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	an arbitrary meaning carrying token. Using an LSI	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	approach, (Schone and Jurafsky, ) obtained 88% ac-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	curacy for English. This approach also deals with	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	irregular morphology, which we have not addressed.	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	A parallel corpus has been successfully used be-	page=1 xpos=5 ypos=7 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Body	fore by (Yarowsky et al., 2000) to project part of	page=1 xpos=5 ypos=7 right-column full-justified hanged-line year headchar-lower
+I-Body	speech tags, named entity tags, and morphology in-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation from one language to the other. For a par-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	allel corpus of comparable size with the one used	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in our results, the reported accuracy was 93% for	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	French (when the English portion was also avail-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	able); however, this result only covers 90% of the	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	tokens. Accuracy was later improved using suffix	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	trees.	page=1 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	(Diab and Resnik, 2002) used a parallel corpus	page=1 xpos=5 ypos=9 right-column left-indent indented-line longer-tail year
+I-Body	for word sense disambiguation, exploiting the fact	page=1 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Body	that different meanings of the same word tend to be	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	translated into distinct words.	page=1 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-SectionHeader	2 Approach	page=2 xpos=0 ypos=0 left-column right-indent font-larger page-top numbered-heading1 above-double-space above-line-space
+Figure	__Figure 1__	page=2 xpos=-1 ypos=0 left-column left-over right-indent box longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 1: Approach Overview	page=2 xpos=1 ypos=2 left-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-line-space
+B-Body	Our approach is based on the availability of the	page=2 xpos=0 ypos=3 left-column left-indent right-indent hanged-line longer-tail line-space headchar-capital
+I-Body	following three resources:	page=2 xpos=0 ypos=3 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	• a small parallel corpus	page=2 xpos=0 ypos=3 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space itemization above-line-space
+B-Listitem	• an English stemmer	page=2 xpos=0 ypos=4 left-column left-indent right-indent font-largest aligned-line shorter-tail line-space itemization above-line-space
+B-Listitem	• an optional unannotated Arabic corpus	page=2 xpos=0 ypos=4 left-column left-indent right-indent font-largest aligned-line longer-tail line-space itemization above-double-space above-line-space
+B-Body	Our goal is to train an Arabic stemmer using these	page=2 xpos=0 ypos=4 left-column left-indent right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	resources. The resulting stemmer will simply stem	page=2 xpos=0 ypos=4 left-column right-indent hanged-line headchar-lower
+E-Body	Arabic without needing its English equivalent.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	We divide the training into two logical steps:	page=2 xpos=0 ypos=5 left-column left-indent right-indent indented-line longer-tail headchar-capital tailchar-colon above-double-space above-line-space
+B-Listitem	• Step 1: Use the small parallel corpus	page=2 xpos=0 ypos=5 left-column left-indent right-indent font-largest aligned-line shorter-tail line-double-space line-space itemization above-double-space above-line-space
+B-Listitem	• Step 2: (optional) Use the monolingual corpus	page=2 xpos=0 ypos=6 left-column left-indent right-indent font-largest aligned-line longer-tail line-double-space line-space itemization above-double-space above-line-space
+B-Body	The two steps are described in detail in the fol-	page=2 xpos=0 ypos=6 left-column left-indent right-indent aligned-line line-double-space line-space headchar-capital tailchar-hiphen
+E-Body	lowing subsections.	page=2 xpos=0 ypos=6 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.1 Step 1: Using the Small Parallel Corpus	page=2 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+Figure	__Figure 2__	page=2 xpos=-1 ypos=7 left-column left-over right-indent box shorter-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 2: Step 1 Iteration	page=2 xpos=1 ypos=9 left-column left-indent right-indent indented-line longer-tail line-double-space line-space string-figure headchar-capital column-bottom
+B-Body	In Step 1, we are trying to exploit the English	page=2 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	stemmer by stemming the English half of the paral-	page=2 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	lel corpus and building a translation model that will	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	establish a correspondence between meaning carry-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing substrings (the stem) in Arabic and the English	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	stems.	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For our purposes, a translation model is a matrix	page=2 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	of translation probabilities p(Arabic stem| English	page=2 xpos=5 ypos=1 right-column full-justified font-larger hanged-line headchar-lower
+I-Body	stem) that can be constructed based on the small	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	parallel corpus (see subsection 2.2 for more details).	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The Arabic portion is stemmed with an initial guess	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+E-Body	(discussed in subsection 2.1.1)	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail
+B-Body	Conceptually, once the translation model is built,	page=2 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	we can stem the Arabic portion of the parallel corpus	page=2 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	by scoring all possible stems that an Arabic word	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	can have, and choosing the best one. Once the Ara-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bic portion of the parallel corpus is stemmed, we can	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	build a more accurate translation model and repeat	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the process (see figure 2). However, in practice, in-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stead of using a harsh cutoff and only keeping the	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	best stem, we impose a probability distribution over	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the candidate stems. The distribution starts out uni-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	form and then converges towards concentrating most	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	of the probability mass in one stem candidate.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	2.1.1 The Starting Point	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading3 above-line-space
+B-Body	The starting point is an inherent problem for un-	page=2 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	supervised learning. We would like our stemmer to	page=2 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	give good results starting from a very general initial	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	guess (i.e. random). In our case, the starting point	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	is the initial choice of the stem for each individual	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	word. We distinguish several solutions:	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	• No stemming.	page=2 xpos=5 ypos=6 right-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space itemization tailchar-period above-double-space above-line-space
+I-Listitem	This is not a desirable starting point, since affix	page=2 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Listitem	probabilities used by our model would be zero.	page=2 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	• Random stemming	page=2 xpos=5 ypos=7 right-column left-indent right-indent font-largest hanged-line shorter-tail line-double-space line-space itemization above-double-space above-line-space
+I-Listitem	As mentioned above, this is equivalent to im-	page=2 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Listitem	posing a uniform prior distribution over the	page=2 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower
+I-Listitem	candidate stems. This is the most general start-	page=2 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ing point.	page=2 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	• A simple language specific rule - if available	page=2 xpos=5 ypos=8 right-column left-indent right-indent font-largest hanged-line longer-tail line-double-space line-space itemization above-double-space above-line-space
+I-Listitem	If a simple rule is available, it would provide a	page=2 xpos=5 ypos=9 right-column left-indent indented-line line-double-space line-space headchar-capital
+I-Listitem	better than random starting point, at the cost of	page=2 xpos=5 ypos=9 right-column left-indent aligned-line headchar-lower
+I-Listitem	reduced generality. For Arabic, this simple rule	page=2 xpos=5 ypos=9 right-column left-indent aligned-line headchar-lower
+I-Listitem	was to use Al as a prefix and p as a suffix. This	page=2 xpos=5 ypos=9 right-column left-indent aligned-line headchar-lower page-bottom
+I-Listitem	rule (or at least the first half) is obvious even	page=3 xpos=0 ypos=0 left-column left-indent page-top headchar-lower
+I-Listitem	to non-native speakers looking at transliterated	page=3 xpos=0 ypos=0 left-column left-indent aligned-line headchar-lower
+I-Listitem	text. It also constitutes a surprisingly high base-	page=3 xpos=0 ypos=0 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	line.	page=3 xpos=0 ypos=0 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 The Translation Model ∗	page=3 xpos=0 ypos=0 left-column right-indent font-largest hanged-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We adapted Model 1 (Brown et al., 1993) to our	page=3 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Body	purposes. Model 1 uses the concept of alignment	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	between two sentences e and f in a parallel corpus;	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-semicolon
+I-Body	the alignment is defined as an object indicating for	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	each word e <sub>i</sub> which word f j generated it. To ob-	page=3 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	tain the probability of an foreign sentence f given the	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	English sentence e, Model 1 sums the products of	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	the translation probabilities over all possible align-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments:	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	P r(f |e) ∼ X Y m t(f j |e a j )	page=3 xpos=1 ypos=3 left-column centered left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital
+I-Equation	{a} j=1	page=3 xpos=2 ypos=3 left-column left-indent right-indent font-smallest indented-line shorter-tail above-double-space above-line-space
+B-Body	The alignment variable a <sub>i</sub> controls which English	page=3 xpos=0 ypos=3 left-column left-indent font-largest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	word the foreign word f <sub>i</sub> is aligned with. t(f |e) is	page=3 xpos=0 ypos=4 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	simply the translation probability which is refined	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	iteratively using EM. For our purposes, the transla-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion probabilities (in a translation matrix) are the fi-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nal product of using the parallel corpus to train the	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	translation model.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To take into account the weight contributed by	page=3 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	each stem, the model’s iterative phase was adapted	page=3 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	to use the sum of the weights of a word in a sentence	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	instead of the count.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.3 Candidate Stem Scoring	page=3 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	As previously mentioned, each word has a list of	page=3 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	substrings that are possible stems. We reduced the	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	problem to that of placing two separators inside each	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	Arabic word; the “candidate stems” are simply the	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	substrings inside the separators. While this may	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	seem inefficient, in practice words tend to be short,	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	and one or two letter stems can be disallowed.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	An initial, naive approach when scoring the stem	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	would be to simply look up its translation probabil-	page=3 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ity, given the English stem that is most likely to be	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	its translation in the parallel sentence (i.e. the En-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	glish stem aligned with the Arabic stem candidate).	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Figure 3 presents scoring examples before normal-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line string-figure headchar-capital tailchar-hiphen
+E-Body	ization.	page=3 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Footnote	<sup>∗</sup> Note that the algorithm to build the translation model is	page=3 xpos=0 ypos=9 left-column left-indent font-smallest indented-line longer-tail line-space headchar-super
+I-Footnote	not a “resource” per se, since it is a language-independent algo-	page=3 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower tailchar-hiphen
+I-Footnote	rithm.	page=3 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+Figure	__Figure 3__	page=3 xpos=5 ypos=-1 right-column left-over right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 3: Scoring the Stem	page=3 xpos=6 ypos=2 right-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+B-Body	However, this approach has several drawbacks	page=3 xpos=5 ypos=2 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	that prevent us from using it on a corpus other than	page=3 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	the training corpus. Both of the drawbacks below	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	are brought about by the small size of the parallel	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	corpus:	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	• Out-of-vocabulary words: many Arabic stems	page=3 xpos=5 ypos=3 right-column left-indent font-largest indented-line longer-tail line-double-space line-space itemization
+I-Listitem	will not be seen in the small corpus	page=3 xpos=5 ypos=4 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	• Unreliable translation probabilities for low-	page=3 xpos=5 ypos=4 right-column left-indent font-largest hanged-line longer-tail line-double-space line-space itemization tailchar-hiphen
+I-Listitem	frequency stems.	page=3 xpos=5 ypos=4 right-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We can avoid these issues if we adopt an alternate	page=3 xpos=5 ypos=5 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	view of stemming a word, by looking at the prefix	page=3 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	and the suffix instead. Given the word, the choice	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of prefix and suffix uniquely determines the stem.	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Since the number of unique affixes is much smaller	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	by definition, they will not have the two problems	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	above, even when using a small corpus. These prob-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	abilities will be considerably more reliable and are	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	a very important part of the information extracted	page=3 xpos=5 ypos=6 right-column full-justified aligned-line itemization headchar-lower
+I-Body	from the parallel corpus. Therefore, the score of a	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	candidate stem should be based on the score of the	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	corresponding prefix and the suffix, in addition to	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the score of the stem string itself:	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	score(“pas 00 ) = f (p) × f (a) × f (s)	page=3 xpos=5 ypos=7 right-column centered left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-lower above-double-space above-line-space
+I-Equation	where a = Arabic stem, p = prefix, s=suffix	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-larger hanged-line longer-tail line-double-space line-space headchar-lower
+B-Body	When scoring the prefix and the suffix, we could	page=3 xpos=5 ypos=8 right-column left-indent aligned-line longer-tail headchar-capital
+I-Body	simply use their probabilities from the previous	page=3 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	stemming iteration. However, there is additional in-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation available that can be successfully used to	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	condition and refine these probabilities (such as the	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	length of the word, the part of speech tag if given	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	etc.).	page=3 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Figure	__Figure 4__	page=4 xpos=-1 ypos=-1 left-column left-over right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 4: Alternate View: Scoring the Prefix and	page=4 xpos=0 ypos=2 left-column right-indent longer-tail line-double-space line-space string-figure headchar-capital
+E-Caption	Suffix	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-capital above-line-space
+B-SubsubsectionHeader	2.3.1 Scoring Models	page=4 xpos=0 ypos=2 left-column right-indent aligned-line longer-tail line-space numbered-heading3 above-line-space
+B-Body	We explored several stem scoring models, using	page=4 xpos=0 ypos=3 left-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Body	different levels of available information. Examples	page=4 xpos=0 ypos=3 left-column right-indent hanged-line headchar-lower
+I-Body	include:	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+Table	__Table 2__	page=4 xpos=-1 ypos=3 left-column left-over right-over box longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 2: Example Scoring Models	page=4 xpos=0 ypos=8 left-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-line-space
+B-Body	The first two examples use the joint probability	page=4 xpos=0 ypos=8 left-column left-indent right-indent hanged-line longer-tail line-space headchar-capital
+I-Body	of the prefix and suffix, with a smoothing back-off	page=4 xpos=0 ypos=8 left-column right-indent hanged-line headchar-lower
+I-Body	(the product of the individual probabilities). Scor-	page=4 xpos=0 ypos=9 left-column right-indent aligned-line tailchar-hiphen
+I-Body	ing models of this form proved to be poor perform-	page=4 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	ers from the beginning, and they were abandoned in	page=4 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower
+I-Body	favor of the last model, which is a fast, good approx-	page=4 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	imation to the third model in Table 2. The last two	page=4 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower column-bottom
+I-Body	models successfully solve the problem of the empty	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	prefix and suffix accumulating excessive probability,	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which would yield to a stemmer that never removed	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	any affixes. The results presented in the rest of the	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	paper use the last scoring model.	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.4 Step 2: Using the Unlabeled Monolingual	page=4 xpos=5 ypos=1 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	Data	page=4 xpos=5 ypos=1 right-column left-indent right-indent indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	This optional second step can adapt the trained stem-	page=4 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	mer to the problem at hand. Here, we are moving	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	away from providing the English equivalent, and we	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	are relying on learned prefix, suffix and (to a lesser	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	degree) stem probabilities. In a new domain or cor-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pus, the second step allows the stemmer to learn new	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	stems and update its statistical profile of the previ-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ously seen stems.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	This step can be performed using monolingual	page=4 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	Arabic data, with no annotation needed. Even	page=4 xpos=5 ypos=3 right-column full-justified hanged-line headchar-capital
+I-Body	though it is optional, this step is recommended since	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	its sole resource can be the data we would need to	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	stem anyway (see Figure 5).	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 5__	page=4 xpos=5 ypos=4 right-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 5: Step 2 Detail	page=4 xpos=6 ypos=5 right-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-line-space
+B-Body	Step 1 produced a functional stemming model.	page=4 xpos=5 ypos=5 right-column left-indent hanged-line longer-tail line-space headchar-capital tailchar-period
+I-Body	We can use the corpus statistics gathered in Step 1	page=4 xpos=5 ypos=6 right-column full-justified hanged-line headchar-capital
+I-Body	to stem the new, monolingual corpus. However, the	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	scoring model needs to be modified, since t(a|e) is	page=4 xpos=5 ypos=6 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	no longer available. By removing the conditioning,	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the first/last letter scoring model we used becomes	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Equation	score = p(a) × p(s|last) × p(p|f irst)	page=4 xpos=5 ypos=7 right-column centered left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space headchar-lower above-double-space above-line-space
+B-Body	The model can be updated if the stem candidate	page=4 xpos=5 ypos=7 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	score/probability distribution is sufficiently skewed,	page=4 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	and the monolingual text can be stemmed iteratively	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	using the new model. The model is thus adapted to	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the particular needs of the new corpus; in practice,	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	convergence is quick (less than 10 iterations).	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Results	page=4 xpos=5 ypos=9 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	3.1 Unsupervised Training and Testing	page=4 xpos=5 ypos=9 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	For unsupervised training in Step 1, we used a small	page=4 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	parallel corpus: 10,000 Arabic-English sentences	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	from the United Nations(UN) corpus, where the En-	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	glish part has been stemmed and the Arabic translit-	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	erated.	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For unsupervised training in Step 2, we used a	page=5 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	larger, Arabic only corpus: 80,000 different sen-	page=5 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+E-Body	tences in the same dataset.	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The test set consisted of 10,000 different sen-	page=5 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tences in the UN dataset; this is the testing set used	page=5 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+E-Body	below unless specified.	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We also used a larger corpus ( a year of Agence	page=5 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	France Press (AFP) data, 237K sentences) for Step 2	page=5 xpos=0 ypos=2 left-column full-justified hanged-line headchar-capital
+I-Body	training and testing, in order to gauge the robustness	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	and adaptation capability of the stemmer. Since the	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	UN corpus contains legal proceedings, and the AFP	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	corpus contains news stories, the two can be seen as	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	coming from different domains.	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	3.1.1 Measuring Stemmer Performance	page=5 xpos=0 ypos=3 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading3 above-line-space
+B-Body	In this subsection the accuracy is defined as agree-	page=5 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ment with GOLD. GOLD is a state of the art, pro-	page=5 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	prietary Arabic stemmer built using rules, suffix and	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	prefix lists, and human annotated text, in addition	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	to an unsupervised component. GOLD is an ear-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lier version of the stemmer described in (Lee et al.,	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	). Freely available (but less accurate) Arabic light	page=5 xpos=0 ypos=5 left-column full-justified aligned-line
+E-Body	stemmers are also used in practice.	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	When measuring accuracy, all tokens are consid-	page=5 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ered, including those that cannot be stemmed by	page=5 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	simple affix removal (irregulars, infixes). Note that	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	our baseline (removing Al and p, leaving everything	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	unchanged) is higher that simply leaving all tokens	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	unchanged.	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For a more relevant task-based evaluation, please	page=5 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+E-Body	refer to Subsection 3.2.	page=5 xpos=0 ypos=6 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	3.1.2 The Effect of the Corpus Size: How little	page=5 xpos=0 ypos=7 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading3
+I-SubsubsectionHeader	parallel data can we use?	page=5 xpos=0 ypos=7 left-column left-indent right-indent indented-line shorter-tail headchar-lower above-line-space
+B-Body	We begin by examining the effect that the size of	page=5 xpos=0 ypos=7 left-column left-indent hanged-line longer-tail line-space headchar-capital
+I-Body	the parallel corpus has on the results after the first	page=5 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	step. Here, we trained our stemmer on three dif-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent corpus sizes: 50K, 10K, and 2K sentences.	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The high baseline is obtained by treating Al and p	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	as affixes. The 2K corpus had acceptable results (if	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	this is all the data available). Using 10K was sig-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nificantly better; however the improvement obtained	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	when five times as much data (50K) was used was	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	insignificant. Note that different languages might	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	have different corpus size needs. All other results	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+Figure	__Figure 6__	page=5 xpos=5 ypos=-1 right-column left-indent right-indent box column-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 6: Results after Step 1 : Corpus Size Effect	page=5 xpos=5 ypos=2 right-column centered left-indent right-indent longer-tail line-blank-line line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+E-Body	in this paper use 10K sentences.	page=5 xpos=5 ypos=2 right-column right-indent shorter-tail line-double-space line-space headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 7__	page=5 xpos=5 ypos=3 right-column left-over right-over box longer-tail line-double-space line-space figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 7: Results after Step 1 : Effect of Knowing	page=5 xpos=5 ypos=5 right-column full-justified shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital
+E-Caption	the Al+p rule	page=5 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Body	Although severely handicapped at the beginning,	page=5 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	the knowledge-free starting point manages to narrow	page=5 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	the performance gap after a few iterations. Knowing	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the Al+p rule still helps at this stage. However, the	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	performance gap is narrowed further in Step 2 (see	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	figure 8), where the knowledge free starting point	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	benefitted from the monolingual training.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsubsectionHeader	3.1.4 Results after Step 2: Different Corpora	page=5 xpos=5 ypos=7 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading3
+I-SubsubsectionHeader	Used for Adaptation	page=5 xpos=5 ypos=8 right-column left-indent right-indent indented-line shorter-tail headchar-capital above-line-space
+B-Body	Figure 8 shows the results obtained when aug-	page=5 xpos=5 ypos=8 right-column left-indent hanged-line longer-tail line-space string-figure headchar-capital tailchar-hiphen
+I-Body	menting the stemmer trained in Step 1. Two dif-	page=5 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ferent monolingual corpora are used: one from the	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	same domain as the test set (80K UN), and one from	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	a different domain/corpus, but three times larger	page=5 xpos=5 ypos=9 right-column full-justified aligned-line itemization headchar-lower
+I-Body	(237K AFP). The larger dataset seems to be more	page=5 xpos=5 ypos=9 right-column full-justified aligned-line
+I-Body	useful in improving the stemmer, even though the	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	domain was different.	page=5 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Figure	__Figure 8__	page=6 xpos=0 ypos=0 left-column left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 8: Results after Step 2 (Monolingual Corpus)	page=6 xpos=0 ypos=2 left-column full-justified longer-tail line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+B-Body	The baseline and the accuracy after Step 1 are pre-	page=6 xpos=0 ypos=2 left-column left-indent indented-line line-double-space line-space headchar-capital tailchar-hiphen
+E-Body	sented for reference.	page=6 xpos=0 ypos=2 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 9__	page=6 xpos=-1 ypos=3 left-column left-over right-over box longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 9: Results after Step 2 : Using a Different	page=6 xpos=0 ypos=6 left-column full-justified shorter-tail line-double-space line-space string-figure headchar-capital
+E-Caption	Test Set	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-capital
+B-Body	We used an additional test set that consisted of	page=6 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	10K sentences taken from AFP, instead of UN as in	page=6 xpos=0 ypos=6 left-column full-justified hanged-line
+I-Body	previous experiments shown in figure 8 . Its pur-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pose was to test the cross-domain robustness of the	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	stemmer and to further examine the importance of	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	applying the second step to the data needing to be	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	stemmed.	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Figure 9 shows that, even though in Step 1 the	page=6 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space string-figure headchar-capital
+I-Body	stemmer was trained on UN proceedings, the re-	page=6 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sults on the cross-domain (AFP) test set are compa-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rable to those from the same domain (UN, figure 8).	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	However, for this particular test set the baseline was	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	much higher; thus the relative improvement with re-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	spect to the baseline is not as high as when the unsu-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pervised training and testing set came from the same	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	collection.	page=6 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-SubsectionHeader	3.2 Task-Based Evaluation : Arabic	page=6 xpos=5 ypos=0 right-column right-indent column-top numbered-heading2
+I-SubsectionHeader	Information Retrieval	page=6 xpos=5 ypos=0 right-column left-indent right-indent indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-BlockHeader	Task Description:	page=6 xpos=5 ypos=0 right-column right-indent hanged-line shorter-tail line-double-space line-space headchar-capital tailchar-colon
+B-Body	Given a set of Arabic documents and an Arabic	page=6 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	query, find a list of documents relevant to the query,	page=6 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-comma
+E-Body	and rank them by probability of relevance.	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We used the TREC 2002 documents (several	page=6 xpos=5 ypos=1 right-column left-indent indented-line longer-tail year headchar-capital
+I-Body	years of AFP data), queries and relevance judg-	page=6 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ments. The 50 queries have a shorter, “title” compo-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nent as wel as a longer “description”. We stemmed	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	both the queries and the documents using UNSUP	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	and GOLD respectively. For comparison purposes,	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	we also left the documents and queries unstemmed.	page=6 xpos=5 ypos=2 right-column right-indent aligned-line headchar-lower tailchar-period
+B-Body	The UNSUP stemmer was trained with 10K UN	page=6 xpos=5 ypos=2 right-column left-indent indented-line headchar-capital
+I-Body	sentences in Step 1, and with one year’s worth of	page=6 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+E-Body	monolingual AFP data (1995) in Step 2.	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	Evaluation metric: The evaluation metric used	page=6 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	below is mean average precision (the standard IR	page=6 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	metric), which is the mean of average precision	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	scores for each query. The average precision of a	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	single query is the mean of the precision scores after	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	each relevant document retrieved. Note that aver-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	age precision implicitly includes recall information.	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Precision is defined as the ratio of relevant docu-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ments to total documents retrieved up to that point	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	in the ranking.	page=6 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-BlockHeader	Results	page=6 xpos=5 ypos=5 right-column left-indent right-indent indented-line shorter-tail headchar-capital above-double-space above-line-space
+Figure	__Figure 10__	page=6 xpos=5 ypos=5 right-column left-indent right-over box hanged-line longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 10: Arabic Information Retrieval Results	page=6 xpos=5 ypos=8 right-column centered left-indent right-indent shorter-tail line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+B-Body	We looked at the effect of different testing con-	page=6 xpos=5 ypos=8 right-column left-indent longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ditions on the mean average precision for the 50	page=6 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	queries. In Figure 10, the first set of bars uses the	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	query titles only, the second set adds the descrip-	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, and the last set restricts the results to one year	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	(1995), using both the title and description. We	page=6 xpos=5 ypos=9 right-column full-justified aligned-line year
+I-Body	tested this last condition because the unsupervised	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	stemmer was refined in Step 2 using 1995 docu-	page=7 xpos=0 ypos=0 left-column full-justified page-top year headchar-lower tailchar-hiphen
+I-Body	ments. The last group of bars shows a higher relative	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	improvement over the unstemmed baseline; how-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ever, this last condition is based on a smaller sample	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	of relevance judgements (restricted to one year) and	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	is therefore not as representative of the IR task as the	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	first two testing conditions.	page=7 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Conclusions and Future Work	page=7 xpos=0 ypos=1 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	This paper presents an unsupervised learning ap-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	proach to building a non-English (Arabic) stemmer	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	using a small sentence-aligned parallel corpus in	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	which the English part has been stemmed. No paral-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lel text is needed to use the stemmer. Monolingual,	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	unannotated text can be used to further improve the	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	stemmer by allowing it to adapt to a desired domain	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	or genre. The approach is applicable to any language	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	that needs affix removal; for Arabic, our approach	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	results in 87.5% agreement with a proprietary Ara-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bic stemmer built using rules, affix lists, and hu-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	man annotated text, in addition to an unsupervised	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	component. Task-based evaluation using Arabic in-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation retrieval indicates an improvement of 22-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	38% in average precision over unstemmed text, and	page=7 xpos=0 ypos=4 left-column full-justified aligned-line
+I-Body	93-96% of the performance of the state of the art,	page=7 xpos=0 ypos=5 left-column full-justified aligned-line tailchar-comma
+E-Body	language specific stemmer above.	page=7 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We can speculate that, because of the statistical	page=7 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	nature of the unsupervised stemmer, it tends to fo-	page=7 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	cus on the same kind of meaning units that are sig-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nificant for IR, whether or not they are linguistically	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	correct. This could explain why the gap betheen	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	GOLD and UNSUP is narrowed with task-based	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	evaluation and is a desirable effect when the stem-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mer is to be used for IR tasks.	page=7 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We are planning to experiment with different lan-	page=7 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	guages, translation model alternatives, and to extend	page=7 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	task-based evaluation to different tasks such as ma-	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	chine translation and cross-lingual topic detection	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	and tracking.	page=7 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Acknowledgements	page=7 xpos=0 ypos=8 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space string-acknowledgement numbered-heading1 above-double-space above-line-space
+B-Body	We would like to thank the reviewers for their help-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ful observations and for identifying Arabic mis-	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	spellings. This work was partially supported by	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the Defense Advanced Research Projects Agency	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	and monitored by SPAWAR under contract No.	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	N66001-99-2-8916. This research is also spon-	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital tailchar-hiphen column-bottom
+I-Body	sored in part by the National Science Foundation	page=7 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	(NSF) under grants EIA-9873009 and IIS-9982226,	page=7 xpos=5 ypos=0 right-column full-justified aligned-line tailchar-comma
+I-Body	and in part by the DoD under award 114008-	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	N66001992891808. However, any opinions, views,	page=7 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-capital tailchar-comma
+I-Body	conclusions and findings in this paper are those of	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	the authors and do not necessarily reflect the posi-	page=7 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of policy of the Government and no official en-	page=7 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	dorsement should be inferred.	page=7 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=5 ypos=1 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	P. Brown, S. Della Pietra, V. Della Pietra, and R. Mer-	page=7 xpos=5 ypos=2 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	cer. 1993. The mathematics of machine translation:	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year headchar-lower tailchar-colon
+I-Reference	Parameter estimation. In Computational Linguistics,	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	pages 263–311.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Tim Buckwalter. 1999. Buckwalter transliteration.	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	http://www.cis.upenn.edu/∼cis639/arabic/info/translit-	page=7 xpos=5 ypos=3 right-column left-indent right-over font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	chart.html.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Alexander Clark. 2001. Learning morphology with pair	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	hidden markov models. In ACL (Companion Volume),	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	pages 55–60.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Mona Diab and Philip Resnik. 2002. An unsupervised	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	method for word sense tagging using parallel corpora.	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In Proceedings of the 40th Annual Meeting of the As-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	sociation for Computational Linguistics (ACL), pages	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	255–262, July.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	John Goldsmith. 2001. Unsupervised learning of the	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	morphology of a natural language. In Computational	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Linguistics.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Leah Larkey, Lisa Ballesteros, and Margaret Connell.	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Improving stemming for arabic information retrieval:	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-capital tailchar-colon
+I-Reference	Light stemming and co-occurrence analysis. In SIGIR	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	2002, pages 275–282.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Reference	Young-Suk Lee, Kishore Papineni, Salim Roukos, Os-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	sama Emam, and Hany Hassan. Language model	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	based arabic word segmentation. In To appear in ACL	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	2003.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Reference	Patrick Schone and Daniel Jurafsky. Knowledge-free in-	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	duction of morphology using latent semantic analy-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	sis. In 4th Conference on Computational Natural Lan-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	guage Learning, Lisbon, 2000.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Matthew Snover. 2002. An unsupervised knowledge	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	free algorithm for the learning of morphology in natu-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ral languages. Master’s thesis, Washington University,	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	May.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	David Yarowsky, Grace Ngai, and Richard Wicentowski.	page=7 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2000. Inducing multilingual text analysis tools via ro-	page=7 xpos=5 ypos=9 right-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	bust projection across aligned corpora.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period

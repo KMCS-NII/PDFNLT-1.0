@@ -1,0 +1,582 @@
+Title	Minimum Bayes-Risk Decoding for Statistical Machine Translation	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Shankar Kumar and William Byrne	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Center for Language and Speech Processing, Johns Hopkins University,	page=0 xpos=1 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital tailchar-comma
+Address	3400 North Charles <sub></sub> Street, Baltimore, MD, 21218, USA	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-largest indented-line shorter-tail
+Email	skumar,byrne  @jhu.edu	page=0 xpos=3 ypos=1 single-column left-indent right-indent font-largest indented-line shorter-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-blank-line above-double-space above-line-space
+B-Abstract	We present Minimum Bayes-Risk (MBR) de-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	coding for statistical machine translation. This	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	statistical approach aims to minimize expected	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	loss of translation errors under loss functions	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	that measure translation performance. We de-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	scribe a hierarchy of loss functions that incor-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	porate different levels of linguistic information	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	from word strings, word-to-word alignments	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	from an MT system, and syntactic structure	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	from parse-trees of source and target language	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	sentences. We report the performance of the	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	MBR decoders on a Chinese-to-English trans-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	lation task. Our results show that MBR decod-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing can be used to tune statistical MT perfor-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	mance for specific loss functions.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-largest hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Statistical Machine Translation systems have achieved	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	considerable progress in recent years as seen from their	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	performance on international competitions in standard	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	evaluation tasks (NIST, 2003). This rapid progress has	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	been greatly facilitated by the development of automatic	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	translation evaluation metrics such as BLEU score (Pa-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pineni et al., 2001), NIST score (Doddington, 2002)	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	and Position Independent Word Error Rate (PER) (Och,	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2002). However, given the many factors that influence	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year
+I-Body	translation quality, it is unlikely that we will find a single	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	translation metric that will be able to judge all these fac-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tors. For example, the BLEU, NIST and the PER metrics,	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma above-double-space above-line-space
+B-Footnote	<sup></sup> This work was supported by the National Science Foun-	page=0 xpos=0 ypos=9 left-column left-indent font-smaller indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	dation under Grant No. 0121285 and an ONR MURI Grant	page=0 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	N00014-01-1-0685. Any opinions, findings, and conclusions or	page=0 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-capital
+I-Footnote	recommendations expressed in this material are those of the au-	page=0 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	thors and do not necessarily reflect the views of the National	page=0 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	Science Foundation or the Office of Naval Research.	page=0 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period column-bottom
+I-Body	though effective, do not take into account explicit syntac-	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower tailchar-hiphen
+E-Body	tic information when measuring translation quality.	page=0 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Given that different Machine Translation (MT) eval-	page=0 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	uation metrics are useful for capturing different aspects	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	of translation quality, it becomes desirable to create MT	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	systems tuned with respect to each individual criterion. In	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	contrast, the maximum likelihood techniques that under-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lie the decision processes of most current MT systems do	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	not take into account these application specific goals. We	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	apply the Minimum Bayes-Risk (MBR) techniques devel-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	oped for automatic speech recognition (Goel and Byrne,	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2000) and bitext word alignment for statistical MT (Ku-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	mar and Byrne, 2002), to the problem of building au-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tomatic MT systems tuned for specific metrics. This is	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	a framework that can be used with statistical models of	page=0 xpos=5 ypos=5 right-column full-justified aligned-line itemization headchar-lower
+I-Body	speech and language to develop decision processes opti-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mized for specific loss functions.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We will show that MBR decoding can be applied to	page=0 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	machine translation in two scenarios. Given an automatic	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	MT metric, we design a loss function based on the met-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ric and use MBR decoding to tune MT performance un-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	der the metric. We also show how MBR decoding can	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	be used to incorporate syntactic structure into a statistical	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	MT system by building specialized loss functions. These	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	loss functions can use information from word strings,	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	word-to-word alignments and parse-trees of the source	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	sentence and its translation. In particular we describe	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the design of a Bilingual Tree Loss Function that can ex-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plicitly use syntactic structure for measuring translation	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	quality. MBR decoding under this loss function allows	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	us to integrate syntactic knowledge into a statistical MT	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	system without building detailed models of linguistic fea-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tures, and retraining the system from scratch.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We first present a hierarchy of loss functions for trans-	page=0 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	lation based on different levels of lexical and syntactic	page=0 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Body	information from source and target language sentences.	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This hierarchy includes the loss functions useful in both	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital
+I-Body	situations where we intend to apply MBR decoding. We	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	then present the MBR framework for statistical machine	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	translation under the various translation loss functions.	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We finally report the performance of MBR decoders op-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	timized for each loss function.	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Translation Loss Functions	page=1 xpos=0 ypos=1 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We now introduce translation loss functions to measure	page=1 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the quality of automatically generated translations. Sup-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pose we have a sentence in a source language for	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	which we have generated an automatic translation 	page=1 xpos=0 ypos=1 left-column right-indent font-largest aligned-line headchar-lower
+I-Body	with word-to-word alignment  relative to . The word-	page=1 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	to-word alignment  specifies the words in the source	page=1 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	sentence that are aligned to each word in the transla-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion  . We wish to compare this automatic translation	page=1 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	with a reference translation  with word-to-word align-	page=1 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ment  relative to .	page=1 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+I-Body	lation loss functions of the form   <sup>We</sup> <sup>will</sup> <sup>now</sup> <sup>present</sup> <sup>a</sup> <sup>three-tier</sup> <sup>hierarchy</sup> <sup>of</sup> <sup>trans-</sup>  	page=1 xpos=0 ypos=3 left-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	that measure against . These loss func-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions will make use of different levels of information from	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	word strings, MT alignments and syntactic structure from	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	parse-trees of both the source and target strings as illus-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	trated in the following table.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Table	Loss Function	page=1 xpos=0 ypos=4 left-column left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+I-Table	<sup>Functional</sup>      Form	page=1 xpos=2 ypos=4 left-column left-indent right-indent font-largest indented-line longer-tail headchar-super
+I-Table	Lexical	page=1 xpos=0 ypos=4 left-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Table	   	page=1 xpos=3 ypos=4 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Table	<sup>Target</sup> <sup>Language</sup> <sup>Parse-Tree</sup>  !"   #! $ %  &' 	page=1 xpos=0 ypos=5 left-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-super
+E-Table	Bilingual Parse-Tree	page=1 xpos=0 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+B-Body	We start with an example of two competing English	page=1 xpos=0 ypos=5 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	translations for a Chinese sentence (in Pinyin without	page=1 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	tones), with their word-to-word alignments in Figure 1.	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The reference translation for the Chinese sentence with	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	its word-to-word alignment is shown in Figure 2. In this	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	section, we will show the computation of different loss	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	functions for this example.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-SubsectionHeader	2.1 Lexical Loss Functions	page=1 xpos=0 ypos=7 left-column right-indent aligned-line longer-tail line-space numbered-heading2 above-double-space above-line-space
+B-Body	The first class of loss functions uses no informa-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	<sup>tion</sup> <sup>about</sup> <sup>word</sup> <sup>alignments</sup>   can be reduced or parse-trees, to so . that We	page=1 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-super
+I-Body	consider three loss functions in this category: The BLEU	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	score (Papineni et al., 2001), word-error rate, and the	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	position-independent word-error rate (Och, 2002). An-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	other example of a loss function in this class is the MT-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eval metric introduced in Melamed et al. (2003). A loss	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	function of this type depends only on information from	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	word strings.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	BLEU score (Papineni et al., 2001) computes the	page=1 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-space year headchar-capital
+I-Body	geometric mean of the precision of ) -grams of vari-	page=1 xpos=0 ypos=9 left-column full-justified font-largest hanged-line headchar-lower tailchar-hiphen
+I-Body	ous lengths ( )+*-,/.10(0 243 ) between a hypothesis and	page=1 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	a reference translation, and includes a brevity penalty	page=1 xpos=0 ypos=9 left-column full-justified aligned-line itemization headchar-lower
+I-Body	( ) if the hypothesis is shorter than the refer-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line tailchar-hiphen column-bottom
+E-Body	ence. We use 2;:=< .	page=1 xpos=5 ypos=0 right-column right-indent font-largest column-top headchar-lower tailchar-period
+B-Equation	GIH	page=1 xpos=7 ypos=0 right-column left-indent right-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	> J E K  % 	page=1 xpos=5 ypos=0 right-column right-indent font-largest hanged-line longer-tail
+I-Equation	  ':CBDFE    	page=1 xpos=6 ypos=0 right-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	KMLONQPR#S 2 TVU	page=1 xpos=7 ypos=0 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+I-Body	where E K  %  is the precision of ) -grams in the hy-	page=1 xpos=5 ypos=0 right-column full-justified font-largest hanged-line longer-tail headchar-lower tailchar-hiphen
+I-Body	pothesis  . The BLEU score is zero if any of the n-gram	page=1 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	precisions E K >	page=1 xpos=5 ypos=1 right-column right-indent box aligned-line shorter-tail headchar-lower
+I-Body	note that WX7 <sup>is</sup> <sup>zero</sup>  for  47Y. that . sentence We derive pair. a loss We	page=1 xpos=5 ypos=1 right-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	<sup>function</sup> <sup>from</sup> <sup>BLEU</sup> <sup>score</sup> <sup>as</sup> > Z@ %  .  BLEU	page=1 xpos=5 ypos=1 right-column right-indent box aligned-line shorter-tail symbol-atmark headchar-super
+B-Body	Word Error Rate (WER) is the ratio of the string-edit	page=1 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	distance between the reference and the hypothesis word	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	strings to the number of words in the reference. String-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	edit distance is measured as the minimum number of edit	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	operations needed to transform a word string to the other	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	word string.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Position-independent Word Error Rate (PER) mea-	page=1 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	sures the minimum number of edit operations needed	page=1 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	to transform a word string to any permutation of the	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	other word string. The PER score (Och, 2002) is then	page=1 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	computed as a ratio of this distance to the number of	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	words in the reference word string.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 Target Language Parse-Tree Loss Functions	page=1 xpos=5 ypos=4 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The second class of translation loss functions uses infor-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	so that <sup>mation</sup> <sup>only</sup> <sup>from</sup> <sup>the</sup> <sup>parse-trees</sup>  \:]  of the two   translations, . This loss	page=1 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	function has no access to any information from the source	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	sentence or the word alignments.	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Examples of such loss functions are tree-edit distances	page=1 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	between parse-trees, string-edit distances between event	page=1 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	representation of parse-trees (Tang et al., 2002), and tree-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	kernels (Collins and Duffy, 2002). The computation of	page=1 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Body	tree-edit distance involves an unconstrained alignment of	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the two English parse-trees. We can simplify this prob-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lem once we have a third parse tree (for the Chinese sen-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence) with node-to-node alignment relative to the two	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	English trees. We will introduce such a loss function in	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	the next section. We did not perform experiments involv-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing this class of loss functions, but mention them for com-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	pleteness in the hierarchy of loss functions.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.3 Bilingual Parse-Tree Loss Functions	page=1 xpos=5 ypos=8 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The third class of loss functions uses information from	page=1 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	word strings, alignments and parse-trees in both lan-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guages, and can be described by	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Equation	 Z:_ `a   `Ob   &'  .	page=1 xpos=7 ypos=8 right-column left-indent right-indent font-largest indented-line longer-tail tailchar-period
+B-Body	We will now describe one such loss function using the	page=1 xpos=5 ypos=9 right-column full-justified hanged-line longer-tail headchar-capital
+I-Body	example in Figures 1 and 2. Figure 3 shows a tree-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	to-tree mapping between the source (Chinese) parse-tree	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	and parse-trees of its reference translation and two com-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	peting hypothesis (English) translations.	page=1 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Figure	__Figure 1__	page=2 xpos=0 ypos=-2 single-column left-indent right-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: Two competing English translations for a Chinese sentence with their word-to-word alignments.	page=2 xpos=0 ypos=0 single-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-period above-line-space
+Figure	__Figure 2__	page=2 xpos=0 ypos=0 single-column left-indent right-indent box indented-line shorter-tail line-space figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 2: The reference translation for the Chinese sentence from Figure 1 with its word-to-word alignments. Words in	page=2 xpos=0 ypos=1 single-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital
+E-Caption	the Chinese (English) sentence shown as unaligned are aligned to the NULL word in the English (Chinese) sentence.	page=2 xpos=0 ypos=2 single-column right-indent aligned-line headchar-lower tailchar-period column-bottom above-double-space above-line-space
+I-Body	) in the source tree  & can	page=2 xpos=2 ypos=2 left-column left-indent font-largest column-top line-double-space line-space
+B-Body	<sup>We</sup> <sup>first</sup> <sup>assume</sup> <sup>that</sup> <sup>a</sup> <sup>node</sup>  (and a node  in  ) using	page=2 xpos=0 ypos=2 left-column left-indent font-largest hanged-line headchar-super
+I-Body	<sup>be</sup> <sup>mapped</sup> <sup>to</sup> <sup>a</sup> <sup>node</sup>  (and in  respectively). We denote the	page=2 xpos=0 ypos=2 left-column full-justified font-largest hanged-line headchar-super
+I-Body	<sup>word</sup> <sup>alignment</sup>  rooted at node by  and the subtree of	page=2 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-super
+I-Body	<sup>subtree</sup>  rooted of at node  by     . We will now describe a	page=2 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-super
+I-Body	simple procedure that makes use of the word alignment	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	 to construct node-to-node alignment between nodes in	page=2 xpos=0 ypos=3 left-column full-justified font-largest aligned-line
+E-Body	the source tree & and the target tree  .	page=2 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsubsectionHeader	2.3.1 Alignment of Parse-Trees	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading3 above-line-space
+B-Body	For each node ) in the source tree & we consider the	page=2 xpos=0 ypos=4 left-column left-indent font-largest indented-line longer-tail line-space headchar-capital
+I-Body	 K	page=2 xpos=0 ypos=5 left-column left-indent right-indent font-largest indented-line shorter-tail
+I-Body	subtree rooted at ) . We first read off <sub></sub> the source word	page=2 xpos=0 ypos=5 left-column full-justified font-largest hanged-line longer-tail headchar-lower
+I-Body	sequence corresponding to the leaves of K . We next con-	page=2 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	sider the subset of words in the target sentence that are	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	aligned to any word in this source word sequence, and	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	select the leftmost and rightmost words from this sub-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	set. We locate the leaf nodes corresponding to these two	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	words in the target parse tree  , and obtain their closest	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	common ancestor node *  . This procedure gives us	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	a mapping from a node ) * & to <sub></sub> a node ;*  and this	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	mapping associates one subtree K * & to one subtree	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	 *  .	page=2 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail tailchar-period above-blank-line above-double-space above-line-space
+B-SubsubsectionHeader	2.3.2 Loss Computation between Aligned	page=2 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading3
+I-SubsubsectionHeader	Parse-Trees	page=2 xpos=0 ypos=8 left-column left-indent right-indent indented-line shorter-tail headchar-capital above-line-space
+B-Body	& and  , and	page=2 xpos=3 ypos=8 left-column left-indent font-largest indented-line longer-tail line-space
+I-Body	& <sup>Given</sup> and  the  , we subtree first identify alignment the subset between of nodes in  & for	page=2 xpos=0 ypos=8 left-column full-justified font-largest hanged-line
+I-Body	which we can identify a corresponding node in both 	page=2 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+E-Body	and  .	page=2 xpos=0 ypos=9 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Equation	2& <sup></sup> : ,#) * &  :      :      3/0	page=2 xpos=0 ypos=9 left-column left-indent right-indent font-largest indented-line longer-tail line-space column-bottom
+B-Body	The Bilingual Parse-Tree (BiTree) Loss Function can	page=2 xpos=5 ypos=2 right-column full-justified column-top headchar-capital
+I-Body	then be computed as	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Equation	BiTreeLoss     !"#$$%'& <sub>(*),</sub> -/ + .10 234"2"3  	page=2 xpos=5 ypos=2 right-column left-indent right-indent font-largest indented-line longer-tail headchar-capital
+I-Body	     %  is a distance measure between sub-trees <sup>(1)</sup>	page=2 xpos=5 ypos=3 right-column left-indent font-largest indented-line longer-tail
+I-Body	where  <sub>and</sub>  <sup>5</sup>  . Specific Bi-tree loss functions are determined	page=2 xpos=5 ypos=3 right-column full-justified font-largest hanged-line headchar-lower
+I-Body	through particular choices of 5 . In our experiments, we	page=2 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	used a 0/1 loss function between sub-trees and  .	page=2 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Equation	 	page=2 xpos=8 ypos=4 right-column left-indent right-indent font-largest indented-line shorter-tail above-line-space
+I-Equation	5        ': 76 W . otherwise  :     0	page=2 xpos=6 ypos=4 right-column left-indent right-indent box hanged-line shorter-tail line-space numbered-heading1
+I-Equation	(2)	page=2 xpos=9 ypos=4 right-column left-indent indented-line longer-tail above-blank-line above-double-space above-line-space
+B-Body	We note that other tree-to-tree distance measures can	page=2 xpos=5 ypos=5 right-column full-justified hanged-line line-blank-line line-double-space line-space headchar-capital
+I-Body	also be used to compute 5 , e.g. the distance function	page=2 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	could compare if the subtrees and  have the same	page=2 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	 	page=2 xpos=7 ypos=5 right-column left-indent right-indent font-largest indented-line shorter-tail above-double-space above-line-space
+E-Body	headword/non-terminal tag.	page=2 xpos=5 ypos=5 right-column right-indent hanged-line shorter-tail line-double-space line-space headchar-lower tailchar-period
+B-Body	The Bitree loss function measures the distance be-	page=2 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tween two trees in terms of distances between their cor-	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	responding subtrees. In this way, we replace the string-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	to-string (Levenshtein) alignments (for WER) or ) -gram	page=2 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	matches (for BLEU/PER) with subtree-to-subtree align-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ments.	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The Bitree Error Rate (in %) is computed as a ratio of	page=2 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	the Bi-tree  Loss function to the number of nodes in the	page=2 xpos=5 ypos=7 right-column full-justified font-largest hanged-line headchar-lower
+E-Body	set 2& .	page=2 xpos=5 ypos=7 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The complete node-to-node alignment between the	page=2 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	parse-tree of the source (Chinese) sentence and the parse	page=2 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	trees of its reference translation and the two hypothesis	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	translations (English) is given in Table 1. Each row in	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	this table shows the alignment between a node in the Chi-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nese parse-tree and nodes in the reference and the two hy-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pothesis parse-trees. The computation of the Bitree Loss	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	function and the Bitree Error Rate is presented in the last	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	two rows of the table.	page=2 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Figure	__Figure 3__	page=3 xpos=-1 ypos=-127 Figure-column left-over right-over box page-top figure-area column-bottom above-blank-line above-double-space above-line-space
+B-Caption	Figure 3: An example showing a parse-tree for a Chinese sentence and parse-trees for its reference translation and	page=3 xpos=0 ypos=0 single-column full-justified column-top line-blank-line line-double-space line-space string-figure headchar-capital
+I-Caption	two competing hypothesis translations. We show a sample alignment for one of the nodes in the Chinese tree with its	page=3 xpos=0 ypos=2 single-column full-justified aligned-line headchar-lower
+I-Caption	corresponding nodes in the three English trees. The complete node-to-node alignment between the parse-trees of the	page=3 xpos=0 ypos=5 single-column full-justified aligned-line headchar-lower
+E-Caption	Chinese sentence and the three English sentences is given in Table 1.	page=3 xpos=0 ypos=8 single-column right-indent aligned-line shorter-tail headchar-capital tailchar-period page-bottom
+Table	__Table 1__	page=4 xpos=0 ypos=-9 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: Bi-Tree Loss Computation for the parse-trees shown in Figure 3. Each row shows a mapping between a node	page=4 xpos=0 ypos=0 single-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+I-Caption	in the parse-tree of the Chinese sentence and the nodes in parse-trees of its reference translation, hypothesis translation	page=4 xpos=0 ypos=0 single-column full-justified aligned-line headchar-lower
+E-Caption	1 and hypothesis translation 2.	page=4 xpos=0 ypos=0 single-column right-indent aligned-line shorter-tail numbered-heading1 tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-SubsectionHeader	2.4 Comparison of Loss Functions	page=4 xpos=0 ypos=1 left-column right-indent column-top line-blank-line line-double-space line-space numbered-heading2 above-blank-line above-double-space above-line-space
+B-Body	In Table 2 we compare various translation loss functions	page=4 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	for the example from Figure 1. The two hypothesis trans-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lations are very similar at the word level and therefore the	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	BLEU score, PER and the WER are identical. However	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	we observe that the sentences differ substantially in their	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	syntactic structure (as seen from Parse-Trees in Figure 3),	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and to a lesser extent in their word-to-word alignments	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	(Figure 1) to the source sentence. The first hypothesis	page=4 xpos=0 ypos=4 left-column full-justified aligned-line
+I-Body	translation is parsed as a sentence   2 while	page=4 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the second translation is parsed as a noun phrase. The Bi-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tree loss function which depends both on the parse-trees	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	and the word-to-word alignments, is therefore very differ-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ent for the two translations (Table 2). While string based	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	metrics such as BLEU, WER and PER are insensitive to	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the syntactic structure of the translations, BiTree Loss is	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	able to measure this aspect of translation quality, and as-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	signs different scores to the two translations.	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Body	We provide this example to show how a loss function	page=4 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	which makes use of syntactic structure from source and	page=4 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	target parse trees, can capture properties of translations	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	that string based loss functions are unable to measure.	page=4 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+Table	__Table 2__	page=4 xpos=5 ypos=1 right-column left-over right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 2: Comparison of the different loss functions for	page=4 xpos=5 ypos=3 right-column full-justified longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	hypothesis and reference translations from Figures 1, 2.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	3 Minimum Bayes-Risk Decoding	page=4 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Statistical Machine Translation (Brown et al., 1990) can	page=4 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Body	be formulated as a mapping of a word sequence in a	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	source language to word sequence  in the target lan-	page=4 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	guage that has a word-to-word alignment  relative to .	page=4 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	Given the source sentence , the MT decoder     pro-	page=4 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	duces a target word string  with word-to-word align-	page=4 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ment    . Relative to a reference translation  with word	page=4 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	 , the decoder performance is measured as	page=4 xpos=6 ypos=7 right-column left-indent font-largest indented-line
+I-Body	<sup>alignment</sup>          . Our goal is to find the decoder that has	page=4 xpos=5 ypos=7 right-column full-justified font-largest hanged-line headchar-super
+I-Body	the best performance over all translations. This is mea-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sured through Bayes-Risk :	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	     ?:= "!$# $%  &'% )(+* &      ,    - 0	page=4 xpos=5 ypos=9 right-column left-indent right-indent box indented-line longer-tail page-bottom
+B-Body	<sup>The</sup>  ^   expectation   that describes is taken translations under the of true human distribution quality.	page=5 xpos=0 ypos=0 left-column full-justified font-largest page-top headchar-super tailchar-period
+B-Body	Given a loss function and a distribution, it is well	page=5 xpos=0 ypos=0 left-column left-indent indented-line headchar-capital
+I-Body	known that the decision rule that minimizes the Bayes-	page=5 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	Risk is given by (Bickel and Doksum, 1977; Goel and	page=5 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-capital
+I-Body	<sup>Byrne,</sup> <sup>2000):</sup> J	page=5 xpos=0 ypos=0 left-column right-indent font-largest aligned-line shorter-tail year headchar-super
+B-Equation	  Z:        % &    $  % &  	page=5 xpos=0 ypos=1 left-column left-indent right-indent box longer-tail
+I-Equation	            0	page=5 xpos=2 ypos=1 left-column left-indent right-indent box indented-line longer-tail above-double-space above-line-space
+I-Equation	(3)	page=5 xpos=4 ypos=1 left-column left-indent indented-line longer-tail line-double-space line-space
+B-Body	We shall refer to the decoder given by this equation	page=5 xpos=0 ypos=1 left-column left-indent hanged-line headchar-capital
+I-Body	as the Minimum Bayes-Risk (MBR) decoder. The MBR	page=5 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	decoder can be thought of as selecting a consensus trans-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lation: For each sentence , Equation 3 selects the trans-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lation that is closest on an average to all the likely trans-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lations and alignments. The closeness is measured under	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	the loss function of interest.	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	This optimal decoder has the difficulties of search	page=5 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	(minimization) and computing the expectation under the	page=5 xpos=0 ypos=3 left-column full-justified hanged-line
+I-Body	true distribution. In practice, we will consider the space	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	of translations to be an 2 -best list of translation alterna-	page=5 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	tives generated under a baseline translation model. Of	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	course, we do not have access to the true distribution	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	over translations. We therefore use statistical transla-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	    	page=5 xpos=0 ypos=4 left-column right-indent box aligned-line shorter-tail
+I-Body	tion models (Och, 2002) to approximate the distribution	page=5 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail year headchar-lower
+B-Body	^  <sub>Decoder</sub> Implementation: . The MBR decoder (Equa-	page=5 xpos=0 ypos=4 left-column full-justified box aligned-line tailchar-hiphen
+I-Body	2 -best List is implemented as	page=5 xpos=1 ypos=4 left-column left-indent right-indent font-largest indented-line shorter-tail numbered-heading1
+I-Body	<sup>tion</sup>  <sub>%</sub> 3) on the -	page=5 xpos=0 ypos=4 left-column right-indent box hanged-line shorter-tail headchar-super tailchar-hiphen
+B-Equation	  )       !     " "  "   $# - & %!&      %   %         ('   %  %) * 	page=5 xpos=0 ypos=5 left-column left-indent right-indent box indented-line longer-tail
+I-Body	and + * *  %   - ,   .  ,  . This is a rescoring procedure that	page=5 xpos=0 ypos=5 left-column full-justified box hanged-line longer-tail headchar-lower
+I-Body	searches for consensus under a given loss function. The	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	posterior probability of each hypothesis in the 2 -best list	page=5 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	is derived from the joint probability assigned by the base-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	line translation model.	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Equation	  /  #   ': 2 3 H   LON  0   / /     .  3 / 1        3     0 (4)	page=5 xpos=0 ypos=6 left-column left-indent box indented-line longer-tail
+I-Equation	 0/ ./ 1 	page=5 xpos=0 ypos=6 left-column left-indent right-indent box aligned-line shorter-tail above-double-space above-line-space
+B-Body	The conventional Maximum A Posteriori (MAP) de-	page=5 xpos=0 ypos=7 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	coder can be derived as a special case of the MBR de-	page=5 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	coder by considering a loss function that assigns a equal	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	cost (say 1) to all misclassifications. Under the 0/1 loss	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	function,	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-comma
+B-Equation	     Z: 6 W . if otherwise, X:C 54 C:_	page=5 xpos=1 ypos=8 left-column left-indent right-indent box indented-line longer-tail
+I-Equation	(5)	page=5 xpos=4 ypos=8 left-column left-indent indented-line longer-tail
+I-Body	the decoder of Equation 3 reduces to the MAP decoder	page=5 xpos=0 ypos=8 left-column right-indent hanged-line shorter-tail headchar-lower
+B-Equation	 MAP  Z: 6  # !  5  7 % & 8  (         0	page=5 xpos=0 ypos=8 left-column left-indent right-indent box indented-line shorter-tail
+I-Equation	(6)	page=5 xpos=4 ypos=9 left-column left-indent indented-line longer-tail above-blank-line above-double-space above-line-space
+B-Body	This illustrates why we are interested in MBR decoders	page=5 xpos=0 ypos=9 left-column left-indent hanged-line line-blank-line line-double-space line-space headchar-capital
+I-Body	based on other loss functions: the MAP decoder is opti-	page=5 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	mal with respect to a loss function that is very harsh. It	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	does not distinguish between different types of translation	page=5 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	errors and good translations receive the same penalty as	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	poor translations.	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Performance of MBR Decoders	page=5 xpos=5 ypos=0 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We performed our experiments on the Large-Data Track	page=5 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	of the NIST Chinese-to-English MT task (NIST, 2003).	page=5 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	The goal of this task is the translation of news stories	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	from Chinese to English. The test set has a total of 1791	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	sentences, consisting of 993 sentences from the NIST	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	2001 MT-eval set and 878 sentences from the NIST 2002	page=5 xpos=5 ypos=1 right-column full-justified aligned-line year
+I-Body	MT-eval set. Each Chinese sentence in this set has four	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+E-Body	reference translations.	page=5 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Evaluation Metrics	page=5 xpos=5 ypos=2 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	The performance of the baseline and the MBR decoders	page=5 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	under the different loss functions was measured with re-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	spect to the four reference translations provided for the	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	test set. Four evaluation metrics were used. These	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	were multi-reference Word Error Rate (mWER) (Och,	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2002), multi-reference Position-independent word Error	page=5 xpos=5 ypos=3 right-column full-justified aligned-line year
+I-Body	Rate (mPER) (Och, 2002) , BLEU and multi-reference	page=5 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-capital
+E-Body	BiTree Error Rate.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	Among these evaluation metrics, the BLEU score	page=5 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	directly takes into account multiple reference transla-	page=5 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tions (Papineni et al., 2001). In case of the other metrics,	page=5 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	we consider multiple references in the following way. For	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	each sentence, we compute the error rate of the hypothe-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sis translation with respect to the most similar reference	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	translation under the corresponding loss function.	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Decoder Performance	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In our experiments, a baseline translation model (JHU,	page=5 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	pus (NIST, 2003) ( :9 . MW 5; English words and <59; . Chi-	page=5 xpos=5 ypos=6 right-column full-justified box aligned-line year headchar-lower tailchar-hiphen
+I-Body	2003), trained on a Chinese-English parallel cor-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line year tailchar-hiphen above-blank-line above-double-space above-line-space
+I-Body	nese words), was used to generate 1000-best translation	page=5 xpos=5 ypos=6 right-column full-justified aligned-line line-blank-line line-double-space line-space headchar-lower
+I-Body	hypotheses for each Chinese sentence in the test set. The	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	1000-best lists were then rescored using the different	page=5 xpos=5 ypos=6 right-column full-justified aligned-line
+E-Body	translation loss functions described in Section 2.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The English sentences in the 2 -best lists were parsed	page=5 xpos=5 ypos=7 right-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	using the Collins parser (Collins, 1999), and the Chinese	page=5 xpos=5 ypos=7 right-column full-justified hanged-line year headchar-lower
+I-Body	sentences were parsed using a Chinese parser provided to	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	us by D. Bikel (Bikel and Chiang, 2000). The English	page=5 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	parser was trained on the Penn Treebank and the Chinese	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	parser on the Penn Chinese treebank.	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Under each loss function, the MBR decoding was per-	page=5 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	formed using Equation 3. We say we have a matched	page=5 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	condition when the same loss function is used in both the	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	error rate and the decoder design. The performance of	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the MBR decoders on the NIST 2001+2002 test set is re-	page=5 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ported in Table 3. For all performance metrics, we show	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	the 70% confidence interval with respect to the MAP	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	baseline computed using bootstrap resampling (Press et	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	al., 2002; Och, 2003). We note that this significance level	page=5 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-lower page-bottom
+I-Body	does meet the customary criteria for minimum signifi-	page=6 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+E-Body	cance intervals of 68.3% (Press et al., 2002).	page=6 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	We observe in most cases that the MBR decoder under	page=6 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	a loss function performs the best under the correspond-	page=6 xpos=0 ypos=0 left-column full-justified hanged-line itemization headchar-lower tailchar-hiphen
+I-Body	ing error metric i.e. matched conditions perform the best.	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The gains from MBR decoding under matched conditions	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	are statistically significant in most cases. We note that the	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	MAP decoder is not optimal in any of the cases. In partic-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ular, the translation performance under the BLEU metric	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	can be improved by using MBR relative to MAP decod-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing. This shows the value of finding decoding procedure	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	matched to the performance criterion of interest.	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We also notice some affinity among the loss functions.	page=6 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital tailchar-period
+I-Body	The MBR decoding under the Bitree Loss function per-	page=6 xpos=0 ypos=2 left-column full-justified hanged-line headchar-capital tailchar-hiphen
+I-Body	forms better under the WER relative to the MAP decoder,	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	but perform poorly under the BLEU metric. The MBR	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	decoder under WER and PER perform better than the	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	MAP decoder under all error metrics. The MBR decoder	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	under BLEU loss function obtains a similar (or worse)	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	performance relative to MAP decoder on all metrics other	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	than BLEU.	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Discussion	page=6 xpos=0 ypos=4 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We have described the formulation of Minimum Bayes-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	Risk decoders for machine translation. This is a general	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	framework that allows us to build special purpose de-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	coders from general purpose models. The procedure aims	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	at direct minimization of the expected risk of translation	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	errors under a given loss function. In this paper we have	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	focused on two situations where this framework could be	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	applied.	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Given an MT evaluation metric of interest such as	page=6 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	BLEU, PER or WER, we can use this metric as a loss	page=6 xpos=0 ypos=5 left-column full-justified hanged-line headchar-capital
+I-Body	function within the MBR framework to design decoders	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	optimized for the evaluation criterion. In particular, the	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	MBR decoding under the BLEU loss function can yield	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+E-Body	further improvements on top of MAP decoding.	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Suppose we are interested in improving syntactic struc-	page=6 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ture of automatic translations and would like to use an	page=6 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	existing statistical MT system that is trained without any	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	linguistic features. We have shown in such a situation	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	how MBR decoding can be applied to the MT system.	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This can be done by the design of translation loss func-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tions from varied linguistic analyzes. We have shown the	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	construction of a Bitree loss function to compare parse-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	trees of any two translations using alignments with re-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	spect to a parse-tree for the source sentence. The loss	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	function therefore avoids the problem of unconstrained	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	tree-to-tree alignment. Using an example, we have shown	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	that this loss function can measure qualities of transla-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion that string (and ngram) based metrics cannot cap-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture. The MBR decoder under this loss function gives	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	improvements under an evaluation metric based on the	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	loss function.	page=6 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	We present results under the Bitree loss function as	page=6 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	an example of incorporating linguistic information into	page=6 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	a loss function; we have not yet measured its correla-	page=6 xpos=5 ypos=0 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	tion with human assessments of translation quality. This	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	loss function allows us to integrate syntactic structure into	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	the statistical MT framework without building detailed	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	models of syntactic features and retraining models from	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	scratch. However, we emphasize that the MBR tech-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	niques do not preclude the construction of complex mod-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els of syntactic structure. Translation models that have	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	been trained with linguistic features could still benefit by	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	the application of MBR decoding procedures.	page=6 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	That machine translation evaluation continues to be	page=6 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	an active area of research is evident from recent work-	page=6 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	shops (AMTA, 2003). We expect new automatic MT	page=6 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower
+I-Body	evaluation metrics to emerge frequently in the future.	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Given any translation metric, the MBR decoding frame-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	work will allow us to optimize existing MT systems for	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the new criterion. This is intended to compensate for any	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	mismatch between decoding strategy of MT systems and	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	their evaluation criteria. While we have focused on de-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	veloping MBR procedures for loss functions that mea-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sure various aspects of translation quality, this frame-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	work can also be used with loss functions which measure	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	application-specific error criteria.	page=6 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We now describe related training and search proce-	page=6 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	dures for NLP that explicitly take into consideration task-	page=6 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	specific performance metrics. Och (2003) developed a	page=6 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower
+I-Body	training procedure that incorporates various MT evalua-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion criteria in the training procedure of log-linear MT	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	models. Foster et al. (2002) developed a text-prediction	page=6 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower
+I-Body	system for translators that maximizes expected benefit to	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the translator under a statistical user model. In parsing,	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	Goodman (1996) developed parsing algorithms that are	page=6 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-capital
+I-Body	appropriate for specific parsing metrics. There has also	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	been recent work that combines 1-best hypotheses from	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	multiple translation systems (Bangalore et al., 2002); this	page=6 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Body	approach uses string-edit distance to align the hypotheses	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	and rescores the resulting lattice with a language model.	page=6 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower tailchar-period above-line-space
+B-Body	In future work we plan to extend the search space of	page=6 xpos=5 ypos=7 right-column left-indent indented-line line-space headchar-capital
+I-Body	MBR decoders to translation lattices produced by the	page=6 xpos=5 ypos=7 right-column full-justified hanged-line headchar-capital
+I-Body	baseline system. Translation lattices (Ueffing et al., 2002;	page=6 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Kumar and Byrne, 2003) are a compact representation of	page=6 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital
+I-Body	a large set of most likely translations generated by an MT	page=6 xpos=5 ypos=7 right-column full-justified aligned-line itemization headchar-lower
+I-Body	system. While an 2 -best list contains only a limited re-	page=6 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ordering of hypotheses, a translation lattice will contain	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	hypotheses with a vastly greater number of re-orderings.	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We are developing efficient lattice search procedures for	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	MBR decoders. By extending the search space of the de-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	coder to a much larger space than the 2 -best list, we ex-	page=6 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	pect further performance improvements.	page=6 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	MBR is a promising modeling framework for statisti-	page=6 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	cal machine translation. It is a simple model rescoring	page=6 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Body	framework that improves well-trained statistical models	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Table	__Table 3__	page=7 xpos=1 ypos=-2 single-column left-indent right-indent box page-top table-area
+B-Caption	Table 3: Translation performance of the MBR decoder under various loss functions on the NIST 2001+2002 Test set.	page=7 xpos=0 ypos=0 single-column full-justified hanged-line longer-tail string-table year headchar-capital tailchar-period
+I-Caption	For each metric, the performance under a matched condition is shown in bold. Note that better results correspond to	page=7 xpos=0 ypos=0 single-column full-justified aligned-line headchar-capital
+E-Caption	higher BLEU scores and to lower error rates.	page=7 xpos=0 ypos=0 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	by tuning them for particular criteria. These criteria could	page=7 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower
+I-Body	come from evaluation metrics or from other desiderata	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	(such as syntactic well-formedness) that we wish to see	page=7 xpos=0 ypos=1 left-column full-justified aligned-line
+E-Body	in automatic translations.	page=7 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+AcknowledgementHeader	Acknowledgments	page=7 xpos=0 ypos=1 left-column right-indent font-largest aligned-line shorter-tail line-space string-acknowledgement headchar-capital
+B-Acknowledgement	This work was performed as part of the 2003 Johns Hop-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail year headchar-capital tailchar-hiphen
+I-Acknowledgement	kins Summer Workshop research group on Syntax for	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	Statistical Machine Translation. We would like to thank	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Acknowledgement	all the group members for providing various resources	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	and tools and contributing to useful discussions during	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Acknowledgement	the course of the workshop.	page=7 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+ReferenceHeader	References	page=7 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail string-reference headchar-capital above-double-space above-line-space
+B-Reference	AMTA. 2003. Workshop on Machine	page=7 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Translation Evaluation, MT Summit IX.	page=7 xpos=0 ypos=3 left-column left-indent indented-line headchar-capital tailchar-period
+I-Reference	www.issco.unige.ch/projects/isle/MTE-at-MTS9.html .	page=7 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	S. Bangalore, V. Murdock, and G. Riccardi. 2002. Boot-	page=7 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	strapping bilingual data using consensus translation for	page=7 xpos=0 ypos=4 left-column left-indent indented-line headchar-lower
+I-Reference	a multilingual instant messaging system. In Proceed-	page=7 xpos=0 ypos=4 left-column left-indent aligned-line itemization headchar-lower tailchar-hiphen
+I-Reference	ings of COLING, Taipei, Taiwan.	page=7 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	P. J. Bickel and K. A. Doksum. 1977. Mathematical	page=7 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Statistics: Basic Ideas and Selected topics. Holden-	page=7 xpos=0 ypos=5 left-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Reference	Day Inc., Oakland, CA, USA.	page=7 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	D. Bikel and D. Chiang. 2000. Two statistical pars-	page=7 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ing models applied to the chinese treebank. In Pro-	page=7 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	ceedings of the Second Chinese Language Processing	page=7 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Reference	Workshop, pages 1–6, Hong Kong.	page=7 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	P. F. Brown, J. Cocke, S. A. Della Pietra, V. J. Della	page=7 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Pietra, F. Jelinek, J. D. Lafferty, R. L. Mercer, and	page=7 xpos=0 ypos=7 left-column left-indent indented-line headchar-capital
+I-Reference	P. S. Roossin. 1990. A statistical approach to machine	page=7 xpos=0 ypos=7 left-column left-indent aligned-line year headchar-capital
+I-Reference	translation. Computational Linguistics, 16(2):79–85.	page=7 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	M. Collins and N. Duffy. 2002. New ranking algorithms	page=7 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	for parsing and tagging: Kernels over discrete struc-	page=7 xpos=0 ypos=8 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	tures, and the weighted perceptron. In Proceedings of	page=7 xpos=0 ypos=8 left-column left-indent aligned-line headchar-lower
+I-Reference	EMNLP, Philadelphia, PA, USA.	page=7 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	M. J. Collins. 1999. Head-driven Statistical Models for	page=7 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Natural Language Parsing. Ph.D. thesis, University of	page=7 xpos=0 ypos=8 left-column left-indent indented-line headchar-capital
+I-Reference	Pennsylvania, Philadelphia.	page=7 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	G. Doddington. 2002. Automatic evaluation of machine	page=7 xpos=0 ypos=9 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	translation quality using n-gram co-occurrence statis-	page=7 xpos=0 ypos=9 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	tics. In Proc. of HLT 2002, San Diego, CA. USA.	page=7 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period column-bottom
+B-Reference	G. Foster, P. Langlais, and G. Lapalme. 2002. User-	page=7 xpos=5 ypos=0 right-column full-justified column-top year headchar-capital tailchar-hiphen
+I-Reference	friendly text prediction for translators. In Proc. of	page=7 xpos=5 ypos=1 right-column left-indent indented-line headchar-lower
+I-Reference	EMNLP, Philadelphia, PA, USA.	page=7 xpos=5 ypos=1 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	V. Goel and W. Byrne. 2000. Minimum Bayes-risk auto-	page=7 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	matic speech recognition. Computer Speech and Lan-	page=7 xpos=5 ypos=1 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	guage, 14(2):115–135.	page=7 xpos=5 ypos=1 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	J. Goodman. 1996. Parsing algorithms and metrics. In	page=7 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Proc. of ACL-1996, pages 177–183, Santa Cruz, CA,	page=7 xpos=5 ypos=2 right-column left-indent indented-line year headchar-capital tailchar-comma
+I-Reference	USA.	page=7 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	JHU. 2003. Syntax for statistical machine	page=7 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	translation, Final report, JHU summer workshop.	page=7 xpos=5 ypos=3 right-column left-indent indented-line headchar-lower tailchar-period
+I-Reference	http://www.clsp.jhu.edu/ws2003/groups/translate/ .	page=7 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	S. Kumar and W. Byrne. 2002. Minimum Bayes-Risk	page=7 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	alignment of bilingual texts. In Proc. of EMNLP,	page=7 xpos=5 ypos=3 right-column left-indent indented-line headchar-lower tailchar-comma
+I-Reference	Philadelphia, PA, USA.	page=7 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	S. Kumar and W. Byrne. 2003. A weighted finite state	page=7 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	transducer implementation of the alignment template	page=7 xpos=5 ypos=4 right-column left-indent indented-line headchar-lower
+I-Reference	model for statistical machine translation. In Proceed-	page=7 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ings of HLT-NAACL, Edmonton, Canada.	page=7 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	I. D. Melamed, R. Green, and J. P. Turian. 2003. Preci-	page=7 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	sion and recall of machine translation. In Proceedings	page=7 xpos=5 ypos=5 right-column left-indent indented-line headchar-lower
+I-Reference	of the HLT-NAACL, Edmonton, Canada.	page=7 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	NIST. 2003. The NIST Machine Translation Evalua-	page=7 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tions. http://www.nist.gov/speech/tests/mt/ .	page=7 xpos=5 ypos=5 right-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	F. Och. 2002. Statistical Machine Translation: From	page=7 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Single Word Models to Alignment Templates. Ph.D.	page=7 xpos=5 ypos=6 right-column left-indent indented-line headchar-capital tailchar-period
+I-Reference	thesis, RWTH Aachen, Germany.	page=7 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	F. Och. 2003. Minimum error rate training in statistical	page=7 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	machine translation. In Proc. of ACL, Sapporo, Japan.	page=7 xpos=5 ypos=6 right-column left-indent right-indent indented-line headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	K. Papineni, S. Roukos, T. Ward, and W. Zhu. 2001.	page=7 xpos=5 ypos=7 right-column full-justified hanged-line line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Bleu: a method for automatic evaluation of machine	page=7 xpos=5 ypos=7 right-column left-indent indented-line headchar-capital
+I-Reference	translation. Technical Report RC22176 (W0109-022),	page=7 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	IBM Research Division.	page=7 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	W. H. Press, S. A. Teukolsky, W. T. Vetterling, and B. P.	page=7 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Flannery. 2002. Numerical Recipes in C++. Cam-	page=7 xpos=5 ypos=8 right-column left-indent indented-line year headchar-capital tailchar-hiphen
+I-Reference	bridge University Press, Cambridge, UK.	page=7 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	M. Tang, X. Luo, and S. Roukos. 2002. Active learning	page=7 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	for statistical natural language parsing. In Proceedings	page=7 xpos=5 ypos=8 right-column left-indent indented-line headchar-lower
+I-Reference	of ACL 2002, Philadelphia, PA, USA.	page=7 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	N. Ueffing, F. Och, and H. Ney. 2002. Generation of	page=7 xpos=5 ypos=9 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	word graphs in statistical machine translation. In Proc.	page=7 xpos=5 ypos=9 right-column left-indent indented-line headchar-lower tailchar-period
+I-Reference	of EMNLP, pages 156–163, Philadelphia, PA, USA.	page=7 xpos=5 ypos=9 right-column centered left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period

@@ -1,0 +1,621 @@
+Title	A Lemma-Based Approach to a Maximum Entropy	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital
+Title	Word Sense Disambiguation System for Dutch	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-double-space above-line-space
+Author	Tanja Gaustad	page=0 xpos=4 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-double-space line-space headchar-capital
+B-Affiliation	Alfa-Informatica, University of Groningen	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Address	Postbus 716	page=0 xpos=4 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Address	9700 AS Groningen,	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail tailchar-comma
+Address	The Netherlands,	page=0 xpos=4 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital tailchar-comma
+Email	T.Gaustad@let.rug.nl	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail symbol-atmark headchar-capital column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	In this paper, we present a corpus-based super-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	vised word sense disambiguation (WSD) sys-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tem for Dutch which combines statistical classi-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	fication (maximum entropy) with linguistic in-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	formation. Instead of building individual clas-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sifiers per ambiguous wordform, we introduce	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	a lemma-based approach. The advantage of	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line itemization headchar-lower
+I-Abstract	this novel method is that it clusters all inflec-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ted forms of an ambiguous word in one classi-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	fier, therefore augmenting the training material	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	available to the algorithm. Testing the lemma-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	based model on the Dutch S ENSEVAL -2 test	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	data, we achieve a significant increase in accur-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	acy over the wordform model. Also, the WSD	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	system based on lemmas is smaller and more	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	robust.	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction: WSD for Dutch	page=0 xpos=0 ypos=5 left-column right-indent font-larger hanged-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	A major problem in natural language processing	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	(NLP) for which no satisfactory solution has been	page=0 xpos=0 ypos=5 left-column full-justified aligned-line
+I-Body	found to date is word sense disambiguation (WSD).	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	WSD refers to the resolution of lexical semantic	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	ambiguity and its goal is to attribute the correct	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	sense(s) to words in a certain context. For instance	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	machine translation, information retrieval or docu-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment extraction could all benefit from the accurate	page=0 xpos=0 ypos=6 left-column right-over aligned-line headchar-lower
+E-Body	disambiguation of word senses.	page=0 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The WSD system for Dutch <sup>1</sup> presented here is a	page=0 xpos=0 ypos=7 left-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	corpus-based supervised algorithm combining stat-	page=0 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	istical classification with various kinds of linguistic	page=0 xpos=0 ypos=7 left-column right-over aligned-line headchar-lower
+I-Body	information. The intuition behind the system is that	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	linguistic information is beneficial for WSD which	page=0 xpos=0 ypos=7 left-column right-over aligned-line headchar-lower
+I-Body	means that it will improve results over purely stat-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	istical approaches. The linguistic information in-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cludes lemmas, part-of-speech (PoS), and the con-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	text around the ambiguous word.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In this paper, we focus on a lemma-based ap-	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	proach to WSD for Dutch. So far, systems built	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	individual classifiers for each ambiguous wordform	page=0 xpos=0 ypos=9 left-column right-over aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> The interest in Dutch lies grounded in the fact	page=0 xpos=0 ypos=9 left-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	that we are working in the context of a project con-	page=0 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower tailchar-hiphen
+I-Footnote	cerned with developing NLP tools for Dutch (see	page=0 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	http://www.let.rug.nl/˜vannoord/alp).	page=0 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+I-Body	(Hendrickx et al., 2002; Hoste et al., 2002). In	page=0 xpos=5 ypos=2 right-column full-justified column-top year
+I-Body	the system presented here, the classifiers built for	page=0 xpos=5 ypos=2 right-column right-over aligned-line headchar-lower
+I-Body	each ambiguous word are based on its lemma in-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stead. Lemmatization allows for more compact and	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	generalizable data by clustering all inflected forms	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	of an ambiguous word together, an effect already	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	commented on by Yarowsky (1994). The more in-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	flection in a language, the more lemmatization will	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	help to compress and generalize the data. In the case	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	of our WSD system this means that less classifiers	page=0 xpos=5 ypos=3 right-column right-over aligned-line headchar-lower
+I-Body	have to be built therefore adding up the training ma-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	terial available to the algorithm for each ambiguous	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	wordform. Accuracy is expected to increase for the	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	lemma-based model in comparison to the wordform	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	model.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The paper is structured as follows: First, we will	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	present the dictionary-based lemmatizer for Dutch	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	which was used to lemmatize the data, followed by	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	a detailed explanation of the lemma-based approach	page=0 xpos=5 ypos=5 right-column full-justified aligned-line itemization headchar-lower
+I-Body	adopted in our WSD system. Next, the statistical	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	classification algorithm, namely maximum entropy,	page=0 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower tailchar-comma
+I-Body	and Gaussian priors (used for smoothing purposes)	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	are introduced. We will then proceed to describe	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the corpus, the corpus preparation, and the system	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	settings. We conclude the paper with results on the	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	Dutch S ENSEVAL -2 data, their evaluation and ideas	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+E-Body	for future work.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Dictionary-Based Lemmatizer for Dutch	page=0 xpos=5 ypos=7 right-column full-justified font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Statistical classification systems, like our WSD sys-	page=0 xpos=5 ypos=7 right-column right-over aligned-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tem, determine the most likely class for a given in-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stance by computing how likely the words or lin-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guistic features in the instance are for any given	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	class. Estimating these probabilities is difficult, as	page=0 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower
+I-Body	corpora contain lots of different, often infrequent,	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	words. Lemmatization <sup>2</sup> is a method that can be used	page=0 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	to reduce the number of wordforms that need to be	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	taken into consideration, as estimation is more reli-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	able for frequently occurring data.	page=0 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>2</sup> We chose to use lemmatization and not stemming because	page=0 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-double-space line-space headchar-super
+I-Footnote	the lemma (or canonical dictionary entry form) can be used to	page=0 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	look up an ambiguous word in a dictionary or an ontology like	page=0 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	e.g. WordNet. This is not the case for a stem.	page=0 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Body	Lemmatization reduces all inflected forms of a	page=1 xpos=0 ypos=0 left-column left-indent page-top headchar-capital
+I-Body	word to the same lemma. The number of different	page=1 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	lemmas in a training corpus will therefore in general	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	be much smaller than the number of different word-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	forms, and the frequency of lemmas will therefore	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	be higher than that of the corresponding individual	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	inflected forms, which in turn suggests that probab-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ilities can be estimated more reliably.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For the experiments in this paper, we used a lem-	page=1 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	matizer for Dutch with dictionary lookup. Diction-	page=1 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ary information is obtained from Celex (Baayen et	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	al., 1993), a lexical database for Dutch. Celex con-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tains 381,292 wordforms and 124,136 lemmas for	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	Dutch. It also contains the PoS associated with	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	the lemmas. This information is useful for disam-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguation: in those cases where a particular word-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	form has two (or more) possible corresponding lem-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mas, the one matching the PoS of the wordform	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	is chosen. Thus, in a first step, information about	page=1 xpos=0 ypos=3 left-column right-over aligned-line headchar-lower
+I-Body	wordforms, their respective lemmas and their PoS	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	is extracted from the database.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Dictionary lookup can be time consuming, espe-	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	cially for large dictionaries such as Celex. To guar-	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	antee fast lookup and a compact representation, the	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	information extracted from the dictionary is stored	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	as a finite state automaton (FSA) using Daciuk’s	page=1 xpos=0 ypos=4 left-column right-over aligned-line headchar-lower
+I-Body	(2000) FSA morphology tools. <sup>3</sup> Given a wordform,	page=1 xpos=0 ypos=4 left-column full-justified font-largest aligned-line year tailchar-comma
+I-Body	the compiled automaton provides the correspond-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing lemmas in time linear to the length of the input	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	word. Contrasting this dictionary-based lemmat-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	izer with a simple suffix stripper, such as the Dutch	page=1 xpos=0 ypos=5 left-column right-over aligned-line headchar-lower
+I-Body	Porter Stemmer (Kraaij and Pohlman, 1994), our	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-capital
+I-Body	lemmatizer is more accurate, faster and more com-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pact (see (Gaustad and Bouma, 2002) for a more	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+E-Body	elaborate description and evaluation).	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	During the actual lemmatization procedure, the	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	FSA encoding of the information in Celex assigns	page=1 xpos=0 ypos=6 left-column full-justified hanged-line headchar-capital
+I-Body	every wordform all its possible lemmas. For am-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguous wordforms, the lemma with the same PoS	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	as the wordform in question is chosen. All word-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	forms that were not found in Celex are processed	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	with a morphological guessing automaton. <sup>4</sup>	page=1 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+B-Body	The key features of the lemmatizer employed are	page=1 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+E-Body	that it is fast, compact and accurate.	page=1 xpos=0 ypos=7 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Lemma-Based Approach	page=1 xpos=0 ypos=8 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	As we have mentioned in the previous section, lem-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	matization collapses all inflected forms of a given	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	word to the same lemma. In our system, separate	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	classifiers are built for every ambiguous wordform.	page=1 xpos=0 ypos=9 left-column right-over aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>3</sup> Available at http://www.eti.pg.gda.pl/	page=1 xpos=0 ypos=9 left-column left-indent right-over indented-line line-double-space line-space headchar-super
+I-Footnote	˜jandac/fsa.html	page=1 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail
+B-Footnote	<sup>4</sup> Also available from the FSA morphology tools (Daciuk,	page=1 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-super tailchar-comma
+I-Footnote	2000).	page=1 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail year tailchar-period column-bottom
+I-Body	Normally, this implies that the basis for grouping	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-capital
+I-Body	occurrences of particular ambiguous words together	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	is that their wordform is the same. Alternatively, we	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	chose for a model constructing classifiers based on	page=1 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower
+I-Body	lemmas therefore reducing the number of classifiers	page=1 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower
+E-Body	that need to be made.	page=1 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As has already been noted by Yarowsky (1994),	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail year headchar-capital tailchar-comma
+I-Body	using lemmas helps to produce more concise and	page=1 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	generic evidence than inflected forms. Therefore	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	building classifiers based on lemmas increases the	page=1 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower
+I-Body	data available to each classifier. We make use of	page=1 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower
+I-Body	the advantage of clustering all instances of e.g. one	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	verb in a single classifier instead of several classifi-	page=1 xpos=5 ypos=2 right-column right-over aligned-line longer-tail headchar-lower tailchar-hiphen
+I-Body	ers (one for each inflected form found in the data).	page=1 xpos=5 ypos=2 right-column full-justified aligned-line shorter-tail headchar-lower tailchar-period
+I-Body	In this way, there is more training data per ambigu-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ous wordform available to each classifier. The ex-	page=1 xpos=5 ypos=2 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	pectation is that this should increase the accuracy of	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	our maximum entropy WSD system in comparison	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	to the wordform-based model.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Figure 1 shows how the system works. During	page=1 xpos=5 ypos=3 right-column left-indent indented-line longer-tail string-figure headchar-capital
+I-Body	training, every wordform is first checked for ambi-	page=1 xpos=5 ypos=3 right-column right-over hanged-line headchar-lower tailchar-hiphen
+I-Body	guity, i.e. whether it has more than one sense associ-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ated with all its occurrences. If the wordform is am-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguous, the number of lemmas associated with it is	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	looked up. If the wordform has one lemma, all oc-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	currences of this lemma in the training data are used	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to make the classifier for that particular wordform—	page=1 xpos=5 ypos=4 right-column right-over aligned-line headchar-lower
+I-Body	and others with the same lemma. If a wordform	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	has more than one lemmas, a classifier based on the	page=1 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower
+I-Body	wordform is built. This strategy has been decided	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	on in order to be able to treat all ambiguous words,	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	notwithstanding lemmatization errors or wordforms	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	that can genuinely be assigned two or more lemmas.	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	An example of a word that has two different lem-	page=1 xpos=5 ypos=6 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Body	mas depending on the context is boog: it can either	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	be the past tense of the verb buigen (‘to bend’) or the	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	noun boog (‘arch’). Since the Dutch S ENSEVAL -2	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	data is not only ambiguous with regard to meaning	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	but also with regard to PoS, both lemmas are sub-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sumed in the wordform classifier for boog.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	During testing, we check for each word whether	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	there is a classifier available for either its wordform	page=1 xpos=5 ypos=7 right-column right-over hanged-line headchar-lower
+I-Body	or its lemma and apply that classifier to the test in-	page=1 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower tailchar-hiphen
+E-Body	stance.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Maximum Entropy Word Sense	page=1 xpos=5 ypos=8 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1
+B-Body	Disambiguation System	page=1 xpos=5 ypos=8 right-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	Our WSD system is founded on the idea of combin-	page=1 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ing statistical classification with linguistic sources	page=1 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower
+I-Body	of knowledge. In order to be able to take full advant-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	age of the linguistic information, we need a classi-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fication algorithm capable of incorporating the in-	page=1 xpos=5 ypos=9 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	formation provided. The main advantage of max-	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	imum entropy modeling is that heterogeneous and	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Figure	__Figure 1__	page=2 xpos=1 ypos=-5 single-column centered left-indent right-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: Schematic overview of the lemma-based approach for our WSD System for Dutch	page=2 xpos=0 ypos=0 single-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Body	overlapping information can be integrated into a	page=2 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower
+I-Body	single statistical model. Other learning algorithms,	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	like e.g. decision lists, only take the strongest fea-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture into account, whereas maximum entropy com-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bines them all. Also, no independence assumptions	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	as in e.g. Naive Bayes are necessary.	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We will now describe the different steps in put-	page=2 xpos=0 ypos=2 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ting together the WSD system we used to incor-	page=2 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	porate and test our lemma-based approach, start-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing with the introduction of maximum entropy, the	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	machine learning algorithm used for classification.	page=2 xpos=0 ypos=3 left-column right-over aligned-line headchar-lower tailchar-period
+I-Body	Then, smoothing with Gaussian priors will be ex-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	plained.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Maximum Entropy Classification	page=2 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Several problems in NLP have lent themselves to	page=2 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	solutions using statistical language processing tech-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	niques. Many of these problems can be viewed as	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	a classification task in which linguistic classes have	page=2 xpos=0 ypos=5 left-column full-justified aligned-line itemization headchar-lower
+E-Body	to be predicted given a context.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The statistical classifier used in the experiments	page=2 xpos=0 ypos=5 left-column left-indent right-over indented-line longer-tail line-space headchar-capital
+I-Body	reported in this paper is a maximum entropy classi-	page=2 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	fier (Berger et al., 1996; Ratnaparkhi, 1997b). Max-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	imum entropy is a general technique for estimating	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	probability distributions from data. A probability	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	distribution is derived from a set of events based on	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the computable qualities (characteristics) of these	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	events. The characteristics are called features, and	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	the events are sets of feature values.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	If nothing about the data is known, estimating a	page=2 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	probability distribution using the principle of max-	page=2 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	imum entropy involves selecting the most uniform	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	distribution where all events have equal probability.	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In other words, it means selecting the distribution	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+E-Body	which maximises the entropy.	page=2 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	If data is available, a number of features extrac-	page=2 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen column-bottom
+I-Body	ted from the labeled training data are used to de-	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	rive a set of constraints for the model. This set of	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	constraints characterises the class-specific expecta-	page=2 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	tions for the distribution. So, while the distribution	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	should maximise the entropy, the model should also	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	satisfy the constraints imposed by the training data.	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	A maximum entropy model is thus the model with	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	maximum entropy of all models that satisfy the set	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	of constraints derived from the training data.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The model consists of a set of features which oc-	page=2 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	cur on events in the training data. Training itself	page=2 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	amounts to finding weights for each feature using	page=2 xpos=5 ypos=3 right-column right-over aligned-line headchar-lower
+I-Body	the following formula:	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	1	page=2 xpos=6 ypos=4 right-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space numeric-only
+I-Equation	p(c|x) = exp X i=1 n λ i f i (x, c)  Z	page=2 xpos=5 ypos=4 right-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-lower above-double-space above-line-space
+I-Body	where the property function f i (x, c) represents	page=2 xpos=5 ypos=4 right-column left-indent font-largest hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	the number of times feature i is used to find class	page=2 xpos=5 ypos=5 right-column right-over hanged-line headchar-lower
+I-Body	c for event x, and the weights λ i are chosen to max-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	imise the likelihood of the training data and, at the	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	same time, maximise the entropy of p. Z is a nor-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	malizing constant, constraining the distribution to	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	sum to 1 and n is the total number of features.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	This means that during training the weight λ i for	page=2 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	each feature i is computed and stored. During test-	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ing, the sum of the weights λ i of all features i found	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in the test instances is computed for each class c and	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	the class with the highest score is chosen.	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	A big advantage of maximum entropy modeling	page=2 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	is that the features include any information which	page=2 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	might be useful for disambiguation. Thus, dissim-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ilar types of information, such as various kinds of	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	linguistic knowledge, can be combined into a single	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	model for WSD without having to assume inde-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pendence of the different features. Furthermore,	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	good results have been produced in other areas of	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	NLP research using maximum entropy techniques	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-capital
+I-Body	(Berger et al., 1996; Koeling, 2001; Ratnaparkhi,	page=3 xpos=0 ypos=0 left-column full-justified aligned-line year tailchar-comma
+E-Body	1997a).	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Smoothing: Gaussian Priors	page=3 xpos=0 ypos=0 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	Since NLP maximum entropy models usually have	page=3 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	lots of features and lots of sparseness (e.g. features	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	seen in testing not occurring in training), smoothing	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	is essential as a way to optimize the feature weights	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	(Chen and Rosenfeld, 2000; Klein and Manning,	page=3 xpos=0 ypos=1 left-column full-justified aligned-line year tailchar-comma
+I-Body	2003). In the case of the Dutch S ENSEVAL -2, for	page=3 xpos=0 ypos=1 left-column full-justified aligned-line year
+I-Body	many ambiguous words there is little training data	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	available, therefore making smoothing essential.	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The intuition behind Gaussian priors is that the	page=3 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	parameters in the maximum entropy model should	page=3 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	not be too large because of optimization problems	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	with infinite feature weights. In other words: we	page=3 xpos=0 ypos=2 left-column right-over aligned-line headchar-lower
+I-Body	enforce that each parameter will be distributed ac-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cording to a Gaussian prior with mean µ and vari-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ance σ <sup>2</sup> . This prior expectation over the distribution	page=3 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	of parameters penalizes parameters for drifting too	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	far from their mean prior value which is µ = 0.	page=3 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Using Gaussian priors has a number of effects on	page=3 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	the maximum entropy model. We trade off some	page=3 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	expectation-matching for smaller parameters. Also,	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	when multiple features can be used to explain a	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	data point, the more common ones generally receive	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	more weight. Last but not least accuracy generally	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	goes up and convergence is faster.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the current experiments the Gaussian prior was	page=3 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	set to σ <sup>2</sup> = 1000 (based on preliminary experi-	page=3 xpos=0 ypos=5 left-column full-justified font-largest hanged-line headchar-lower tailchar-hiphen
+I-Body	ments) which led to an overall increase of at least	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	0.5% when compared to a model which was built	page=3 xpos=0 ypos=5 left-column full-justified aligned-line
+E-Body	without smoothing.	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Corpus Preparation and Building	page=3 xpos=0 ypos=6 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1
+I-SectionHeader	Classifiers	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-line-space
+B-Body	In the context of S ENSEVAL -2 <sup>5</sup> , the first sense-	page=3 xpos=0 ypos=6 left-column right-over font-largest hanged-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tagged corpus for Dutch was made available (see	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	(Hendrickx and van den Bosch, 2001) for a de-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	tailed description). The training section of the	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	Dutch S ENSEVAL -2 dataset contains approximately	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	120,000 tokens and 9,300 sentences, whereas the	page=3 xpos=0 ypos=7 left-column full-justified aligned-line
+I-Body	test section consists of ca. 40,000 tokens and 3,000	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	sentences.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In contrast to the English WSD data available	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	from S ENSEVAL -2, the Dutch WSD data is not only	page=3 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	ambiguous in word senses, but also with regard to	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	PoS. This means that accurate PoS information is	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	important in order for the WSD system to accur-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ately achieve morpho-syntactic as well as semantic	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	disambiguation.	page=3 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>5</sup> See http://www.senseval.org/ for more inform-	page=3 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	ation on S ENSEVAL and for downloads of the data.	page=3 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	First, the corpus is lemmatized (see section 2) and	page=3 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	part-of-speech-tagged. We used the Memory-Based	page=3 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	tagger MBT (Daelemans et al., 2002a; Daelemans	page=3 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+I-Body	et al., 2002b) with the (limited) WOTAN tag set	page=3 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+I-Body	(Berghmans, 1994; Drenth, 1997) to PoS tag our	page=3 xpos=5 ypos=0 right-column full-justified aligned-line year
+I-Body	data (see (Gaustad, 2003) for an evaluation of dif-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ferent PoS-taggers on this task). Since we are only	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	interested in the main PoS-categories, we discarded	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	all additional information from the assigned PoS.	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This resulted in 12 different tags being kept. In	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	the current experiments, we included the PoS of the	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	ambiguous wordform (important for the morpho-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	syntactic disambiguation) and also the PoS of the	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	context words or lemmas.	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	After the preprocessing (lemmatization and PoS	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	tagging), for each ambiguous wordform <sup>6</sup> all in-	page=3 xpos=5 ypos=2 right-column full-justified font-largest hanged-line headchar-lower tailchar-hiphen
+I-Body	stances of its occurrence are extracted from the cor-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pus. These instances are then transformed into fea-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture vectors including the features specified in a par-	page=3 xpos=5 ypos=3 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	ticular model. The model we used in the reported	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	experiments includes information on the wordform,	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	its lemma, its PoS, contextwords to the left and right	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	as well as the context PoS, and its sense/class.	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	(1) Nu ging hij bloemen plukken en maakte	page=3 xpos=5 ypos=4 right-column left-indent right-indent indented-line longer-tail line-double-space line-space itemization
+I-Listitem	now went he flowers pick and made	page=3 xpos=5 ypos=4 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-line-space
+I-Listitem	er een krans van.	page=3 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail line-space headchar-lower tailchar-period
+I-Listitem	it a crown of	page=3 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-line-space
+I-Listitem	‘Now he went to pick flowers and made a	page=3 xpos=5 ypos=5 right-column left-indent aligned-line longer-tail line-space
+I-Listitem	crown of it.’	page=3 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Below we show an example of a feature vector	page=3 xpos=5 ypos=5 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	for the ambiguous word bloem (‘flower’/‘flour’) in	page=3 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	sentence 1:	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	bloemen bloem N nu gaan hij Adv	page=3 xpos=5 ypos=6 right-column right-indent font-smallest aligned-line longer-tail line-double-space line-space headchar-lower above-line-space
+I-Equation	V Pron plukken en maken V Conj V	page=3 xpos=5 ypos=6 right-column right-indent font-smallest aligned-line longer-tail line-space headchar-capital above-line-space
+I-Equation	bloem plant	page=3 xpos=5 ypos=6 right-column right-indent font-smallest aligned-line shorter-tail line-space headchar-lower above-double-space above-line-space
+B-Body	The first slot represents the ambiguous wordform,	page=3 xpos=5 ypos=6 right-column right-over aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	the second its lemma, the third the PoS of the am-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguous wordform, the fourth to twelfth slots con-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tain the context lemmas and their PoS (left before	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	right), and the last slot represents the sense or class.	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Various preliminary experiments have shown a con-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	text size of ±3 context words, i.e. 3 words to the	page=3 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	left and 3 words to the right of the ambiguous word,	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	to achieve the best and most stable results. Only	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	context words within the same sentence as the am-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	biguous wordform were taken into account.	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Earlier experiments showed that using lemmas	page=3 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	as context instead of wordforms increases accuracy	page=3 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>6</sup> A wordform is ‘ambiguous’ if it has two or more different	page=3 xpos=5 ypos=9 right-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	senses/classes in the training data. The sense ‘=’ is seen as	page=3 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	marking the basic sense of a word/lemma and is therefore also	page=3 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	taken into account.	page=3 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+I-Body	due to the compression achieved through lemmat-	page=4 xpos=0 ypos=0 left-column right-indent page-top headchar-lower tailchar-hiphen
+I-Body	ization (as explained earlier in this paper and put	page=4 xpos=0 ypos=0 left-column right-indent aligned-line headchar-lower
+I-Body	to practice in the lemma-based approach). With	page=4 xpos=0 ypos=0 left-column right-indent aligned-line headchar-lower
+I-Body	lemmas, less context features have to be estimated,	page=4 xpos=0 ypos=0 left-column right-indent aligned-line headchar-lower tailchar-comma
+E-Body	therefore counteracting data sparseness.	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the experiments presented here, no threshold	page=4 xpos=0 ypos=0 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	was used. Experiments have shown that build-	page=4 xpos=0 ypos=1 left-column right-indent hanged-line headchar-lower tailchar-hiphen
+I-Body	ing classifiers even for wordforms with very few	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	training instances yields better results than apply-	page=4 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	ing a frequency threshold and using the baseline	page=4 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower
+I-Body	count (assigning the most frequent sense) for word-	page=4 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	forms with an amount of training instances below	page=4 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	the threshold. It has to be noted, though, that the	page=4 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	effect of applying a threshold may depend on the	page=4 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+E-Body	choice of learning algorithm.	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Results and Evaluation	page=4 xpos=0 ypos=2 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In order to be able to evaluate the results from	page=4 xpos=0 ypos=3 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the lemma-based approach, we also include results	page=4 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+I-Body	based on wordform classifiers. During training with	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	wordform classifiers, 953 separate classifiers were	page=4 xpos=0 ypos=3 left-column right-over aligned-line headchar-lower
+E-Body	built.	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	With the lemma-based approach, 669 classifiers	page=4 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	were built in total during training, 372 based on	page=4 xpos=0 ypos=4 left-column right-indent hanged-line headchar-lower
+I-Body	the lemma of an ambiguous word (subsuming 656	page=4 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	wordforms) and 297 based on the wordform. A total	page=4 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	of 512 unique ambiguous wordforms was found in	page=4 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	the test data. 438 of these were classified using the	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	classifiers built from the training data, whereas only	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	410 could be classified using the wordform model	page=4 xpos=0 ypos=5 left-column full-justified aligned-line
+E-Body	(see table 1 for an overview).	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	We include the accuracy of the WSD system on	page=4 xpos=0 ypos=5 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	all words for which classifiers were built (ambig) as	page=4 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	well as the overall performance on all words (all),	page=4 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower tailchar-comma
+I-Body	including the non-ambiguous ones. This makes our	page=4 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	results comparable to other systems which use the	page=4 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	same data, but maybe a different data split or a dif-	page=4 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent number of classifiers (e.g. in connection with	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	a frequency threshold applied). The baseline has	page=4 xpos=0 ypos=7 left-column right-indent aligned-line itemization headchar-lower
+I-Body	been computed by always choosing the most fre-	page=4 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+E-Body	quent sense of a given wordform in the test data.	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The results in table 2 show the average accuracy	page=4 xpos=0 ypos=7 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	for the two different approaches. The accuracy of	page=4 xpos=0 ypos=7 left-column right-indent hanged-line headchar-lower
+I-Body	both approaches improves significantly (when ap-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plying a paired sign test with a confidence level of	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	95%) over the baseline. This demonstrates that the	page=4 xpos=0 ypos=8 left-column right-indent aligned-line
+I-Body	general idea of the system, to combine linguistic	page=4 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	features with statistical classification, works well.	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Focusing on a comparison of the two approaches,	page=4 xpos=0 ypos=8 left-column right-indent aligned-line headchar-capital tailchar-comma
+I-Body	we can clearly see that the lemma-based approach	page=4 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower
+I-Body	works significantly better than the wordform only	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	model, thereby verifying our hypothesis.	page=4 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Another advantage of the approach proposed, be-	page=4 xpos=0 ypos=9 left-column left-indent right-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	sides increasing the classification accuracy, is that	page=4 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower column-bottom
+I-Body	less classifiers need to be built during training and	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	therefore the WSD system based on lemmas is	page=4 xpos=5 ypos=0 right-column right-indent aligned-line headchar-lower
+I-Body	smaller. In an online application, this might be an	page=4 xpos=5 ypos=0 right-column right-indent aligned-line headchar-lower
+I-Body	important aspect of the speed and the size of the ap-	page=4 xpos=5 ypos=0 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	plication. It should be noted here that the degree of	page=4 xpos=5 ypos=0 right-column right-indent aligned-line headchar-lower
+I-Body	generalization through lemmatization strongly de-	page=4 xpos=5 ypos=0 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	pends on the data. Only inflected wordforms oc-	page=4 xpos=5 ypos=1 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	curring in the corpus are subsumed in one lemma	page=4 xpos=5 ypos=1 right-column right-indent aligned-line headchar-lower
+I-Body	classifier. The more different inflected forms the	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	training corpus contains, the better the “compres-	page=4 xpos=5 ypos=1 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	sion rate” in the WSD model. Added robustness is a	page=4 xpos=5 ypos=1 right-column right-indent aligned-line headchar-lower
+I-Body	further asset of our system. More wordforms could	page=4 xpos=5 ypos=2 right-column right-indent aligned-line headchar-lower
+I-Body	be classified with the lemma-based approach com-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	pared to the wordform-based one (438 vs. 410).	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In order to better assess the real gain in accur-	page=4 xpos=5 ypos=2 right-column left-indent right-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	acy from the lemma-based model, we also evalu-	page=4 xpos=5 ypos=2 right-column right-indent hanged-line headchar-lower tailchar-hiphen
+I-Body	ated a subpart of the results for the lemma-based	page=4 xpos=5 ypos=2 right-column right-indent aligned-line headchar-lower
+I-Body	and the wordform-based model, namely the accur-	page=4 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	acy of those wordforms which were classified based	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	on their lemma in the former approach, but based	page=4 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+I-Body	on their wordform in the latter case. The compar-	page=4 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	ison in table 3 clearly shows that there is much to be	page=4 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+I-Body	gained from lemmatization. The fact that inflected	page=4 xpos=5 ypos=4 right-column right-indent aligned-line headchar-lower
+I-Body	wordforms are subsumed in lemma classifiers leads	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to an error rate reduction of 8% and a system with	page=4 xpos=5 ypos=4 right-column right-indent aligned-line headchar-lower
+E-Body	less than half as many classifiers.	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In table 4, we see a comparison with another	page=4 xpos=5 ypos=4 right-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Body	WSD systems for Dutch which uses Memory-Based	page=4 xpos=5 ypos=4 right-column right-indent hanged-line headchar-capital
+I-Body	learning (MBL) in combination with local context	page=4 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	(Hendrickx et al., 2002). A big difference with	page=4 xpos=5 ypos=5 right-column right-indent aligned-line year
+I-Body	the system presented in this article is that extensive	page=4 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	parameter optimization for the classifier of each am-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguous wordform has been conducted for the MBL	page=4 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	approach. Also, a frequency threshold of minimally	page=4 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	10 training instances was applied, using the baseline	page=4 xpos=5 ypos=6 right-column right-indent aligned-line numbered-heading1
+I-Body	classifier for all words below that threshold. As we	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	can see, our lemma-based WSD system scores the	page=4 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	same as the Memory-Based WSD system, without	page=4 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	extensive “per classifier” parameter optimization.	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	According to Daelemans and Hoste (2002), differ-	page=4 xpos=5 ypos=7 right-column right-indent aligned-line year headchar-capital tailchar-hiphen
+I-Body	ent machine learning results should be compared	page=4 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower
+I-Body	once all parameters have been optimized for all clas-	page=4 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	sifiers. This is not the case in our system, and	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	yet it achieves the same accuracy as an optimized	page=4 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower
+I-Body	model. Optimization of parameters for each am-	page=4 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	biguous wordform and lemma classifier might help	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	increase our results even further.	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	7 Conclusion and Future Work	page=4 xpos=5 ypos=8 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper, we have introduced a lemma-based	page=4 xpos=5 ypos=9 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	approach for a statistical WSD system using max-	page=4 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	imum entropy and a number of linguistic sources	page=4 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower
+I-Body	of information. This novel approach uses the ad-	page=4 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	vantage of more concise and more generalizable in-	page=4 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower tailchar-hiphen page-bottom
+Table	__Table 1__	page=5 xpos=1 ypos=-3 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: Overview of classifiers built during training and used in testing with the lemma-based and the	page=5 xpos=0 ypos=0 single-column right-over hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	wordform-based approach	page=5 xpos=0 ypos=0 single-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+Table	__Table 2__	page=5 xpos=2 ypos=0 single-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 2: WSD Results (in %) with the lemma-based approach compared to classifiers based on wordforms	page=5 xpos=0 ypos=2 single-column left-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Body	formation contained in lemmas as key feature: clas-	page=5 xpos=0 ypos=2 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	sifiers for individual ambiguous words are built on	page=5 xpos=0 ypos=3 left-column right-over aligned-line headchar-lower
+I-Body	the basis of their lemmas, instead of wordforms as	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	has traditionally been done. Therefore, more train-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing material is available to each classifier and the	page=5 xpos=0 ypos=3 left-column right-over aligned-line headchar-lower
+E-Body	resulting WSD system is smaller and more robust.	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The lemma-based approach has been tested on	page=5 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	the Dutch S ENSEVAL -2 data set and resulted in a	page=5 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	significant improvement of the accuracy achieved	page=5 xpos=0 ypos=4 left-column right-over aligned-line headchar-lower
+I-Body	over the system using the traditional wordform	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	based approach. In comparison to earlier results	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	with a Memory-Based WSD system, the lemma-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based approach performs the same, involving less	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	work (no parameter optimization).	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	A possible extension of the present approach is to	page=5 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	include more specialized feature selection and also	page=5 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	to optimize the settings for each ambiguous word-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	form instead of adopting the same strategy for all	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	words in the corpus. Furthermore, we would like to	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	test the lemma-based approach in a multi-classifier	page=5 xpos=0 ypos=7 left-column right-over aligned-line headchar-lower
+E-Body	voting scheme.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgments	page=5 xpos=0 ypos=8 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	This research was carried out within the framework	page=5 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Acknowledgement	of the PIONIER Project Algorithms for Linguistic	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	Processing. This PIONIER Project is funded by	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Acknowledgement	NWO (Dutch Organization for Scientific Research)	page=5 xpos=0 ypos=9 left-column right-over aligned-line headchar-capital
+I-Acknowledgement	and the University of Groningen. We are grateful to	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	Gertjan van Noord and Menno van Zaanen for com-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Acknowledgement	ments and discussions.	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+ReferenceHeader	References	page=5 xpos=5 ypos=2 right-column right-indent font-larger column-top string-reference headchar-capital above-double-space above-line-space
+B-Reference	R. Harald Baayen, Richard Piepenbrock, and Afke	page=5 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Reference	van Rijn. 1993. The CELEX lexical database	page=5 xpos=5 ypos=3 right-column left-indent indented-line year headchar-lower
+I-Reference	(CD-ROM). Linguistic Data Consortium, Uni-	page=5 xpos=5 ypos=3 right-column left-indent aligned-line tailchar-hiphen
+I-Reference	versity of Pennsylvania, Philadelphia.	page=5 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Adam Berger, Stephen Della Pietra, and Vin-	page=5 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Reference	cent Della Pietra. 1996. A maximum entropy ap-	page=5 xpos=5 ypos=4 right-column left-indent indented-line year headchar-lower tailchar-hiphen
+I-Reference	proach to natural language processing. Computa-	page=5 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	tional Linguistics, 22(1):39–71.	page=5 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Johan Berghmans. 1994. WOTAN—een automat-	page=5 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	ische grammaticale tagger voor het Nederlands.	page=5 xpos=5 ypos=5 right-column left-indent indented-line headchar-lower tailchar-period
+I-Reference	Master’s thesis, Nijmegen University, Nijmegen.	page=5 xpos=5 ypos=5 right-column left-indent right-indent aligned-line headchar-capital tailchar-period above-line-space
+B-Reference	Stanley Chen and Ronald Rosenfeld. 2000. A sur-	page=5 xpos=5 ypos=5 right-column full-justified hanged-line line-space year headchar-capital tailchar-hiphen
+I-Reference	vey of smoothing techniques for ME models.	page=5 xpos=5 ypos=6 right-column left-indent indented-line headchar-lower tailchar-period
+I-Reference	IEEE Transactions on Speech and Audio Pro-	page=5 xpos=5 ypos=6 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	cessing, 8(1):37–50.	page=5 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Jan Daciuk. 2000. Finite state tools for natural lan-	page=5 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	guage processing. In Proceedings of the COL-	page=5 xpos=5 ypos=6 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	ING 2000 Workshop “Using Toolsets and Archi-	page=5 xpos=5 ypos=7 right-column left-indent aligned-line year headchar-capital tailchar-hiphen
+I-Reference	tectures to Build NLP Systems”, pages 34–37,	page=5 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	Centre Universitaire, Luxembourg.	page=5 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Walter Daelemans and Véronique Hoste. 2002.	page=5 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-space year headchar-capital tailchar-period
+I-Reference	Evaluation of machine learning methods for nat-	page=5 xpos=5 ypos=8 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Reference	ural language processing tasks. In Proceedings of	page=5 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower
+I-Reference	the Third International Conference on Language	page=5 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower
+I-Reference	Resources and Evaluation (LREC 2002), pages	page=5 xpos=5 ypos=8 right-column left-indent aligned-line year headchar-capital
+I-Reference	755–760, Las Palmas, Gran Canaria.	page=5 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail tailchar-period above-line-space
+B-Reference	Walter Daelemans, Jakub Zavrel, Ko van der	page=5 xpos=5 ypos=9 right-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Reference	Sloot, and Antal van den Bosch. 2002a. MBT:	page=5 xpos=5 ypos=9 right-column left-indent indented-line year headchar-capital tailchar-colon
+I-Reference	Memory-Based tagger, reference guide. Tech-	page=5 xpos=5 ypos=9 right-column left-indent aligned-line headchar-capital tailchar-hiphen page-bottom
+Table	__Table 3__	page=6 xpos=2 ypos=-2 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 3: Comparison of results (in %) for wordforms with different classifiers in the lemma-based and	page=6 xpos=0 ypos=0 single-column right-over hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	wordform-based approach	page=6 xpos=0 ypos=0 single-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+Table	__Table 4__	page=6 xpos=3 ypos=0 single-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 4: Comparison of results (in %) on the Dutch S ENSEVAL -2 Data with different WSD systems	page=6 xpos=0 ypos=1 single-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Reference	nical Report ILK 02-09, Induction of Linguistic	page=6 xpos=0 ypos=2 left-column left-indent column-top line-blank-line line-double-space line-space headchar-lower
+I-Reference	Knowledge, Computational Linguistics, Tilburg	page=6 xpos=0 ypos=2 left-column left-indent aligned-line headchar-capital
+I-Reference	University, Tilburg. version 1.0.	page=6 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Walter Daelemans, Jakub Zavrel, Ko van der Sloot,	page=6 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-space headchar-capital tailchar-comma
+I-Reference	and Antal van den Bosch. 2002b. TiMBL:	page=6 xpos=0 ypos=3 left-column left-indent indented-line year headchar-lower tailchar-colon
+I-Reference	Tilburg Memory-Based learner, reference guide.	page=6 xpos=0 ypos=3 left-column left-indent aligned-line headchar-capital tailchar-period
+I-Reference	Technical Report ILK 02-10, Induction of Lin-	page=6 xpos=0 ypos=3 left-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	guistic Knowledge, Computational Linguistics,	page=6 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	Tilburg University, Tilburg. version 4.3.	page=6 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Erwin Drenth. 1997. Using a hybrid approach to-	page=6 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	wards Dutch part-of-speech tagging. Master’s	page=6 xpos=0 ypos=4 left-column left-indent indented-line headchar-lower
+I-Reference	thesis, Alfa-Informatica, University of Gronin-	page=6 xpos=0 ypos=4 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	gen, Groningen.	page=6 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Tanja Gaustad and Gosse Bouma. 2002. Accur-	page=6 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	ate stemming of Dutch for text classification. In	page=6 xpos=0 ypos=5 left-column left-indent right-over indented-line headchar-lower
+I-Reference	Mariët Theune, Anton Nijholt, and Hendri Hon-	page=6 xpos=0 ypos=5 left-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	dorp, editors, Computational Linguistics in the	page=6 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower
+I-Reference	Netherlands 2001, Amsterdam. Rodopi.	page=6 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-line-space
+B-Reference	Tanja Gaustad. 2003. The importance of high qual-	page=6 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	ity input for WSD: An application-oriented com-	page=6 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	parison of part-of-speech taggers. In Proceedings	page=6 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Reference	of the Australasian Language Technology Work-	page=6 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	shop (ALTW 2003), pages 65–72, Melbourne.	page=6 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Reference	Iris Hendrickx and Antal van den Bosch. 2001.	page=6 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-space year headchar-capital tailchar-period
+I-Reference	Dutch word sense disambiguation: Data and pre-	page=6 xpos=0 ypos=7 left-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Reference	liminary results. In Proceedings of Senseval-2,	page=6 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	Second International Workshop on Evaluating	page=6 xpos=0 ypos=8 left-column left-indent aligned-line headchar-capital
+I-Reference	Word Sense Disambiguation Systems, pages 13–	page=6 xpos=0 ypos=8 left-column left-indent aligned-line headchar-capital
+I-Reference	16, Toulouse.	page=6 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail tailchar-period above-line-space
+B-Reference	Iris Hendrickx, Antal van den Bosch, Véronique	page=6 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Reference	Hoste, and Walter Daelemans. 2002. Dutch	page=6 xpos=0 ypos=8 left-column left-indent indented-line year headchar-capital
+I-Reference	word sense disambiguation: Optimizing the loc-	page=6 xpos=0 ypos=9 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	alness of context. In Proceedings of the ACL	page=6 xpos=0 ypos=9 left-column left-indent aligned-line headchar-lower
+I-Reference	2002 Workshop on Word Sense Disambiguation:	page=6 xpos=0 ypos=9 left-column left-indent aligned-line year tailchar-colon
+I-Reference	Recent Successes and Future Directions, Phil-	page=6 xpos=0 ypos=9 left-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	adelphia.	page=6 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Reference	Véronique Hoste, Iris Hendrickx, Walter Daele-	page=6 xpos=5 ypos=2 right-column full-justified column-top headchar-capital tailchar-hiphen
+I-Reference	mans, and Antal van den Bosch. 2002. Para-	page=6 xpos=5 ypos=2 right-column left-indent indented-line year headchar-lower tailchar-hiphen
+I-Reference	meter optimization for machine-learning of word	page=6 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower
+I-Reference	sense disambiguation. Natural Language Engin-	page=6 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	eering, Special Issue on Word Sense Disambigu-	page=6 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ation Systems, 8(4):311–325.	page=6 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Dan Klein and Christopher Manning. 2003. Max-	page=6 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ent models, conditional estimation, and optim-	page=6 xpos=5 ypos=4 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	ization without the magic. ACL 2003 Tutorial	page=6 xpos=5 ypos=4 right-column left-indent aligned-line year headchar-lower
+I-Reference	Notes. Sapporo.	page=6 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Rob Koeling. 2001. Dialogue-Based Disambigu-	page=6 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ation: Using Dialogue Status to Improve Speech	page=6 xpos=5 ypos=4 right-column left-indent indented-line headchar-lower
+I-Reference	Understanding. Ph.D. thesis, Alfa-Informatica,	page=6 xpos=5 ypos=5 right-column left-indent aligned-line headchar-capital tailchar-comma
+I-Reference	University of Groningen, Groningen.	page=6 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Wessel Kraaij and Renée Pohlman. 1994. Porter’s	page=6 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	stemming algorithm for Dutch. In L.G.M.	page=6 xpos=5 ypos=5 right-column left-indent indented-line headchar-lower tailchar-period
+I-Reference	Noordman and W.A.M. de Vroomen, editors,	page=6 xpos=5 ypos=5 right-column left-indent aligned-line headchar-capital tailchar-comma
+I-Reference	Informatiewetenschap 1994: Wetenschapelijke	page=6 xpos=5 ypos=6 right-column left-indent aligned-line year headchar-capital
+I-Reference	bijdragen aan de derde STINFON Conferentie,	page=6 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	pages 167–180, Tilburg.	page=6 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Adwait Ratnaparkhi. 1997a. A linear observed	page=6 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	time statistical parser based on maximum entropy	page=6 xpos=5 ypos=6 right-column left-indent indented-line headchar-lower
+I-Reference	models. In Proceedings of the 2nd Conference	page=6 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower
+I-Reference	on Empirical Methods in Natural Language Pro-	page=6 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	cessing (EMNLP-97), Providence.	page=6 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Adwait Ratnaparkhi. 1997b. A simple introduc-	page=6 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tion to maximum entropy models for natural lan-	page=6 xpos=5 ypos=7 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	guage processing. Technical Report IRCS Report	page=6 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower
+I-Reference	97-08, IRCS, University of Pennsylvania, Phil-	page=6 xpos=5 ypos=8 right-column left-indent aligned-line tailchar-hiphen
+I-Reference	adelphia.	page=6 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	David Yarowsky. 1994. Decision lists for lexical	page=6 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail year headchar-capital
+I-Reference	ambiguity resolution: Application to accent res-	page=6 xpos=5 ypos=8 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	toration in Spanish and French. In 32th Annual	page=6 xpos=5 ypos=9 right-column left-indent aligned-line headchar-lower
+I-Reference	Meeting of the Association for Computational	page=6 xpos=5 ypos=9 right-column left-indent aligned-line headchar-capital
+I-Reference	Linguistics (ACL 1994), Las Cruces.	page=6 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period

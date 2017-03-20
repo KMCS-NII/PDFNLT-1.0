@@ -1,0 +1,331 @@
+Title	On Combining Language Models :	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital tailchar-colon
+Title	Oracle Approach <sup></sup>	page=0 xpos=3 ypos=0 single-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+Author	Kadri Hacioglu and Wayne Ward	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Center for Spoken Language Research	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+I-Affiliation	University of Colorado at Boulder	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+Email	f hacioglu,whw g @cslr.colorado.edu	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent indented-line shorter-tail symbol-atmark itemization headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	ABSTRACT	page=0 xpos=0 ypos=2 left-column right-indent font-largest column-top line-blank-line line-double-space line-space headchar-capital above-line-space
+B-Abstract	In this paper, we address the problem of combining several lan-	page=0 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Abstract	guage models (LMs). We find that simple interpolation methods,	page=0 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Abstract	like log-linear and linear interpolation, improve the performance	page=0 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Abstract	but fall short of the performance of an oracle. The oracle knows the	page=0 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Abstract	reference word string and selects the word string with the best per-	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Abstract	formance (typically, word or semantic error rate) from a list of word	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	strings, where each word string has been obtained by using a dif-	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ferent LM. Actually, the oracle acts like a dynamic combiner with	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	hard decisions using the reference. We provide experimental results	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	that clearly show the need for a dynamic language model combina-	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion to improve the performance further. We suggest a method that	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Abstract	mimics the behavior of the oracle using a neural network or a de-	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cision tree. The method amounts to tagging LMs with confidence	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Abstract	measures and picking the best hypothesis corresponding to the LM	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Abstract	with the best confidence.	page=0 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1. INTRODUCTION	page=0 xpos=0 ypos=5 left-column right-indent font-largest aligned-line longer-tail line-blank-line line-double-space line-space itemization above-line-space
+B-Body	Statistical language models (LMs) are essential in speech recog-	page=0 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	nition and understanding systems for high word and semantic ac-	page=0 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	curacy, not to mention robustness and portability. Several language	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	models have been proposed and studied during the past two decades	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	[8]. Although it has turned out to be a rather difficult task to beat	page=0 xpos=0 ypos=5 left-column full-justified aligned-line
+I-Body	the (almost) standard class/word n-grams (typically n = 2 or 3 ),	page=0 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	there has been a great deal of interest in grammar based language	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	models [1]. A promising approach for limited domain applications	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	is the use of semantically motivated phrase level stochastic context	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	free grammars (SCFGs) to parse a sentence into a sequence of se-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantic tags which are further modeled using n -grams [2, 9, 10, 3].	page=0 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	The main motivation behind the grammar based LMs is the inabil-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ity of n -grams to model longer-distance constraints in a language.	page=0 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	With the advent of fairly fast computers and efficient parsing and	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	search schemes several researchers have focused on incorporating	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	relatively complex language models into speech recognition and	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	understanding systems at different levels. For example, in [3], we	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	 The work is supported by DARPA through SPAWAR under grant	page=0 xpos=0 ypos=8 left-column full-justified font-largest aligned-line line-double-space line-space
+I-Footnote	#N66001-00-2-8906.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail tailchar-period column-bottom
+I-Body	report a significant perplexity improvement with a moderate in-	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	crease in word/semantic accuracy, at N -best list (rescoring) level,	page=0 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	using a dialog-context dependent, semantically motivated grammar	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	based language model.	page=0 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Statistical language modeling is a ”learning from data” problem.	page=0 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital tailchar-period
+I-Body	The generic steps to be followed for language modeling are	page=0 xpos=5 ypos=2 right-column right-indent hanged-line shorter-tail headchar-capital above-double-space above-line-space
+B-Listitem	 preparation of training data	page=0 xpos=5 ypos=3 right-column left-indent right-indent indented-line shorter-tail line-double-space line-space above-double-space above-line-space
+B-Listitem	 selection of a model type	page=0 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail line-double-space line-space above-double-space above-line-space
+B-Listitem	 specification of the model structure	page=0 xpos=5 ypos=3 right-column left-indent right-indent aligned-line longer-tail line-double-space line-space above-double-space above-line-space
+B-Listitem	 estimation of model parameters	page=0 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail line-double-space line-space above-double-space above-line-space
+B-Body	The training data should consist of large amounts of text, which	page=0 xpos=5 ypos=4 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	is hardly satisfied in new applications. In those cases, complex	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	models fit to the training data. On the other hand, simple models	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	can not capture the actual structure. In the Bayes’ (sequence) de-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cision framework of speech recognition/understanding we heavily	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	constrain the model structure to come up with a tractable and prac-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tical LM. For instance, in a class/word n -gram LM the dependency	page=0 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	of a word is often restricted to the class that it belongs and the de-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pendency of a class is limited to n -1 previous classes. The estima-	page=0 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of the model parameters, which are commonly the probabili-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ties, is another important issue in language modeling. Besides data	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	sparseness, the estimation algorithms (e.g. EM algorithm) might be	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	responsible for the estimated probabilities to be far from optimal.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The aforementioned problems of learning have different effects	page=0 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	on different LM types. Therefore, it is wise to design LMs based on	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	different paradigms and combine them in some optimal sense. The	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	simplest combination method is the so called linear interpolation	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	[4]. Recently, the linear interpolation in the logarithmic domain	page=0 xpos=5 ypos=7 right-column full-justified aligned-line
+I-Body	has been investigated in [6]. Perplexity results on a couple of tasks	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	have shown that the log-linear interpolation is better than the linear	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	interpolation. Theoretically, a far more powerful method for LM	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	combination is the maximum entropy approach [7]. However, it	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	has not been widely used in practice, since it is computationally	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	demanding.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In this research, we consider two LMs:	page=0 xpos=5 ypos=8 right-column left-indent right-indent indented-line longer-tail headchar-capital tailchar-colon above-double-space above-line-space
+B-Listitem	 class-based 3-gram LM (baseline).	page=0 xpos=5 ypos=8 right-column left-indent right-indent indented-line line-double-space line-space tailchar-period above-double-space above-line-space
+B-Listitem	 dialog dependent semantic grammar based 3-gram LM [3].	page=0 xpos=5 ypos=8 right-column left-indent right-indent aligned-line longer-tail line-double-space line-space tailchar-period above-double-space above-line-space
+B-Body	After N-best list rescoring experiments with linear and log-linear	page=0 xpos=5 ypos=9 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	interpolation, we realized that the performance in terms of word	page=0 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Body	and semantic accuracies fall considerably short of the performance	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	of an oracle. We explain the set-up for the oracle experiment and	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	point out that the oracle is a dynamic LM combiner. To fill the	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	performance gap, we suggest a method that can mimic the oracle.	page=0 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Figure	__Figure 1__	page=1 xpos=0 ypos=0 left-column centered left-indent right-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: A speech production model	page=1 xpos=0 ypos=3 left-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-Body	The paper is organized as follows. Section 2 presents the lan-	page=1 xpos=0 ypos=4 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	guage models considered in this study. In Section 3, we briefly	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	explain combining of LMs using linear and log-linear interpola-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. Section 4 explains the set up for the oracle experiment. Ex-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	perimental results are reported in Section 5. The future work and	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	conclusions are given in the last section.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2. LANGUAGE MODELS	page=1 xpos=0 ypos=5 left-column right-indent font-largest aligned-line line-double-space line-space itemization above-line-space
+B-Body	In language modeling, the goal is to find the probability distribu-	page=1 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tion of word sequences, i.e. P ( W ) , where W = w 1 ; w 2 :    ; w L .	page=1 xpos=0 ypos=5 left-column centered right-indent font-largest hanged-line headchar-lower tailchar-period
+I-Body	We first describe a model for sentence generation in a dialog [5]	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	on which our grammar LM is based. The model is illustrated in	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	Figure 1. Here, the user has a specific goal that does not change	page=1 xpos=0 ypos=6 left-column full-justified aligned-line string-figure headchar-capital
+I-Body	throughout the dialog. According to the goal and the dialog con-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	text the user first picks a set of concepts with respective values and	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	then use phrase generators associated with concepts to generate the	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	word sequence. The word sequence is next mapped into a sequence	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	of phones and converted into a speech signal by the user’s vocal ap-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	paratus which we finally observe as a sequence of acoustic feature	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	vectors.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Assuming that	page=1 xpos=0 ypos=7 left-column left-indent right-indent indented-line longer-tail headchar-capital above-line-space
+B-Listitem	 the dialog context S is given,	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-largest indented-line longer-tail line-space tailchar-comma above-line-space
+B-Listitem	 W is independent of S but the concept sequence C , i.e.	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-largest aligned-line longer-tail line-space tailchar-period
+I-Listitem	P ( W=C; S ) = P ( W=C ) ,	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital tailchar-comma above-double-space above-line-space
+B-Listitem	 (W,C) pair is unique (possible with either Viterbi approxima-	page=1 xpos=0 ypos=8 left-column left-indent right-indent hanged-line longer-tail line-double-space line-space tailchar-hiphen
+I-Listitem	tion or unambigious association between C and W),	page=1 xpos=0 ypos=8 left-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-comma above-line-space
+I-Body	one can easily show that P ( W ) is given by	page=1 xpos=0 ypos=8 left-column right-indent font-largest hanged-line shorter-tail line-space headchar-lower above-double-space above-line-space
+B-Equation	P ( W ) = P ( W=C ) P ( C=S ) (1)	page=1 xpos=1 ypos=8 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	In (1) we identify two models:	page=1 xpos=0 ypos=9 left-column left-indent right-indent hanged-line shorter-tail line-double-space line-space headchar-capital tailchar-colon above-double-space above-line-space
+B-Listitem	 Concept model: P ( C=S )	page=1 xpos=0 ypos=9 left-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space above-line-space
+B-Listitem	 Syntactic model : P ( W=C )	page=1 xpos=0 ypos=9 left-column left-indent right-indent font-largest aligned-line longer-tail line-space column-bottom
+B-Figure	< s > I WANT TO FLY FROM MIAMI FLORIDA TO SYDNEY AUS-	page=1 xpos=5 ypos=0 right-column centered right-indent font-largest column-top tailchar-hiphen
+I-Figure	< <sup>TRALIA</sup> s > [i want] ON OCTOBER [depart loc] FIFTH [arrive < loc] /s > [date] < /s >	page=1 xpos=5 ypos=0 right-column right-indent box aligned-line shorter-tail
+I-Figure	AFTER < s > I DON’T TO FLY FROM MIAMI < > FLORIDA TO SYDNEY	page=1 xpos=5 ypos=0 right-column full-justified box aligned-line longer-tail headchar-capital
+I-Figure	< s > [Pronoun] <sup>AREA</sup> ON [Contraction] OCTOBER [depart FIFTH loc] /s [arrive loc] [after] [Noun] [date]	page=1 xpos=5 ypos=0 right-column right-over font-largest aligned-line
+E-Figure	< /s >	page=1 xpos=5 ypos=0 right-column right-indent font-largest aligned-line shorter-tail above-double-space above-line-space
+B-Caption	Figure 2: Examples of parsing into concepts and filler classes	page=1 xpos=5 ypos=1 right-column centered left-indent right-indent longer-tail line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-Body	The concept model is conditioned on the dialog context. Al-	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	though there are several ways to define a dialog context, we select	page=1 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	the last question prompted by the system as the dialog context. It is	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	simple and yet strongly predictive and constraining.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The concepts are classes of phrases with the same meaning. Put	page=1 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	differently, a concept class is a set of all phrases that may be used	page=1 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	to express that concept (e.g. [i want], [arrive loc]). Those concept	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	classes are augmented with single word, multiple word and a small	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	number of broad (and unambigious) part of speech (POS) classes.	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In cases where the parser fails, we break the phrase into a sequence	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	of words and tag them using this set of ”filler” classes. Two exam-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ples in Figure 2 clearly illustrate the scheme.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The structure of the concept sequences is captured by an n -gram	page=1 xpos=5 ypos=3 right-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	LM. We train a seperate language model for each dialog context.	page=1 xpos=5 ypos=3 right-column full-justified hanged-line headchar-capital tailchar-period
+I-Body	Given the context S and C = c 0 c 1    c K ; c K +1 , the concept se-	page=1 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	quence probabilities are calculated as (for n = 3 )	page=1 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Equation	P ( C=S ) = P ( c 1 = < s >; S ) P ( c 2 = < s >; c 1 ; S )	page=1 xpos=5 ypos=4 right-column centered left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital
+I-Equation	K Y +1 P ( c	page=1 xpos=7 ypos=4 right-column left-indent right-indent box indented-line shorter-tail headchar-capital
+I-Equation	k =3 k =c k 2 ; c k 1 ; S )	page=1 xpos=7 ypos=4 right-column left-indent right-indent box longer-tail itemization headchar-lower
+I-Body	where c 0 and c K +1 are for the sentence-begin and sentence-end	page=1 xpos=5 ypos=5 right-column full-justified font-largest hanged-line longer-tail headchar-lower
+E-Body	symbols, respectively.	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Each concept class is written as a CFG and compiled into a	page=1 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	stochastic recursive transition network (SRTN). The production rules	page=1 xpos=5 ypos=5 right-column right-over hanged-line longer-tail headchar-lower
+I-Body	define complete paths beginning from the start-node through the	page=1 xpos=5 ypos=5 right-column full-justified aligned-line shorter-tail headchar-lower
+I-Body	end-node in these nets. The probability of a complete path tra-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	versed through one or more SRTNs initiated by the top-level SRTN	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	associated with the concept is the probability of the phrase given	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	that concept. This probability is calculated as the multiplication of	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	all arc probabilities that defines the path. That is,	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-comma
+B-Equation	P ( W=C ) = Q K i =1 P ( s i =c i )	page=1 xpos=6 ypos=6 right-column left-indent right-indent box indented-line shorter-tail headchar-capital
+I-Equation	= Q K i =1 Q M j =1 i P ( r j =c i )	page=1 xpos=7 ypos=7 right-column left-indent right-indent box indented-line longer-tail
+I-Body	where s i is a substring in W = w 1 ; w 2 ::w L = s 1 ; ::s 2 ; s K ( K 	page=1 xpos=5 ypos=7 right-column full-justified font-largest hanged-line longer-tail headchar-lower
+I-Body	L ) and r 1 ; r 2 ; :::r M i are the production rules that construct s i . The	page=1 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-capital
+I-Body	concept and rule sequences are assumed to be unique in the above	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	equations. The parser uses heuristics to comply with this assump-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	SCFG and n-gram probabilities are learned from a text corpus	page=1 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	by simple counting and smoothing. Our semantic grammars have a	page=1 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	low degree of ambiguity and therefore do not require computation-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ally intensive stochastic training and parsing techniques.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The class based LM can be considered as a very special case	page=1 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	of our grammar based model. Concepts (or classes) are restricted	page=1 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower
+I-Body	to those that represent a list of semantically similar words, like	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	[city name] , [day of week], [month day] and so forth. So, instead	page=1 xpos=5 ypos=9 right-column full-justified aligned-line
+I-Body	<sup>of</sup> P ( rule w i =c probabilities j ) . For simplicity, we have each given word the belongs class the to word at most probabilities, one class.	page=1 xpos=5 ypos=9 right-column full-justified font-largest aligned-line headchar-super tailchar-period page-bottom
+Figure	__Figure 3__	page=2 xpos=0 ypos=-4 left-column left-indent right-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 3: The set up for oracle experiments	page=2 xpos=0 ypos=0 left-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-SectionHeader	3. LINEAR AND LOG-LINEAR INTERPO-	page=2 xpos=0 ypos=0 left-column full-justified font-largest hanged-line longer-tail line-blank-line line-double-space line-space itemization tailchar-hiphen column-bottom above-line-space
+I-SectionHeader	LATION	page=2 xpos=0 ypos=1 single-column left-indent right-indent font-largest column-top line-space headchar-capital column-bottom
+Figure	__Figure 4__	page=2 xpos=5 ypos=-4 right-column left-indent right-indent box column-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 4: The LM combining system based on the oracle ap-	page=2 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-hiphen
+E-Caption	proach.	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	best hypothesis after rescoring. The oracle compares each hypoth-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen column-bottom
+B-Body	Assuming that we have M language models, P i ( W ) ; i = 1 ; 2 ;    ; M , <sup>esis</sup> <sub>tic)</sub> accuracy. to the reference and pick the one with the best word (or seman-	page=2 xpos=0 ypos=1 single-column left-indent font-largest column-top headchar-capital tailchar-hiphen column-bottom
+I-Body	the combined LM obtained using the linear interpolation (at sen-	page=2 xpos=0 ypos=1 left-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	tence level) is given by	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Equation	P ( W ) = X M 	page=2 xpos=1 ypos=2 left-column left-indent right-indent box indented-line longer-tail headchar-capital
+I-Equation	i =1 i P i ( W )	page=2 xpos=2 ypos=2 left-column left-indent right-indent box indented-line longer-tail itemization headchar-lower
+I-Equation	(2)	page=2 xpos=4 ypos=2 left-column left-indent indented-line longer-tail above-double-space above-line-space
+E-Body	where  i are positive interpolation weights that sum up to unity.	page=2 xpos=0 ypos=2 left-column right-indent font-largest hanged-line shorter-tail line-double-space line-space headchar-lower tailchar-period
+B-Body	The log-linear interpolation suggests an LM, again at sentence	page=2 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	level, given by	page=2 xpos=0 ypos=3 left-column right-indent hanged-line shorter-tail headchar-lower
+B-Equation	Y M	page=2 xpos=2 ypos=3 left-column left-indent right-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	P ( W ) = Z ( <sup>1</sup>  ) i =1 P i ( W )  i	page=2 xpos=1 ypos=3 left-column left-indent right-indent box hanged-line longer-tail headchar-capital
+I-Equation	(3)	page=2 xpos=4 ypos=3 left-column left-indent indented-line longer-tail above-double-space above-line-space
+I-Body	where Z (  ) is the normalization factor and it is a function of the	page=2 xpos=0 ypos=4 left-column full-justified font-largest hanged-line line-double-space line-space headchar-lower
+I-Body	interpolation weights. The linearity in logarithmic domain is obvi-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ous if we take the logarithm of both sides. In the sequel, we omit	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the normalization term, as its computation is very expensive. We	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	hope that its impact on the performance is not significant. Yet, it	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	prevents us from reporting perplexity results.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	4. THE ORACLE APPROACH	page=2 xpos=0 ypos=6 left-column right-indent font-largest aligned-line longer-tail line-blank-line line-double-space line-space itemization above-line-space
+B-Body	The set-up for oracle experiments is illustrated in Figure 3. The	page=2 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	purpose of this set-up is twofold. First, we use it to evaluate the or-	page=2 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	acle performance. Second, we use it to prepare data for the training	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	of a stochastic decision model. For the sake of simplicity, we show	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the set-up for two LMs and do experiments accordingly. Nonethe-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	less, the set-up can be extended to an arbitrary number of LMs.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The language models are used for N-best list rescoring. The	page=2 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	N-best list is generated by a speech recognizer using a relatively	page=2 xpos=0 ypos=7 left-column full-justified hanged-line headchar-capital
+I-Body	simpler LM (here, a class-based trigram LM) . The framework for	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	N-best list rescoring is the following MAP decision:	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-colon
+B-Equation	W  = argmax p A P ( W=C W ) P ( C W =S ) (4)	page=2 xpos=0 ypos=8 left-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	W 2 L N	page=2 xpos=1 ypos=8 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-line-space
+I-Body	where p A is the acoustic probability from the first pass, C W is the	page=2 xpos=0 ypos=9 left-column full-justified font-largest hanged-line longer-tail line-space headchar-lower
+I-Body	unique concept sequence associated with W , and L N denotes the	page=2 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	N-best list. Each rescoring module supplies the oracle with their	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital column-bottom
+B-Body	For training purposes, we create the input feature vector by aug-	page=2 xpos=5 ypos=1 right-column left-indent column-top headchar-capital tailchar-hiphen
+I-Body	menting features from each rescoring module ( f g ; f c ) and the dia-	page=2 xpos=5 ypos=1 right-column full-justified font-largest hanged-line headchar-lower tailchar-hiphen
+I-Body	log context ( S ). The output vector is the LM indicator I from the	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	oracle. The element that corresponds to the LM with the best final	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	hypothesis is unity and the rest are zeros. After training the oracle	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	combiner (here, we assume a neural network), we set our system	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	as shown in Figure 4. The input to the neural network (NN) is the	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	augmented feature vector. The output of the NN is the LM indica-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tor probably with fuzzy values. So, we first pick the max output,	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	and then, we select and output the respective word string.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5. EXPERIMENTAL RESULTS	page=2 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail line-double-space line-space itemization above-line-space
+B-Body	The models were developed and tested in the context of the CU	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	Communicator dialog system which is used for telephone-based	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-capital
+I-Body	flight, hotel and rental car reservations [11]. The text corpus was	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	divided into two parts as training and test sets with 15220 and 1220	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	sentences, respectively. The test set was further divided into two	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	parts. Each part, in turn, was used to optimize language and in-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	terpolation weights to be used for the other part in a ”jacknife	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	paradigm”. The results were reported as the average of the two	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	results. The average sentence length of the corpus was 4 words	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	(end-of-sentence was treated as a word). We identified 20 dialog	page=2 xpos=5 ypos=6 right-column full-justified aligned-line
+I-Body	contexts and labeled each sentence with the associated dialog con-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	text.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We trained a dialog independent (DI) class based LM and dia-	page=2 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	log dependent (DD) grammar based LM. In all LMs n is set to 3.	page=2 xpos=5 ypos=7 right-column full-justified font-largest hanged-line headchar-lower tailchar-period
+I-Body	It must be noted that the DI class-based LM served as the LM of	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	the baseline system with 921 unigrams including 19 classes. The	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	total number of the distinct words in the lexicon was 1681. The	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	grammar-based LM had 199 concept and filler classes that com-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pletely cover the lexicon. In rescoring experiments we set the N-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	best list size to 10. We think that the choice of N = 10 is a reson-	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	able tradeoff between performance and complexity.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The perplexity results are presented in Table 1. The perplexity	page=2 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	of the grammar-based LM is 36.8% better than the baseline class-	page=2 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+E-Body	based LM.	page=2 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We did experiments using 10 -best lists from the baseline recog-	page=2 xpos=5 ypos=9 right-column left-indent font-largest indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	nizer. We first determined the best possible performance in WER	page=2 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower page-bottom
+Table	__Table 1__	page=3 xpos=1 ypos=0 left-column centered left-indent right-indent box page-top table-area above-blank-line above-double-space above-line-space
+I-Body	offered by 10 -best lists. This is done by picking the hypothesis	page=3 xpos=0 ypos=1 left-column full-justified font-largest hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	with the lowest WER from each list. This gives an upperbound for	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the performance gain possible from rescoring 10 -best lists . The	page=3 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	rescoring results in terms of absolute and relative improvements in	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	WER and semantic error rate (SER) along with the best possible	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	improvement are reported in Table 2. It should be noted that the	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	optimizations are made using WER. The slight drop in SER with	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	interpolation might be due to that. Actually this is good for text	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	transcription but not for a dialog system. We believe that the re-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults will reverse if we replace the optimization using WER with	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	the optimization using SER.	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Caption	Table 2: The WER and SER results of the 10-best list rescoring	page=3 xpos=0 ypos=3 left-column centered right-indent aligned-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital
+I-Caption	with different LMs: the baseline WER is 25.9% and SER is	page=3 xpos=0 ypos=4 left-column centered right-indent aligned-line headchar-lower
+E-Caption	23.7%	page=3 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail above-double-space above-line-space
+Table	__Table 2__	page=3 xpos=0 ypos=4 left-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-blank-line above-double-space above-line-space
+B-Body	The performance gap between the oracle and interpolation meth-	page=3 xpos=0 ypos=6 left-column left-indent longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ods promotes the system in Figure 4. We expect that, based on the	page=3 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	universal approximation theory, a neural network with consistent	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	features, sufficiently large training data and proper training would	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	approximate fairly well the behavior of the oracle. On the other	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	hand, the performance gap between the oracle and the best possi-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ble performance from 10-best lists suggests the use of more than	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	two language models and dynamic combination with the acoustic	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	model.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6. CONCLUSIONS	page=3 xpos=0 ypos=8 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space itemization above-line-space
+B-Body	We have presented our recent work on language model combin-	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ing. We have shown that although a simple interpolation of LMs	page=3 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	improves the performance, it fails to reach the performance of an	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	oracle. We have proposed a method for LM combination that mim-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ics the behavior of the oracle. Although our work is not complete	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	without a neural network that mimics the oracle, we argue that	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	the universal approximation theory ensures the success of such a	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	method. However, extensive experiments are required to reach the	page=3 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower column-bottom
+I-Body	goal with the main focus on the selection of features. At the mo-	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	ment, the number of concepts, the number of filler classes and the	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	number of 3-gram hits in a sentence (all normalized by the length	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	of the sentence) and the behavior of n-grams in a context are the	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	features that we consider to use. Also, it has been observed that the	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	performance of the oracle is still far from the best possible perfor-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mance. This is partly due to the very small number of LMs used	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	in the rescoring, partly due to the oracle’s hard decision combining	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	strategy and partly due to the static combination with the acous-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic model. The work is in progress towards the goal of filling the	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	performance gap.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	7. REFERENCES	page=3 xpos=5 ypos=2 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space itemization above-line-space
+B-Reference	[1] J. K. Baker. Trainable grammars for speech recognition. In	page=3 xpos=5 ypos=2 right-column left-indent right-indent indented-line longer-tail line-space
+I-Reference	Speech Communications for th 97th Meeting of the	page=3 xpos=5 ypos=2 right-column left-indent right-indent indented-line shorter-tail headchar-capital
+I-Reference	Acoustical Society of America, pages 31–35, June 1979.	page=3 xpos=5 ypos=2 right-column centered left-indent right-indent aligned-line longer-tail year headchar-capital tailchar-period above-line-space
+B-Reference	[2] J. Gillett and W. Ward. A language model combining	page=3 xpos=5 ypos=3 right-column left-indent right-indent hanged-line shorter-tail line-space
+I-Reference	trigrams and stochastic context-free grammars. In 5-th	page=3 xpos=5 ypos=3 right-column left-indent right-indent indented-line longer-tail headchar-lower
+I-Reference	International Conference on Spoken Language Processing,	page=3 xpos=5 ypos=3 right-column left-indent right-indent aligned-line longer-tail headchar-capital tailchar-comma
+I-Reference	pages 2319–2322, Sydney, Australia, 1998.	page=3 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Reference	[3] K. Hacioglu and W. Ward. Dialog-context dependent	page=3 xpos=5 ypos=3 right-column left-indent right-indent hanged-line longer-tail line-space
+I-Reference	language models combining n-grams and stochastic	page=3 xpos=5 ypos=4 right-column left-indent right-indent indented-line shorter-tail headchar-lower
+I-Reference	context-free grammars. In submitted toInternational	page=3 xpos=5 ypos=4 right-column left-indent right-indent aligned-line headchar-lower
+I-Reference	Conference of Acoustics, Speech, and Signal Processing,	page=3 xpos=5 ypos=4 right-column left-indent right-indent aligned-line longer-tail headchar-capital tailchar-comma
+I-Reference	Salt-Lake, Utah,, 2001.	page=3 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-line-space
+B-Reference	[4] F. Jelinek and R. Mercer. Interpolated estimation of markov	page=3 xpos=5 ypos=4 right-column left-indent right-indent hanged-line longer-tail line-space
+I-Reference	source parameters from sparse data. Pattern Recognition in	page=3 xpos=5 ypos=5 right-column left-indent right-indent indented-line headchar-lower
+I-Reference	Practice, 23:381, 1980.	page=3 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-line-space
+B-Reference	[5] A. Keller, B. Rueber, F. Seide, and B. Tran. PADIS - an	page=3 xpos=5 ypos=5 right-column left-indent right-indent hanged-line longer-tail line-space
+I-Reference	automatic telephone switchboard and directory information	page=3 xpos=5 ypos=5 right-column left-indent right-indent indented-line longer-tail headchar-lower
+I-Reference	system. Speech Communication, 23:95–111, 1997.	page=3 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Reference	[6] D. Klakow. Log-linear interpolation of language models. In	page=3 xpos=5 ypos=6 right-column left-indent right-indent hanged-line longer-tail line-space
+I-Reference	5-th International Conference on Spoken Language	page=3 xpos=5 ypos=6 right-column left-indent right-indent indented-line shorter-tail
+I-Reference	Processing, pages 1695–1699, Sydney, Australia, 1998.	page=3 xpos=5 ypos=6 right-column centered left-indent right-indent aligned-line longer-tail year headchar-capital tailchar-period above-line-space
+B-Reference	[7] R. Rosenfeld. A maximum entropy approach to adaptive	page=3 xpos=5 ypos=6 right-column left-indent right-indent hanged-line line-space
+I-Reference	language modeling. Computer Speech and Language,	page=3 xpos=5 ypos=6 right-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-comma
+I-Reference	(10):187–228, 1996.	page=3 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail year tailchar-period above-line-space
+B-Reference	[8] R. Rosenfeld. Two decades of statistical language modeling:	page=3 xpos=5 ypos=7 right-column centered left-indent right-indent hanged-line longer-tail line-space tailchar-colon
+I-Reference	Where do we go from here? Proceedings of the IEEE,	page=3 xpos=5 ypos=7 right-column left-indent right-indent indented-line shorter-tail headchar-capital tailchar-comma
+I-Reference	88(8):1270–1278, August 2000.	page=3 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail year tailchar-period above-line-space
+B-Reference	[9] B. Souvignier, A. Keller, B. Rueber, H.Schramm, and	page=3 xpos=5 ypos=7 right-column left-indent right-indent hanged-line longer-tail line-space
+I-Reference	F. Seide. The thoughtful elephant: Strategies for spoken	page=3 xpos=5 ypos=8 right-column centered left-indent right-indent indented-line longer-tail headchar-capital
+I-Reference	dialog systems. IEEE Transactions on Speech and Audio	page=3 xpos=5 ypos=8 right-column left-indent right-indent aligned-line longer-tail headchar-lower
+I-Reference	Processing, 8(1):51–62, January 2000.	page=3 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-line-space
+B-Reference	[10] Y. Wang, M. Mahajan, and X.Huang. A unified context-free	page=3 xpos=5 ypos=8 right-column right-indent hanged-line longer-tail line-space
+I-Reference	grammar and n-gram model for spoken language processing.	page=3 xpos=5 ypos=8 right-column left-indent right-indent indented-line longer-tail headchar-lower tailchar-period
+I-Reference	In International Conference of Acoustics, Speech, and Signal	page=3 xpos=5 ypos=9 right-column left-indent aligned-line headchar-capital
+I-Reference	Processing, pages 1639–1642, Istanbul, Turkey, 2000.	page=3 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-line-space
+B-Reference	[11] W. Ward and B. Pellom. The CU communicator system. In	page=3 xpos=5 ypos=9 right-column right-indent hanged-line longer-tail line-space
+I-Reference	IEEE Workshop on Automatic Speech Recognition and	page=3 xpos=5 ypos=9 right-column left-indent right-indent indented-line shorter-tail headchar-capital
+I-Reference	Understanding, Keystone, Colorado, 1999.	page=3 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail year headchar-capital tailchar-period

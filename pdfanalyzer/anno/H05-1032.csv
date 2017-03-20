@@ -1,0 +1,554 @@
+Title	Bayesian Learning in Text Summarization	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Tadashi Nomoto	page=0 xpos=4 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	National Institute of Japanese Literature	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Address	1-16-10 Yutaka Shinagawa	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail
+Address	Tokyo 142-8585 Japan	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Email	nomoto@acm.org	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-smaller indented-line shorter-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	The paper presents a Bayesian model for	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	text summarization, which explicitly en-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	codes and exploits information on how hu-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	man judgments are distributed over the	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	text. Comparison is made against non	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	Bayesian summarizers, using test data	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	from Japanese news texts. It is found that	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	the Bayesian approach generally lever-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ages performance of a summarizer, at	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	times giving it a significant lead over non-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	Bayesian models.	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=4 left-column right-indent font-larger hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Consider figure 1. What is shown there is the pro-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	portion of the times that sentences at particular lo-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cations are judged as relevant to summarization, or	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	worthy of inclusion in a summary. Each panel shows	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	judgment results on 25 Japanese texts of a particular	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	genre; columns (G1K3), editorials (G2K3) and news	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	stories (G3K3). All the documents are from a sin-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gle Japanese news paper, and judgments are elicited	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	from some 100 undergraduate students. While more	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	will be given on the details of the data later (Sec-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion 3.2), we can safely ignore them here.	page=0 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Each panel has the horizontal axis representing lo-	page=0 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	cation or order of sentence in a document, and the	page=0 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	vertical axis the proportion of the times sentences at	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	particular locations are picked as relevant to summa-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rization. Thus in G1K3, we see that the first sentence	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	(to appear in a document) gets voted for about 12%	page=0 xpos=0 ypos=8 left-column full-justified aligned-line
+I-Body	of the time, while the 26th sentence is voted for less	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	than 2% of the time.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Curiously enough, each of the panels exhibits a	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	distinct pattern in the way votes are spread across	page=0 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower above-blank-line above-double-space above-line-space
+Page	249	page=0 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	a document: G1K3 has the distribution of votes	page=0 xpos=5 ypos=2 right-column full-justified column-top itemization headchar-lower
+I-Body	(DOV) with sharp peaks around 1 and 14; in G2K3,	page=0 xpos=5 ypos=2 right-column full-justified aligned-line tailchar-comma
+I-Body	the distribution is peaked around 1, with a small	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	bump around 19; in G3K3, the distribution is sharply	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	skewed to the left, indicating that the majority of	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	votes went to the initial section of a document. What	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	is interesting about the DOV is that we could take	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	it as indicating a collective preference for what to	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	extract for a summary. A question is then, can we	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	somehow exploit the DOV in summarization? To	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	our knowledge, no prior work seems to exist that	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	addresses the question. The paper discusses how	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	we could do this under a Bayesian modeling frame-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	work, where we explicitly represent and make use	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of the DOV by way of Dirichlet posterior (Congdon,	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	2003). <sup>1</sup>	page=0 xpos=5 ypos=5 right-column right-indent font-largest aligned-line shorter-tail year above-double-space above-line-space
+B-SectionHeader	2 Bayesian Model of Summaries	page=0 xpos=5 ypos=5 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Since the business of extractive summarization, such	page=0 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	as one we are concerned with here, is about ranking	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	sentences according to how useful/important they	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	are as part of summary, we will consider here a par-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ticular ranking scheme based on the probability of a	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	sentence being part of summary under a given DOV,	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	i.e.,	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-comma
+B-Equation	P (y|vv ), (1)	page=0 xpos=7 ypos=7 right-column left-indent font-largest indented-line longer-tail headchar-capital above-double-space above-line-space
+I-Body	where y denotes a given sentence, and v =	page=0 xpos=5 ypos=7 right-column full-justified font-largest hanged-line line-double-space line-space headchar-lower
+I-Body	(v <sub>1</sub> , . . . , v n ) stands for a DOV, an array of observed	page=0 xpos=5 ypos=7 right-column full-justified font-largest aligned-line
+I-Body	vote counts for sentences in the text; v <sub>1</sub> refers to the	page=0 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	count of votes for a sentence at the text initial posi-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, v <sub>2</sub> to that for a sentence occurring at the second	page=0 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	place, etc.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Thus given a four sentence long text, if we have	page=0 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	three people in favor of a lead sentence, two in favor	page=0 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower above-line-space
+B-Footnote	<sup>1</sup> See Yu et al. (2004) and Cowans (2004) for its use in IR.	page=0 xpos=5 ypos=9 right-column left-indent right-indent indented-line shorter-tail line-space year headchar-super tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of Human Language Technology Conference and Conference on Empirical Methods in Natural Language	page=0 xpos=0 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital
+I-Footer	Processing (HLT/EMNLP), pages 249–256, Vancouver, October 2005.  2005 c Association for Computational Linguistics	page=0 xpos=0 ypos=9 single-column centered left-indent right-indent font-smallest hanged-line longer-tail year headchar-capital page-bottom
+Figure	__Figure 1__	page=1 xpos=0 ypos=-4 single-column left-indent right-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: Genre-by-genre vote distribution	page=1 xpos=3 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Body	of the second, one for the third, and none for the	page=1 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower
+E-Body	fourth, then we would have v = (3, 2, 1, 0).	page=1 xpos=0 ypos=0 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Now suppose that each sentence y <sub>i</sub> (i.e., a sen-	page=1 xpos=0 ypos=1 left-column left-indent font-largest indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tence at the i-th place in the order of appearance) is	page=1 xpos=0 ypos=1 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	associated with what we might call a prior prefer-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence factor θ <sub>i</sub> , representing how much a sentence at	page=1 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	a particular position is favored as part of a summary	page=1 xpos=0 ypos=2 left-column full-justified aligned-line itemization headchar-lower
+I-Body	in general. Then the probability that y <sub>i</sub> finds itself in	page=1 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	a summary is given as:	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail itemization headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	φ(y <sub>i</sub> |θ i )P (θ i ), (2)	page=1 xpos=1 ypos=3 left-column left-indent font-largest indented-line longer-tail line-double-space line-space above-double-space above-line-space
+I-Body	where φ denotes some likelihood function, and	page=1 xpos=0 ypos=3 left-column full-justified font-largest hanged-line line-double-space line-space headchar-lower
+E-Body	P (θ <sub>i</sub> ) a prior probability of θ i .	page=1 xpos=0 ypos=4 left-column right-indent font-largest aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	Since the DOV is something we could actually	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	observe about θ <sub>i</sub> , we might as well couple θ i with	page=1 xpos=0 ypos=4 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	v by making a probability of θ <sub>i</sub> conditioned on v .	page=1 xpos=0 ypos=4 left-column full-justified font-largest aligned-line itemization headchar-lower tailchar-period
+I-Body	Formally, this would be written as:	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-colon above-double-space above-line-space
+B-Equation	φ(y <sub>i</sub> |θ i )P (θ i |vv ). (3)	page=1 xpos=1 ypos=5 left-column left-indent font-largest indented-line longer-tail line-double-space line-space above-double-space above-line-space
+B-Body	The problem, however, is that we know nothing	page=1 xpos=0 ypos=6 left-column left-indent hanged-line line-double-space line-space headchar-capital
+I-Body	about what each θ <sub>i</sub> looks like, except that it should	page=1 xpos=0 ypos=6 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	somehow be informed by v . A typical Bayesian so-	page=1 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	lution to this is to ‘erase’ θ <sub>i</sub> by marginalizing (sum-	page=1 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ming) over it, which brings us to this:	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	Z	page=1 xpos=1 ypos=7 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+I-Equation	P (y <sub>i</sub> |vv ) = φ(y i |θ i )P (θ i |vv ) dθ i . (4)	page=1 xpos=0 ypos=7 left-column left-indent font-largest hanged-line longer-tail headchar-capital above-double-space above-line-space
+B-Body	Note that equation 4 no longer talks about the proba-	page=1 xpos=0 ypos=8 left-column full-justified hanged-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	bility of y <sub>i</sub> under a particular θ i ; rather it talks about	page=1 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the expected probability for y <sub>i</sub> with respect to a pref-	page=1 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	erence factor dictated by v . All we need to know	page=1 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	250	page=1 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 2__	page=1 xpos=6 ypos=0 right-column centered left-indent right-indent font-largest column-top figure-area above-double-space above-line-space
+B-Caption	Figure 2: A graphical view	page=1 xpos=6 ypos=1 right-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+I-Body	about P (θ <sub>i</sub> |vv ) to compute the expectation is v and a	page=1 xpos=5 ypos=1 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower
+E-Body	probability distribution P , and not θ <sub>i</sub> ’s, anymore.	page=1 xpos=5 ypos=2 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We know something about v , and this would	page=1 xpos=5 ypos=2 right-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	leave us P . So what is it? In principle it could	page=1 xpos=5 ypos=2 right-column full-justified font-largest hanged-line headchar-lower
+I-Body	be any probability distribution. However largely	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	for the sake of technical convenience, we assume	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	it is one component of a multinomial distribution	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	known as the Dirichlet distribution. In particular,	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we talk about Dirichlet(θθ |vv ), namely a Dirichlet	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	posterior of θ, given observations P v , where θ =	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	(θ <sub>1</sub> , . . . , θ i , . . . , θ n ), and <sup>n</sup> <sub>i</sub> θ i = 1 (θ i > 0). (Re-	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line tailchar-hiphen
+I-Body	markably, if P (θ) is a Dirichlet, so is P (θ|vv ).) θ	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	here represents a vector of preference factors for n	page=1 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	sentences — which constitute the text. <sup>2</sup>	page=1 xpos=5 ypos=5 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+B-Body	Accordingly, equation 4 could be rewritten as:	page=1 xpos=5 ypos=5 right-column left-indent right-indent indented-line longer-tail headchar-capital tailchar-colon
+B-Equation	Z	page=1 xpos=7 ypos=5 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+I-Equation	P (y <sub>i</sub> |vv ) = φ(y i |θθ )P (θθ |vv ) dθθ . (5)	page=1 xpos=6 ypos=6 right-column left-indent font-largest hanged-line longer-tail headchar-capital above-double-space above-line-space
+B-Body	An interesting way to look at the model is by way	page=1 xpos=5 ypos=6 right-column left-indent hanged-line line-double-space line-space headchar-capital
+I-Body	of a graphical model (GM), which gives some in-	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tuitive idea of what the model looks like. In a GM	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	perspective, our model is represented as a simple tri-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	partite structure (figure 2), in which each node corre-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sponds to a variable (parameter), and arcs represent	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-line-space
+B-Footnote	<sup>2</sup> Since texts generally vary in length, we may set n to a suf-	page=1 xpos=5 ypos=8 right-column left-indent indented-line line-space headchar-super tailchar-hiphen
+I-Footnote	ficiently large number so that none of texts of interest may ex-	page=1 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line headchar-lower tailchar-hiphen
+I-Footnote	ceed it in length. For texts shorter than n, we simply add empty	page=1 xpos=5 ypos=8 right-column full-justified font-smaller aligned-line headchar-lower
+I-Footnote	sentences to make them as long as n.	page=1 xpos=5 ypos=9 right-column right-indent font-smaller aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+I-Body	dependencies among them. x → y reads ‘y depends	page=2 xpos=0 ypos=0 left-column full-justified font-largest page-top headchar-lower
+I-Body	on x.’ An arc linkage between v and y <sub>i</sub> is meant to	page=2 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	represent marginalization over θ .	page=2 xpos=0 ypos=0 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Moreover, we will make use of a scale parame-	page=2 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ter λ ≥ 1 to have some control over the shape	page=2 xpos=0 ypos=0 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	of the distribution, so we will be working with	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	Dirichlet(θ|λ v ) rather than Dirichlet(θ|vv ). Intu-	page=2 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	itively, we might take λ as representing a degree of	page=2 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	confidence we have in a set of empirical observa-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions we call v , as increasing the value of λ has the	page=2 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	effect of reducing variance over each θ <sub>i</sub> in θ.	page=2 xpos=0 ypos=1 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The expectation and variance of Dirichlet(θθ |vv ) are	page=2 xpos=0 ypos=2 left-column left-indent font-largest indented-line longer-tail headchar-capital
+E-Body	given as follows. <sup>3</sup>	page=2 xpos=0 ypos=2 left-column right-indent font-largest hanged-line shorter-tail headchar-lower
+B-Equation	v <sub>i</sub>	page=2 xpos=2 ypos=2 left-column left-indent right-indent font-largest indented-line longer-tail itemization headchar-lower
+I-Equation	E[θ <sub>i</sub> ] = (6)	page=2 xpos=1 ypos=2 left-column left-indent font-largest hanged-line longer-tail headchar-capital
+I-Equation	v <sub>0</sub>	page=2 xpos=2 ypos=2 left-column left-indent right-indent font-largest indented-line shorter-tail itemization headchar-lower above-line-space
+I-Equation	v <sub>i</sub> (v 0 − v i )	page=2 xpos=2 ypos=3 left-column left-indent right-indent font-largest hanged-line longer-tail line-space itemization headchar-lower
+I-Equation	V ar[θ <sub>i</sub> ] =	page=2 xpos=1 ypos=3 left-column left-indent right-indent font-largest hanged-line shorter-tail headchar-capital
+I-Equation	v <sub>0</sub> <sup>2</sup> (v 0 + 1) ,	page=2 xpos=2 ypos=3 left-column left-indent right-indent font-largest indented-line longer-tail itemization headchar-lower tailchar-comma
+I-Equation	(7)	page=2 xpos=4 ypos=3 left-column left-indent indented-line longer-tail above-line-space
+I-Equation	P <sub>n</sub>	page=2 xpos=1 ypos=3 left-column left-indent right-indent font-largest hanged-line shorter-tail line-space headchar-capital
+I-Body	where v <sub>0</sub> = <sub>i</sub> v i . Therefore the variance of a	page=2 xpos=0 ypos=3 left-column full-justified font-largest hanged-line longer-tail headchar-lower
+I-Body	scaled Dirichlet is:	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	v <sub>i</sub> (v 0 − v i )	page=2 xpos=2 ypos=4 left-column left-indent right-indent font-largest indented-line longer-tail line-space itemization headchar-lower
+I-Equation	v <sub>0</sub> <sup>2</sup> (λv 0 + 1) .	page=2 xpos=2 ypos=4 left-column left-indent right-indent font-largest longer-tail itemization headchar-lower tailchar-period
+I-Equation	V ar[θ <sub>i</sub> |λvv ] = (8)	page=2 xpos=1 ypos=4 left-column left-indent font-largest hanged-line longer-tail headchar-capital above-double-space above-line-space
+B-Body	See how λ is stuck in the denominator. Another ob-	page=2 xpos=0 ypos=4 left-column full-justified font-largest hanged-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	vious fact about the scaling is that it does not affect	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	the expectation, which remains the same.	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To get a feel for the significance of λ, con-	page=2 xpos=0 ypos=5 left-column left-indent font-largest indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	sider figure 3; the left panel shows a histogram	page=2 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	of 50,000 variates of p <sub>1</sub> randomly drawn from	page=2 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	Dirichlet(p 1 , p 2 |λc 1 , λc 2 ), with λ = 1, and both c 1	page=2 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-capital
+I-Body	and c <sub>2</sub> set to 1. The graph shows only the p 1 part	page=2 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	but things are no different for p <sub>2</sub> . (The x-dimension	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	represents a particular value p <sub>1</sub> takes (which ranges	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	between 0 and 1) and the y-dimension records the	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	number of the times p <sub>1</sub> takes that value.) We see that	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	points are spread rather evenly over the probability	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	space. Now the right panel shows what happens if	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	you increase λ by a factor of 1,000 (which will give	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	you P (p <sub>1</sub> , p 2 |1000, 1000)); points take a bell shaped	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	form, concentrating in a small region around the ex-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pectation of p <sub>1</sub> . In the experiments section, we will	page=2 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	return to the issue of λ and discuss how it affects	page=2 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	performance of summarization.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Let us turn to the question of how to find a solu-	page=2 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tion to the integral in equation 5. We will be con-	page=2 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	cerned here with two standard approaches to the is-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sue: one is based on MAP (maximum a posteriori)	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-line-space
+B-Footnote	<sup>3</sup> http://www.cis.hut.fi/ahonkela/dippa/dippa.html	page=2 xpos=0 ypos=9 left-column left-indent right-indent indented-line shorter-tail line-space headchar-super above-blank-line above-double-space above-line-space
+Page	251	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	and another on numerical integration. We start off	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	with a MAP based approach known as Bayesian In-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	formation Criterion or BIC.	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For a given model m, BIC seeks an analytical ap-	page=2 xpos=5 ypos=0 right-column left-indent font-largest indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	proximation for equation 4, which looks like the fol-	page=2 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	lowing:	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	k	page=2 xpos=8 ypos=1 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-lower
+I-Equation	ln P (y <sub>i</sub> |m) = ln φ(y i | θ θ̂ , m) − ln N, (9)	page=2 xpos=5 ypos=1 right-column left-indent font-largest hanged-line longer-tail headchar-lower
+I-Equation	2	page=2 xpos=8 ypos=1 right-column left-indent right-indent font-largest indented-line shorter-tail numeric-only above-double-space above-line-space
+I-Body	where k denotes the number of free parameters in	page=2 xpos=5 ypos=1 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	m, and N that of observations. θ̂ θ is a MAP estimate	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	of θ under m, which is E[θθ ]. It is interesting to note	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	that BIC makes no reference to prior. Also worthy of	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	note is that a minus of BIC equals MDL (Minimum	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	Description Length).	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Body	Alternatively, one might take a more straightfor-	page=2 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ward (and fully Bayesian) approach known as the	page=2 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	Monte Carlo integration method (MacKay, 1998)	page=2 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-capital
+I-Body	(MC, hereafter) where the integral is approximated	page=2 xpos=5 ypos=3 right-column full-justified aligned-line
+I-Body	by:	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	1 X <sup>n</sup>	page=2 xpos=7 ypos=4 right-column left-indent right-indent font-largest indented-line longer-tail numbered-heading1
+I-Equation	P (y <sub>i</sub> |vv ) ≈ φ(y <sub>i</sub> |x <sup>(j)</sup> ), (10)	page=2 xpos=6 ypos=4 right-column left-indent font-largest hanged-line longer-tail headchar-capital
+I-Equation	n <sub>j=1</sub>	page=2 xpos=7 ypos=4 right-column centered left-indent right-indent font-largest indented-line shorter-tail itemization headchar-lower above-double-space above-line-space
+I-Body	where we draw each sample x <sup>(j)</sup> randomly from the	page=2 xpos=5 ypos=4 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	distribution P (θθ |vv ), and n is the number of x <sup>(i)</sup> ’s	page=2 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	so collected. Note that MC gives an expectation of	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	P (y <sub>i</sub> |vv ) with respect to P (θθ |vv ).	page=2 xpos=5 ypos=5 right-column right-indent font-largest aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	Furthermore, φ could be any probabilistic func-	page=2 xpos=5 ypos=5 right-column left-indent font-largest indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tion. Indeed any discriminative classifier (such as	page=2 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	C4.5) will do as long as it generates some kind of	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	probability. Given φ, what remains to do is essen-	page=2 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	tially training it on samples bootstrapped (i.e., re-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sampled) from the training data based on θ — which	page=2 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	we draw from Dirichlet(θθ |vv ). 4 To be more spe-	page=2 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	cific, suppose that we have a four sentence long text	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	and an array of probabilities θ = (0.4, 0.3, 0.2, 0.1)	page=2 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	drawn from a Dirichlet distribution: which is to say,	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we have a preference factor of 0.4 for the lead sen-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence, 0.3 for the second sentence, etc. Then we re-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sample with replacement lead sentences from train-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing data with the probability of 0.4, the second with	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the probability of 0.3, and so forth. Obviously, a	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>4</sup> It is fairly straightforward to sample from a Dirichlet pos-	page=2 xpos=5 ypos=8 right-column left-indent indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	terior by resorting to a gamma distribution, which is what is	page=2 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	happening here. In case one is working with a distribution it is	page=2 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	hard to sample from, one would usually rely on Markov chain	page=2 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	Monte Carlo (MCMC) or variational methods to do the job.	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period page-bottom
+Figure	__Figure 3__	page=3 xpos=1 ypos=-4 single-column left-indent right-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 3: Histograms of random draws from Dirichlet(p 1 , p 2 |λc 1 , λc 2 ) with λ = 1 (left panel), and λ =	page=3 xpos=0 ypos=0 single-column full-justified font-largest hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital
+E-Caption	1000 (right panel).	page=3 xpos=0 ypos=0 single-column right-indent font-largest aligned-line shorter-tail tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	high preference factor causes the associated sen-	page=3 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	tence to be chosen more often than those with a low	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	preference.	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Thus given a text T = (a, b, c, d) with θ =	page=3 xpos=0 ypos=1 left-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	(0.4, 0.3, 0.2, 0.1), we could end up with a data set	page=3 xpos=0 ypos=1 left-column full-justified font-largest hanged-line
+I-Body	dominated by a few sentence types, such as T <sup>0</sup> =	page=3 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	(a, a, a, b), which we proceed to train a classifier on	page=3 xpos=0 ypos=2 left-column full-justified font-largest aligned-line
+I-Body	in place of T . Intuitively, this amounts to induc-	page=3 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the classifier to attend to or focus on a partic-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ular region or area of a text, and dismiss the rest.	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Note an interesting parallel to boosting (Freund and	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	Schapire, 1996) and the alternating decision tree	page=3 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-capital
+E-Body	(Freund and Mason, 1999).	page=3 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail year tailchar-period
+B-Body	In MC, for each θ <sup>(k)</sup> drawn from Dirichlet(θθ |vv ),	page=3 xpos=0 ypos=4 left-column left-indent font-largest indented-line longer-tail headchar-capital tailchar-comma
+I-Body	we resample sentences from the training data using	page=3 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	probabilities specified by θ <sup>(k)</sup> , use them for train-	page=3 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ing a classifier, and run it on a test document d to	page=3 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	find, for each sentence in d, its probability of being	page=3 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	a ‘pick’ (summary-worthy) sentence,i.e., P (y <sub>i</sub> |θθ <sup>(k)</sup> ),	page=3 xpos=0 ypos=5 left-column full-justified font-largest aligned-line itemization headchar-lower tailchar-comma
+I-Body	which we average across θ ’s. In experiments later	page=3 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	described, we apply the procedure for 20,000 runs	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	(meaning we run a classifier on each of 20,000 θ ’s	page=3 xpos=0 ypos=6 left-column full-justified font-largest aligned-line
+I-Body	we draw), and average over them to find an estimate	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	for P (y <sub>i</sub> |vv ).	page=3 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As for BIC, we generally operate along the lines	page=3 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	of MC, except that we bootstrap sentences using	page=3 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	only E[θθ ], and the model complexity term, namely,	page=3 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	− <sub>2</sub> <sup>k</sup> ln N is dropped as it has no effect on ranking	page=3 xpos=0 ypos=8 left-column full-justified font-largest aligned-line
+I-Body	sentences. As with MC, we train a classifier on the	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	bootstrapped samples and run it on a test document.	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Though we work with a set of fixed parameters, a	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	bootstrapping based on them still fluctuates, produc-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	252	page=3 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	ing a slightly different set of samples each time we	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	run the operation. To get a reasonable convergence	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	in experiments, we took the procedure to 5,000 iter-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ations and averaged over the results.	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Either with BIC or with MC, building a summa-	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	rizer on it is a fairly straightforward matter. Given	page=3 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	a document d and a compression rate r, what a	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	summarizer would do is simply rank sentences in d	page=3 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	based on P (y <sub>i</sub> |vv ) and pick an r portion of highest	page=3 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	ranking sentences.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Working with Bayesian Summarist	page=3 xpos=5 ypos=3 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	3.1 C4.5	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In what follows, we will look at whether and how the	page=3 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	Bayesian approach, when applied for the C4.5 deci-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	sion tree learner (Quinlan, 1993), leverages its per-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	formance on real world data. This means our model	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	now operates either by	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Equation	1 X <sup>n</sup>	page=3 xpos=7 ypos=5 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space numbered-heading1
+I-Equation	P (y <sub>i</sub> |vv ) ≈ φ <sub>c4.5</sub> (y i |x <sup>(j)</sup> ), (11)	page=3 xpos=6 ypos=6 right-column left-indent font-largest hanged-line longer-tail headchar-capital
+I-Equation	n <sub>j=1</sub>	page=3 xpos=7 ypos=6 right-column left-indent right-indent font-largest indented-line shorter-tail itemization headchar-lower above-double-space above-line-space
+I-Body	or by	page=3 xpos=5 ypos=6 right-column right-indent hanged-line shorter-tail line-double-space line-space headchar-lower above-double-space above-line-space
+B-Equation	k	page=3 xpos=8 ypos=7 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space headchar-lower
+I-Equation	ln P (y <sub>i</sub> |m) = ln φ c4.5 (y i | θ̂ θ , m) − ln N, (12)	page=3 xpos=5 ypos=7 right-column left-indent font-largest hanged-line longer-tail headchar-lower
+I-Equation	2	page=3 xpos=8 ypos=7 right-column left-indent right-indent font-largest indented-line shorter-tail numeric-only above-line-space
+I-Body	with the likelihood function φ filled out by C4.5.	page=3 xpos=5 ypos=7 right-column full-justified font-largest hanged-line longer-tail line-space headchar-lower tailchar-period
+I-Body	Moreover, we compare two versions of the classifier;	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-semicolon
+I-Body	one with BIC/MC and one without. We used Weka	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	implementations of the algorithm (with default set-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tings) in experiments described below (Witten and	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	Frank, 2000).	page=3 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period page-bottom
+B-Body	While C4.5 here is configured to work in a bi-	page=4 xpos=0 ypos=0 left-column left-indent page-top headchar-capital tailchar-hiphen
+I-Body	nary (positive/negative) classification scheme, we	page=4 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	run it in a ‘distributional’ mode, and use a particular	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	class membership probability it produces, namely,	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the probability of a sentence being positive, i.e., a	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	pick (summary-worthy) sentence, instead of a cate-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	gory label.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Attributes for C4.5 are broadly intended to repre-	page=4 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	sent some aspects of a sentence in a document, an	page=4 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	object of interest here. Thus for each sentence ψ, its	page=4 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	encoding involves reference to the following set of	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	attributes or features. ‘LocSen’ gives a normalized	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	location of ψ in the text, i.e., a normalized distance	page=4 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	from the top of the text; likewise, ‘LocPar’ gives a	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	normalized location of the paragraph in which ψ oc-	page=4 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	curs, and ‘LocWithinPar’ records its normalized lo-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cation within a paragraph. Also included are a few	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	length-related features such as the length of text and	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	sentence. Furthermore we brought in some language	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	specific feature which we call ’EndCue.’ It records	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the morphology of a linguistic element that ends ψ,	page=4 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+E-Body	such as inflection, part of speech, etc.	page=4 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In addition, we make use of the weight feature	page=4 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	(‘Weight’) for a record on the importance of ψ based	page=4 xpos=0 ypos=4 left-column full-justified font-largest hanged-line
+I-Body	on tf.idf. Let ψ = w <sub>1</sub> , . . . , w n , for some word w i .	page=4 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	Then the weight W (ψ) is given as:	page=4 xpos=0 ypos=4 left-column right-indent font-largest aligned-line shorter-tail headchar-capital tailchar-colon above-line-space
+B-Equation	X	page=4 xpos=1 ypos=5 left-column left-indent right-indent font-largest indented-line shorter-tail line-space headchar-capital
+I-Equation	W (ψ) = (1 + log(tf(w))) · log(N/df(w)).	page=4 xpos=0 ypos=5 left-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital tailchar-period
+I-Equation	w	page=4 xpos=1 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Here ‘tf(w)’ denotes the frequency of word w in a	page=4 xpos=0 ypos=5 left-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	given document, ‘df(w)’ denotes the ’document fre-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quency’ of w, or the number of documents which	page=4 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	contain an occurrence of w. N represents the total	page=4 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	number of documents. <sup>5</sup>	page=4 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail headchar-lower above-line-space
+B-Body	Also among the features used here is ‘Pos,’ a fea-	page=4 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ture intended to record the position or textual order	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	of ψ, given by how many sentences away it occurs	page=4 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	from the top of text, starting with 0.	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	While we do believe that the attributes discussed	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	above have a lot to do with the likelihood that a given	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	sentence becomes part of summary, we choose not	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	to consider them parameters of the Bayesian model,	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	just to keep it from getting unduly complex. Recall	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	the graphical model in figure 2.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>5</sup> Although one could reasonably argue for normalizing	page=4 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-double-space line-space headchar-super
+I-Footnote	W (ψ) by sentence length, it is not entirely clear at the moment	page=4 xpos=0 ypos=9 left-column full-justified font-smaller hanged-line headchar-capital
+I-Footnote	whether it helps in the way of improving performance.	page=4 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	253	page=4 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-SubsectionHeader	3.2 Test Data	page=4 xpos=5 ypos=0 right-column right-indent column-top numbered-heading2 above-double-space above-line-space
+B-Body	Here is how we created test data. We collected three	page=4 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	pools of texts from different genres, columns, edito-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rials and news stories, from a Japanese financial pa-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	per (Nihon Keizai Shinbun) published in 1995, each	page=4 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+I-Body	with 25 articles. Then we asked 112 Japanese stu-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dents to go over each article and identify 10% worth	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	of sentences they find most important in creating	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	a summary for that article. For each sentence, we	page=4 xpos=5 ypos=1 right-column full-justified aligned-line itemization headchar-lower
+I-Body	recorded how many of the subjects are in favor of	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	its inclusion in summary. On average, we had about	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	seven people working on each text. In the follow-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing, we say sentences are ‘positive’ if there are three	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	or more people who like to see them in a summary,	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and ‘negative’ otherwise. For convenience, let us	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	call the corpus of columns G1K3, that of editorials	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	G2K3 and that of news stories G3K3. Additional	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+E-Body	details are found in table 1.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Results and Discussion	page=4 xpos=5 ypos=3 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Tables 2 through 4 show how the Bayesian sum-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+I-Body	marist performs on G1K3, G2K3, and G3K3. The	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	tables list results in precision at compression rates	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	(r) of interest (0 < r < 1). The figures thereof indi-	page=4 xpos=5 ypos=4 right-column full-justified font-largest aligned-line itemization tailchar-hiphen
+I-Body	cate performance averaged over leave-one-out cross	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	validation folds. What this means is that you leave	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	out one text for testing and use the rest for training,	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which you repeat for each one of the texts in the data.	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Since we have 25 texts for each data set, this leads	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	to a 25-fold cross validation. Precision is defined by	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the ratio of hits (positive sentences) to the number	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of sentences retrieved, i.e., r-percent of sentences in	page=4 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	the text. <sup>6</sup>	page=4 xpos=5 ypos=6 right-column right-indent font-largest aligned-line shorter-tail headchar-lower above-line-space
+B-Body	In each table, figures to the left of the verti-	page=4 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	cal line indicate performance of summarizers with	page=4 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	BIC/MC and those to the right that of summarizers	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	without them. Parenthetical figures like ‘(5K)’ and	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	‘(20K)’ indicate the number of iterations we took	page=4 xpos=5 ypos=7 right-column full-justified aligned-line
+I-Body	them to: thus BIC(5K) refers to a summarizer based	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	on C4.5/BIC with scores averaged over 5,000 runs.	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	BSE denotes a reference summarizer based on a reg-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ular C4.5, which it involves no resampling of train-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing data. LEAD refers to a summarizer which works	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>6</sup> We do not use recall for a evaluation measure, as the num-	page=4 xpos=5 ypos=8 right-column left-indent indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	ber of positive instances varies from text to text, and may indeed	page=4 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	exceed the length of a summary under a particular compression	page=4 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	rate.	page=4 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Caption	Table 1: N represents the number of sentences in G1K3 to G3K3. Sentences with three or more votes in	page=5 xpos=0 ypos=0 single-column full-justified font-largest page-top string-table headchar-capital
+I-Caption	their favor are marked positive, that is, for each sentence marked positive, at least three people are in favor	page=5 xpos=0 ypos=0 single-column full-justified aligned-line headchar-lower
+E-Caption	of including it in a summary.	page=5 xpos=0 ypos=0 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-line-space
+B-Table	__Table 1__	page=5 xpos=2 ypos=0 Table-column centered left-indent right-indent font-largest column-top line-space table-area
+E-Table	__Table 2__	page=5 xpos=2 ypos=1 Table-column centered left-indent right-indent box hanged-line longer-tail table-area column-bottom above-blank-line above-double-space above-line-space
+B-Caption	Table 2: G1K3. λ = 5. Dashes indicate no meaningful results.	page=5 xpos=2 ypos=2 single-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-table headchar-capital tailchar-period column-bottom
+Table	__Table 3__	page=5 xpos=2 ypos=2 Table-column centered left-indent right-indent box column-top table-area column-bottom above-blank-line above-double-space above-line-space
+B-Caption	Table 3: G2K3. λ = 5.	page=5 xpos=3 ypos=4 single-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-table headchar-capital tailchar-period column-bottom
+Table	__Table 4__	page=5 xpos=2 ypos=4 Table-column centered left-indent right-indent box column-top table-area column-bottom above-blank-line above-double-space above-line-space
+B-Caption	Table 4: G3K3. λ = 5.	page=5 xpos=3 ypos=6 single-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-table headchar-capital tailchar-period column-bottom
+Figure	__Figure 4__	page=5 xpos=2 ypos=6 Figure-column centered left-indent right-indent box column-top figure-area column-bottom above-double-space above-line-space
+B-Caption	Figure 4: A non Bayesian C4.5 trained on G1K3.	page=5 xpos=2 ypos=9 single-column centered left-indent right-indent column-top line-double-space line-space string-figure headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+Page	254	page=5 xpos=4 ypos=9 single-column left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space numeric-only page-bottom
+Figure	__Figure 5__	page=6 xpos=1 ypos=-6 single-column centered left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 5: A Bayesian (MC) C4.5 trained on G1K3.	page=6 xpos=2 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	by selecting sentences from the top of the text. It is	page=6 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower
+I-Body	generally considered a hard-to-beat approach in the	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	summarization literature.	page=6 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Table 4 shows results for G3K3 (a news story do-	page=6 xpos=0 ypos=1 left-column left-indent indented-line longer-tail string-table headchar-capital tailchar-hiphen
+I-Body	main). There we find a significantly improvement to	page=6 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	performance of C4.5, whether it operates with BIC	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	or MC. The effect is clearly visible across a whole	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	range of compression rates, and more so at smaller	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	rates.	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Table 3 demonstrates that the Bayesian approach	page=6 xpos=0 ypos=3 left-column left-indent indented-line longer-tail string-table headchar-capital
+I-Body	is also effective for G2K3 (an editorial domain), out-	page=6 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+E-Body	performing both BSE and LEAD by a large margin.	page=6 xpos=0 ypos=4 left-column centered right-indent aligned-line headchar-lower tailchar-period
+B-Body	Similarly, we find that our approach comfortably	page=6 xpos=0 ypos=4 left-column left-indent indented-line headchar-capital
+I-Body	beats LEAD in G1K3 (a column domain). Note the	page=6 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	dashes for BSE. What we mean by these, is that we	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	obtained no meaningful results for it, because we	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	were unable to rank sentences based on predictions	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	by BSE. To get an idea of how this happens, let us	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	look at a decision tree BSE builds for G1K3, which	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	is shown in figure 4. What we have there is a deci-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sion tree consisting of a single leaf. <sup>7</sup> Thus for what-	page=6 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ever sentence we feed to the tree, it throws back the	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	same membership probability, which is 65/411. But	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	then this would make a BSE based summarizer ut-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	terly useless, as it reduces to generating a summary	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	by picking at random, a particular portion of text. <sup>8</sup>	page=6 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail headchar-lower above-line-space
+B-Footnote	<sup>7</sup> This is not at all surprising as over 80% of sentences in a	page=6 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-super
+I-Footnote	non resampled text are negative for the most of the time.	page=6 xpos=0 ypos=8 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>8</sup> Its expected performance (averaged over 10 <sup>6</sup> runs) comes	page=6 xpos=0 ypos=9 left-column left-indent font-largest indented-line longer-tail headchar-super above-blank-line above-double-space above-line-space
+Page	255	page=6 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Body	Now Figure 5 shows what happens with the	page=6 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	Bayesian model (MC), for the same data. There	page=6 xpos=5 ypos=1 right-column full-justified hanged-line headchar-capital
+I-Body	we see a tree of a considerable complexity, with 24	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	leaves and 18 split nodes.	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Let us now turn to the issues with λ. As we might	page=6 xpos=5 ypos=1 right-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	recall, λ influences the shape of a Dirichlet distri-	page=6 xpos=5 ypos=2 right-column full-justified font-largest hanged-line headchar-lower tailchar-hiphen
+I-Body	bution: a large value of λ causes the distribution	page=6 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	to have less variance and therefore to have a more	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	acute peak around the expectation. What this means	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	is that increasing the value of λ makes it more likely	page=6 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	to have us drawing samples closer to the expecta-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. As a consequence, we would have the MC	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	model acting more like the BIC model, which is	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	based on MAP estimates. That this is indeed the	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	case is demonstrated by table 5, which gives results	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	for the MC model on G1K3 to G3K3 at λ = 1. We	page=6 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	see that the MC behaves less like the BIC at λ = 1	page=6 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	than at λ = 5 (table 2 through 4).	page=6 xpos=5 ypos=5 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Of a particular interest in table 5 is G1K3, where	page=6 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	the MC suffers a considerable degradation in per-	page=6 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	formance, compared to when it works with λ = 5.	page=6 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	G2K3 and G3K3, again, witness some degradation	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	in performance, though not as extensive as in G1K3.	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	It is interesting that at times the MC even works bet-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ter with λ = 1 than λ = 5 in G2K3 and G3K3. <sup>9</sup>	page=6 xpos=5 ypos=7 right-column right-indent font-largest aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Footnote	to: 0.1466 (r = 0.05), 0.1453 (r = 0.1), 0.1508 (r = 0.15),	page=6 xpos=5 ypos=8 right-column full-justified font-smaller aligned-line longer-tail line-double-space line-space headchar-lower tailchar-comma
+I-Footnote	0.1530 (r = 0.2), 0.1534 (r = 0.25), and 0.1544 (r = 0.3).	page=6 xpos=5 ypos=8 right-column right-indent font-smaller aligned-line shorter-tail numbered-heading2 tailchar-period
+B-Footnote	<sup>9</sup> The results suggest that if one like to have some improve-	page=6 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-super tailchar-hiphen
+I-Footnote	ment, it is probably a good idea to set λ to a large value. But	page=6 xpos=5 ypos=9 right-column full-justified font-smaller hanged-line headchar-lower page-bottom
+B-Caption	Table 5: MC (20K). λ = 1.	page=7 xpos=1 ypos=0 left-column centered left-indent right-indent font-largest page-top string-table headchar-capital tailchar-period above-line-space
+Table	__Table 5__	page=7 xpos=0 ypos=0 left-column centered left-indent right-indent box hanged-line longer-tail line-space table-area above-blank-line above-double-space above-line-space
+B-Body	All in all, the Bayesian model proves more effec-	page=7 xpos=0 ypos=2 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tive in leveraging performance of the summarizer on	page=7 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	a DOV exhibiting a complex, multiply peaked form	page=7 xpos=0 ypos=2 left-column full-justified aligned-line itemization headchar-lower
+I-Body	as in G1K3 and G2K3, and less on a DOV which	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	has a simple, single-peak structure as in G3K3 (cf.	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+E-Body	figure 1). <sup>10</sup>	page=7 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-SectionHeader	5 Concluding Remarks	page=7 xpos=0 ypos=3 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The paper showed how it is possible to incorporate	page=7 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	information on human judgments for text summa-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rization in a principled manner through Bayesian	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	modeling, and also demonstrated how the approach	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	leverages performance of a summarizer, using data	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	collected from human subjects.	page=7 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The present study is motivated by the view that	page=7 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	that summarization is a particular form of collabo-	page=7 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	rative filtering (CF), wherein we view a summary	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	as a particular set of sentences favored by a par-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ticular user or a group of users just like any other	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	things people would normally have preference for,	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	such as CDs, books, paintings, emails, news articles,	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	etc. Importantly, under CF, we would not be asking,	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	what is the ‘correct’ or gold standard summary for	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	document X? – the question that consumed much of	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the past research on summarization. Rather, what we	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	are asking is, what summary is popularly favored for	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	X?	page=7 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-capital above-line-space
+B-Body	Indeed the fact that there could be as many sum-	page=7 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	maries as angles to look at the text from may favor	page=7 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower above-double-space above-line-space
+B-Footnote	in general how to best set λ requires some experimenting with	page=7 xpos=0 ypos=8 left-column full-justified font-smaller aligned-line line-double-space line-space headchar-lower
+I-Footnote	data and the optimal value may vary from domain to domain.	page=7 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower tailchar-period
+I-Footnote	An interesting approach would be to empirically optimize λ us-	page=7 xpos=0 ypos=8 left-column full-justified font-smaller aligned-line headchar-capital tailchar-hiphen
+I-Footnote	ing methods suggested in MacKay and Peto (1994).	page=7 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period
+B-Footnote	<sup>10</sup> Incidentally, summarizers, Bayesian or not, perform con-	page=7 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-super tailchar-hiphen
+I-Footnote	siderably better on G3K3 than on G1K3 or G2K3. This hap-	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-lower tailchar-hiphen
+I-Footnote	pens presumably because a large portion of votes concentrate	page=7 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	in a rather small region of text there, a property any classifier	page=7 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	should pick up easily.	page=7 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	256	page=7 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	the CF view of summary: the idea of what consti-	page=7 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	tutes a good summary may vary from person to per-	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	son, and may well be influenced by particular inter-	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ests and concerns of people we elicit data from.	page=7 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Among some recent work with similar concerns,	page=7 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	one notable is the Pyramid scheme (Nenkova and	page=7 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	Passonneau, 2004) where one does not declare a	page=7 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-capital
+I-Body	particular human summary a absolute reference to	page=7 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	compare summaries against, but rather makes every	page=7 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	one of multiple human summaries at hand bear on	page=7 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	evaluation; Rouge (Lin and Hovy, 2003) represents	page=7 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower
+I-Body	another such effort. The Bayesian summarist rep-	page=7 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resents yet another, whereby one seeks a summary	page=7 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	most typical of those created by humans.	page=7 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-blank-line above-double-space above-line-space
+B-Reference	Peter Congdon. 2003. Bayesian Statistical Modelling.	page=7 xpos=5 ypos=3 right-column full-justified font-smallest aligned-line longer-tail line-blank-line line-double-space line-space year headchar-capital tailchar-period
+I-Reference	John Wiley and Sons.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Philip J. Cowans. 2004. Information Retrieval Using	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Hierarchical Dirichlet Processes. In Proc. 27th ACM	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	SIGIR.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Yoav Freund and Llew Mason. 1999. The alternating	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	decision tree learning algorithm,. In Proc. 16th ICML.	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Yoav Freund and Robert E. Schapire. 1996. Experiments	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line line-double-space line-space year headchar-capital
+I-Reference	with a new boosting algorithm. In Proc. 13th ICML.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Chin-Yew Lin and Eduard Hovy. 2003. Automatic eval-	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	uation of summaries using n-gram co-occurance statis-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tics. In Proc. HLT-NAACL 2003.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	David J. C. MacKay and Linda C. Bauman Peto. 1994. A	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Hierarchical Dirichlet Language Model. Natural Lan-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	guage Engineering.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	D. J. C. MacKay. 1998. Introduction to Monte Carlo	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	methods. In M. I. Jordan, editor, Learning in Graphi-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	cal Models, Kluwer Academic Press.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Ani Nenkova and Rebecca Passonneau. 2004. Evalua-	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tion Content Selection in Summarization: The Pyra-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	mid Method. In Proc. HLT-NAACL 2004.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	J. Ross Quinlan. 1993. C4.5: Programs for Machine	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Learning. Morgan Kaufmann.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Ian H. Witten and Eibe Frank. 2000. Data Mining: Prac-	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tical Machine Learning Tools and Techniques with	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Java Implementations. Morgan Kaufmann.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Kai Yu, Volker Tresp, and Shipeng Yu. 2004. A Non-	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	parametric Hierarchical Bayesian Framework for In-	page=7 xpos=5 ypos=9 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	formation Filtering. In Proc. 27th ACM SIGIR.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period

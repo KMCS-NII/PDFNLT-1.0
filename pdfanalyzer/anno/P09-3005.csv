@@ -1,0 +1,751 @@
+Title	A System for Semantic Analysis of Chemical Compound Names	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-double-space above-line-space
+Author	Henriette Engelken	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space headchar-capital
+B-Affiliation	EML Research gGmbH	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+Address	Schloss-Wolfsbrunnenweg 33	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+Address	69118 Heidelberg, Germany;	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest tailchar-semicolon
+B-Affiliation	Institute for Natural Language Processing	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+I-Affiliation	University of Stuttgart	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+Address	Azenbergstr. 12	page=0 xpos=4 ypos=1 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+Address	70174 Stuttgart, Germany	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail
+Email	engelken@eml-research.de	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	Mapping and classification of chemical	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	compound names are important aspects of	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	the tasks of BioNLP. This paper introduces	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	the architecture of a system for the syntac-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tic and semantic analysis of such names.	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	Our system aims at yielding both the de-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	noted chemical structure and a classifica-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion of a given name. We employ a novel	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	approach to the task which promises an	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	elegant and efficient way of solving the	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	problem. The proposed system differs sig-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	nificantly from existing systems, in that it	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	is also able to deal with underspecifying	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	names and class names.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-largest hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	BioNLP is the branch of computational linguistics	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	developing tools and algorithms tailored to the life	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	sciences domain. Scientific and patent literature	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	in this domain are growing at an enormous pace.	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This results in a valuable resource for researchers,	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	but at the same time it poses the problem that it can	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	hardly be processed manually by humans. Thus, a	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	major goal of BioNLP is to automatically support	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	humans by means of research in the area of infor-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation retrieval, data mining and information ex-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	traction. Term identification is of great importance	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	in these tasks. Krauthammer and Nenadic (2004)	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	divide the identification task into the subtasks of	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	term recognition (marking the interesting words	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	in a text), term classification (classifying them ac-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cording to a taxonomy or an ontology) and term	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	mapping <sup>1</sup> (identifying a term with respect to a ref-	page=0 xpos=0 ypos=8 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+E-Body	erent data source).	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>1</sup> Term mapping is also called term grounding, amongst	page=0 xpos=0 ypos=8 left-column left-indent font-smallest indented-line longer-tail line-double-space line-space headchar-super
+I-Footnote	others by Kim and Park (2004).	page=0 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail year headchar-lower tailchar-period column-bottom
+B-Body	Chemical compound names, i. e. names of	page=0 xpos=5 ypos=2 right-column left-indent column-top headchar-capital
+I-Body	molecules, are terms which prominently occur in	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	scientific publications, patents and in biochemi-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cal databases. Any chemical compound can be	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	unambiguously denoted by its molecular struc-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture, either graphically or by certain representa-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion standards. Established representation formats	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	are SMILES strings (Simplified Molecular Input	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	Line Entry System (Weininger, 1988)) and In-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	ChIs <sup>2</sup> . For example, a SMILES string such as	page=0 xpos=5 ypos=3 right-column full-justified font-larger aligned-line headchar-capital
+I-Body	CC(OH)CCC unambiguously describes a chain of	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	five carbon (C) atoms connected by single bonds	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	having an oxygen (O) and a hydrogen (H) atom	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	connected to the second carbon atom by another	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	single bond (Figure 1).	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 1__	page=0 xpos=6 ypos=5 right-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: SMILES = CC(OH)CCC,	page=0 xpos=5 ypos=6 right-column right-indent hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital tailchar-comma
+E-Caption	Name = pentan-2-ol	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	However, for communication purposes, e. g. in	page=0 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	scientific publications and even in databases, it is	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	common to use names for chemical compounds	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	instead of a structural representation. Contrary to	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the structural representations, these names are nei-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ther always unique nor unambiguous. Biochem-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ical terminology is a subset of natural language	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	which appears to be highly regulated and system-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	atic. The International Union of Pure and Applied	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	Chemistry (IUPAC) (1979; 1993) has developed a	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-capital
+I-Body	nomenclature for chemical compounds. It spec-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ifies how to name a molecule systematically, as	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>2</sup> Cf. http://www.iupac.org/inchi/ (accessed May 17,	page=0 xpos=5 ypos=8 right-column left-indent font-smallest indented-line line-double-space line-space headchar-super tailchar-comma
+I-Footnote	2009).	page=0 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail year tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	36	page=0 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only above-double-space above-line-space
+B-Footer	Proceedings of the ACL-IJCNLP 2009 Student Research Workshop, pages 36–44,	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-comma
+I-Footer	Suntec, Singapore, 4 August 2009.  2009 c ACL and AFNLP	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital page-bottom
+E-Body	well as by use of certain trivial names.	page=1 xpos=0 ypos=0 left-column right-indent page-top headchar-lower tailchar-period
+B-Body	The morphemes constituting a name determine	page=1 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	the chemical structure it denotes by specifying	page=1 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	the type and number of the present atoms and	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	bonds. Morphemes also interact with each other	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	on this structural level. Typically, morphemes de-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scribe the atoms and bonds by introducing actions	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	concerning so-called functional groups. About	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	50 different functional groups can be identified	page=1 xpos=0 ypos=1 left-column full-justified aligned-line numbered-heading1
+I-Body	to be the most common ones in organic chem-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	istry. <sup>3</sup> Functional groups are certain groups of	page=1 xpos=0 ypos=1 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	atoms which determine the characteristic proper-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ties of a molecule, especially its chemical reac-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions. Hence, the presence or absence of certain	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	functional groups plays a crucial role in classifi-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cation of chemical compounds. For example, hy-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	droxy, used as a prefix of a name, specifies the	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	presence of an OH-group (consisting of an oxygen	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	atom and a hydrogen atom). A molecular struc-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture containing an OH-group can be classified to	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	be an alcohol. The morpheme dehydroxy in con-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	trast causes deletion of such an OH-group. Thus,	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	it presupposes the existence of some OH-group,	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which consequently needs to be introduced by an-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	other morpheme of the given name. In case there	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	is no additional OH-group left in this molecule af-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ter deletion, it does not belong to the class alcohol.	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Apart from addition and deletion, another frequent	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	operation on functional groups, specified by the	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	name’s morphemes, is substitution. In this case, a	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	presupposed functional group is replaced by a dif-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent functional group. Again, this may change	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	the classes this chemical compound belongs to.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Despite the IUPAC nomenclature, name varia-	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tions are still in use. On the one hand this is due	page=1 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	to competing rules in different editions of the IU-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	PAC nomenclature and on the other hand to the	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	actual usage by chemists who can hardly know ev-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ery single nomenclature rule. Thus, there can be a	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	number of different names and name types for one	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	chemical compound, namely several systematic,	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	semi-systematic, trivial and trade names. For ex-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ample, pentan-2-ol is the recommended name for	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the compound in Figure 1, but the same compound	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	can be called 2-pentanol or 2-hydroxypentane as	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	well.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Besides synonymy, names allow the omission	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	of specific information about the structure of the	page=1 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	compound they denote. This results in not only	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>3</sup> Cf. (Ertl, 2003) and Wikipedia, Functional group,	page=1 xpos=0 ypos=9 left-column left-indent font-smallest indented-line line-double-space line-space year headchar-super tailchar-comma
+I-Footnote	http://en.wikipedia.org/wiki/Functional group (accessed	page=1 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	May 17, 2009).	page=1 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period column-bottom
+I-Body	having a single compound as their reference but a	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	whole set of compounds. Class names like alcohol	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	or alkene are obvious cases. So-called underspeci-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fying or underspecified <sup>4</sup> names (Reyle, 2006) like	page=1 xpos=5 ypos=0 right-column full-justified font-larger aligned-line year headchar-lower
+I-Body	pentanol, butene or 3-chloropropenylidyne also	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	lack some structural information necessary to fully	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	specify one compound, even though except for	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	this, their names are built according to system-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	atic naming rules. Pentanol, for instance, is miss-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the locant number and could hence stand for	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	pentan-1-ol, pentan-2-ol, as well as pentan-3-ol.	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We distinguish underspecification from ambiguity,	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	in that underspecifying names do not need to be re-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	solved but denote a set of compounds, analogous	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	to class names.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The particularities of chemical compound	page=1 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	names mentioned above, namely synonymy, class	page=1 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	names, underspecifying names and interaction be-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tween morpheme’s meanings, complicate auto-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	matic classification and mapping of the names.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	To achieve mapping of synonymous chemical	page=1 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	compound names, name normalization is a possi-	page=1 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ble approach. Rules can be set up to transform	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	syntactic as well as morphological variations of	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	names into a normalized name form. Basic trans-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formations can be achieved via pattern match-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing (regular expressions) while for more com-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plex transformations a linguistic parser, yielding a	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	syntactic analysis, would be needed. For exam-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ple, the names glyceraldehyde-3-phosphate and	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	3-phospho-Glyceraldehyde could both be normal-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line tailchar-hiphen
+I-Body	ized to the form 3-phosphoglyceraldehyde by such	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	rules since the prefix phospho is synonymous with	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the suffix phosphate. This way, a synonym rela-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion can be established between any two names	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	which resulted in the same normalized name form.	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	By using this method together with large reference	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	databases <sup>5</sup> providing many synonymous names	page=1 xpos=5 ypos=6 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	for their entries, the task of name mapping can be	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	successfully solved in many cases.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	However, there are limits to this string based ap-	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	proach. First, it relies on the quality of the refer-	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ent data source and the quantity of synonyms pro-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vided by it. Currently available databases which	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	could be used as a reference lack either quality	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	or quantity. But whether a molecular structure	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	for a term can be determined, or a term classi-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>4</sup> Hereafter we will call these names underspecifying	page=1 xpos=5 ypos=8 right-column left-indent font-smallest indented-line line-double-space line-space headchar-super
+I-Footnote	names because we consider them to underspecify a chemical	page=1 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	structure rather than being underspecified.	page=1 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>5</sup> E. g. PubChem: http://pubchem.ncbi.nlm.nih.gov/ (ac-	page=1 xpos=5 ypos=9 right-column left-indent font-smallest indented-line longer-tail headchar-super tailchar-hiphen
+I-Footnote	cessed May 17, 2009).	page=1 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail year headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	37	page=1 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	fication can be achieved, depends only on this	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	referent data source. Second, it is hardly possi-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ble to include every morphosyntactic name varia-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion in the set of transformation rules. 2-hydroxy-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	3-oxopropyl dihydrogen phosphate, for example,	page=2 xpos=0 ypos=0 left-column full-justified aligned-line tailchar-comma
+I-Body	is the IUPAC name recommended for the chemi-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cal compound glyceraldehyde-3-phosphate, men-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tioned above. Obviously, a synonym relation can	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	not be discovered by morphosyntactic name trans-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formations in this case. Finally, this method is not	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	able to deal with class names or underspecifying	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	names.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	These observations result in the need to take the	page=2 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	meaning of a name’s morphemes, i. e. the chem-	page=2 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ical structure, into account as well. A number of	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	systems for name-to-structure conversion are be-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing developed. The best known commercial sys-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems are Name=Struct <sup>6</sup> , ACD/Name 7 and Lexi-	page=2 xpos=0 ypos=3 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	chem <sup>8</sup> . Being commercial, detailed documenta-	page=2 xpos=0 ypos=3 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	tion about their methods and evaluation results is	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	not available. Academic approaches are OPSIN	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	(Corbett and Murray-Rust, 2006) and ChemNom-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	Parse <sup>9</sup> . The greatest shortcoming of all these ap-	page=2 xpos=0 ypos=4 left-column full-justified font-larger aligned-line headchar-capital tailchar-hiphen
+I-Body	proaches is that they are not able to deal with un-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	derspecifying names. Instead, they either guess	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the missing information, in order to determine one	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	specific structure for a given name, or simply fail.	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	But for really underspecifying names and class	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	names, to the best of our knowledge no chemi-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cal representation format, like a SMILES string,	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	is provided. In addition, these approaches do not	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	yield any classification of the processed names, re-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gardless of whether these are underspecifying or	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	not.	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To overcome these limitations, CHEMorph	page=2 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	(Kremer et al., 2006) has been developed. It con-	page=2 xpos=0 ypos=6 left-column full-justified hanged-line year tailchar-hiphen
+I-Body	tains a morphological parser, built according to	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the IUPAC nomenclature rules. The parser yields	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	a syntactic analysis of a given name and also	page=2 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower
+I-Body	provides a semantic representation. This seman-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic representation can be used as a basis for fur-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ther processing, namely for structure generation	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	or classification. In the CHEMorph project, rules	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	have been set up to achieve these two tasks, but	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	there are limits in the number and correctness of	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	structures and classes retrieved. These limits are	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	partly due to the lack of a comprehensive valence	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	and numbering model for the chemical structures.	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Also, classification should be based on the struc-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tural level rather than on the semantic represen-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tation, to ensure that not only the numbering but	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	also default knowledge about chemical structures	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	is included correctly.	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The objectives of our own name-to-structure	page=2 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	system are the following: Naturally, it should yield	page=2 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	a chemical compound structure, in some represen-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	tation format, as well as a classification for a given	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	name. In case the name does not fully specify	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	one compound, but refers to a set of structures,	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the system should still allow for structure compar-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ison (mapping) and classification. Several default	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	rules about the names and the chemical structures	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	have to be taken into account. By including de-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fault knowledge, a structure can be specified fur-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ther even if the name itself has left it underspec-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ified. Similarly, a comprehensive way of dealing	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	with valences of atoms has to be included, since	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the valences restrict the way a chemical structure	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	can be composed.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Our approach to achieve these goals is to use	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	constraint logic programming (CLP). CLP over	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	graph domains is ideal for modeling each name-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	to-structure task as a so-called constraint satisfac-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion problem (CSP) and thereby accomplish map-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ping and classification. We will describe our sys-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem, CLP(name2structure), in more detail in the	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	following section.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In this introduction we described the particular-	page=2 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ities of biochemical terminology. Related work in	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	the area of processing these terms was overviewed	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	and we gave the motivation for our own approach.	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	After presenting our system in Section 2 we will	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	conclude this paper with Section 3, indicating di-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	rections for future research.	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Our Approach	page=2 xpos=5 ypos=7 right-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Following Reyle (2006), we observed that any	page=2 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Body	chemical compound name can be seen as a de-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scription of a chemical structure – in other words	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	it contains constraints on how the structure is	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower column-bottom
+B-Footnote	<sup>6</sup> Cf. http://www.cambridgesoft.com/databases/details/?db=16 composed. Even if a partial name or a class	page=2 xpos=0 ypos=8 single-column left-indent font-largest column-top headchar-super
+I-Footnote	(accessed May 17, 2009).	page=2 xpos=0 ypos=8 single-column right-indent font-smallest hanged-line shorter-tail year tailchar-period
+B-Footnote	<sup>7</sup> Cf. http://www.acdlabs.com/products/name lab/rename/ name does not specify the structure completely	page=2 xpos=0 ypos=8 single-column left-indent font-largest indented-line longer-tail headchar-super column-bottom
+I-Footnote	batch.html (accessed May 17, 2009). but leaves a certain part underspecified, there	page=2 xpos=0 ypos=8 left-column right-over column-top year headchar-lower column-bottom
+B-Footnote	<sup>8</sup> Cf. http://demo.eyesopen.com/products/toolkits/lexichem-	page=2 xpos=0 ypos=8 single-column left-indent right-indent font-smallest column-top headchar-super tailchar-hiphen
+I-Footnote	will at least be some constraints about the struc-	page=2 xpos=5 ypos=8 single-column left-indent indented-line longer-tail headchar-lower tailchar-hiphen
+I-Footnote	tk ogham-tk.html (accessed May 17, 2009).	page=2 xpos=0 ypos=9 single-column right-indent font-smallest hanged-line shorter-tail year headchar-lower tailchar-period
+B-Footnote	<sup>9</sup> Cf. http://chemnomparse.sourceforge.net/ (accessed ture. On account of this, our proposed system –	page=2 xpos=0 ypos=9 single-column left-indent font-largest indented-line longer-tail headchar-super column-bottom
+I-Footnote	May 17, 2009). CLP(name2structure) – employs constraint logic	page=2 xpos=0 ypos=9 left-column right-over column-top year headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	38	page=2 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	programming (CLP) to automatically model so-	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	called constraint satisfaction problems (CSPs) ac-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cording to given names. Such a CSP captures a	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	name’s meaning in that it represents the problem	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	of finding the chemical structure(s) denoted by the	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	name. The solutions to a CSP are determined by	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	a constraint solver. It will find all the structures	page=3 xpos=0 ypos=1 left-column full-justified aligned-line itemization headchar-lower
+I-Body	which satisfy every constraint given by the name.	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In the case of a fully specified chemical structure,	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	the solution is exactly one structure. This struc-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture is then mapped and classified. For underspec-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ified structures or class names, we distinguish two	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	methods: Either all the structures can be enumer-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ated or the CSP itself can be used for mapping and	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	classification.	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Figure 2 shows an overview of the system’s ar-	page=3 xpos=0 ypos=2 left-column left-indent indented-line longer-tail string-figure headchar-capital tailchar-hiphen
+I-Body	chitecture. Its component details will be described	page=3 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+E-Body	in the following subsections.	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.1 Parsing and Semantic Representation	page=3 xpos=0 ypos=3 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We decided to use the CHEMorph parser which	page=3 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	is implemented in Prolog. It provides a morpho-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	semantic grammar which was built according	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	to IUPAC nomenclature rules. The lexicon of	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	this grammar contains the morphemes which can	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	constitute systematic chemical compound names.	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Also, the lexicon contains a number of trivial and	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	class names. In addition to a syntactic analy-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sis, the CHEMorph parser also yields a seman-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic representation of the input name. This repre-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sentation is a term which describes the meaning	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	of the given chemical name in a kind of functor-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	arguments logic. <sup>10</sup> Example (1), (2) and (3) each	page=3 xpos=0 ypos=5 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	show a compound name and its semantic represen-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tation generated by CHEMorph:	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	(1) compound name: pentan-2,3-diol	page=3 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-double-space line-space itemization
+I-Listitem	semantic representation: compd(ane(5*’C’),	page=3 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-lower tailchar-comma
+I-Listitem	pref([]), suff([2*[2, 3]-ol]))	page=3 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	(2) compound name: 2,3-dihydroxy-pentane	page=3 xpos=0 ypos=7 left-column right-indent hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	semantic representation: compd(ane(5*’C’),	page=3 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-lower tailchar-comma
+I-Listitem	pref([2*[2, 3]-hydroxy]), suff([]))	page=3 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	(3) compound name: propyn-1-imine	page=3 xpos=0 ypos=7 left-column right-indent hanged-line shorter-tail line-double-space line-space itemization
+I-Listitem	semantic representation: compd(yne(??	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-lower
+I-Listitem	*[??], ane(3*’C’)), pref([]), suff([?? *[1]-	page=3 xpos=0 ypos=8 left-column left-indent aligned-line tailchar-hiphen
+I-Listitem	imine]))	page=3 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	The general compd functor of each semantic	page=3 xpos=0 ypos=8 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	representation has three arguments, namely the	page=3 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>10</sup> Kremer et al. (2006) define the language of the semantic	page=3 xpos=0 ypos=9 left-column left-indent font-smallest indented-line line-double-space line-space year headchar-super
+I-Footnote	representation in Extended Backus-Naur Form.	page=3 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period column-bottom
+I-Body	parent, prefix and suffix representation. The parent	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	argument represents the basic molecular structure,	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	denoted by the parent term of the name. In Exam-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ple (1) and (2), the parent structure consists of five	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	carbon (C) atoms. This semantic information is	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	encoded with the morpheme pent in CHEMorph’s	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	lexicon. The parent structure is modified by the	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	functor ane, which denotes single bond connec-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions. Prefix and suffix operators, if present, spec-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ify further modifications of the basic parent struc-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture. In the case of underspecifying names, as in	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	example (3), the missing pieces of information are	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	represented as ??.	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	This way, the semantic representation provides	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	all the information about the chemical structure	page=3 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	that is given by the name. Thus, it is an ideal	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	basis for further processing. The next section ex-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plains how our system models constraint satisfac-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion problems on the basis of CHEMorph’s seman-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tic representations.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 CSP Modeling	page=3 xpos=5 ypos=3 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	A chemical compound structure can be described	page=3 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	as a labeled graph, where the vertices are la-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	beled as atoms and the edges are labeled as bonds.	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Hence, a chemical compound name can be seen as	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	describing such a graph in that it gives constraints	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	which the graph has to satisfy. In other words,	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	it picks out some specific graph(s) out of the un-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	limited number of possible graphs in the universe	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	by constraining the possibilities. This observa-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion serves us as a basis for modeling the name-to-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structure task as a constraint satisfaction problem	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	(CSP).	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	A CSP represents a problem as a collection of	page=3 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	constraints over a collection of variables. Each of	page=3 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	the variables has a domain, which is the set of pos-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sible values the variable can take. For the reasons	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	named above, we are working with graph variables	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	and graph domains. The number of chemical com-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pounds, i. e. graphs, could possibly be infinite but	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	we decided it was reasonable and safe to use fi-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nite domains. We hence limit the number of pos-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sible atoms and bonds for each compound in some	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	way, e. g. on 500 vertices and the corresponding	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	edges or another number estimated according to	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the semantic representation of the name being pro-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cessed.	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We implement the CSP in ECLiPSe <sup>11</sup> , an open-	page=3 xpos=5 ypos=8 right-column left-indent font-larger indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	source constraint logic programming (CLP) sys-	page=3 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>11</sup> Cf. http://eclipse-clp.org/ (accessed May 17, 2009).	page=3 xpos=5 ypos=9 right-column left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space year headchar-super tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	39	page=3 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Figure	__Figure 2__	page=4 xpos=0 ypos=-8 single-column centered left-indent right-indent box page-top figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 2: system architecture of CLP(name2structure)	page=4 xpos=2 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space string-figure headchar-capital column-bottom above-blank-line above-double-space above-line-space
+I-Body	tem, which contains a high-level modeling lan-	page=4 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	guage, as well as several constraint solver libraries	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	and interfaces for third-party solvers.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To model a CSP for a given input name, several	page=4 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	steps have to be taken. First, the semantic repre-	page=4 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	sentation term provided by CHEMorph has to be	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	parsed. According to its functors and their argu-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments, the respective constraints have to be called.	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For this, we are developing a comprehensive set of	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	functions which call the constraints with the cor-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rect parameters for the given input name. In these	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	functions, it is determined which constraints over	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the graph variables a specific functor and argument	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	of the semantic representation is imposing. Thus,	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	in the form of constraints, the functions contain	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the actions concerning specific functional groups	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	of the denoted molecule, which were described	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	by the name’s morphemes. As mentioned in Sec-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion 1, these actions include addition, deletion and	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	substitution of certain groups of atoms.	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In any case, default rules have to be included	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	while modeling the CSP. Default rules provide	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	constraints about the chemical structures which	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	are not mentioned by any morpheme of the name.	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For our system they are collected from IUPAC	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	rules as well as from expert knowledge. For ex-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	ample, H-saturation is a default which applies to	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	every chemical compound. This means that ev-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ery atom of a structure, whose valences are not all	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	occupied by other atoms, has as many H-atoms at-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tached to it as there were free valences. This is one	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	of the reasons why the valences of all the different	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	types of atoms need to be taken into account. We	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	decided to include them as axioms for our mod-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els. Knowledge about valences also proves useful	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	for the resolution of underspecification in the case	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	of partial names. Consider a name like propyn-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	1-imine (cf. example (3) in Section 2.1) where it	page=4 xpos=5 ypos=4 right-column full-justified aligned-line
+I-Body	is not specified where the triple bond (denoted by	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	yn) is located. However, there are only three C-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	atoms (introduced by prop) to consider, the first	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of which is connected to an N-atom with a dou-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ble bond (introduced by 1-imine). The valence ax-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ioms included in our CSPs determine that C-atoms	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	always have a valence of 4, so the first C-atom	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	has only two free valences left until now, since	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the =N occupies two of them. Consequently, there	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	cannot be a triple bond connected to the same C-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	atom, as this would use three valences. Hence,	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the only possibility left is that the triple bond must	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	be located between the second and third C-atom.	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	With the given constraints and axioms, the sys-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	40	page=4 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	tem is thus able to infer the fully specified com-	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	pound structure of what would correctly have to	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	be named prop-2-yn-1-imine (Figure 3).	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 3__	page=5 xpos=1 ypos=0 left-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space figure-area above-blank-line above-double-space above-line-space
+B-Caption	Figure 3: prop-2-yn-1-imine	page=5 xpos=1 ypos=1 left-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital above-double-space above-line-space
+B-Body	After modeling a CSP according to the semantic	page=5 xpos=0 ypos=2 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	represenation of the input name, the next step in	page=5 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	processing is to run a constraint solver. This will	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	be described in the following section.	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.3 Constraint Solver	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	A constraint solver is a library of tests and oper-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ations on constraints. Its purpose is to decide for	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	every conjunction of constraints whether there is	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	a model, i. e. a variable assignment, that satis-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	fies these constraints. This is achieved by consis-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tency checking as well as search techniques, tak-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the respective variable domains, i. e. the pos-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sible values, into account. Besides just deciding	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	whether there is a model for a given CSP, a con-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	straint solver is also able to yield the successful	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	variable assignment(s).	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In CLP(name2structure) we use GRASPER <sup>12</sup>	page=5 xpos=0 ypos=5 left-column left-indent font-larger indented-line longer-tail headchar-capital
+I-Body	(Viegas and Azevedo, 2007), a graph constraint	page=5 xpos=0 ypos=5 left-column full-justified hanged-line year
+I-Body	solver based on set constraints. GRASPER en-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ables us to model CSPs using graph variables. In	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	GRASPER, a graph is defined by its set of ver-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tices and its set of edges. Therefore, the domain of	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	a graph consists of a set of possible vertices, in our	page=5 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower
+I-Body	case for the atoms, and possible edges, in our case	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	for the bonds. The constraints can then narrow	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	these two sets in several ways. For example, cer-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tain vertices can be defined to be included as well	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	as the cardinality of a set can be constrained. Also,	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	subgraphs can be defined independently which are	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	then constrained to be part of the final graph solu-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The constraint solver finds one graph solution	page=5 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	for graphs which are fully specified by the con-	page=5 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	straints our system models according to a name.	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For underspecified graphs, for which the con-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	straints are gathered from underspecifying or class	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	names, the constraint solver could find and enu-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>12</sup> GRASPER is distributed with recent builds of the	page=5 xpos=0 ypos=9 left-column left-indent font-smallest indented-line line-double-space line-space headchar-super
+I-Footnote	ECLiPSe CLP system.	page=5 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-capital tailchar-period column-bottom
+I-Body	merate all possible graph solutions if this is de-	page=5 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	sired. This outcome would be the set of all chem-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ical graphs which satisfy the constraints known	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	so far. For example, chlorohexane would lead to	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	the set of graphs representing 1-chlorohexane, 2-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	chlorohexane and 3-chlorohexane.	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In general, a chemical name-to-structure system	page=5 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	aims at providing the chemical structures in a stan-	page=5 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	dard representation format, rather than in a graph	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	notation. In our system, the SMILES generation	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	component carries out this step.	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.4 Generation of a Structural	page=5 xpos=5 ypos=2 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	Representation Format	page=5 xpos=5 ypos=2 right-column left-indent right-indent indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	Once a graph is derived from the input name	page=5 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	as a solution to its CSP, it specifies the chem-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ical structure completely. It contains the exis-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tent vertices and the edges between them, together	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	with labels indicating their respective types and	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	other information like the numbering of atoms.	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Thus, no additional information has to be con-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	sidered to generate a chemical representation for-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mat from the graph. We focus on generating	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	SMILES strings, rather than some other format,	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	because SMILES themselves use the concept of	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	a graph for representing the molecular structures	page=5 xpos=5 ypos=4 right-column full-justified aligned-line itemization headchar-lower
+I-Body	(Weininger, 1988). For example, the graph so-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	lution determined for pentan-2,3-diol as well as	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	for 2,3-dihydroxy-pentane (cf. example (1) and (2)	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	in Section 2.1) can be translated into the SMILES	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	string CC(OH)C(OH)CC. In case more than one	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	graph is determined as solution to the CSP (for un-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	derspecifying and class names), all the respective	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	SMILES strings could be generated.	page=5 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	Once a SMILES string has successfully been	page=5 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	generated, the name-to-structure task is fulfilled	page=5 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	and the SMILES string can then be used for tasks	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	such as mapping, classification, picture generation	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	and the like. The next section will describe how	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	classification – one of our main objectives – is ac-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	complished in our approach.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.5 Classification	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Our system offers three different procedures for	page=5 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	compound classification. Selection of the appro-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	priate procedure depends on the starting point	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	which could either be a SMILES string, a graph	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	(or a set of graphs) or a CSP.	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	First, a given SMILES string can be classified	page=5 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	based on the functional groups it is comprised of.	page=5 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	We use the SMILES classification tool described	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital
+E-Body	by Wittig et al. (2004).	page=5 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	41	page=5 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-Body	Second, a graph which is found as solution to	page=6 xpos=0 ypos=0 left-column left-indent page-top headchar-capital
+I-Body	a CSP representing an input name can be classi-	page=6 xpos=0 ypos=0 left-column full-justified hanged-line itemization headchar-lower tailchar-hiphen
+I-Body	fied according to a given set of class names. This	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	could for example be some taxonomy which is	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	freely available (like ChEBI (Degtyarenko et al.,	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2008)). Those class names first have to be trans-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	formed into CSPs by use of the parsing and mod-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eling modules of the CLP(name2structure) sys-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem. Subsequently, the constraint solver checks	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	whether the graph, or even a set of graphs in the	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	case of an underspecified compound, is a solu-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion to a CSP representing one of the given class	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	names. If the graph or the set of graphs are so-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lutions to one of these CSPs, the compound be-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	longs to the class which provided that CSP. The	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	constraints for the class name alcohol for instance,	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	include (amonst others) the presence of an OH-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	group. Consequently, pentanol can be determined	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	to be an alcohol, since its three graph solutions,	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	representing pentan-1-ol, pentan-2-ol and pentan-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	3-ol, each satisfy the constraints given by alcohol.	page=6 xpos=0 ypos=3 left-column full-justified aligned-line tailchar-period above-line-space
+B-Body	Third, for some underspecifying names and for	page=6 xpos=0 ypos=3 left-column left-indent indented-line line-space headchar-capital
+I-Body	class names, it would not be reasonable to gener-	page=6 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ate and classify all the graph solutions or all the	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	SMILES strings – it could simply be too many or	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	even infinitely many. That would slow down per-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance significantly. Therefore, the system also	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	aims at classifying CSPs themselves, by compar-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing them directly. If the constraints of CSP-1 are a	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	subset of the constraints of CSP-2, the name which	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	provided CSP-2 is classified to be a hyponym of	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	the more general name which provided CSP-1.	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Besides classification, our system aims at map-	page=6 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ping chemical compounds. The last module of our	page=6 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	system therefore provides algorithms to fulfill this	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	task.	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	2.6 Mapping	page=6 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Mapping is needed to fulfill the identification task	page=6 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	and to resolve coreference of synonyms. Given a	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	referent data source of chemical compounds, an	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	identity relation should be established if the cur-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rently processed compound can successfully be	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	mapped to one of the entries. Again, the procedure	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	depends on whether there is a SMILES string, a set	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	of graph solutions or a CSP to be mapped.	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	First, matching a SMILES string can be done	page=6 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	by simple string comparison. An identity rela-	page=6 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tion between any two compounds holds if their	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	unique SMILES strings (Weininger et al., 1989)	page=6 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower
+I-Body	match exactly. For example, this is the case for	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	pentan-2,3-diol and 2,3-dihydroxy-pentane since	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	they both yield the same SMILES string (cf. Sec-	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tions 2.1 and 2.4).	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Second, if an underspecifying input name leads	page=6 xpos=5 ypos=0 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	to an enumerable number of graph solutions, the	page=6 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	set of all the corresponding SMILES strings can be	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	generated. Subsequently, it can be compared to the	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	sets of SMILES strings having been determined	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	for the underspecifying names of the referent data	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	source. If it equals one of the reference SMILES	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	sets, the input name and the respective reference	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	name are successfully identified and thus detected	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	to be synonyms.	page=6 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Third, mapping of CSPs becomes necessary	page=6 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	for class names and underspecifying names with	page=6 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	too many graph solutions to enumerate. This	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	works analogously to CSP classification described	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	in Section 2.5 above. The only difference is that	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	a synonym relation between two names, leading	page=6 xpos=5 ypos=3 right-column full-justified aligned-line itemization headchar-lower
+I-Body	to CSP-1 and CSP-2 respectively, is established if	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the constraints of CSP-1 equal the constraints of	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	CSP-2.	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Conclusions and Future Work	page=6 xpos=5 ypos=4 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper we presented the architecture of	page=6 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	CLP(name2structure), a system for semantic	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	and syntactic processing of chemical compound	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	names. In the introductory section, we described	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the characteristic phenomena of biochemical ter-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	minology which challenge any such system. Our	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	approach is composed of several modules, carry-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing out the defined tasks of structure generation,	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	classification and mapping. By employing a mor-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	phological parser and constraint logic program-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ming over graph variables, our approach is able	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	to handle the particularities of the chemical com-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	pound names.	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	However, the proposed system	page=6 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	CLP(name2structure) still requires work on	page=6 xpos=5 ypos=7 right-column full-justified hanged-line headchar-capital
+I-Body	several of its components. The central task	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	to be completed is to enrich the repository of	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	functions which call the appropriate constraints	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	corresponding to CHEMorph’s semantic repre-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sentation output. This is not a trivial task since it	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	requires to formalize the IUPAC rules of syntax	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	and semantics of the relevant morphemes. This	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	formalization needs to result in an abstract de-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scription of the respective constraints over graph	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	variables. Thereby, phenomena like interaction of	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	morphemes’ meanings play an important role.	page=6 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Before we can accomplish the implementation	page=6 xpos=5 ypos=9 right-column left-indent indented-line longer-tail line-space headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	42	page=6 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	of the complete system according to the proposed	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	architecture, we need to answer a couple of re-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	maining open questions. For example, the exact	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	method on how to compare two CSPs has to be	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	elaborated. Gennari (2002) describes algorithms	page=7 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower
+I-Body	for normalizing CSPs to enable subsequent equiv-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	alence checking. However, these methods can not	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	be applied to our case as they stand but will have	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	to be substantially adapted. Another problem we	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	need to deal with is that labeled graphs, which are	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	required by our system, are not directly supported	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	by the constraint solver GRASPER. Therefore we	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	are currently working on a way to handle the labels	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	indirectly.	page=7 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Another important task we plan to	page=7 xpos=0 ypos=2 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	carry out in the future is the evaluation of	page=7 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	CLP(name2structure). Since no gold standard	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	for name-to-structure generation or classification	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	is available yet, such a gold standard or dataset	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	needs to be created first. We propose to use as	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	such a dataset a subset of the entries of an existing	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	curated database, such as ChEBI, which contains	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	names, chemical structures and a classification	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	for currently 17842 compounds. Unless the mor-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	phological parser and the repository of constraint	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	functions is further enriched, we suppose our	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	system will yield a high precision rather than a	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	high coverage. To evaluate underspecification	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	handling of our system, underspecifying names	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	from general reaction descriptions <sup>13</sup> could be	page=7 xpos=0 ypos=5 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	collected. For this kind of evaluation, determining	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the correctness of the analysis would require the	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	help of domain experts.	page=7 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+AcknowledgementHeader	Acknowledgments	page=7 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	The author is funded by the Klaus Tschira Foun-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Acknowledgement	dation gGmbH, Heidelberg, Germany. Thanks to	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	Uwe Reyle and Fritz Hamm from the University	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Acknowledgement	of Stuttgart, Germany, for contributing to the main	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	ideas and for in-depth discussions. Thanks to the	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	Scientific Databases and Visualization group of	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Acknowledgement	EML Research, Heidelberg, Germany, for their	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Acknowledgement	support. Thanks to Ruben Viegas for comments	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	on graph constraint solving. Thanks to Berenike	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	Litz and the anonymous reviewers for comments	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+E-Acknowledgement	on this paper.	page=7 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Footnote	<sup>13</sup> As listet by the Enzyme Nomenclature Recommen-	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line longer-tail line-blank-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	dations: http://www.chem.qmul.ac.uk/iubmb/enzyme/ (ac-	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower tailchar-hiphen
+I-Footnote	cessed May 17, 2009).	page=7 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period column-bottom
+ReferenceHeader	References	page=7 xpos=5 ypos=0 right-column right-indent font-largest column-top string-reference headchar-capital above-double-space above-line-space
+B-Reference	IUPAC. Commission on the Nomenclature of Organic	page=7 xpos=5 ypos=0 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Chemistry. 1993. A Guide to IUPAC Nomenclature	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	of Organic Compounds (Recommendations 1993).	page=7 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-period
+I-Reference	Blackwell Scientific Publications, Oxford.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Peter Corbett and Peter Murray-Rust. 2006. High-	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	Throughput Identification of Chemistry in Life Sci-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	ence Texts. CompLife, pages 107–118.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Kirill Degtyarenko, Paula de Matos, Marcus Ennis,	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	Janna Hastings, Martin Zbinden, Alan McNaught,	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-capital tailchar-comma
+I-Reference	Rafael Alcántara, Michael Darsow, Mickaël Guedj,	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	and Michael Ashburner. 2008. ChEBI: a database	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line year headchar-lower
+I-Reference	and ontology for chemical entities of biological	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	interest. Nucleic Acids Research, 36(Database-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	Issue):344–350.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Peter Ertl. 2003. Cheminformatics Analysis of Or-	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ganic Substituents: Identification of the Most Com-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	mon Substituents, Calculation of Substituent Prop-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	erties, and Automatic Identification of Drug-like	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Bioisosteric Groups. Journal of Chemical Informa-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	tion and Computer Science, 43:374–380.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Rosella Gennari. 2002. Mapping Inferences.	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Constraint Propagation and Diamond Satisfaction.	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-capital tailchar-period
+I-Reference	Ph.D. thesis, Universiteit van Amsterdam.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Jung-jae Kim and Jong C. Park. 2004. BioAR:	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-colon
+I-Reference	Anaphora Resolution for Relating Protein Names to	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Proteome Database Entries. In Proceedings of the	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Reference Resolution and its Applications Workshop	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line string-reference headchar-capital
+I-Reference	in Conjunction with ACL 2004, pages 79–86.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Michael Krauthammer and Goran Nenadic. 2004.	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Term Identification in the Biomedical Literature.	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-capital tailchar-period
+I-Reference	Journal of Biomedical Informatics, 37(6):512–526.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Gerhard Kremer, Stefanie Anstein, and Uwe Reyle.	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line line-double-space line-space headchar-capital tailchar-period
+I-Reference	2006. Analysing and Classifying Names of Chemi-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	cal Compounds with CHEMorph. In Sophia Anani-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	adou and Juliane Fluck, editors, Proceedings of the	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Second International Symposium on Semantic Min-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	ing in Biomedicine, Friedrich-Schiller-Universität	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Jena, Germany, 2006, pages 37–43.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	IUPAC. Commission on the Nomenclature of Or-	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	ganic Chemistry. 1979. Nomenclature of Organic	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line year headchar-lower
+I-Reference	Chemistry, Sections A, B, C, D, E, F and H. Perga-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	mon Press, Oxford.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Uwe Reyle. 2006. Understanding Chemical Terminol-	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ogy. Terminology, 12(1):111–136.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Ruben Viegas and Francisco Azevedo. 2007.	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	GRASPER: A Framework for Graph CSPs. In	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Jimmy Lee and Peter Stuckey, editors, Proceedings	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	of the Sixth International Workshop on Constraint	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Modelling and Reformulation (ModRef’07), Provi-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	dence, Rhode Island, USA.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	David Weininger, Arthur Weininger, and Joseph L.	page=7 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Weininger. 1989. SMILES 2. Algorithm for	page=7 xpos=5 ypos=9 right-column left-indent font-smallest indented-line year headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	43	page=7 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Reference	Generation of Unique SMILES Notation. Jour-	page=8 xpos=0 ypos=0 left-column full-justified font-smallest page-top headchar-capital tailchar-hiphen
+I-Reference	nal of Chemical Information and Computer Science,	page=8 xpos=0 ypos=0 left-column full-justified font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	29(2):97–101.	page=8 xpos=0 ypos=0 left-column right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	David Weininger. 1988. SMILES, a chemical lan-	page=8 xpos=0 ypos=0 left-column left-over font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	guage and information system. 1. Introduction to	page=8 xpos=0 ypos=0 left-column full-justified font-smallest indented-line headchar-lower
+I-Reference	methodology and encoding rules. Journal of Chem-	page=8 xpos=0 ypos=0 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ical Information and Computer Sciences, 28(1):31–	page=8 xpos=0 ypos=1 left-column full-justified font-smallest aligned-line headchar-lower
+I-Reference	36.	page=8 xpos=0 ypos=1 left-column right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Ulrike Wittig, Andreas Weidemann, Renate Kania,	page=8 xpos=0 ypos=1 left-column left-over font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	Christian Peiss, and Isabel Rojas. 2004. Classifi-	page=8 xpos=0 ypos=1 left-column full-justified font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	cation of chemical compounds to support complex	page=8 xpos=0 ypos=1 left-column full-justified font-smallest aligned-line headchar-lower
+I-Reference	queries in a pathway database. Comparative and	page=8 xpos=0 ypos=1 left-column full-justified font-smallest aligned-line headchar-lower
+I-Reference	Functional Genomics, 5:156–162.	page=8 xpos=0 ypos=2 left-column right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	44	page=8 xpos=9 ypos=9 single-column left-indent column-top line-blank-line line-double-space line-space numeric-only

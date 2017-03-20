@@ -1,0 +1,520 @@
+Title	Automatic generation of paraphrases	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital
+Title	to be used as translation references	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-lower
+Title	in objective evaluation measures of machine translation	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Author	Yves Lepage Etienne Denoual	page=0 xpos=2 ypos=1 left-column left-indent right-over font-largest column-top line-blank-line line-double-space line-space headchar-capital column-bottom
+B-Affiliation	ATR – Spoken language communication research labs	page=0 xpos=2 ypos=1 single-column left-indent right-indent font-largest column-top headchar-capital
+Address	Keihanna gakken tosi, 619-0288 Kyoto, Japan	page=0 xpos=2 ypos=1 single-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+Email	{yves.lepage, etienne.denoual}@atr.jp	page=0 xpos=2 ypos=1 single-column left-indent right-indent font-largest hanged-line longer-tail symbol-atmark column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	We propose a method that automat-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	ically generates paraphrase sets from	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	seed sentences to be used as refer-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ence sets in objective machine trans-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	lation evaluation measures like BLEU	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	and NIST. We measured the quality	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	of the paraphrases produced in an ex-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	periment, i.e., (i) their grammatical-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ity: at least 99% correct sentences;	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-larger aligned-line headchar-lower tailchar-semicolon
+I-Abstract	(ii) their equivalence in meaning: at	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line
+I-Abstract	least 96% correct paraphrases either	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-larger aligned-line headchar-lower
+I-Abstract	by meaning equivalence or entailment;	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-semicolon
+I-Abstract	and, (iii) the amount of internal lexi-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cal and syntactical variation in a set of	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	paraphrases: slightly superior to that	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	of hand-produced sets. The paraphrase	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	sets produced by this method thus seem	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	adequate as reference sets to be used for	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	MT evaluation.	page=0 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-largest hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We present and evaluate a method to automati-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	cally produce paraphrases from seed sentences,	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	from a given linguistic resource. Lexical and syn-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tactical variation among paraphrases is handled	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	through commutations exhibited in proportional	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	analogies, while well-formedness is enforced by	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	filtering with sequences of characters of a cer-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tain length. In an experiment, the quality of the	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	paraphrases produced, i.e., (i) their grammatical-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity, (ii) their equivalence in meaning with the seed	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	sentence, and, (iii) the internal lexical and syn-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tactical variation in a set of paraphrases, was as-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sessed by sampling and objective measures.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-SectionHeader	2 Motivation	page=0 xpos=5 ypos=2 right-column right-indent font-largest column-top numbered-heading1 above-double-space above-line-space
+B-Body	Paraphrases are an important element in the eval-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	uation of many natural language processing tasks.	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Specifically, in the automatic evaluation of ma-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	chine translation systems, the quality of transla-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion candidates is judged against reference trans-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lations that are paraphrases in the target language.	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Automatic measures like BLEU (P APINENI et al.,	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	2001) or NIST (D ODDINGTON , 2002) do so by	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year
+E-Body	counting sequences of words in such paraphrases.	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	It is expected that such reference sets contain	page=0 xpos=5 ypos=4 right-column left-indent indented-line headchar-capital
+I-Body	synonymous sentences (i.e., paraphrases) that ex-	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	plicit possible lexical and syntactical variations in	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	order to cope with translation variations in terms	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	and structures (B ABYCH and H ARTLEY , 2004).	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	In order to produce such reference sets, we pro-	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	pose a method to generate paraphrases from a	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	seed sentence where lexical and syntactical vari-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ations are handled by the use of commutations as	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	captured by proportional analogies whereas N -	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sequences are used to enforce fluency of expres-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sion and adequacy of meaning.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 The linguistic resource used	page=0 xpos=5 ypos=6 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The linguistic resource used in the experiment	page=0 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	presented in this paper relies on the C-STAR col-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lection of utterances called Basic Traveler’s Ex-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pressions <sup>1</sup> . This is a multilingual resource of ex-	page=0 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	pressions from the travel and tourism domain that	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	contains 162,318 aligned translations in several	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	languages, among which English. The items are	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	quite short as the following examples show (one	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	line is one item in the corpus), and as the figures	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	in Table 1 show.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>1</sup> http://www.c-star.org/.	page=0 xpos=5 ypos=8 right-column left-indent right-indent font-smaller indented-line longer-tail line-double-space line-space headchar-super tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	57	page=0 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 1__	page=1 xpos=2 ypos=-1 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: Some statistics about the linguistic resource	page=1 xpos=2 ypos=0 single-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+Table	__Table 2__	page=1 xpos=2 ypos=0 single-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 2: Some statistics about the paraphrases produced	page=1 xpos=2 ypos=1 single-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+B-Listitem	Thank you so much. Keep the change.	page=1 xpos=0 ypos=1 left-column left-indent right-indent column-top line-blank-line line-double-space line-space headchar-capital tailchar-period
+B-Listitem	Bring plenty of lemon, please.	page=1 xpos=0 ypos=1 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Listitem	Please tell me about some interesting places	page=1 xpos=0 ypos=2 left-column left-indent right-indent aligned-line longer-tail headchar-capital
+I-Listitem	[near here.	page=1 xpos=3 ypos=2 left-column left-indent right-indent indented-line tailchar-period
+B-Listitem	Thank you. Please sign here.	page=1 xpos=0 ypos=2 left-column left-indent right-indent hanged-line shorter-tail headchar-capital tailchar-period
+B-Listitem	How do you spell your name?	page=1 xpos=0 ypos=2 left-column left-indent right-indent aligned-line longer-tail headchar-capital above-line-space
+B-Body	The quality of this resource is of at least 99%	page=1 xpos=0 ypos=2 left-column left-indent font-larger longer-tail line-space headchar-capital
+I-Body	correct sentences (p-value = 1.92%). The few in-	page=1 xpos=0 ypos=3 left-column full-justified font-larger hanged-line headchar-lower tailchar-hiphen
+I-Body	correct sentences contain spelling errors or slight	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	syntactical mistakes.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Our paraphrasing methodology	page=1 xpos=0 ypos=3 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	4.1 Our algorithm	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The proposed method consists in two phases:	page=1 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-colon
+I-Body	firstly, paraphrase detection through equality of	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	translation and secondly, paraphrase generation	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	through linguistic commutations based on the	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	data produced in the first phase:	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	• Detection: find sentences which share a	page=1 xpos=0 ypos=5 left-column left-indent font-largest indented-line longer-tail line-double-space line-space itemization
+I-Listitem	same translation in the multilingual resource	page=1 xpos=0 ypos=5 left-column left-indent indented-line headchar-lower
+I-Listitem	(4.2);	page=1 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail tailchar-semicolon above-double-space above-line-space
+B-Listitem	• Generation: produce new sentences by ex-	page=1 xpos=0 ypos=6 left-column left-indent font-largest hanged-line longer-tail line-double-space line-space itemization tailchar-hiphen
+I-Listitem	ploiting commutations (4.3); limit combina-	page=1 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	torics by contiguity constraints (4.4).	page=1 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Each of the steps of the previous algorithm is	page=1 xpos=0 ypos=6 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+E-Body	explained in details in the following sections.	page=1 xpos=0 ypos=6 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Initialisation by paraphrase detection	page=1 xpos=0 ypos=7 left-column right-indent aligned-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In a first phase we initialise our data by para-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	phrase detection. By definition, paraphrase is	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	an equivalence in meaning, thus, different sen-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences having the same translation ought to be	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	considered equivalent in meaning, i.e., they are	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	paraphrases <sup>2</sup> . As the linguistic resource used	page=1 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower above-line-space
+B-Footnote	<sup>2</sup> This is basically the same approach as (O HTAKE and	page=1 xpos=0 ypos=8 left-column left-indent indented-line line-space headchar-super
+I-Footnote	Y AMAMOTO , 2003, p. 3 and 4).	page=1 xpos=0 ypos=8 left-column right-indent font-smallest hanged-line shorter-tail year headchar-capital tailchar-period column-bottom
+I-Body	in the present experiment is a multilingual cor-	page=1 xpos=4 ypos=1 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	pus, we have at our disposal the corresponding	page=1 xpos=4 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	translations in different languages for each of its	page=1 xpos=4 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	sentences. For instance, the following English	page=1 xpos=4 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	sentences share a common Japanese translation	page=1 xpos=4 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	shown in bold face below. Therefore, they are	page=1 xpos=4 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	paraphrases.	page=1 xpos=4 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Listitem	A beer, please. ϏʔϧΛ͍ͩ͘͞ɻ	page=1 xpos=5 ypos=3 right-column left-indent right-indent font-largest indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Listitem	ϏʔϧΛҰຊɻ	page=1 xpos=7 ypos=3 right-column left-indent right-indent font-larger indented-line shorter-tail
+I-Listitem	ϏʔϧΛҰຊ͍ͩ͘͞ɻ	page=1 xpos=7 ypos=3 right-column left-indent right-over font-larger aligned-line longer-tail above-double-space above-line-space
+B-Listitem	Beer, please. Ϗʔϧɻ	page=1 xpos=6 ypos=4 right-column left-indent right-indent font-largest hanged-line shorter-tail line-double-space line-space headchar-capital
+I-Listitem	ϏʔϧΛ͓ئ͍͠·͢ɻ	page=1 xpos=7 ypos=4 right-column left-indent right-over font-larger indented-line longer-tail
+I-Listitem	ϏʔϧΛ͍ͩ͘͞ɻ	page=1 xpos=7 ypos=4 right-column left-indent right-indent font-larger aligned-line shorter-tail
+I-Listitem	ϏʔϧΛԼ͍͞ɻ	page=1 xpos=7 ypos=4 right-column left-indent right-indent font-larger aligned-line shorter-tail
+I-Listitem	ϏʔϧҰഋ͍ͩ͘͞ɻ	page=1 xpos=7 ypos=4 right-column left-indent right-over font-larger aligned-line longer-tail above-double-space above-line-space
+B-Listitem	Can I have a beer? ϏʔϧΛ͍ͩ͘͞ɻ	page=1 xpos=5 ypos=5 right-column left-indent right-indent font-largest hanged-line shorter-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Listitem	Give me a beer, please. ϏʔϧΛ͍ͩ͘͞ɻ	page=1 xpos=5 ypos=5 right-column left-indent right-indent font-largest hanged-line line-double-space line-space headchar-capital above-double-space above-line-space
+B-Listitem	I would like beer. ϏʔϧΛ͍ͩ͘͞ɻ	page=1 xpos=5 ypos=6 right-column left-indent right-indent font-largest indented-line line-double-space line-space headchar-capital above-double-space above-line-space
+B-Listitem	I’d like a beer, please. ϏʔϧΛ͍ͩ͘͞ɻ	page=1 xpos=5 ypos=6 right-column left-indent right-indent font-largest hanged-line line-double-space line-space headchar-capital above-double-space above-line-space
+B-SubsectionHeader	4.3 Commutation in proportional analogies	page=1 xpos=4 ypos=6 right-column right-indent hanged-line shorter-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	for paraphrase generation	page=1 xpos=5 ypos=6 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	In a second phase, we implement paraphrase gen-	page=1 xpos=4 ypos=7 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	eration. Any given sentence may share commu-	page=1 xpos=4 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tations with other sentences of the corpus. Such	page=1 xpos=4 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	commutations are best seen in analogical relations	page=1 xpos=4 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	that explicit syntagmatic and paradigmatic varia-	page=1 xpos=4 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions (de S AUSSURE , 1995, part 3, chap 4). For	page=1 xpos=4 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	instance, the seed sentence	page=1 xpos=4 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Quote	A slice of pizza, please.	page=1 xpos=6 ypos=8 right-column centered left-indent right-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	58	page=1 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 3__	page=2 xpos=0 ypos=-2 single-column left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 3: Some analogies formed with sentences of the linguistic resource that show commutations with	page=2 xpos=0 ypos=0 single-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	the sentence A slice of pizza, please.	page=2 xpos=0 ypos=0 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 4__	page=2 xpos=0 ypos=0 single-column left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 4: Generating a paraphrase for the seed sentence A slice of pizza, please. using proportional	page=2 xpos=0 ypos=2 single-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+I-Caption	analogies. (i) The original proportional analogy taken from Table 3. (ii) Replacing the sentence A	page=2 xpos=0 ypos=2 single-column full-justified aligned-line headchar-lower
+I-Caption	beer, please. with one of its paraphrases acquired during the detection phase: Can I have a beer? The	page=2 xpos=0 ypos=2 single-column full-justified aligned-line headchar-lower
+I-Caption	last sentence of the proportional analogy becomes unknown. (iii) Solving the analogical equation, i.e.,	page=2 xpos=0 ypos=3 single-column full-justified aligned-line headchar-lower tailchar-comma
+E-Caption	generating a paraphrase of A slice of pizza, please.	page=2 xpos=0 ypos=3 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	enters in the analogies of Table 3. The replace-	page=2 xpos=0 ypos=3 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ment of some sentences with known paraphrases	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	in such analogies allows us to produce new sen-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences. This explains why we needed some para-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	phrases to start with. For instance, by replacing	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the sentence:	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Quote	A beer, please.	page=2 xpos=1 ypos=5 left-column centered left-indent right-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-period above-double-space above-line-space
+I-Body	with the sentence:	page=2 xpos=0 ypos=5 left-column right-indent hanged-line shorter-tail line-double-space line-space headchar-lower tailchar-colon above-double-space above-line-space
+B-Quote	Can I have a beer?	page=2 xpos=1 ypos=5 left-column centered left-indent right-indent indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+I-Body	in the first analogy of Table 3, one gets the fol-	page=2 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	lowing analogical equation, that is solved as indi-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cated.	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Equation	I’d like a beer, please. : Can I have a beer? ::	page=2 xpos=0 ypos=6 left-column centered left-indent right-indent font-larger indented-line longer-tail line-space headchar-capital tailchar-colon
+I-Equation	I’d like a slice of pizza, please. : x	page=2 xpos=0 ypos=6 left-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+I-Equation	⇒ x = Can I have a slice of pizza?	page=2 xpos=0 ypos=7 left-column left-indent right-indent font-largest hanged-line longer-tail above-double-space above-line-space
+B-Body	It is then legitimate to say that the produced sen-	page=2 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tence:	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Quote	Can I have a slice of pizza?	page=2 xpos=1 ypos=7 left-column centered left-indent right-indent indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+E-Body	is a paraphrase of the seed sentence (see Table 4).	page=2 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower tailchar-period
+B-Body	Such a method alleviates the problem of cre-	page=2 xpos=0 ypos=8 left-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Body	ating templates from examples which would be	page=2 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower column-bottom
+I-Body	used in an ulterior phase of generation (B ARZI -	page=2 xpos=5 ypos=3 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	LAY and L EE , 2003). Here, all examples in the	page=2 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-capital
+I-Body	corpus are potential templates in their actual raw	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	form, with the advantage that the choice of the	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	places where commutations may occur is left to	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	proportional analogy.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.4 Limitation of combinatorics by	page=2 xpos=5 ypos=5 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	contiguity constraints	page=2 xpos=5 ypos=5 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	During paraphrase generation, spurious sentences	page=2 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	may be produced. For instance, the replacement	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	in the previous analogy, of the sentence:	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Quote	A beer, please.	page=2 xpos=6 ypos=6 right-column centered left-indent right-indent indented-line shorter-tail line-space headchar-capital tailchar-period above-line-space
+I-Body	by the following paraphrase detected during the	page=2 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-space headchar-lower
+I-Body	first phase:	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Quote	A bottle of beer, please.	page=2 xpos=6 ypos=7 right-column centered left-indent right-indent indented-line longer-tail line-space headchar-capital tailchar-period above-line-space
+I-Body	produces the unfortunate sentence:	page=2 xpos=5 ypos=7 right-column right-indent hanged-line shorter-tail line-space headchar-lower tailchar-colon above-line-space
+B-Quote	<sup>∗</sup> A bottle of slice of pizza, please.	page=2 xpos=5 ypos=7 right-column centered left-indent right-indent indented-line longer-tail line-space headchar-super tailchar-period above-line-space
+B-Body	Moreover, as no complete and valid formalisation	page=2 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Body	of linguistic analogies has yet been proposed, the	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	algorithm used (L EPAGE , 1998) may deliver such	page=2 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	unacceptable strings as:	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon column-bottom above-blank-line above-double-space above-line-space
+Page	59	page=2 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 5__	page=3 xpos=2 ypos=-4 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 5: Paraphrase candidates for Can we have a table in the corner? Candidates filtered out by unseen	page=3 xpos=0 ypos=0 single-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+I-Caption	N -sequences (N = 20) are struck out. Notice that the seed sentence itself has been generated again	page=3 xpos=0 ypos=0 single-column full-justified font-larger aligned-line headchar-capital
+I-Caption	by the method (4th sentence from the top). The figures on the left are the frequencies with which the	page=3 xpos=0 ypos=0 single-column full-justified aligned-line headchar-lower
+E-Caption	sentence has been generated.	page=3 xpos=0 ypos=0 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-Quote	<sup>∗</sup> A slice of pizzthe, pleaset for tha, please.	page=3 xpos=0 ypos=1 left-column centered left-indent right-indent column-top line-blank-line line-double-space line-space headchar-super tailchar-period above-double-space above-line-space
+B-Body	In order to ensure a very high rate of well-	page=3 xpos=0 ypos=1 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	formedness among the sentences produced, we	page=3 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	require a method that extracts well-formed sen-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences from the set of generated sentences with a	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	very high precision (to the possible prejudice of	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	the recall).	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To this end, we eliminate all sentences contain-	page=3 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ing sequences of characters of a given length un-	page=3 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	seen in the original data <sup>3</sup> . It is clear that, by ad-	page=3 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	equately tuning the given length, such a method	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	will be able to retain a satisfactory number of sen-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences that will be undoubtedly correct, at least in	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	the sense of the linguistic resource.	page=3 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Experiments	page=3 xpos=0 ypos=4 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	During the first phase of paraphrase detection,	page=3 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	26, 079 sentences (out of 97, 769) got at least one	page=3 xpos=0 ypos=5 left-column full-justified font-larger aligned-line
+I-Body	possibly incorrect paraphrase candidate with an	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	average of 5.35 paraphrases by sentence. How-	page=3 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	ever, the distribution is not uniform: 60 sentences	page=3 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower
+E-Body	get more than 100 paraphrases.	page=3 xpos=0 ypos=6 left-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The maximum is reached with 529 paraphrases	page=3 xpos=0 ypos=6 left-column left-indent font-larger indented-line longer-tail headchar-capital
+I-Body	for the sentence Sure. Such a sentence has a vari-	page=3 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ety of meanings depending on the context, which	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	explains the high number of its possible para-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	phrases as illustrated below.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>3</sup> This is conform to the trend of using N -sequences to as-	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	sess the quality of outputs of various NLP systems like (L IN	page=3 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	and H OVY , 2003) for summary generation, (D ODDINGTON ,	page=3 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line year headchar-lower tailchar-comma
+I-Footnote	2002) for machine translation, etc..	page=3 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail year tailchar-period column-bottom
+B-Listitem	Sure. Here you are.	page=3 xpos=5 ypos=1 right-column left-indent right-indent column-top headchar-capital tailchar-period
+B-Listitem	Sure. This way, please.	page=3 xpos=5 ypos=1 right-column left-indent right-indent aligned-line longer-tail headchar-capital tailchar-period
+B-Listitem	Certainly, go ahead, please.	page=3 xpos=5 ypos=1 right-column left-indent right-indent aligned-line longer-tail headchar-capital tailchar-period
+B-Listitem	I’m sure I will.	page=3 xpos=5 ypos=1 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Listitem	No, I don’t mind a bit.	page=3 xpos=5 ypos=2 right-column left-indent right-indent aligned-line longer-tail headchar-capital tailchar-period
+B-Listitem	Okay. I understand quite well, thank you.	page=3 xpos=5 ypos=2 right-column centered left-indent right-indent aligned-line longer-tail headchar-capital tailchar-period
+B-Listitem	Sounds fine to me.	page=3 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Listitem	Yes, I do.	page=3 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Listitem	...	page=3 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Body	However, such an example shows also that the	page=3 xpos=5 ypos=3 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	more the paraphrases obtained by this method, the	page=3 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+E-Body	less reliable their quality.	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	During the second phase of paraphrase gener-	page=3 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ation, the method generated 4, 495, 266 English	page=3 xpos=5 ypos=4 right-column full-justified font-larger hanged-line headchar-lower
+I-Body	sentences on our linguistic resource. An inspec-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of a sample of 400 sentences shows that the	page=3 xpos=5 ypos=5 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	quality lies around 23.6% of correct sentences (p-	page=3 xpos=5 ypos=5 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	value = 1.19%) in syntax and meaning. The set	page=3 xpos=5 ypos=5 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	of paraphrase candidates obtained on an example	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	sentence are shown in Table 5.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	To ensure fluency of expression and adequacy	page=3 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	of meaning, the method then filtered out any sen-	page=3 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tence containing an N -sequence unseen in the	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	corpus (see Section 4.4). The best value for N	page=3 xpos=5 ypos=7 right-column centered right-indent aligned-line headchar-lower
+I-Body	that allowed us to obtain a quality rate at the same	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	level to that of the original linguistic resource was	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	20.	page=3 xpos=5 ypos=7 right-column right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Body	As a final result, the number of seed sentences	page=3 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	for which we obtained at least one paraphrase is	page=3 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	16, 153. With a total number of 147, 708 para-	page=3 xpos=5 ypos=8 right-column full-justified font-larger aligned-line tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	60	page=3 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	phrases generated <sup>4</sup> , the average number of para-	page=4 xpos=0 ypos=0 left-column full-justified font-largest page-top headchar-lower tailchar-hiphen
+I-Body	phrases per sentence is 8.65 with a standard de-	page=4 xpos=0 ypos=0 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	viation of 16.98 which means that the distribu-	page=4 xpos=0 ypos=0 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	tion is unbalanced. The graph on the left of Fig-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ure 1 shows the number of seed sentences with the	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	same number of paraphrases. while the graph on	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	the right shows the number of paraphrases against	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	the length of the seed sentence in words.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Quality of the generated paraphrases	page=4 xpos=0 ypos=1 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	6.1 Well-formedness of the generated	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	paraphrases	page=4 xpos=0 ypos=2 left-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	The grammatical quality of the paraphrase candi-	page=4 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	dates obtained was evaluated on a sample of 400	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	sentences: at least 99% of the paraphrases may	page=4 xpos=0 ypos=2 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	be considered grammatically correct (p-value =	page=4 xpos=0 ypos=2 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	2.22%). This quality is approximately the same	page=4 xpos=0 ypos=3 left-column full-justified font-larger aligned-line
+I-Body	as that of the original resource: at least 99% (p-	page=4 xpos=0 ypos=3 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+E-Body	value = 1.92%).	page=4 xpos=0 ypos=3 left-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	An overview of the errors in the generated para-	page=4 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	phrases suggests that they do not differ from the	page=4 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	ones in the original data. For instance, one notes	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	that an article is lacking before the noun phrase	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	tourist area in the following sentence:	page=4 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Quote	Where is tourist area?	page=4 xpos=1 ypos=4 left-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	Although we are not able to trace the error back	page=4 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	to its origin, such a mistake is certainly due to a	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	commutation with a sentence like:	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Quote	Where is information office?	page=4 xpos=1 ypos=5 left-column centered left-indent right-indent indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+I-Body	that contains a similar mistake and that is found	page=4 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower
+E-Body	in the original linguistic resource.	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	6.2 Equivalence in content between	page=4 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	generated paraphases and seed sentence	page=4 xpos=0 ypos=6 left-column left-indent right-indent indented-line longer-tail headchar-lower above-double-space above-line-space
+B-Body	The semantic quality of the paraphrases produced	page=4 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	was also checked by hand on a sample of 470	page=4 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	paraphrases that were compared with their cor-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	responding seed sentence. We not only checked	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	for strict equivalence, but also for meaning entail-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ment <sup>5</sup> .	page=4 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>4</sup> The same sentence may have been generated several	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-double-space line-space headchar-super
+I-Footnote	times for different seed sentences. Overall there were	page=4 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	42, 249 different sentences generated. Their lengths in char-	page=4 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line tailchar-hiphen
+I-Footnote	acters and words are given in Table 2.	page=4 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>5</sup> Bill Dolan, Chris Brockett, and Chris Quirk,	page=4 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-super tailchar-comma
+I-Footnote	Microsoft Research Paraphrase Corpus, http://-	page=4 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-capital tailchar-hiphen
+I-Footnote	research.microsoft.com/research/nlp-	page=4 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-hiphen
+I-Footnote	/msr paraphrase.htm.	page=4 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail tailchar-period column-bottom
+B-Body	The following three paraphrases on the left	page=4 xpos=5 ypos=0 right-column left-indent right-over column-top headchar-capital
+I-Body	with their corresponding seed sentences on the	page=4 xpos=5 ypos=0 right-column centered right-over hanged-line headchar-lower
+I-Body	right are examples that were judged to be strict	page=4 xpos=5 ypos=0 right-column centered right-over aligned-line headchar-lower
+E-Body	equivalences.	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Listitem	Can I see some ID? Could you show me	page=4 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Listitem	some ID?	page=4 xpos=7 ypos=1 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-Listitem	Could you exchange	page=4 xpos=7 ypos=1 right-column left-indent aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Listitem	Please exchange this.	page=4 xpos=5 ypos=1 right-column left-indent right-indent hanged-line shorter-tail headchar-capital tailchar-period
+I-Listitem	this, please.	page=4 xpos=7 ypos=1 right-column left-indent right-indent indented-line longer-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Listitem	Please send it to Send it to Japan,	page=4 xpos=5 ypos=2 right-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Listitem	Japan. please.	page=4 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-Body	The following are examples in which there is a	page=4 xpos=5 ypos=2 right-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	lack of information either in the paraphrase pro-	page=4 xpos=5 ypos=3 right-column centered right-over hanged-line headchar-lower tailchar-hiphen
+I-Body	duced or in the seed sentence. This is precisely	page=4 xpos=5 ypos=3 right-column centered right-over aligned-line headchar-lower
+E-Body	what entailment is.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Listitem	Miss, could I have a	page=4 xpos=7 ypos=3 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Listitem	Coke, please.	page=4 xpos=5 ypos=4 right-column left-indent right-indent hanged-line shorter-tail headchar-capital tailchar-period
+I-Listitem	coke?	page=4 xpos=7 ypos=4 right-column left-indent right-indent indented-line longer-tail headchar-lower above-double-space above-line-space
+B-Listitem	I want to change	page=4 xpos=5 ypos=4 right-column left-indent right-indent hanged-line shorter-tail line-double-space line-space headchar-capital
+I-Listitem	Please exchange this.	page=4 xpos=7 ypos=4 right-column left-indent right-indent indented-line longer-tail headchar-capital tailchar-period
+I-Listitem	money.	page=4 xpos=5 ypos=4 right-column left-indent right-indent hanged-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	Fried eggs, sunny-side	page=4 xpos=7 ypos=4 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Listitem	Sunny-side up, please.	page=4 xpos=5 ypos=4 right-column left-indent right-indent hanged-line shorter-tail headchar-capital tailchar-period
+I-Listitem	up, please.	page=4 xpos=7 ypos=5 right-column left-indent right-indent indented-line longer-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Body	The result of the sampling is that the paraphrase	page=4 xpos=5 ypos=5 right-column left-indent right-over hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	candidates can be considered valid paraphrases in	page=4 xpos=5 ypos=5 right-column centered right-over hanged-line headchar-lower
+I-Body	at least 94% of the cases either by equivalence	page=4 xpos=5 ypos=5 right-column centered right-over font-larger aligned-line headchar-lower
+I-Body	or entailment (p-value = 3.05%). The following	page=4 xpos=5 ypos=6 right-column centered right-over font-larger aligned-line headchar-lower
+I-Body	sentences exemplify the remaining cases where	page=4 xpos=5 ypos=6 right-column centered right-over aligned-line headchar-lower
+I-Body	two sentences were not judged valid paraphrases	page=4 xpos=5 ypos=6 right-column centered right-over aligned-line headchar-lower
+E-Body	of one another.	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 6__	page=4 xpos=5 ypos=7 right-column left-indent right-over box indented-line longer-tail line-double-space line-space table-area above-blank-line above-double-space above-line-space
+B-Body	Table 6 summarises the distribution of para-	page=4 xpos=5 ypos=8 right-column left-indent right-over indented-line line-blank-line line-double-space line-space string-table headchar-capital tailchar-hiphen
+I-Body	phrase candidates according to the abovemen-	page=4 xpos=5 ypos=8 right-column centered right-over hanged-line headchar-lower tailchar-hiphen
+E-Body	tionned classification.	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	61	page=4 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Figure	__Figure 1__	page=5 xpos=0 ypos=-3 Figure-column left-indent right-indent box page-top figure-area column-bottom above-blank-line above-double-space above-line-space
+B-Caption	Figure 1: Number of seed sentences with the same number of paraphrases (on the left). Number of	page=5 xpos=0 ypos=0 single-column full-justified column-top line-blank-line line-double-space line-space string-figure headchar-capital
+E-Caption	paraphrases by length of seed sentence in words (on the right).	page=5 xpos=0 ypos=0 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-double-space above-line-space
+Figure	__Figure 2__	page=5 xpos=0 ypos=1 Figure-column left-indent right-indent box column-top line-double-space line-space figure-area column-bottom above-blank-line above-double-space above-line-space
+B-Caption	Figure 2: BLEU and NIST scores by length of seed sentence (upper graphs) and by number of para-	page=5 xpos=0 ypos=7 single-column full-justified column-top line-blank-line line-double-space line-space string-figure headchar-capital tailchar-hiphen
+I-Caption	phrases per seed sentence (lower graphs). In these graphs, each point is the score of a set of paraphrases	page=5 xpos=0 ypos=7 single-column full-justified aligned-line headchar-lower
+I-Caption	against the seed sentence they were produced for. Lower scores indicate a greater lexical and syntactical	page=5 xpos=0 ypos=7 single-column full-justified aligned-line headchar-lower
+E-Caption	variation in paraphrases. The connected points show mean values along the axis of abscissae.	page=5 xpos=0 ypos=7 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	62	page=5 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest indented-line shorter-tail line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 6__	page=6 xpos=2 ypos=-1 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 6: Equivalence or entailment in meaning of the paraphrases produced, on a sample of 470 para-	page=6 xpos=0 ypos=0 single-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+E-Caption	phrases from various seed sentences.	page=6 xpos=0 ypos=0 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-SectionHeader	7 Measure of lexical and syntactical	page=6 xpos=0 ypos=0 left-column right-indent font-largest column-top line-blank-line line-double-space line-space numbered-heading1
+I-SectionHeader	variation in paraphrases	page=6 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-SubsectionHeader	7.1 Objective measures	page=6 xpos=0 ypos=1 left-column right-indent hanged-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We assessed the lexical and syntactical variation	page=6 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	of our paraphrases on a sample of 400 seed sen-	page=6 xpos=0 ypos=1 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	tences using BLEU and NIST. On the contrary to	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	evaluation of machine translation where the goal	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	is to obtain high scores in BLEU and NIST, our	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	goal here, when comparing a paraphrase to the	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	seed sentence it has been produced for, is to get	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	low scores. Indeed, high scores reflect some high	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	correlation with translation references that is a	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	lesser variation. As our goal is precisely to pre-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pare data for evaluation with BLEU and NIST, it	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	is thus to generate sets of paraphrases that would	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	contain as much variation as possible to express	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the same meaning as the seed sentences, i.e. we	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	look for low scores in BLEU and NIST.	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Again, all this can be done safely as long as	page=6 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	one is sure that the sentences compared are valid	page=6 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	sentences and valid paraphrases. This is the case	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	of our data, as we have already shown that the	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	paraphrases produced are 99% grammatically and	page=6 xpos=0 ypos=5 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	semantically correct sentences and that they are	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	paraphrases of their corresponding seed sentences	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	in 94% of the cases.	page=6 xpos=0 ypos=5 left-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As for the meaning of BLEU and NIST, they	page=6 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	are supposed to measure complementary charac-	page=6 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	teristics of translations: namely fluency and ade-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quacy (A KIBA et al., 2004, p. 7). BLEU tends	page=6 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Body	to measure the quality in form of expression (flu-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ency), while NIST <sup>6</sup> tends to measure quality in	page=6 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	meaning (adequacy).	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	7.2 Results	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The scores in BLEU and NIST (both on a scale	page=6 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	from 0 to 1) shown in Figure 2 are interpreted	page=6 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>6</sup> Formally, NIST is an open scale. Hence, scores cannot	page=6 xpos=0 ypos=8 left-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	be directly compared for different seed sentences. We thus	page=6 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	normalised them by the score of the seed sentence against	page=6 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	itself. In this way, NIST scores become comparable for dif-	page=6 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	ferent seed sentences.	page=6 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+I-Body	as a measure of the lexical and syntactical vari-	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	ation among paraphrases. The lower they are, the	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	greater the variation. The upper graphs show that	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	this variation depends clearly on the lengths of the	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	seed sentences. The shorter the seed sentence,	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the greater the variation among the paraphrases	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	produced by this method. This is no surprise as	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	the detection phase introduces a bias as was men-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tionned in Section 5 with the example sentence	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	Sure.	page=6 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Body	The lower graphs show that the variation does	page=6 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	not depend on the number of paraphrases per seed	page=6 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	sentence. Hence, on the contrary to a method	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	that would produce more variations as more para-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	phrases are generated, in our method, the varia-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion is not expected to change when one produces	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	more and more paraphrases (however, the gram-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	matical quality or the paraphrasing quality could	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	change). In this sense, the method is scalable, i.e.,	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	one could tune the number of paraphrases wished	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	without considerably altering the lexical and syn-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tactical variation.	page=6 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	7.3 Comparison with reference sets	page=6 xpos=5 ypos=5 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	produced by hand	page=6 xpos=5 ypos=5 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	We compared the lexical and syntactical variation	page=6 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	of our paraphrases with paraphrases created by	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	hand for a past MT evaluation campaign (A KIBA	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	et al., 2004) in two language pairs: Japanese to	page=6 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+E-Body	English and Chinese to English.	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Body	For every reference set, we evaluated each sen-	page=6 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tence against one chosen at random and left out.	page=6 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	The mean of all these evaluation scores gives an	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	indication on the overall internal lexical and syn-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tactical variation inside the reference sets. The	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	lower the scores, the better the lexical and syn-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tactical variation. This scheme was applied to	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	both reference sets created by hand, and to the	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	one automatically produced by our method. The	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	scores obtained are shown on Figure 7. Whereas	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	BLEU scores are comparable for all reference	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	sets, which indicates no notable difference in flu-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	63	page=6 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 7__	page=7 xpos=2 ypos=-2 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 7: Measure of the lexical and syntactical variation of various reference sets produced by hand	page=7 xpos=0 ypos=0 single-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+I-Caption	and automatically produced by our method. The lower the scores, the better the lexical and syntactical	page=7 xpos=0 ypos=0 single-column full-justified aligned-line headchar-lower
+E-Caption	variation.	page=7 xpos=0 ypos=0 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	ency, NIST scores are definitely better for the au-	page=7 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	tomatically produced reference set: this hints at a	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	possibly richer lexical variation.	page=7 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	8 Conclusion	page=7 xpos=0 ypos=1 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We reported a technique to generate paraphrases	page=7 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	in the view of constituting reference sets for ma-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	chine translation evaluation measures like BLEU	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	and NIST. In an experiment with a linguistic re-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	source of 97, 769 sentences we generated 8, 65	page=7 xpos=0 ypos=2 left-column full-justified font-larger aligned-line headchar-lower
+E-Body	paraphrases in average for 16, 153 seed sentences.	page=7 xpos=0 ypos=2 left-column full-justified font-larger aligned-line headchar-lower tailchar-period
+B-Body	The grammaticality was evaluated by sampling	page=7 xpos=0 ypos=3 left-column left-indent indented-line headchar-capital
+I-Body	and was shown to be of at least 99% grammati-	page=7 xpos=0 ypos=3 left-column full-justified font-larger hanged-line headchar-lower tailchar-hiphen
+I-Body	cally and semantically correct sentences (p-value	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	= 2.22%), a quality comparable to that of the orig-	page=7 xpos=0 ypos=3 left-column full-justified font-larger aligned-line tailchar-hiphen
+I-Body	inal linguistic resource. In addition, at least 96%	page=7 xpos=0 ypos=3 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	of the candidates (p-value = 1.92%) were correct	page=7 xpos=0 ypos=4 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	paraphrases either by meaning equivalence or en-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tailment.	page=7 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Finally, the lexical and syntactical variation	page=7 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	within each paraphrase set was assessed using	page=7 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	BLEU and NIST against the seed sentence. It was	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	found that the lexical and syntactical variation did	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	not depend upon the number of paraphrases gen-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	erated, but on the length of the seed sentence.	page=7 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Going back to the view of constituting refer-	page=7 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ence sets for machine translation evaluation, not	page=7 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	only are the paraphrase sets produced by this	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	method correct sentences and valid paraphrases,	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	but they also exhibit an internal lexical and syn-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tactical variation which was shown to be slightly	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	superior to that of two evaluation campaign sets	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	of paraphrases produced by hand.	page=7 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgements	page=7 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	This research was supported in part by the Na-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Acknowledgement	tional Institute of Information and Communica-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Acknowledgement	tions Technology.	page=7 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+ReferenceHeader	References	page=7 xpos=5 ypos=0 right-column right-indent font-largest column-top string-reference headchar-capital above-double-space above-line-space
+B-Reference	Yasuhiro A KIBA , Marcello F EDERICO , Noriko	page=7 xpos=5 ypos=1 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Reference	K ANDO , Hiromi N AKAIWA , Michael P AUL , and	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Jun’ichi T SUJII . 2004. Overview of the IWSLT04	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line year headchar-capital
+I-Reference	evaluation campaign. In Proc. of the International	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Workshop on Spoken Language Translation, pages	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	1–12, Kyoto, Japan.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Bogdan B ABYCH and Anthony H ARTLEY . 2004. Ex-	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tending the BLEU MT evaluation method with fre-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	quency weighting. In Proceedings of ACL 2004,	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-comma
+I-Reference	pages 621–628, Barcelone, July.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Regina B ARZILAY and Lillian L EE . 2003. Learn-	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ing to paraphrase: An unsupervised approach us-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ing multiple-sequence alignment. In HLT-NAACL	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	2003: Main Proceedings, pages 16–23.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Reference	Ferdinand de S AUSSURE . 1995. Cours de linguis-	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tique générale. Payot, Lausanne et Paris. [1 e	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	éd. 1916].	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	George D ODDINGTON . 2002. Automatic evalua-	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tion of machine translation quality using N-gram	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	co-occurrence statistics. In Proceedings of Human	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Language Technology, pages 128–132, San Diego,	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	March.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Yves L EPAGE . 1998. Solving analogies on words:	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-colon
+I-Reference	an algorithm. In Proceedings of COLING-ACL’98,	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	volume I, pages 728–735, Montréal, August.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Chin-Yew L IN and Eduard H OVY . 2003. Auto-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	matic evaluation of summaries using n-gram co-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	occurrence statistics. In Proceedings of HLT-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	NAACL 2003, pages 71–78, Edmonton, May.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Kiyonori O HTAKE and Kazuhide Y AMAMOTO . 2003.	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Applicability analysis of corpus-derived para-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	phrases toward example-based paraphrasing. In	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Language, Information and Computation, Proceed-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	ings of 17th Pacific Asia Conference, pages 380–	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	391.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Kishore P APINENI , Salim R OUKOS , Todd W ARD , and	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Wei-Jing Z HU . 2001. Bleu: a method for automatic	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	evaluation of machine translation. Research report	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	RC22176, IBM, September.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	64	page=7 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only

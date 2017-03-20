@@ -1,0 +1,742 @@
+Title	Modeling Local Coherence: An Entity-based Approach	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Author	Regina Barzilay Mirella Lapata	page=0 xpos=1 ypos=0 left-column left-indent right-over font-larger column-top line-blank-line line-double-space line-space headchar-capital column-bottom
+B-Affiliation	Computer Science and Artificial Intelligence Laboratory School of Informatics	page=0 xpos=0 ypos=0 single-column left-over right-indent font-larger column-top headchar-capital column-bottom
+I-Affiliation	Massachusetts Institute of Technology	page=0 xpos=0 ypos=0 left-column left-indent right-indent font-larger column-top headchar-capital
+Email	regina@csail.mit.edu	page=0 xpos=1 ypos=1 left-column left-indent right-indent font-smaller indented-line shorter-tail symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=2 ypos=1 left-column centered left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	This paper considers the problem of auto-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	matic assessment of local coherence. We	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	present a novel entity-based representa-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion of discourse which is inspired by Cen-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tering Theory and can be computed au-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tomatically from raw text. We view co-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	herence assessment as a ranking learning	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	problem and show that the proposed dis-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	course representation supports the effec-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tive learning of a ranking function. Our	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	experiments demonstrate that the induced	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	model achieves significantly higher ac-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	curacy than a state-of-the-art coherence	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	model.	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-larger hanged-line longer-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	A key requirement for any system that produces	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	text is the coherence of its output. Not surprisingly,	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	a variety of coherence theories have been devel-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	oped over the years (e.g., Mann and Thomson, 1988;	page=0 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Grosz et al. 1995) and their principles have found	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-capital
+I-Body	application in many symbolic text generation sys-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems (e.g., Scott and de Souza, 1990; Kibble and	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Body	Power, 2004). The ability of these systems to gener-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	ate high quality text, almost indistinguishable from	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	human writing, makes the incorporation of coher-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence theories in robust large-scale systems partic-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ularly appealing. The task is, however, challenging	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	considering that most previous efforts have relied on	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	handcrafted rules, valid only for limited domains,	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	with no guarantee of scalability or portability (Re-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	iter and Dale, 2000). Furthermore, coherence con-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	straints are often embedded in complex representa-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions (e.g., Asher and Lascarides, 2003) which are	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+E-Body	hard to implement in a robust application.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	This paper focuses on local coherence, which	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	captures text relatedness at the level of sentence-to-	page=0 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower tailchar-hiphen column-bottom
+I-Body	University of Edinburgh	page=0 xpos=5 ypos=0 right-column left-indent right-indent font-larger column-top headchar-capital
+I-Body	mlap@inf.ed.ac.uk	page=0 xpos=6 ypos=1 right-column left-indent right-indent font-smaller indented-line shorter-tail symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+I-Body	sentence transitions, and is essential for generating	page=0 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	globally coherent text. The key premise of our work	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	is that the distribution of entities in locally coherent	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	texts exhibits certain regularities. This assumption is	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	not arbitrary — some of these regularities have been	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	recognized in Centering Theory (Grosz et al., 1995)	page=0 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower
+E-Body	and other entity-based theories of discourse.	page=0 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The algorithm introduced in the paper automat-	page=0 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ically abstracts a text into a set of entity transi-	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tion sequences, a representation that reflects distri-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	butional, syntactic, and referential information about	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	discourse entities. We argue that this representation	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of discourse allows the system to learn the proper-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ties of locally coherent texts opportunistically from	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	a given corpus, without recourse to manual annota-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+E-Body	tion or a predefined knowledge base.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We view coherence assessment as a ranking prob-	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	lem and present an efficiently learnable model that	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	orders alternative renderings of the same informa-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion based on their degree of local coherence. Such	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	a mechanism is particularly appropriate for gener-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	ation and summarization systems as they can pro-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	duce multiple text realizations of the same underly-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing content, either by varying parameter values, or	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	by relaxing constraints that control the generation	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	process. A system equipped with a ranking mech-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	anism, could compare the quality of the candidate	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	outputs, much in the same way speech recognizers	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	employ language models at the sentence level.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Our evaluation results demonstrate the effective-	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ness of our entity-based ranking model within the	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	general framework of coherence assessment. First,	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we evaluate the utility of the model in a text order-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing task where our algorithm has to select a max-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	imally coherent sentence order from a set of can-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	didate permutations. Second, we compare the rank-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ings produced by the model against human coher-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence judgments elicited for automatically generated	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	summaries. In both experiments, our method yields	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	141	page=0 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only
+B-Footer	Proceedings of the 43rd Annual Meeting of the ACL, pages 141–148,	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail headchar-capital tailchar-comma
+I-Footer	Ann Arbor, June 2005.  2005 c Association for Computational Linguistics	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail year headchar-capital page-bottom
+I-Body	a significant improvement over a state-of-the-art co-	page=1 xpos=0 ypos=0 left-column full-justified page-top itemization headchar-lower tailchar-hiphen
+I-Body	herence model based on Latent Semantic Analysis	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	(Foltz et al., 1998).	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail year tailchar-period
+B-Body	In the following section, we provide an overview	page=1 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	of existing work on the automatic assessment of lo-	page=1 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	cal coherence. Then, we introduce our entity-based	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	representation, and describe our ranking model.	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Next, we present the experimental framework and	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+E-Body	data. Evaluation results conclude the paper.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Related Work	page=1 xpos=0 ypos=1 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Local coherence has been extensively studied within	page=1 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the modeling framework put forward by Centering	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	Theory (Grosz et al., 1995; Walker et al., 1998;	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-capital tailchar-semicolon
+I-Body	Strube and Hahn, 1999; Poesio et al., 2004; Kibble	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-capital
+I-Body	and Power, 2004). One of the main assumptions un-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	derlying Centering is that a text segment which fore-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	grounds a single entity is perceived to be more co-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	herent than a segment in which multiple entities are	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	discussed. The theory formalizes this intuition by in-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	troducing constraints on the distribution of discourse	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	entities in coherent text. These constraints are for-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mulated in terms of focus, the most salient entity in	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	a discourse segment, and transition of focus between	page=1 xpos=0 ypos=4 left-column full-justified aligned-line itemization headchar-lower
+I-Body	adjacent sentences. The theory also establishes con-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	straints on the linguistic realization of focus, sug-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gesting that it is more likely to appear in prominent	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	syntactic positions (such as subject or object), and to	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	be referred to with anaphoric expressions.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	A great deal of research has attempted to translate	page=1 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	principles of Centering Theory into a robust coher-	page=1 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ence metric (Miltsakaki and Kukich, 2000; Hasler,	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2004; Karamanis et al., 2004). Such a translation is	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year
+I-Body	challenging in several respects: one has to specify	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the “free parameters” of the system (Poesio et al.,	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2004) and to determine ways of combining the ef-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	fects of various constraints. A common methodol-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ogy that has emerged in this research is to develop	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	and evaluate coherence metrics on manually anno-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tated corpora. For instance, Miltsakaki and Kukich	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	(2000) annotate a corpus of student essays with tran-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	sition information, and show that the distribution of	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	transitions correlates with human grades. Karamanis	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	et al. (2004) use a similar methodology to compare	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	coherence metrics with respect to their usefulness	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	for text planning in generation.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The present work differs from these approaches	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	in two key respects. First, our method does not re-	page=1 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	quire manual annotation of input texts. We do not	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	aim to produce complete centering annotations; in-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	stead, our inference procedure is based on a dis-	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	course representation that preserves essential entity	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	transition information, and can be computed auto-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	matically from raw text. Second, we learn patterns	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	of entity distribution from a corpus, without attempt-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing to directly implement or refine Centering con-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	straints.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 The Coherence Model	page=1 xpos=5 ypos=1 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this section we introduce our entity-based repre-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	sentation of discourse. We describe how it can be	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	computed and how entity transition patterns can be	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	extracted. The latter constitute a rich feature space	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	on which probabilistic inference is performed.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Text Representation Each text is represented	page=1 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	by an entity grid, a two-dimensional array that cap-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures the distribution of discourse entities across text	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	sentences. We follow Miltsakaki and Kukich (2000)	page=1 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	in assuming that our unit of analysis is the tradi-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tional sentence (i.e., a main clause with accompa-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nying subordinate and adjunct clauses). The rows of	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the grid correspond to sentences, while the columns	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	correspond to discourse entities. By discourse en-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tity we mean a class of coreferent noun phrases. For	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	each occurrence of a discourse entity in the text, the	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	corresponding grid cell contains information about	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	its grammatical role in the given sentence. Each grid	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	column thus corresponds to a string from a set of	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	categories reflecting the entity’s presence or absence	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	in a sequence of sentences. Our set consists of four	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	symbols: S (subject), O (object), X (neither subject	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	nor object) and – (gap which signals the entity’s ab-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sence from a given sentence).	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Table 1 illustrates a fragment of an entity grid	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space string-table headchar-capital
+I-Body	constructed for the text in Table 2. Since the text	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	contains six sentences, the grid columns are of	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	length six. Consider for instance the grid column for	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the entity trial, [ O – – – – X ]. It records that trial	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	is present in sentences 1 and 6 (as O and X respec-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tively) but is absent from the rest of the sentences.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Grid Computation The ability to identify and	page=1 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	cluster coreferent discourse entities is an impor-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tant prerequisite for computing entity grids. The	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	same entity may appear in different linguistic forms,	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	e.g., Microsoft Corp., Microsoft, and the company,	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	but should still be mapped to a single entry in the	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	grid. Table 1 exemplifies the entity grid for the text	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	in Table 2 when coreference resolution is taken into	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	account. To automatically compute entity classes,	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma column-bottom above-blank-line above-double-space above-line-space
+Page	142	page=1 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 1__	page=2 xpos=0 ypos=-1 left-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: A fragment of the entity grid. Noun phrases	page=2 xpos=0 ypos=2 left-column full-justified line-double-space line-space string-table headchar-capital
+E-Caption	are represented by their head nouns.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 2__	page=2 xpos=0 ypos=2 left-column full-justified box aligned-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 2: Summary augmented with syntactic anno-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line line-double-space line-space string-table headchar-capital tailchar-hiphen
+E-Caption	tations for grid computation.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	we employ a state-of-the-art noun phrase coref-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	erence resolution system (Ng and Cardie, 2002)	page=2 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower
+I-Body	trained on the MUC (6–7) data sets. The system de-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cides whether two NPs are coreferent by exploit-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing a wealth of features that fall broadly into four	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	categories: lexical, grammatical, semantic and posi-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tional.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Once we have identified entity classes, the next	page=2 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	step is to fill out grid entries with relevant syn-	page=2 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tactic information. We employ a robust statistical	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	parser (Collins, 1997) to determine the constituent	page=2 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	structure for each sentence, from which subjects ( s ),	page=2 xpos=0 ypos=8 left-column full-justified font-larger aligned-line headchar-lower tailchar-comma
+I-Body	objects ( o ), and relations other than subject or ob-	page=2 xpos=0 ypos=8 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	ject ( x ) are identified. Passive verbs are recognized	page=2 xpos=0 ypos=8 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	using a small set of patterns, and the underlying deep	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	grammatical role for arguments involved in the pas-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sive construction is entered in the grid (see the grid	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	cell o for Microsoft, Sentence 2, Table 2).	page=2 xpos=0 ypos=9 left-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	When a noun is attested more than once with a dif-	page=2 xpos=5 ypos=0 right-column left-indent column-top headchar-capital tailchar-hiphen
+I-Body	ferent grammatical role in the same sentence, we de-	page=2 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	fault to the role with the highest grammatical rank-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing: subjects are ranked higher than objects, which	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	in turn are ranked higher than the rest. For exam-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ple, the entity Microsoft is mentioned twice in Sen-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence 1 with the grammatical roles x (for Microsoft	page=2 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	Corp.) and s (for the company), but is represented	page=2 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-capital
+E-Body	only by s in the grid (see Tables 1 and 2).	page=2 xpos=5 ypos=1 right-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Body	Coherence Assessment We introduce a method	page=2 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	for coherence assessment that is based on grid rep-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resentation. A fundamental assumption underlying	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	our approach is that the distribution of entities in	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	coherent texts exhibits certain regularities reflected	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	in grid topology. Some of these regularities are for-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	malized in Centering Theory as constraints on tran-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sitions of local focus in adjacent sentences. Grids of	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	coherent texts are likely to have some dense columns	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	(i.e., columns with just a few gaps such as Microsoft	page=2 xpos=5 ypos=3 right-column full-justified aligned-line
+I-Body	in Table 1) and many sparse columns which will	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	consist mostly of gaps (see markets, earnings in Ta-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ble 1). One would further expect that entities cor-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	responding to dense columns are more often sub-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	jects or objects. These characteristics will be less	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	pronounced in low-coherence texts.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Inspired by Centering Theory, our analysis re-	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	volves around patterns of local entity transitions.	page=2 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	A local entity transition is a sequence { S , O , X , –} <sup>n</sup>	page=2 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-capital
+I-Body	that represents entity occurrences and their syntactic	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	roles in n adjacent sentences. Local transitions can	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	be easily obtained from a grid as continuous subse-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quences of each column. Each transition will have a	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	certain probability in a given grid. For instance, the	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	probability of the transition [ S –] in the grid from	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	Table 1 is 0.08 (computed as a ratio of its frequency	page=2 xpos=5 ypos=6 right-column full-justified aligned-line string-table headchar-capital
+I-Body	(i.e., six) divided by the total number of transitions	page=2 xpos=5 ypos=6 right-column full-justified aligned-line
+I-Body	of length two (i.e., 75)). Each text can thus be viewed	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	as a distribution defined over transition types. We	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	believe that considering all entity transitions may	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	uncover new patterns relevant for coherence assess-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ment.	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We further refine our analysis by taking into ac-	page=2 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	count the salience of discourse entities. Centering	page=2 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	and other discourse theories conjecture that the way	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	an entity is introduced and mentioned depends on	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	its global role in a given discourse. Therefore, we	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	discriminate between transitions of salient entities	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	and the rest, collecting statistics for each group sep-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	arately. We identify salient entities based on their	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	143	page=2 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 3__	page=3 xpos=-1 ypos=-1 left-column left-over right-over box page-top table-area above-double-space above-line-space
+B-Caption	Table 3: Example of a feature-vector document rep-	page=3 xpos=0 ypos=0 left-column full-justified indented-line line-double-space line-space string-table headchar-capital tailchar-hiphen
+I-Caption	resentation using all transitions of length two given	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Caption	syntactic categories: S , O , X , and –.	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	frequency, <sup>1</sup> following the widely accepted view that	page=3 xpos=0 ypos=1 left-column full-justified font-largest aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	the occurrence frequency of an entity correlates with	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	its discourse prominence (Morris and Hirst, 1991;	page=3 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower tailchar-semicolon
+E-Body	Grosz et al., 1995).	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Body	Ranking We view coherence assessment as a	page=3 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	ranking learning problem. The ranker takes as input	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	a set of alternative renderings of the same document	page=3 xpos=0 ypos=3 left-column full-justified aligned-line itemization headchar-lower
+I-Body	and ranks them based on their degree of local coher-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence. Examples of such renderings include a set of	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	different sentence orderings of the same text and a	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	set of summaries produced by different systems for	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the same document. Ranking is more suitable than	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	classification for our purposes since in text gener-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ation, a system needs a scoring function to com-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pare among alternative renderings. Furthermore, it	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	is clear that coherence assessment is not a categori-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cal decision but a graded one: there is often no single	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	coherent rendering of a given text but many different	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	possibilities that can be partially ordered.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As explained previously, coherence constraints	page=3 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	are modeled in the grid representation implicitly by	page=3 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	entity transition sequences. To employ a machine	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	learning algorithm to our problem, we encode tran-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sition sequences explicitly using a standard feature	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	vector notation. Each grid rendering j of a docu-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment d <sub>i</sub> is represented by a feature vector Φ(x i j ) =	page=3 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	(p <sub>1</sub> (x i j ), p 2 (x i j ), . . . , p m (x i j )), where m is the num-	page=3 xpos=0 ypos=6 left-column full-justified font-largest aligned-line tailchar-hiphen
+I-Body	ber of all predefined entity transitions, and p <sub>t</sub> (x i j )	page=3 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the probability of transition t in grid x <sub>i</sub> j . Note that	page=3 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	considerable latitude is available when specifying	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the transition types to be included in a feature vec-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tor. These can be all transitions of a given length	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	(e.g., two or three) or the most frequent transitions	page=3 xpos=0 ypos=7 left-column full-justified aligned-line
+I-Body	within a document collection. An example of a fea-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture space with transitions of length two is illustrated	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	in Table 3.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The training set consists of ordered pairs of ren-	page=3 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	derings (x <sub>i</sub> j , x ik ), where x i j and x ik are renderings	page=3 xpos=0 ypos=8 left-column full-justified font-largest hanged-line headchar-lower above-double-space above-line-space
+B-Footnote	1 The frequency threshold is empirically determined on the	page=3 xpos=0 ypos=9 left-column left-indent indented-line line-double-space line-space numbered-heading1
+I-Footnote	development set. See Section 5 for further discussion.	page=3 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period column-bottom
+I-Body	of the same document d <sub>i</sub> , and x i j exhibits a higher	page=3 xpos=5 ypos=0 right-column full-justified font-largest column-top headchar-lower
+I-Body	degree of coherence than x <sub>ik</sub> . Without loss of gen-	page=3 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	erality, we assume j > k. The goal of the training	page=3 xpos=5 ypos=0 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	procedure is to find a parameter vector w ~ that yields	page=3 xpos=5 ypos=0 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	a “ranking score” function w ~ · Φ(x <sub>i</sub> j ), which mini-	page=3 xpos=5 ypos=0 right-column full-justified font-largest aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	mizes the number of violations of pairwise rankings	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	provided in the training set. Thus, the ideal ~ w would	page=3 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	satisfy the condition ~ w · (Φ(x <sub>i</sub> j ) − Φ(x ik )) > 0 ∀ j, i, k	page=3 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	such that j > k. The problem is typically treated as	page=3 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	a Support Vector Machine constraint optimization	page=3 xpos=5 ypos=1 right-column full-justified aligned-line itemization headchar-lower
+I-Body	problem, and can be solved using the search tech-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nique described in Joachims (2002a). This approach	page=3 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower
+I-Body	has been shown to be highly effective in various	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	tasks ranging from collaborative filtering (Joachims,	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	2002a) to parsing (Toutanova et al., 2004).	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail year tailchar-period
+B-Body	In our ranking experiments, we use Joachims’	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	(2002a) SVM <sup>light</sup> package for training and testing	page=3 xpos=5 ypos=2 right-column full-justified font-largest hanged-line year
+E-Body	with all parameters set to their default values.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Evaluation Set-Up	page=3 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this section we describe two evaluation tasks that	page=3 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	assess the merits of the coherence modeling frame-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	work introduced above. We also give details regard-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing our data collection, and parameter estimation.	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Finally, we introduce the baseline method used for	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+E-Body	comparison with our approach.	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Text Ordering	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	Text structuring algorithms (Lapata, 2003; Barzi-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Body	lay and Lee, 2004; Karamanis et al., 2004)	page=3 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower
+I-Body	are commonly evaluated by their performance at	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	information-ordering. The task concerns determin-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing a sequence in which to present a pre-selected set	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of information-bearing items; this is an essential step	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	in concept-to-text generation, multi-document sum-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	marization, and other text-synthesis problems. Since	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	local coherence is a key property of any well-formed	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	text, our model can be used to rank alternative sen-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence orderings. We do not assume that local coher-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence is sufficient to uniquely determine the best or-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dering — other constraints clearly play a role here.	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	However, we expect that the accuracy of a coherence	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	model is reflected in its performance in the ordering	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	task.	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Data To acquire a large collection for training	page=3 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	and testing, we create synthetic data, wherein the	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	candidate set consists of a source document and per-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mutations of its sentences. This framework for data	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	acquisition is widely used in evaluation of ordering	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	algorithms as it enables large scale automatic evalu-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	144	page=3 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	ation. The underlying assumption is that the orig-	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	inal sentence order in the source document must	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	be coherent, and so we should prefer models that	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	rank it higher than other permutations. Since we do	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	not know the relative quality of different permuta-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions, our corpus includes only pairwise rankings	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	that comprise the original document and one of its	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	permutations. Given k original documents, each with	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	n randomly generated permutations, we obtain k · n	page=4 xpos=0 ypos=1 left-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	(trivially) annotated pairwise rankings for training	page=4 xpos=0 ypos=1 left-column full-justified aligned-line
+E-Body	and testing.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Using the technique described above, we col-	page=4 xpos=0 ypos=2 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	lected data in two different genres: newspaper ar-	page=4 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ticles and accident reports written by government	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	officials. The first collection consists of Associated	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	Press articles from the North American News Cor-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	pus on the topic of natural disasters. The second in-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cludes narratives from the National Transportation	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	Safety Board’s database <sup>2</sup> . Both sets have documents	page=4 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-capital
+I-Body	of comparable length – the average number of sen-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences is 10.4 and 11.5, respectively. For each set, we	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	used 100 source articles with 20 randomly generated	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	permutations for training. The same number of pair-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	wise rankings (i.e., 2000) was used for testing. We	page=4 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	held out 10 documents (i.e., 200 pairwise rankings)	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	from the training data for development purposes.	page=4 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Summary Evaluation	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	We further test the ability of our method to assess	page=4 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	coherence by comparing model induced rankings	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	against rankings elicited by human judges. Admit-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tedly, the information ordering task only partially	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	approximates degrees of coherence violation using	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	different sentence permutations of a source docu-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment. A stricter evaluation exercise concerns the as-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sessment of texts with naturally occurring coherence	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	violations as perceived by human readers. A rep-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resentative example of such texts are automatically	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	generated summaries which often contain sentences	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	taken out of context and thus display problems with	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	respect to local coherence (e.g., dangling anaphors,	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	thematically unrelated sentences). A model that ex-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	hibits high agreement with human judges not only	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	accurately captures the coherence properties of the	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	summaries in question, but ultimately holds promise	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	for the automatic evaluation of machine-generated	page=4 xpos=0 ypos=8 left-column centered right-indent aligned-line headchar-lower
+I-Body	texts. Existing automatic evaluation measures such	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	as BLEU (Papineni et al., 2002) and ROUGE (Lin	page=4 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower above-double-space above-line-space
+B-Footnote	2 The collections are available from http://www.csail.	page=4 xpos=0 ypos=9 left-column left-indent indented-line line-double-space line-space numbered-heading1 tailchar-period
+I-Footnote	mit.edu/regina/coherence/.	page=4 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period column-bottom
+I-Body	and Hovy, 2003), are not designed for the coherence	page=4 xpos=5 ypos=0 right-column full-justified column-top year headchar-lower
+I-Body	assessment task, since they focus on content similar-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ity between system output and reference texts.	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Data Our evaluation was based on materi-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	als from the Document Understanding Conference	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	(DUC, 2003), which include multi-document sum-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	maries produced by human writers and by automatic	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	summarization systems. In order to learn a rank-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing, we require a set of summaries, each of which	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	have been rated in terms of coherence. We therefore	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	elicited judgments from human subjects. <sup>3</sup> We ran-	page=4 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	domly selected 16 input document clusters and five	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	systems that had produced summaries for these sets,	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	along with summaries composed by several humans.	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	To ensure that we do not tune a model to a particu-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	lar system, we used the output summaries of distinct	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	systems for training and testing. Our set of train-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing materials contained 4 · 16 summaries (average	page=4 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	length 4.8), yielding 42  · 16 = 96 pairwise rankings.	page=4 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	In a similar fashion, we obtained 32 pairwise rank-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ings for the test set. Six documents from the training	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	data were used as a development set.	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Coherence ratings were obtained during an elic-	page=4 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	itation study by 177 unpaid volunteers, all native	page=4 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	speakers of English. The study was conducted re-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	motely over the Internet. Participants first saw a set	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of instructions that explained the task, and defined	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the notion of coherence using multiple examples.	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The summaries were randomized in lists following a	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	Latin square design ensuring that no two summaries	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	in a given list were generated from the same docu-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment cluster. Participants were asked to use a seven	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	point scale to rate how coherent the summaries were	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	without having seen the source texts. The ratings	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	(approximately 23 per summary) given by our sub-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line tailchar-hiphen
+I-Body	jects were averaged to provide a rating between 1	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	and 7 for each summary.	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The reliability of the collected judgments is cru-	page=4 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	cial for our analysis; we therefore performed sev-	page=4 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	eral tests to validate the quality of the annota-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions. First, we measured how well humans agree	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in their coherence assessment. We employed leave-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	one-out resampling <sup>4</sup> (Weiss and Kulikowski, 1991),	page=4 xpos=5 ypos=7 right-column full-justified font-largest aligned-line year headchar-lower tailchar-comma
+I-Body	by correlating the data obtained from each par-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ticipant with the mean coherence ratings obtained	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	from all other participants. The inter-subject agree-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	3 The ratings are available from http://homepages.inf.	page=4 xpos=5 ypos=8 right-column left-indent indented-line line-double-space line-space numbered-heading1 tailchar-period
+I-Footnote	ed.ac.uk/mlap/coherence/.	page=4 xpos=5 ypos=8 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period
+B-Footnote	4 We cannot apply the commonly used Kappa statistic for	page=4 xpos=5 ypos=9 right-column left-indent indented-line longer-tail numbered-heading1
+I-Footnote	measuring agreement since it is appropriate for nominal scales,	page=4 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower tailchar-comma
+I-Footnote	whereas our summaries are rated on an ordinal scale.	page=4 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	145	page=4 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	ment was r = .768. Second, we examined the ef-	page=5 xpos=0 ypos=0 left-column full-justified font-largest page-top headchar-lower tailchar-hiphen
+I-Body	fect of different types of summaries (human- vs.	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	machine-generated.) An A NOVA revealed a reliable	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	effect of summary type: F(1; 15) = 20.38, p < 0.01	page=5 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	indicating that human summaries are perceived as	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	significantly more coherent than system-generated	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	ones. Finally, the judgments of our participants ex-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	hibit a significant correlation with DUC evaluations	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	(r = .41, p < 0.01).	page=5 xpos=0 ypos=1 left-column right-indent font-largest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.3 Parameter Estimation	page=5 xpos=0 ypos=1 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	Our model has two free parameters: the frequency	page=5 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	threshold used to identify salient entities and the	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	length of the transition sequence. These parameters	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	were tuned separately for each data set on the corre-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sponding held-out development set. For our ordering	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	and summarization experiments, optimal salience-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based models were obtained for entities with fre-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quency ≥ 2. The optimal transition length was ≤ 3	page=5 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	for ordering and ≤ 2 for summarization.	page=5 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.4 Baseline	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	We compare our algorithm against the coherence	page=5 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	model proposed by Foltz et al. (1998) which mea-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	sures coherence as a function of semantic related-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ness between adjacent sentences. Semantic related-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ness is computed automatically using Latent Se-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantic Analysis (LSA, Landauer and Dumais 1997)	page=5 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	from raw text without employing syntactic or other	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	annotations. This model is a good point of compari-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	son for several reasons: (a) it is fully automatic, (b) it	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	is a not a straw-man baseline; it correlates reliably	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	with human judgments and has been used to analyze	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	discourse structure, and (c) it models an aspect of	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	coherence which is orthogonal to ours (their model	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	is lexicalized).	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Following Foltz et al. (1998) we constructed	page=5 xpos=0 ypos=6 left-column left-indent indented-line longer-tail year headchar-capital
+I-Body	vector-based representations for individual words	page=5 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	from a lemmatized version of the North American	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	News Text Corpus <sup>5</sup> (350 million words) using a	page=5 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-capital
+I-Body	term-document matrix. We used singular value de-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	composition to reduce the semantic space to 100 di-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mensions obtaining thus a space similar to LSA. We	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	represented the meaning of a sentence as a vector	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	by taking the mean of the vectors of its words. The	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	similarity between two sentences was determined by	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	measuring the cosine of their means. An overall text	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	coherence measure was obtained by averaging the	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	cosines for all pairs of adjacent sentences.	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	5 Our selection of this corpus was motivated by its similarity	page=5 xpos=0 ypos=9 left-column left-indent indented-line longer-tail line-double-space line-space numbered-heading1
+I-Footnote	to the DUC corpus which primarily consists of news stories.	page=5 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	In sum, each text was represented by a single	page=5 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	feature, its sentence-to-sentence semantic similar-	page=5 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ity. During training, the ranker learns an appropriate	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	threshold value for this feature.	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.5 Evaluation Metric	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	Model performance was assessed in the same way	page=5 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	for information ordering and summary evaluation.	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Given a set of pairwise rankings, we measure accu-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	racy as the ratio of correct predictions made by the	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	model over the size of the test set. In this setup, ran-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	dom prediction results in an accuracy of 50%.	page=5 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Results	page=5 xpos=5 ypos=2 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The evaluation of our coherence model was driven	page=5 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	by two questions: (1) How does the proposed model	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	compare to existing methods for coherence assess-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment that make use of distinct representations?	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	(2) What is the contribution of linguistic knowledge	page=5 xpos=5 ypos=3 right-column full-justified aligned-line itemization
+I-Body	to the model’s performance? Table 4 summarizes the	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	accuracy of various configurations of our model for	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	the ordering and coherence assessment tasks.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We first compared a linguistically rich grid model	page=5 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	that incorporates coreference resolution, expressive	page=5 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	syntactic information, and a salience-based feature	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	space (Coreference+Syntax+Salience) against the	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	LSA baseline (LSA). As can be seen in Table 4, the	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	grid model outperforms the baseline in both ordering	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	and summary evaluation tasks, by a wide margin.	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We conjecture that this difference in performance	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	stems from the ability of our model to discriminate	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	between various patterns of local sentence transi-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions. In contrast, the baseline model only measures	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the degree of overlap across successive sentences,	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	without taking into account the properties of the en-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tities that contribute to the overlap. Not surprisingly,	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the difference between the two methods is more pro-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nounced for the second task — summary evaluation.	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Manual inspection of our summary corpus revealed	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	that low-quality summaries often contain repetitive	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	information. In such cases, simply knowing about	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	high cross-sentential overlap is not sufficient to dis-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tinguish a repetitive summary from a well-formed	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	one.	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In order to investigate the contribution of linguis-	page=5 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tic knowledge on model performance we compared	page=5 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	the full model introduced above against models us-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing more impoverished representations. We focused	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	on three sources of linguistic knowledge — syntax,	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	coreference resolution, and salience — which play	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	146	page=5 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 4__	page=6 xpos=0 ypos=-2 single-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 4: Ranking accuracy measured as the fraction of correct pairwise rankings in the test set.	page=6 xpos=0 ypos=0 single-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	a prominent role in Centering analyses of discourse	page=6 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space itemization headchar-lower
+I-Body	coherence. An additional motivation for our study is	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	exploration of the trade-off between robustness and	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	richness of linguistic annotations. NLP tools are typ-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ically trained on human-authored texts, and may de-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	teriorate in performance when applied to automati-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cally generated texts with coherence violations.	page=6 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Syntax To evaluate the effect of syntactic	page=6 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	knowledge, we eliminated the identification of	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	grammatical relations from our grid computation	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	and recorded solely whether an entity is present or	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	absent in a sentence. This leaves only the coref-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erence and salience information in the model, and	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the results are shown in Table 4 under (Corefer-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence+Salience). The omission of syntactic informa-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion causes a uniform drop in performance on both	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	tasks, which confirms its importance for coherence	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	analysis.	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Coreference To measure the effect of fully-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	fledged coreference resolution, we constructed en-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tity classes simply by clustering nouns on the ba-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sis of their identity. In other words, each noun in a	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	text corresponds to a different entity in a grid, and	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	two nouns are considered coreferent only if they	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	are identical. The performance of the model (Syn-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tax+Salience) is shown in the third row of Table 4.	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	While coreference resolution improved model	page=6 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	performance in ordering, it caused a decrease in ac-	page=6 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	curacy in summary evaluation. This drop in per-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance can be attributed to two factors related	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	to the nature of our corpus — machine-generated	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	texts. First, an automatic coreference resolution tool	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	expectedly decreases in accuracy because it was	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	trained on well-formed human-authored texts. Sec-	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ond, automatic summarization systems do not use	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	anaphoric expressions as often as humans do. There-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fore, a simple entity clustering method is more suit-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	able for automatic summaries.	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Salience Finally, we evaluate the contribution	page=6 xpos=0 ypos=9 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	of salience information by comparing our orig-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	inal model (Coreference+Syntax+Salience) which	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	accounts separately for patterns of salient and	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	non-salient entities against a model that does not	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	attempt to discriminate between them (Corefer-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence+Syntax). Our results on the ordering task indi-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cate that models that take salience information into	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	account consistently outperform models that do not.	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The effect of salience is less pronounced for the	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	summarization task when it is combined with coref-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erence information (Coreference + Salience). This is	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	expected, since accurate identification of coreferring	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	entities is prerequisite to deriving accurate salience	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	models. However, as explained above, our automatic	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	coreference tool introduces substantial noise in our	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	representation. Once this noise is removed (see Syn-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tax+Salience), the salience model has a clear advan-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tage over the other models.	page=6 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Discussion and Conclusions	page=6 xpos=5 ypos=4 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper we proposed a novel framework for	page=6 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	representing and measuring text coherence. Central	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	to this framework is the entity grid representation	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of discourse which we argue captures important pat-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	terns of sentence transitions. We re-conceptualize	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	coherence assessment as a ranking task and show	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	that our entity-based representation is well suited for	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	learning an appropriate ranking function; we achieve	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	good performance on text ordering and summary co-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	herence evaluation.	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	On the linguistic side, our results yield empirical	page=6 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	support to some of Centering Theory’s main claims.	page=6 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	We show that coherent texts are characterized by	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	transitions with particular properties which do not	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	hold for all discourses. Our work, however, not only	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	validates these findings, but also quantitatively mea-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sures the predictive power of various linguistic fea-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tures for the task of coherence assessment.	page=6 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	An important future direction lies in augmenting	page=6 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	our entity-based model with lexico-semantic knowl-	page=6 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	edge. One way to achieve this goal is to cluster enti-	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ties based on their semantic relatedness, thereby cre-	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	147	page=6 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	ating a grid representation over lexical chains (Mor-	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	ris and Hirst, 1991). An entirely different approach	page=7 xpos=0 ypos=0 left-column centered right-indent aligned-line year headchar-lower
+I-Body	is to develop fully lexicalized models, akin to tra-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ditional language models. Cache language mod-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els (Kuhn and Mori, 1990) seem particularly promis-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+E-Body	ing in this context.	page=7 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the discourse literature, entity-based theories	page=7 xpos=0 ypos=1 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	are primarily applied at the level of local coherence,	page=7 xpos=0 ypos=1 left-column centered right-indent hanged-line headchar-lower tailchar-comma
+I-Body	while relational models, such as Rhetorical Structure	page=7 xpos=0 ypos=1 left-column centered right-indent aligned-line headchar-lower
+I-Body	Theory (Mann and Thomson, 1988; Marcu, 2000),	page=7 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-capital tailchar-comma
+I-Body	are used to model the global structure of discourse.	page=7 xpos=0 ypos=1 left-column centered right-indent aligned-line headchar-lower tailchar-period
+I-Body	We plan to investigate how to combine the two for	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	improved prediction on both local and global levels,	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	with the ultimate goal of handling longer texts.	page=7 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgments	page=7 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	The authors acknowledge the support of the National Science	page=7 xpos=0 ypos=3 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital above-line-space
+I-Acknowledgement	Foundation (Barzilay; CAREER grant IIS-0448168 and grant	page=7 xpos=0 ypos=3 left-column full-justified font-smallest aligned-line line-space headchar-capital above-line-space
+I-Acknowledgement	IIS-0415865) and EPSRC (Lapata; grant GR/T04540/01).	page=7 xpos=0 ypos=3 left-column full-justified font-smallest aligned-line line-space headchar-capital tailchar-period above-line-space
+I-Acknowledgement	We are grateful to Claire Cardie and Vincent Ng for providing	page=7 xpos=0 ypos=3 left-column full-justified font-smallest aligned-line line-space headchar-capital above-line-space
+I-Acknowledgement	us the results of their system on our data. Thanks to Eli Barzilay,	page=7 xpos=0 ypos=3 left-column full-justified font-smallest aligned-line line-space headchar-lower tailchar-comma above-line-space
+I-Acknowledgement	Eugene Charniak, Michael Elhadad, Noemie Elhadad, Frank	page=7 xpos=0 ypos=4 left-column full-justified font-smallest aligned-line line-space headchar-capital above-line-space
+I-Acknowledgement	Keller, Alex Lascarides, Igor Malioutov, Smaranda Muresan,	page=7 xpos=0 ypos=4 left-column full-justified font-smallest aligned-line line-space headchar-capital tailchar-comma above-line-space
+I-Acknowledgement	Martin Rinard, Kevin Simler, Caroline Sporleder, Chao Wang,	page=7 xpos=0 ypos=4 left-column full-justified font-smallest aligned-line line-space headchar-capital tailchar-comma above-line-space
+I-Acknowledgement	Bonnie Webber and three anonymous reviewers for helpful	page=7 xpos=0 ypos=4 left-column full-justified font-smallest aligned-line line-space headchar-capital above-line-space
+I-Acknowledgement	comments and suggestions. Any opinions, findings, and con-	page=7 xpos=0 ypos=4 left-column right-over font-smallest aligned-line line-space headchar-lower tailchar-hiphen above-line-space
+I-Acknowledgement	clusions or recommendations expressed above are those of the	page=7 xpos=0 ypos=4 left-column full-justified font-smallest aligned-line line-space headchar-lower above-line-space
+I-Acknowledgement	authors and do not necessarily reflect the views of the National	page=7 xpos=0 ypos=5 left-column right-indent font-smallest aligned-line line-space headchar-lower above-line-space
+E-Acknowledgement	Science Foundation or EPSRC.	page=7 xpos=0 ypos=5 left-column right-indent font-smallest aligned-line shorter-tail line-space headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=5 left-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	N. Asher, A. Lascarides. 2003. Logics of Conversation.	page=7 xpos=0 ypos=6 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Cambridge University Press.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period
+B-Reference	R. Barzilay, L. Lee. 2004. Catching the drift: Probabilis-	page=7 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tic content models, with applications to generation and	page=7 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	summarization. In Proceedings of HLT-NAACL, 113–	page=7 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	120.	page=7 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	M. Collins. 1997. Three generative, lexicalised mod-	page=7 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	els for statistical parsing. In Proceedings of the	page=7 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	ACL/EACL, 16–23.	page=7 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	P. W. Foltz, W. Kintsch, T. K. Landauer. 1998. Textual	page=7 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	coherence using latent semantic analysis. Discourse	page=7 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Processes, 25(2&3):285–307.	page=7 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	B. Grosz, A. K. Joshi, S. Weinstein. 1995. Centering:	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-colon
+I-Reference	A framework for modeling the local coherence of dis-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	course. Computational Linguistics, 21(2):203–225.	page=7 xpos=0 ypos=8 left-column centered left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	L. Hasler. 2004. An investigation into the use of cen-	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tering transitions for summarisation. In Proceedings	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of the 7th Annual CLUK Research Colloquium, 100–	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	107, University of Birmingham.	page=7 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	T. Joachims. 2002a. Optimizing search engines using	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	clickthrough data. In Proceesings of KDD, 133–142.	page=7 xpos=0 ypos=9 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	148	page=7 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Reference	N. Karamanis, M. Poesio, C. Mellish, J. Oberlander.	page=7 xpos=5 ypos=0 right-column full-justified font-smallest column-top headchar-capital tailchar-period
+I-Reference	2004. Evaluating centering-based metrics of coher-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	ence for text structuring using a reliably annotated cor-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	pus. In Proceedings of the ACL, 391–398.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	R. Kibble, R. Power. 2004. Optimising referential co-	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	herence in text generation. Computational Linguistics,	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	30(4):401–416.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	R. Kuhn, R. D. Mori. 1990. A cache-based natural lan-	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	guage model for speech recognition. IEEE Transac-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tions on PAMI, 12(6):570–583.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	T. K. Landauer, S. T. Dumais. 1997. A solution to Plato’s	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	problem: The latent semantic analysis theory of ac-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	quisition, induction and representation of knowledge.	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	Psychological Review, 104(2):211–240.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	M. Lapata. 2003. Probabilistic text structuring: Exper-	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	iments with sentence ordering. In Proceedings of the	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	ACL, 545–552.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	C.-Y. Lin, E. H. Hovy. 2003. Automatic evaluation of	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	summaries using n-gram co-occurrence statistics. In	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Proceedings of HLT-NAACL, 71–78.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	W. C. Mann, S. A. Thomson. 1988. Rhetorical structure	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	theory. Text, 8(3):243–281.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period
+B-Reference	D. Marcu. 2000. The Theory and Practice of Discourse	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Parsing and Summarization. MIT Press.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period
+B-Reference	E. Miltsakaki, K. Kukich. 2000. The role of centering	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	theory’s rough-shift in the teaching and evaluation of	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	writing skills. In Proceedings of the ACL, 408–415.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	J. Morris, G. Hirst. 1991. Lexical cohesion computed by	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	thesaural relations as an indicator of the structure of	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	text. Computational Linguistics, 1(17):21–43.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	V. Ng, C. Cardie. 2002. Improving machine learning	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	approaches to coreference resolution. In Proceedings	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of the ACL, 104–111.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	K. Papineni, S. Roukos, T. Ward, W.-J. Zhu. 2002. Bleu:	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-colon
+I-Reference	a method for automatic evaluation of machine transla-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line itemization headchar-lower tailchar-hiphen
+I-Reference	tion. In Proceedings of the ACL, 311–318.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	M. Poesio, R. Stevenson, B. D. Eugenio, J. Hitzeman.	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-period
+I-Reference	2004. Centering: a parametric theory and its instan-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	tiations. Computational Linguistics, 30(3):309–363.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	E. Reiter, R. Dale. 2000. Building Natural-Language	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Generation Systems. Cambridge University Press.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period
+B-Reference	D. Scott, C. S. de Souza. 1990. Getting the message	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	across in RST-based text generation. In R. Dale,	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	C. Mellish, M. Zock, eds., Current Research in Nat-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	ural Language Generation, 47–73. Academic Press.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	M. Strube, U. Hahn. 1999. Functional centering –	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	grounding referential coherence in information struc-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ture. Computational Linguistics, 25(3):309–344.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	K. Toutanova, P. Markova, C. D. Manning. 2004. The	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	leaf projection path view of parse trees: Exploring	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	string kernels for HPSG parse selection. In Proceed-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ings of the EMNLP, 166–173.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	M. Walker, A. Joshi, E. Prince, eds. 1998. Centering	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	Theory in Discourse. Clarendon Press.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period
+B-Reference	S. M. Weiss, C. A. Kulikowski. 1991. Computer Sys-	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tems that Learn: Classification and Prediction Meth-	page=7 xpos=5 ypos=9 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ods from, Statistics, Neural Nets, Machine Learning,	page=7 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	and Expert Systems. Morgan Kaufmann.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period

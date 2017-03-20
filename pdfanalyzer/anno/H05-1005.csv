@@ -1,0 +1,710 @@
+Title	Improving Multilingual Summarization: Using Redundancy in the Input to	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital
+Title	Correct MT errors	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-blank-line above-double-space above-line-space
+Author	Advaith Siddharthan and Kathleen McKeown	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Columbia University Computer Science Department	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Address	1214 Amsterdam Avenue, New York, NY 10027, USA.	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail tailchar-period
+Email	as372,kathy  @cs.columbia.edu	page=0 xpos=2 ypos=1 single-column left-indent right-indent font-largest indented-line shorter-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	In this paper, we use the information re-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	dundancy in multilingual input to correct	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	errors in machine translation and thus im-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	prove the quality of multilingual sum-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	maries. We consider the case of multi-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	document summarization, where the input	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	documents are in Arabic, and the output	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	summary is in English. Typically, infor-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	mation that makes it to a summary appears	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	in many different lexical-syntactic forms	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	in the input documents. Further, the use of	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	multiple machine translation systems pro-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	vides yet more redundancy, yielding dif-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ferent ways to realize that information in	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	English. We demonstrate how errors in the	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	machine translations of the input Arabic	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	documents can be corrected by identify-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing and generating from such redundancy,	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-comma
+I-Abstract	focusing on noun phrases.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-largest hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Multilingual summarization is a relatively nascent	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	research area which has, to date, been addressed	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	through adaptation of existing extractive English	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	document summarizers. Some systems (e.g. SUM-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	MARIST (Hovy and Lin, 1999)) extract sentences	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-capital
+I-Body	from documents in a variety of languages, and trans-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	late the resulting summary. Other systems (e.g.	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Newsblaster (Blair-Goldensohn et al., 2004)) per-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	form translation before sentence extraction. Read-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ability is a major issue for these extractive systems.	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The output of machine translation software is usu-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ally errorful, especially so for language pairs such	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	as Chinese or Arabic and English. The ungrammati-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cality and inappropriate word choices resulting from	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	33	page=0 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	the use of MT systems leads to machine summaries	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower
+E-Body	that are difficult to read.	page=0 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Multi-document summarization, however, has in-	page=0 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	formation available that was not available during the	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	translation process and which can be used to im-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	prove summary quality. A multi-document summa-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rizer is given a set of documents on the same event	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	or topic. This set provides redundancy; for example,	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	each document may refer to the same entity, some-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	times in different ways. It is possible that by ex-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	amining many translations of references to the same	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	entity, a system can gather enough accurate informa-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion to improve the translated reference in the sum-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mary. Further, as a summary is short and serves as	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	a surrogate for a large set of documents, it is worth	page=0 xpos=5 ypos=4 right-column full-justified aligned-line itemization headchar-lower
+I-Body	investing more resources in its translation; readable	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	summaries can help end users decide which docu-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ments they want to spend time deciphering.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Current extractive approaches to summarization	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	are limited in the extent to which they address qual-	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ity issues when the input is noisy. Some new sys-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems attempt substituting sentences or clauses in	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the summary with similar text from extraneous but	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	topic related English documents (Blair-Goldensohn	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	et al., 2004). This improves readability, but can only	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Body	be used in limited circumstances, in order to avoid	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	substituting an English sentence that is not faith-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ful to the original. Evans and McKeown (2005)	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	consider the task of summarizing a mixed data set	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	that contains both English and Arabic news reports.	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Their approach is to separately summarize informa-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tion that is contained in only English reports, only	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	Arabic reports, and in both. While the only-English	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	and in-both information can be summarized by se-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lecting text from English reports, the summaries of	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	only-Arabic suffer from the same readability issues.	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	In this paper, we use principles from information	page=0 xpos=5 ypos=9 right-column left-indent indented-line headchar-capital column-bottom above-blank-line above-double-space above-line-space
+B-Footnote	Proceedings of Human Language Technology Conference and Conference on Empirical Methods in Natural Language	page=0 xpos=0 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital
+I-Footnote	Processing (HLT/EMNLP), pages 33–40, Vancouver, October 2005.  2005 c Association for Computational Linguistics	page=0 xpos=0 ypos=9 single-column centered left-indent right-indent font-smallest aligned-line year headchar-capital page-bottom
+I-Body	theory (Shannon, 1948) to address the issue of read-	page=1 xpos=0 ypos=0 left-column full-justified page-top year headchar-lower tailchar-hiphen
+I-Body	ability in multilingual summarization. We take as	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	input, multiple machine translations into English of	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	a cluster of news reports in Arabic. This input is	page=1 xpos=0 ypos=0 left-column full-justified aligned-line itemization headchar-lower
+I-Body	characterized by high levels of linguistic noise and	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	by high levels of information redundancy (multiple	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	documents on the same or related topics and mul-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tiple translations into English). Our aim is to use	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	automatically acquired knowledge about the English	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	language in conjunction with the information redun-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dancy to perform error correction on the MT. The	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	main benefit of our approach is to make machine	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	summaries of errorful input easier to read and com-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	prehend for end-users.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We focus on noun phrases in this paper. The	page=1 xpos=0 ypos=2 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	amount of error correction possible depends on the	page=1 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	amount of redundancy in the input and the depth of	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	knowledge about English that we can utilize. We	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	begin by tackling the problem of generating refer-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ences to people in English summaries of Arabic texts	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	(  2). This special case involves large amounts of re-	page=1 xpos=0 ypos=3 left-column full-justified font-largest aligned-line tailchar-hiphen
+I-Body	dundancy and allows for relatively deep English lan-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage modeling, resulting in good error correction.	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+E-Body	We extend our approach to arbitrary NPs in  3.	page=1 xpos=0 ypos=4 left-column right-indent font-largest aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	The evaluation emphasis in multi-document sum-	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	marization has been on evaluating content (not read-	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ability), using manual (Nenkova and Passonneau,	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2004) as well as automatic (Lin and Hovy, 2003)	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year
+I-Body	methods. We evaluate readability of the generated	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	noun phrases by computing precision, recall and f-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	measure of the generated version compared to mul-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tiple human models of the same reference, comput-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing these metrics on n-grams. Our results show that	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	our system performs significantly better on precision	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	over two baselines (most frequent initial reference	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	and randomly chosen initial reference). Precision is	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the most important of these measures as it is impor-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tant to have a correct reference, even if we don’t re-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tain all of the words used in the human models.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 References to people	page=1 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space string-reference numbered-heading1 above-line-space
+B-SubsectionHeader	2.1 Data	page=1 xpos=0 ypos=8 left-column right-indent font-larger aligned-line shorter-tail line-space numbered-heading2
+B-Body	We used data from the DUC 2004 Multilingual	page=1 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail year headchar-capital
+I-Body	summarization task. The Document Understanding	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	Conference (http://duc.nist.gov) has been run annu-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ally since 2001 and is the biggest summarization	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	evaluation effort, with participants from all over the	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	world. In 2004, for the first time, there was a multi-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	34	page=1 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	lingual multi-document summarization task. There	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	were 25 sets to be summarized. For each set con-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sisting of 10 Arabic news reports, the participants	page=1 xpos=5 ypos=0 right-column centered right-indent aligned-line headchar-lower
+I-Body	were provided with 2 different machine translations	page=1 xpos=5 ypos=0 right-column centered right-indent aligned-line headchar-lower
+I-Body	into English (using translation software from ISI	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	and IBM). The data provided under DUC includes	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	4 human summaries for each set for evaluation pur-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line numbered-heading1 tailchar-hiphen
+I-Body	poses; the human summarizers were provided a hu-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	man translation into English of each of the Arabic	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	New reports, and did not have to read the MT output	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+E-Body	that the machine summarizers took as input.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 Task definition	page=1 xpos=5 ypos=2 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	An analysis of premodification in initial references	page=1 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	to people in DUC human summaries for the mono-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lingual task from 2001–2004 showed that 71% of	page=1 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower
+I-Body	premodifying words were either title or role words	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	(eg. Prime Minister, Physicist or Dr.) or temporal	page=1 xpos=5 ypos=3 right-column full-justified aligned-line
+I-Body	role modifying adjectives such as former or desig-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nate. Country, state, location or organization names	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	constituted 22% of premodifying words. All other	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	kinds of premodifying words, such as moderate or	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	loyal constitute only 7%. Thus, assuming the same	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	pattern in human summaries for the multilingual	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	task (cf. section 2.6 on evaluation), our task for each	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	person referred to in a document set is to:	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Listitem	1. Collect all references to the person in both translations of	page=1 xpos=5 ypos=5 right-column left-indent font-smallest indented-line longer-tail line-space itemization
+I-Listitem	each document in the set.	page=1 xpos=5 ypos=5 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	2. Identify the correct roles (including temporal modifica-	page=1 xpos=5 ypos=5 right-column left-indent font-smallest hanged-line longer-tail line-space itemization tailchar-hiphen
+I-Listitem	tion) and affiliations for that person, filtering any noise.	page=1 xpos=5 ypos=5 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	3. Generate a reference using the above attributes and the	page=1 xpos=5 ypos=5 right-column left-indent font-smallest hanged-line longer-tail line-space itemization
+I-Listitem	person’s name.	page=1 xpos=5 ypos=6 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.3 Automatic semantic tagging	page=1 xpos=5 ypos=6 right-column right-indent font-larger hanged-line longer-tail line-double-space line-space numbered-heading2
+B-Body	As the task definition above suggests, our approach	page=1 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	is to identify particular semantic attributes for a per-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	son, and generate a reference formally from this se-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantic input. Our analysis of human summaries tells	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	us that the semantic attributes we need to identify	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	are role, organization, country, state,	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	location and temporal modifier. In addi-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, we also need to identify the person name.	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We used BBN’s I DENTI F INDER (Bikel et al., 1999)	page=1 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-capital
+I-Body	to mark up person names, organizations and lo-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cations. We marked up countries and (American)	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	states using a list obtained from the CIA factsheet <sup>1</sup> .	page=1 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>1</sup> http://www.cia.gov/cia/publications/factbook provides a	page=1 xpos=5 ypos=8 right-column left-indent font-smallest indented-line line-double-space line-space headchar-super
+I-Footnote	list of countries and states, abbreviations and adjectival forms,	page=1 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line headchar-lower tailchar-comma
+I-Footnote	for example United Kingdom/U.K./British/Briton and Califor-	page=1 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	nia/Ca./Californian.	page=1 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+I-Body	To mark up roles, we used a list derived from Word-	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-capital tailchar-hiphen
+I-Body	Net (Miller et al., 1993) hyponyms of the person	page=2 xpos=0 ypos=0 left-column centered right-indent aligned-line year headchar-capital
+I-Body	synset. Our list has 2371 entries including multi-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	word expressions such as chancellor of the exche-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quer, brother in law, senior vice president etc. The	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	list is quite comprehensive and includes roles from	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	the fields of sports, politics, religion, military, busi-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ness and many others. We also used WordNet to ob-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tain a list of 58 temporal adjectives. WordNet classi-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fies these as pre- (eg. occasional, former, incoming	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	etc.) or post-nominal (eg. elect, designate, emeritus	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	etc.). This information is used during generation.	page=2 xpos=0 ypos=2 left-column centered right-indent aligned-line headchar-lower tailchar-period
+I-Body	Further, we identified elementary noun phrases us-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ing the LT TTT noun chunker (Grover et al., 2000),	page=2 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	and combined NP of NP sequences into one com-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plex noun phrase. An example of the output of our	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	semantic tagging module on a portion of machine	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	translated text follows:	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Quote	<sup>...</sup>  COUNTRY  NP   ROLE  Iraq   representative COUNTRY  of  the ROLE  ORG  of 	page=2 xpos=0 ypos=3 left-column left-indent font-largest indented-line longer-tail headchar-super
+I-Quote	<sup>United</sup>  PERSON Nations   NP ORG   that PERSON  NP  thousands  Nizar Hamdoon of people	page=2 xpos=0 ypos=3 left-column left-indent font-largest aligned-line headchar-super
+I-Quote	 NP  killed or wounded in  NP  the  TIME  next	page=2 xpos=0 ypos=4 left-column left-indent font-largest aligned-line
+I-Quote	 TIME  few days four of the aerial bombardment of	page=2 xpos=0 ypos=4 left-column left-indent font-largest aligned-line
+I-Quote	 COUNTRY  Iraq  COUNTRY   NP  ...	page=2 xpos=0 ypos=4 left-column left-indent right-indent font-largest aligned-line shorter-tail tailchar-period above-line-space
+B-Body	Our principle data structure for this experiment is	page=2 xpos=0 ypos=4 left-column left-indent hanged-line longer-tail line-space headchar-capital
+I-Body	the attribute value matrix (AVM). For example, we	page=2 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	create the following AVM for the reference to Nizar	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	Hamdoon in the tagged example above:	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-colon
+B-Equation	LNM	page=2 xpos=4 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	(%)+*	page=2 xpos=0 ypos=5 left-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	   7!)  8  (':   =?>  @5 ! AC " B5D $#%#'& O ;	page=2 xpos=0 ypos=5 left-column left-indent right-indent font-largest hanged-line longer-tail symbol-atmark tailchar-semicolon
+I-Equation	)(+E  ) -,./-,01,2&3453-6+, ? = > $ @ 5 / A ' K D	page=2 xpos=0 ypos=5 left-column left-indent right-indent font-largest indented-line shorter-tail symbol-atmark
+I-Equation	 %9 4'<	page=2 xpos=1 ypos=5 left-column left-indent right-indent font-largest indented-line shorter-tail
+B-Body	Note that  /F5G!9$F we store   the H &I3- relative ,"J3-#'&/ positions 0 (arg 1	page=2 xpos=0 ypos=6 left-column left-indent font-largest hanged-line longer-tail headchar-capital
+I-Body	and arg 2) of the country and organization attributes.	page=2 xpos=0 ypos=6 left-column centered right-indent hanged-line headchar-lower tailchar-period
+I-Body	This information is used both for error reduction and	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	for generation as detailed below. We also replace	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	adjectival country attributes with the country name,	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	using the correspondence in the CIA factsheet.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.4 Identifying redundancy and filtering noise	page=2 xpos=0 ypos=7 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	We perform coreference by comparing AVMs. Be-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	cause of the noise present in MT (For example,	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	words might be missing, or proper names might be	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	spelled differently by different MT systems), simple	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	name comparison is not sufficient. We form a coref-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erence link between two AVMs if:	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Listitem	1. The last name and (if present) the first name match.	page=2 xpos=0 ypos=9 left-column left-indent right-indent font-smallest indented-line longer-tail line-space itemization tailchar-period above-line-space
+B-Listitem	2. OR, if the role, country, organization and time attributes	page=2 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line longer-tail line-space itemization
+I-Listitem	are the same.	page=2 xpos=0 ypos=9 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	35	page=2 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Body	The assumption is that in a document set to be	page=2 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	summarized (which consists of related news re-	page=2 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ports), references to people with the same affiliation	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	and role are likely to be references to the same per-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	son, even if the names do not match due to spelling	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	errors. Thus we form one AVM for each person, by	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	combining AVMs. For Nizar Hamdoon, to whom	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	there is only one reference in the set (and thus two	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	MT versions), we obtain the AVM: =QK!D LNM	page=2 xpos=5 ypos=1 right-column right-indent font-largest aligned-line shorter-tail headchar-capital
+B-Equation	(  )'* =QK'D	page=2 xpos=5 ypos=1 right-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	  $ 7' 2 )5  8  (+:  =Q K'DR =? >$ @5AC B5D ; P  ! " $#% #'& O	page=2 xpos=5 ypos=1 right-column left-indent right-indent font-largest hanged-line longer-tail symbol-atmark
+I-Equation	)!('E  ) -,2./-,01,&%3453-N6', =QK!DT=?>@A/K!D	page=2 xpos=5 ypos=2 right-column left-indent right-indent font-largest indented-line shorter-tail symbol-atmark
+I-Equation	 %9 4'<	page=2 xpos=5 ypos=2 right-column left-indent right-indent font-largest indented-line shorter-tail
+B-Body	where   the   / F  % G  ! numbers $ 9 F    H &I3-,"JS53-#'&0 in brackets represents the	page=2 xpos=5 ypos=2 right-column left-indent font-largest hanged-line longer-tail headchar-lower
+I-Body	counts of this value across all references. The arg	page=2 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	values now represent the most frequent ordering of	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	these organizations and countries in the input refer-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ences. As an example of a combined AVM for a	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	person with a lot of references, = Q K5Z%D\[^] consider:	page=2 xpos=5 ypos=3 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	=QK!`'D LNMM	page=2 xpos=9 ypos=3 right-column left-indent right-over font-largest indented-line longer-tail
+I-Equation	Q  K + a D \ [ = = Q K ' D	page=2 xpos=7 ypos=3 right-column left-indent right-indent font-largest hanged-line shorter-tail headchar-capital
+I-Equation	  (%)+* 7!   )   8  (':	page=2 xpos=5 ypos=3 right-column left-indent right-indent font-largest hanged-line shorter-tail tailchar-colon
+I-Equation	MM	page=2 xpos=10 ypos=3 right-column left-indent right-over font-largest indented-line longer-tail headchar-capital
+I-Equation	b UV,2-#!WXY = d  B + e D T = ? >  N! 5 @ A C P&/,_UC,2-#'W!Y 5 B D	page=2 xpos=6 ypos=3 right-column left-indent right-indent font-largest hanged-line shorter-tail symbol-atmark itemization headchar-lower
+I-Equation	)(+E  Y,'"$ =QK! ,2 Dk=?>@ACBD\[ ) ./-,01N"/,2&3	page=2 xpos=5 ypos=4 right-column centered left-indent right-indent font-largest hanged-line symbol-atmark
+I-Equation	   %9 b Y l c',2- =d N B5  Dk=?>@5ACB5D O	page=2 xpos=5 ypos=4 right-column left-indent right-over font-largest hanged-line longer-tail symbol-atmark
+I-Equation	 /F5G!9$F   f,&/#56'53-N#!&gh13ji d = 5 B D	page=2 xpos=5 ypos=4 right-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	g	page=2 xpos=7 ypos=4 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower
+B-Body	This  9 2 F   example  displays m n # !  - P, \ common problems when	page=2 xpos=5 ypos=4 right-column left-indent font-largest hanged-line longer-tail headchar-capital
+I-Body	generating a reference. Zeroual has two affiliations -	page=2 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	Leader of the Renovation Party, and Algerian Presi-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	dent. There is additional noise - the values AFP and	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	former are most likely errors. As none of the organi-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	zation or country values occur in the same reference,	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	all are marked arg1; no relative ordering statistics	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	are derivable from the input. For an example demon-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	strating noise in spelling, consider: =dB`+D\[	page=2 xpos=5 ypos=6 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+B-Equation	=dB`+D\[ LNMM	page=2 xpos=8 ypos=6 right-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	  MM	page=2 xpos=5 ypos=6 right-column left-indent right-indent font-largest hanged-line
+I-Equation	oTWX! P  =? 5 Z%  D\[ pS!""5q =?Z+D	page=2 xpos=6 ypos=6 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower
+I-Equation	    =?Z+D MM oTWX! P 5rS! =d " B5 " K! D\[ 5 q	page=2 xpos=5 ypos=6 right-column left-indent right-indent font-largest hanged-line longer-tail
+I-Equation	  (%)+* =dBD M	page=2 xpos=5 ypos=7 right-column left-indent right-indent font-largest aligned-line
+I-Equation	7!)8  (': YN,'"/,\Ps#'Y#!&,Y = Q ! w D R ? =  > @  A C  B D s#!YN#!&,Y ] pS'""/ =t q a+D\[ rS!""/q =QK'D\[nu	page=2 xpos=5 ypos=7 right-column left-indent right-indent font-largest indented-line shorter-tail symbol-atmark
+I-Equation	  )(+E	page=2 xpos=5 ypos=7 right-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	 %9 ) YN,'"/,\ PN&/0d3-,2 =dBDT=?>$@5ACB5D = Q ' K D  = ? >@A/ W K!D\ 0d3- [ s, O v%i	page=2 xpos=5 ypos=7 right-column left-indent right-indent font-largest indented-line longer-tail symbol-atmark
+I-Equation	 /F5G!9$F   gx,!s,_yz#'W&%311i	page=2 xpos=5 ypos=7 right-column left-indent right-indent font-largest aligned-line shorter-tail
+B-Body	Our approach to removing yz#'W&%311igx,s, noise is to:	page=2 xpos=5 ypos=7 right-column left-indent right-indent font-largest hanged-line longer-tail headchar-capital tailchar-colon above-line-space
+B-Listitem	1. Select the most frequent name with more than one word	page=2 xpos=5 ypos=8 right-column left-indent font-smallest longer-tail line-space itemization
+I-Listitem	(this is the most likely full name).	page=2 xpos=5 ypos=8 right-column left-indent right-indent font-smallest indented-line shorter-tail tailchar-period above-line-space
+B-Listitem	2. Select the most frequent role.	page=2 xpos=5 ypos=8 right-column left-indent right-indent font-smallest hanged-line shorter-tail line-space itemization tailchar-period above-line-space
+B-Listitem	3. Prune the AVM of values that occur with a frequency be-	page=2 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line longer-tail line-space itemization tailchar-hiphen
+I-Listitem	low an empirically determined threshold.	page=2 xpos=5 ypos=8 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Thus we obtain the following AVMs for the three	page=2 xpos=5 ypos=9 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	examples above:	page=2 xpos=5 ypos=9 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon page-bottom
+B-Equation	LNM	page=3 xpos=4 ypos=0 left-column left-indent right-indent font-largest page-top headchar-capital
+I-Equation	% )+* (	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	   7!)  8  (':  =?>  @5 AC ! " B5D $#%#'& O ;	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-largest hanged-line longer-tail symbol-atmark tailchar-semicolon
+I-Equation	)(+E  ) -,./-,01,2&3453-6+, =?>$@5A/K'D	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line shorter-tail symbol-atmark
+I-Equation	 /F5G!9$F (%)+*   H ] 4'< &I3-,"J3-#'&/0	page=3 xpos=1 ypos=0 left-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	 % { 9	page=3 xpos=1 ypos=0 left-column left-indent right-indent font-largest aligned-line shorter-tail above-line-space
+I-Equation	    7!) 8 (':|b N! P&/,_ =?> UC ,2 @ -#' AC B W D !Y ~	page=3 xpos=1 ypos=1 left-column left-indent right-indent font-largest indented-line longer-tail line-space symbol-atmark
+I-Equation	{  ./-,01N"$,&%3	page=3 xpos=0 ypos=1 left-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	(%)+* %   9	page=3 xpos=1 ypos=1 left-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	Yc',\-}	page=3 xpos=2 ypos=1 left-column left-indent right-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	    7!) 8 (': ] oTWX P  =?>@  ACB pS D !""/q ~	page=3 xpos=1 ypos=1 left-column left-indent right-indent font-largest hanged-line longer-tail symbol-atmark
+I-Equation	 Y,'"$,2Ps#!YN#!&,Y	page=3 xpos=1 ypos=1 left-column left-indent right-indent font-largest indented-line shorter-tail
+B-Body	This is the input  %9 semantics v%i for our generation mod-	page=3 xpos=0 ypos=1 left-column left-indent font-largest hanged-line longer-tail headchar-capital tailchar-hiphen
+E-Body	ule described in the next section.	page=3 xpos=0 ypos=2 left-column right-indent shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.5 Generating references from AVMs	page=3 xpos=0 ypos=2 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2
+B-Body	In order to generate a reference from the words in an	page=3 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	AVM, we need knowledge about syntax. The syn-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tactic frame of a reference to a person is determined	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	by the role. Our approach is to automatically acquire	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	these frames from a corpus of English text. We used	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the Reuters News corpus for extracting frames. We	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	performed the semantic analysis of the corpus, as in	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	 2.3; syntactic frames were extracted by identifying	page=3 xpos=0 ypos=3 left-column centered left-indent font-largest aligned-line
+I-Body	sequences involving locations, organizations, coun-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tries, roles and prepositions. An example of auto-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	matically acquired frames with their maximum like-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lihood probabilities for the role ambassador is:	page=3 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Listitem	ROLE=ambassador	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail line-space headchar-capital above-line-space
+B-Listitem	(p=.35) COUNTRY ambassador PERSON	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-smallest hanged-line longer-tail line-space
+B-Listitem	(.18) ambassador PERSON	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail
+B-Listitem	(.12) COUNTRY ORG ambassador PERSON	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line longer-tail
+B-Listitem	(.12) COUNTRY ambassador to COUNTRY PERSON	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line longer-tail
+B-Listitem	(.06) ORG ambassador PERSON	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail
+B-Listitem	(.06) COUNTRY ambassador to LOCATION PERSON	page=3 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line longer-tail
+B-Listitem	(.06) COUNTRY ambassador to ORG PERSON	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail
+B-Listitem	(.03) COUNTRY ambassador in LOCATION PERSON	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line longer-tail
+B-Listitem	(.03) ambassador to COUNTRY PERSON	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail above-double-space above-line-space
+B-Body	These frames provide us with the required syn-	page=3 xpos=0 ypos=6 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tactic information to generate from, including word	page=3 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	order and choice of preposition. We select the most	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	probable frame that matches the semantic attributes	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	in the AVM. We also use a default set of frames	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	shown below for instances where no automatically	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	acquired frames exist:	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	ROLE=  Default 	page=3 xpos=0 ypos=8 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+B-Listitem	COUNTRY ROLE PERSON	page=3 xpos=0 ypos=8 left-column left-indent right-indent font-smallest indented-line longer-tail headchar-capital
+B-Listitem	ORG ROLE PERSON	page=3 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital
+B-Listitem	COUNTRY ORG ROLE PERSON	page=3 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line longer-tail headchar-capital
+B-Listitem	ROLE PERSON	page=3 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	If no frame matches, organizations, countries and	page=3 xpos=0 ypos=8 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	locations are dropped one by one in decreasing or-	page=3 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	der of argument number, until a matching frame is	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	36	page=3 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	found. After a frame is selected, any prenominal	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	temporal adjectives in the AVM are inserted to the	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	left of the frame, and any postnominal temporal ad-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	jectives are inserted to the immediate right of the	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	role in the frame. Country names that are not ob-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	jects of a preposition are replaced by their adjectival	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	forms (using the correspondences in the CIA fact-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sheet). For the AVMs above, our generation module	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	produces  the following referring expressions:	page=3 xpos=5 ypos=1 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	 <sup>Iraqi</sup> <sub>Algerian</sub> United President Nations Liamine representative Zeroual Nizar Hamdoon	page=3 xpos=5 ypos=1 right-column left-indent right-indent font-largest indented-line longer-tail
+B-Listitem	 <sub>Libyan</sub> Leader Colonel Muammar Qaddafi	page=3 xpos=5 ypos=2 right-column left-indent right-indent font-largest aligned-line shorter-tail above-double-space above-line-space
+B-SubsectionHeader	2.6 Evaluation	page=3 xpos=5 ypos=2 right-column right-indent font-larger hanged-line shorter-tail line-double-space line-space numbered-heading2
+B-Body	To evaluate the referring expressions generated by	page=3 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	our program, we used the manual translation of each	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	document provided by DUC. The drawback of us-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing a summarization corpus is that only one human	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	translation is provided for each document, while	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	multiple model references are required for automatic	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	evaluation. We created multiple model references	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	by using the initial references to a person in the	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	manual translation of each input document in the	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	set in which that person was referenced. We cal-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	culated unigram, bigram, trigram and fourgram pre-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cision, recall and f-measure for our generated ref-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erences evaluated against multiple models from the	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	manual translations. To illustrate the scoring, con-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sider evaluating a generated phrase “a b d” against	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	three model references “a b c d”, “a b c” and “b c	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	d”. The bigram precision is $XxN (one out of	page=3 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	two bigrams in generated phrase occurs in the model	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	set), bigram recall is VCxNCC (two out of 7 bi-	page=3 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	grams in the models occurs in the generated phrase)	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	and f-measure ( !x}  ) is xNC . For	page=3 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	fourgrams, P, R and F are zero, as there is a fourgram	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	in the models, but none in the generated NP.	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We used 6 document sets from DUC’04 for devel-	page=3 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	opment purposes and present the average P, R and F	page=3 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	for the remaining 18 sets in Table 1. There were 210	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	generated references in the 18 testing sets. The table	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	also shows the popular BLEU (Papineni et al., 2002)	page=3 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	and NIST <sup>2</sup> MT metrics. We also provide two base-	page=3 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	lines - most frequent initial reference to the person	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	in the input (Base1) and a randomly selected initial	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	reference to the person (Base2). As Table 1 shows,	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	Base1 performs better than random selection. This	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital above-double-space above-line-space
+B-Footnote	<sup>2</sup> http://www.nist.gov/speech/tests/mt/resources/scoring.htm	page=3 xpos=5 ypos=9 right-column left-indent font-smallest indented-line line-double-space line-space headchar-super page-bottom
+Table	__Table 1__	page=4 xpos=0 ypos=-6 left-column left-indent right-over box page-top table-area above-line-space
+B-Caption	Table 1: Evaluation of generated reference	page=4 xpos=0 ypos=0 left-column centered left-indent right-indent indented-line shorter-tail line-space string-table headchar-capital above-blank-line above-double-space above-line-space
+I-Body	is intuitive as it also uses redundancy to correct er-	page=4 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	rors, at the level of phrases rather than words. The	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	generation module outperforms both baselines, par-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ticularly on precision - which for unigrams gives an	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	indication of the correctness of lexical choice, and	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	for higher ngrams gives an indication of grammati-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cality. The unigram recall of x}XC indicates that we	page=4 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	are not losing too much information at the noise fil-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tering stage. Note that we expect a low ¥§¦5¨ for our	page=4 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	approach, as we only generate particular attributes	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	that are important for a summary. The important	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	measure is ©ª¦¨ , on which we do well. This is also	page=4 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	reflected in the high scores on BLEU and NIST.	page=4 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	It is instructive to see how these numbers vary as	page=4 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	the amount of redundancy increases. Information	page=4 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	theory tells us that information should be more re-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	coverable with greater redundancy. Figure 1 plots	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	f-measure against the minimum amount of redun-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dancy. In other words, the value at X=3 gives the	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	f-measure averaged over all people who were men-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tioned at least thrice in the input. Thus X=1 includes	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	all examples and is the same as Table 1.	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	As the graphs show, the quality of the generated	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	reference improves appreciably when there are at	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	least 5 references to the person in the input. This is a	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	convenient result for summarization because people	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	who are mentioned more frequently in the input are	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	more likely to be mentioned in the summary.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	37	page=4 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 1__	page=4 xpos=5 ypos=-6 right-column left-over box column-top figure-area
+B-Caption	Figure 1: Improvement in F-measure for n-grams in	page=4 xpos=5 ypos=0 right-column full-justified indented-line string-figure headchar-capital
+E-Caption	output with increased redundancy in input.	page=4 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.7 Advantages over using extraneous sources	page=4 xpos=5 ypos=0 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	Our approach performs noise reduction and gener-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ates a reference from information extracted from the	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	machine translations. Information about a person	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	can be obtained in other ways; for example, from a	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	database, or by collecting references to the person	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	from extraneous English-language reports. There	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	are two drawbacks to using extraneous sources:	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Listitem	1. People usually have multiple possible roles and affilia-	page=4 xpos=5 ypos=3 right-column left-indent font-smallest indented-line longer-tail line-space itemization tailchar-hiphen
+I-Listitem	tions, so descriptions obtained from an external source	page=4 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower
+I-Listitem	might not be appropriate in the current context.	page=4 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	2. Selecting descriptions from external sources can change	page=4 xpos=5 ypos=4 right-column left-indent font-smallest hanged-line longer-tail line-space itemization
+I-Listitem	perspective — one country’s terrorist is another country’s	page=4 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Listitem	freedom fighter.	page=4 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	In contrast, our approach generates references	page=4 xpos=5 ypos=5 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	that are appropriate and reflect the perspectives ex-	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+E-Body	pressed in the source.	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-SectionHeader	3 Arbitrary noun phrases	page=4 xpos=5 ypos=6 right-column right-indent font-largest aligned-line longer-tail line-space numbered-heading1 above-line-space
+B-Body	In the previous section, we showed how accurate ref-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	erences to people can be generated using an infor-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation theoretic approach. While this is an impor-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tant result in itself for multilingual summarization,	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the same approach can be extended to correct errors	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in noun phrases that do not refer to people. This ex-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tension is trickier to implement, however, because:	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Listitem	1. Collecting redundancy: Common noun coreference is a	page=4 xpos=5 ypos=8 right-column left-indent font-smallest indented-line longer-tail line-space itemization
+I-Listitem	hard problem, even within a single clean English text, and	page=4 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Listitem	harder still across multiple MT texts.	page=4 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Listitem	2. Generating: The semantics for an arbitrary noun phrase	page=5 xpos=0 ypos=0 left-column left-indent font-smallest page-top itemization
+I-Listitem	cannot be defined sufficiently for formal generation;	page=5 xpos=0 ypos=0 left-column left-indent font-smallest indented-line headchar-lower tailchar-semicolon
+I-Listitem	hence our approach is to select the most plausible of the	page=5 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line headchar-lower
+I-Listitem	coreferring NPs according to an inferred language model.	page=5 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Listitem	When sufficient redundancy exists, it is likely that there	page=5 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line headchar-capital
+I-Listitem	is at least one option that is superior to most.	page=5 xpos=0 ypos=0 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Interestingly, the nature of multi-document sum-	page=5 xpos=0 ypos=0 left-column left-indent hanged-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	marization allows us to perform these two hard	page=5 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	tasks. We follow the same theoretical framework	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	(identify redundancy, and then generate from this),	page=5 xpos=0 ypos=1 left-column full-justified aligned-line tailchar-comma
+E-Body	but the techniques we use are necessarily different.	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 Alignment of NPs across translations	page=5 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	We used the B LAST algorithm (Altschul et al., 1997)	page=5 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-space year headchar-capital
+I-Body	for aligning noun phrases between two translations	page=5 xpos=0 ypos=2 left-column centered right-indent aligned-line headchar-lower
+I-Body	of the same Arabic sentence. We obtained the best	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	results when each translation was analyzed for noun	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	chunks, and the alignment operation was performed	page=5 xpos=0 ypos=3 left-column centered right-indent aligned-line headchar-lower
+I-Body	over sequences of words and « NP ¬ and « /NP ¬	page=5 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	tags. B LAST is an efficient alignment algorithm that	page=5 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail headchar-lower
+I-Body	assumes that words in the two sentences are roughly	page=5 xpos=0 ypos=3 left-column centered right-indent aligned-line headchar-lower
+I-Body	in the same order from a global perspective. As nei-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ther of the MT systems used performs much clause	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	or phrase reorganization, this assumption is not a	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	problem for our task. An example of two aligned	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	sentences is shown in figure 2. We then extract core-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferring noun phrases by selecting the text between	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	aligned « NP ¬ and « /NP ¬ tags; for example:	page=5 xpos=0 ypos=5 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	1. the Special Commission in charge of disarmament of	page=5 xpos=0 ypos=5 left-column left-indent font-smallest indented-line longer-tail itemization
+I-Listitem	Iraq’s weapons of mass destruction	page=5 xpos=0 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital
+B-Listitem	2. the Special Commission responsible disarmament Iraqi	page=5 xpos=0 ypos=5 left-column left-indent font-smallest hanged-line longer-tail itemization
+I-Listitem	weapons of mass destruction	page=5 xpos=0 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-SubsectionHeader	3.2 Alignment of NPs across documents	page=5 xpos=0 ypos=5 left-column right-indent font-larger hanged-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	This task integrates well with the clustering ap-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	proach to multi-document summarization (Barzilay,	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2003), where sentences in the input documents are	page=5 xpos=0 ypos=6 left-column full-justified aligned-line year
+I-Body	first clustered according to their similarity, and then	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	one sentence is generated from each cluster. This	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	clustering approach basically does at the level of	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	sentences what we are attempting at the level of	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	noun phrases. After clustering, all sentences within	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	a cluster should represent similar information. Thus,	page=5 xpos=0 ypos=7 left-column full-justified aligned-line itemization headchar-lower tailchar-comma
+I-Body	similar noun phrases in sentences within a cluster	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	are likely to refer to the same entities. We do noun	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	phrase coreference by identifying lexically similar	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	noun phrases within a cluster. We use SimFinder	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	(Hatzivassiloglou et al., 1999) for sentence cluster-	page=5 xpos=0 ypos=8 left-column centered right-indent aligned-line year tailchar-hiphen
+I-Body	ing and the f-measure for word overlap to compare	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	noun phrases. We set a threshold for deciding coref-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erence by experimenting on the 6 development sets	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	38	page=5 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	(cf.  2.6)– the most accurate coreference occurred	page=5 xpos=5 ypos=0 right-column right-over font-largest column-top
+I-Body	with a threshold of f=0.6 and a constraint that the	page=5 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower
+I-Body	two noun phrases must have at least 2 words in com-	page=5 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	mon that were neither determiners nor prepositions.	page=5 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower tailchar-period
+I-Body	For the reference to the UN Special Commission in	page=5 xpos=5 ypos=0 right-column right-over aligned-line headchar-capital
+I-Body	figure 2, we obtained the following choices from	page=5 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower
+I-Body	alignments and coreference across translations and	page=5 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower
+I-Body	documents within a sentence cluster:	page=5 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	1. the United nations Special Commission in charge of dis-	page=5 xpos=5 ypos=1 right-column left-indent right-over font-smallest indented-line longer-tail line-double-space line-space itemization tailchar-hiphen
+I-Listitem	armament of Iraq’s weapons of mass destruction	page=5 xpos=5 ypos=1 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-line-space
+B-Listitem	2. the the United Nations Special Commission responsible	page=5 xpos=5 ypos=2 right-column left-indent right-over font-smallest hanged-line longer-tail line-space itemization
+I-Listitem	disarmament Iraqi weapons of mass destruction	page=5 xpos=5 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-line-space
+B-Listitem	3. the Special Commission in charge of disarmament of	page=5 xpos=5 ypos=2 right-column left-indent right-over font-smallest hanged-line longer-tail line-space itemization
+I-Listitem	Iraq’s weapons of mass destruction	page=5 xpos=5 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital above-line-space
+B-Listitem	4. the Special Commission responsible disarmament Iraqi	page=5 xpos=5 ypos=2 right-column left-indent right-over font-smallest hanged-line longer-tail line-space itemization
+I-Listitem	weapons of mass destruction	page=5 xpos=5 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-line-space
+B-Listitem	5. the United nations Special Commission in charge of dis-	page=5 xpos=5 ypos=3 right-column left-indent right-over font-smallest hanged-line longer-tail line-space itemization tailchar-hiphen
+I-Listitem	armament of Iraq’s weapons of mass destruction	page=5 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-line-space
+B-Listitem	6. the Special Commission of the United Nations responsi-	page=5 xpos=5 ypos=3 right-column left-indent right-over font-smallest hanged-line longer-tail line-space itemization tailchar-hiphen
+I-Listitem	ble disarmament Iraqi weapons of mass destruction	page=5 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	Larger sentence clusters represent information	page=5 xpos=5 ypos=3 right-column left-indent right-over hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	that is repeated more often across input documents;	page=5 xpos=5 ypos=4 right-column right-over hanged-line headchar-lower tailchar-semicolon
+I-Body	hence the size of a cluster is indicative of the impor-	page=5 xpos=5 ypos=4 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	tance of that information, and the summary is com-	page=5 xpos=5 ypos=4 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	posed by considering each sentence cluster in de-	page=5 xpos=5 ypos=4 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	creasing order of size and generating one sentence	page=5 xpos=5 ypos=4 right-column right-over aligned-line headchar-lower
+I-Body	from it. From our perspective of fixing errors in	page=5 xpos=5 ypos=4 right-column right-over aligned-line headchar-lower
+I-Body	noun phrases, there is likely to be more redundancy	page=5 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower
+I-Body	in a large cluster; hence this approach is likely to	page=5 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower
+I-Body	work better within clusters that are important for	page=5 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower
+E-Body	generating the summary.	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.3 Generation of noun phrases	page=5 xpos=5 ypos=6 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	As mentioned earlier, formal generation from a set	page=5 xpos=5 ypos=6 right-column right-over aligned-line longer-tail line-space headchar-capital
+I-Body	of coreferring noun phrases is impractical due to the	page=5 xpos=5 ypos=6 right-column right-over aligned-line headchar-lower
+I-Body	unrestricted nature of the underlying semantics. We	page=5 xpos=5 ypos=6 right-column right-over aligned-line headchar-lower
+I-Body	thus focus on selecting the best of the possible op-	page=5 xpos=5 ypos=6 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	tions — the option with the least garbled word order;	page=5 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower tailchar-semicolon
+I-Body	for example, selecting 1) from the following:	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	1. the malicious campaigns in some Western media	page=5 xpos=5 ypos=7 right-column left-indent right-indent font-smallest indented-line line-double-space line-space itemization above-line-space
+B-Listitem	2. the campaigns tendentious in some of the media Western	page=5 xpos=5 ypos=7 right-column left-indent right-over font-smallest aligned-line longer-tail line-space itemization
+I-Listitem	European	page=5 xpos=5 ypos=7 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	The basic insight that we utilize is — when two	page=5 xpos=5 ypos=8 right-column left-indent right-over hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	words in a NP occur together in the original docu-	page=5 xpos=5 ypos=8 right-column right-over hanged-line headchar-lower tailchar-hiphen
+I-Body	ments more often than they should by chance, it is	page=5 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower
+I-Body	likely they really should occur together in the gen-	page=5 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	erated NP. Our approach therefore consists of iden-	page=5 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	tifying collocations of length two. Let the number	page=5 xpos=5 ypos=9 right-column right-over aligned-line headchar-lower
+I-Body	of words in the input documents be ­ . For each	page=5 xpos=5 ypos=9 right-column right-over font-largest aligned-line headchar-lower page-bottom
+Figure	__Figure 2__	page=6 xpos=0 ypos=-2 single-column centered left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 2: Two noun chunked MT sentences (S1 and S2) with the words aligned using B LAST .	page=6 xpos=0 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital tailchar-period column-bottom above-double-space above-line-space
+I-Body	pair of words ® and ¯ , we use maximum likelihood	page=6 xpos=0 ypos=0 left-column full-justified font-largest column-top line-double-space line-space headchar-lower
+I-Body	to ° estimate ° the ° probabilities of observing the strings	page=6 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	®¢¯'± , ®^± and ¯'± . The observed frequency of these	page=6 xpos=0 ypos=0 left-column left-indent font-largest indented-line
+I-Body	strings in the corpus divided by the corpus size ­	page=6 xpos=0 ypos=1 left-column right-indent font-largest hanged-line shorter-tail headchar-lower
+I-Body	gives the maximum likelihood probabilities of these	page=6 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail headchar-lower
+I-Body	events d®²¯% , Sd®x and S1¯+ . The natural way to de-	page=6 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	termine how dependent the distributions of ® and ¯	page=6 xpos=0 ypos=1 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	are is to calculate their mutual information (Church	page=6 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail headchar-lower
+I-Body	and Hanks, 1991): ³	page=6 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail year headchar-lower
+B-Equation	S d®¤²¯% 	page=6 xpos=2 ypos=2 left-column left-indent right-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	d®²¯%¢µ´t¶C·¸	page=6 xpos=1 ypos=2 left-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	d®hª¹1¯%	page=6 xpos=2 ypos=2 left-column left-indent right-indent font-largest indented-line longer-tail above-line-space
+B-Body	If the occurrences of ® and ¯ were completely	page=6 xpos=0 ypos=2 left-column left-indent font-largest hanged-line longer-tail line-space headchar-capital
+I-Body	independent of each other, we would expect the	page=6 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	maximum ° likelihood probability d®²¯+ of the string	page=6 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	®º¯'± to be d®hR S1¯+ . Thus mutual ³ information	page=6 xpos=0 ypos=3 left-column left-indent font-largest indented-line
+I-Body	is zero when ® and ¯ are independent, and positive	page=6 xpos=0 ypos=3 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	otherwise. ° The greater the value of d®¤²¯% , the more	page=6 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	likely that ®»¯'± is a collocation. Returning to our	page=6 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	problem of selecting the best NP from a set of core-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferring NPs, we compute a score for each NP (con-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sisting of the string of words ¼¾½??I¼P¿ ) by averaging	page=6 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the mutual information for each bigram: ³	page=6 xpos=0 ypos=5 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+B-Equation	¿ÍÌÎ½	page=6 xpos=2 ypos=5 left-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	ÀSÁ+Â	page=6 xpos=0 ypos=5 left-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	VÃj¼Ä½??I¼P¿ÅÆÈÇÊÉ?Ë ½  j ¼ ²¼ ½'	page=6 xpos=0 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	É?Ë ÐÒÑ  É ÉtÏ	page=6 xpos=2 ypos=5 left-column left-indent right-indent font-largest indented-line shorter-tail
+B-Body	We then select the NP with the highest score. This	page=6 xpos=0 ypos=5 left-column left-indent hanged-line longer-tail headchar-capital
+I-Body	model successfully selects the malicious campaigns	page=6 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	in some Western media in the example above and	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the United nations Special Commission in charge of	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	disarmament of Iraq’s weapons of mass destruction	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	in the example in  3.2.	page=6 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-SubsectionHeader	3.4 Automatic Evaluation	page=6 xpos=0 ypos=7 left-column right-indent font-larger aligned-line longer-tail line-space numbered-heading2
+B-Body	Our approach to evaluation is similar to that for	page=6 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	evaluating references to people. For each collection	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of coreferring NPs, we identified the corresponding	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	model NPs from the manual translations of the input	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	documents by using the B LAST algorithm for word	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	alignment between the MT sentences and the cor-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	responding manually translated sentence. Table 2	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	below gives the average unigram, bigram, trigram	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	and fourgram precision, recall and f-measure for the	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	39	page=6 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+Table	__Table 2__	page=6 xpos=5 ypos=0 right-column centered left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 2: Evaluation of noun phrase selection	page=6 xpos=5 ypos=4 right-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+I-Body	selected NPs, evaluated against the models. We ex-	page=6 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	cluded references to people as these were treated for-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mally in  2. This left us with 961 noun phrases from	page=6 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	the 18 test sets to evaluate. Table 2 also provides the	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	BLEU and NIST MT evaluation scores.	page=6 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	We again provide two baselines - most frequent	page=6 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	NP in the set (Base1) and a randomly selected NP	page=6 xpos=5 ypos=6 right-column full-justified hanged-line headchar-capital
+I-Body	from the set (Base2). The numbers in Table 2 are	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	lower than those in Table 1. This is because generat-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing references to people is a more restricted problem	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	– there is less error in MT output, and a formal gen-	page=6 xpos=5 ypos=6 right-column full-justified aligned-line tailchar-hiphen
+I-Body	eration module is employed for error reduction. In	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the case of arbitrary NPs, we only select between the	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	available options. However, the information theo-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	retic approach gives significant improvement for the	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	arbitrary NP case as well, particularly for precision,	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	which is an indicator of grammaticality.	page=6 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.5 Manual Evaluation	page=6 xpos=5 ypos=8 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	To evaluate how much impact the rewrites have on	page=6 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	summaries, we ran our summarizer on the 18 test	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	sets, and manually evaluated the selected sentences	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	and their rewritten versions for accuracy and flu-	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	ency. There were 118 sentences, out of which 94	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	had at least one modification after the rewrite pro-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cess. We selected 50 of these 94 sentences at ran-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dom and asked 2 human judges to rate each sen-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence and its rewritten form on a scale of 1–5 for	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	accuracy and fluency <sup>3</sup> . We used 4 human judges,	page=7 xpos=0 ypos=1 left-column full-justified font-larger aligned-line headchar-lower tailchar-comma
+I-Body	each judging 25 sentence pairs. The original and	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	rewritten sentences were presented in random order,	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	so judges did not know which sentences were rewrit-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ten. Fluency judgments were made before seeing the	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	human translated sentence, and accuracy judgments	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	were made by comparing with the human transla-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. The average scores before and after rewrite	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	were ^V and ^NC respectively for fluency and ^C	page=7 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	and ^tÕ respectively for accuracy. Thus the rewrite	page=7 xpos=0 ypos=2 left-column full-justified font-largest aligned-line longer-tail headchar-lower
+E-Body	operations increases both scores by around 0.2.	page=7 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Conclusions and future work	page=7 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We have demonstrated how the information redun-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	dancy in the multilingual multi-document summa-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rization task can be used to reduce MT errors. We	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	do not use any related English news reports for sub-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stituting text; hence our approach is not likely to	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	change the perspectives expressed in the original	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	Arabic news to those expressed in English news re-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ports. Further, our approach does not perform any	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	corrections specific to any particular MT system.	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Thus the techniques described in this paper will re-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	main relevant even with future improvements in MT	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	technology, and will be redundant only when MT is	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	perfect. We have used the Arabic-English data from	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	DUC’04 for this paper, but our approach is equally	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	applicable to other language pairs. Further, our tech-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	niques integrate easily with the sentence clustering	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	approach to multi-document summarization – sen-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence clustering allows us to reliably identify noun	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	phrases that corefer across documents.	page=7 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In this paper we have considered the case of noun	page=7 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	phrases. In the future, we plan to consider other	page=7 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	types of constituents, such as correcting errors in	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	verb groups, and in the argument structure of verbs.	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This will result in a more generative and less ex-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>3</sup> We followed the DARPA/LDC guidelines from http://	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line line-double-space line-space headchar-super
+I-Footnote	ldc.upenn.edu/Projects/TIDES/Translation/TranAssessSpec.pdf.	page=7 xpos=0 ypos=8 left-column right-over font-smallest hanged-line headchar-lower tailchar-period
+I-Footnote	For fluency, the scale was 5:Flawless, 4:Good, 3:Non-native,	page=7 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-capital tailchar-comma
+I-Footnote	2:Disfluent, 1:Incomprehensible. The accuracy scale for	page=7 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line
+I-Footnote	information covered (comparing with human translation) was	page=7 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	5:All, 4:Most, 3:Much, 2:Little, 1:None.	page=7 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail tailchar-period above-blank-line above-double-space above-line-space
+Page	40	page=7 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	tractive approach to summarization - indeed the case	page=7 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	for generative approaches to summarization is more	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	convincing when the input is noisy.	page=7 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=5 ypos=0 right-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital
+B-Reference	S.F. Altschul, T. L. Madden, A.A. Schaffer, J. Zhang,	page=7 xpos=5 ypos=1 right-column full-justified font-smallest aligned-line longer-tail headchar-capital tailchar-comma
+I-Reference	Z. Zhang, W. Miller, and D. J. Lipman. 1997. Gapped	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	BLAST and PSI-BLAST: a new generation of protein	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	database search programs. Nucleic Acids Research,	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	17(25):3389–3402.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-line-space
+B-Reference	R. Barzilay. 2003. Information Fusion for Multidocu-	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	ment Summarization: Paraphrasing and Generation.	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	Ph.D. thesis, Columbia University, New York.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	D. Bikel, R. Schwartz, and R. Weischedel. 1999. An al-	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	gorithm that learns what’s in a name. Machine Learn-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ing, 34:211–231.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	S. Blair-Goldensohn, D. Evans, V. Hatzivassiologlou,	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-space headchar-capital tailchar-comma
+I-Reference	K. McKeown, A. Nenkova, R. Passonneau, B. Schiff-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	man, A. Schlajiker, A. Siddharthan, and S. Siegelman.	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	2004. Columbia University at DUC 2004. In Proceed-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line year tailchar-hiphen
+I-Reference	ings of DUC’04, pages 23–30, Boston, USA.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	K. Church and P. Hanks. 1991. Word association norms,	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-comma
+I-Reference	mutual information and lexicography. Computational	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Linguistics, 16(1):22–29.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	D. Evans and K. McKeown. 2005. Identifying similar-	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	ities and differences across english and arabic news.	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In Proceedings of International Conference on Intelli-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	gence Analysis, pages 23–30, McLean, VA.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	C. Grover, C. Matheson, A. Mikheev, and M. Moens.	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-space headchar-capital tailchar-period
+I-Reference	2000. LT TTT - A flexible tokenisation tool. In Pro-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	ceedings of LREC’00, pages 1147–1154.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	V. Hatzivassiloglou, J. Klavans, and E. Eskin. 1999. De-	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	tecting text similarity over short passages: exploring	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	linguistic feature combinations via machine learning.	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	In Proceedings of EMNLP’99, MD, USA.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	E.H. Hovy and Chin-Yew Lin. 1999. Automated text	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	summarization in summarist. In I. Mani and M. May-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	bury, editors, Advances in Automated Text Summariza-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tion, chapter 8. MIT Press.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	C. Lin and E. Hovy. 2003. Automatic evaluation of sum-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	maries using n-gram co-occurrence statistics. In Pro-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ceedings of HLT-NAACL’03, Edmonton.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	G.A. Miller, R. Beckwith, C.D. Fellbaum, D. Gross, and	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-space headchar-capital
+I-Reference	K. Miller. 1993. Five Papers on WordNet. Technical	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	report, Princeton University, Princeton, N.J.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Ani Nenkova and Rebecca Passonneau. 2004. Evaluat-	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	ing content selection in summarization: The pyramid	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	method. In HLT-NAACL 2004: Main Proceedings,	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-comma
+I-Reference	pages 145–152, Boston, MA, USA.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	K. Papineni, S. Roukos, T. Ward, and W. Zhu. 2002.	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-period
+I-Reference	Bleu: A method for automatic evaluation of machine	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	translation. In Proceedings of ACL’02.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	C. E. Shannon. 1948. A mathematical theory of commu-	page=7 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	nication. Bell System Tech. Journal, 27:379–423.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period

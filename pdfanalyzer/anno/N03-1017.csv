@@ -1,0 +1,572 @@
+Title	Statistical Phrase-Based Translation Proceedings of HLT-NAACL 2003	page=0 xpos=2 ypos=0 single-column left-indent font-largest page-top year headchar-capital column-bottom
+I-Header	Main Papers , pp. 48-54	page=0 xpos=7 ypos=0 right-column left-indent font-smallest column-top headchar-capital
+I-Header	Edmonton, May-June 2003	page=0 xpos=7 ypos=0 right-column left-indent font-smallest aligned-line year headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Author	Philipp Koehn, Franz Josef Och, Daniel Marcu	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Information Sciences Institute	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+I-Affiliation	Department of Computer Science	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+I-Affiliation	University of Southern California	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest aligned-line headchar-capital above-line-space
+Email	koehn@isi.edu, och@isi.edu, marcu@isi.edu	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail line-space symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	We propose a new phrase-based translation	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	model and decoding algorithm that enables	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	us to evaluate and compare several, previ-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ously proposed phrase-based translation mod-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	els. Within our framework, we carry out a	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	large number of experiments to understand bet-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ter and explain why phrase-based models out-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	perform word-based models. Our empirical re-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sults, which hold for all examined language	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	pairs, suggest that the highest levels of perfor-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	mance can be obtained through relatively sim-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ple means: heuristic learning of phrase trans-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	lations from word-based alignments and lexi-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cal weighting of phrase translations. Surpris-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ingly, learning phrases longer than three words	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	and learning phrases from high-accuracy word-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	level alignment models does not have a strong	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	impact on performance. Learning only syntac-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tically motivated phrases degrades the perfor-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	mance of our systems.	page=0 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=7 left-column right-indent font-largest hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Various researchers have improved the quality of statis-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tical machine translation system with the use of phrase	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	translation. Och et al. [1999]’s alignment template model	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	can be reframed as a phrase translation system; Yamada	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	and Knight [2001] use phrase translation in a syntax-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	based translation system; Marcu and Wong [2002] in-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	troduced a joint-probability model for phrase translation;	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-semicolon
+I-Body	and the CMU and IBM word-based statistical machine	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	translation systems <sup>1</sup> are augmented with phrase transla-	page=0 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	tion capability.	page=0 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Phrase translation clearly helps, as we will also show	page=0 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	with the experiments in this paper. But what is the best	page=0 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>1</sup> Presentations at DARPA IAO Machine Translation Work-	page=0 xpos=0 ypos=9 left-column left-indent font-largest indented-line line-double-space line-space headchar-super tailchar-hiphen
+I-Footnote	shop, July 22-23, 2002, Santa Monica, CA	page=0 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail year headchar-lower column-bottom
+I-Body	method to extract phrase translation pairs? In order to	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower
+I-Body	investigate this question, we created a uniform evaluation	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	framework that enables the comparison of different ways	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	to build a phrase translation table.	page=0 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our experiments show that high levels of performance	page=0 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	can be achieved with fairly simple means. In fact,	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	for most of the steps necessary to build a phrase-based	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	system, tools and resources are freely available for re-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	searchers in the field. More sophisticated approaches that	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	make use of syntax do not lead to better performance. In	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	fact, imposing syntactic restrictions on phrases, as used in	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	recently proposed syntax-based translation models [Ya-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mada and Knight, 2001], proves to be harmful. Our ex-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	periments also show, that small phrases of up to three	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	words are sufficient for obtaining high levels of accuracy.	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	Performance differs widely depending on the methods	page=0 xpos=5 ypos=5 right-column left-indent indented-line headchar-capital
+I-Body	used to build the phrase translation table. We found ex-	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	traction heuristics based on word alignments to be better	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	than a more principled phrase-based alignment method.	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	However, what constitutes the best heuristic differs from	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	language pair to language pair and varies with the size of	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	the training corpus.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Evaluation Framework	page=0 xpos=5 ypos=7 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In order to compare different phrase extraction methods,	page=0 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	we designed a uniform framework. We present a phrase	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	translation model and decoder that works with any phrase	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	translation table.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.1 Model	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The phrase translation model is based on the noisy chan-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	nel model. We use Bayes rule to reformulate the transla-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion probability for translating a foreign sentence into	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	English  as	page=0 xpos=5 ypos=9 right-column right-indent font-largest aligned-line shorter-tail headchar-capital above-line-space
+B-Equation	argmax   argmax    	page=0 xpos=5 ypos=9 right-column left-indent right-indent font-largest indented-line longer-tail line-space headchar-lower above-double-space above-line-space
+B-Body	This allows for a language model  and a separate	page=0 xpos=5 ypos=9 right-column left-indent font-largest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	translation model    .	page=0 xpos=5 ypos=9 right-column right-indent font-largest hanged-line shorter-tail headchar-lower tailchar-period page-bottom
+I-Body	<sup>During</sup> <sup>decoding,</sup> <sup>the</sup> <sup>foreign</sup> <sup>input</sup>  sentence  is seg-	page=1 xpos=0 ypos=0 left-column left-indent font-largest page-top headchar-super tailchar-hiphen
+I-Body	mented into a sequence of phrases   . We assume a	page=1 xpos=0 ypos=0 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	uniform probability distribution over all possible segmen-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tations.	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+Unknown	   	page=1 xpos=2 ypos=0 left-column left-indent right-indent font-largest indented-line longer-tail
+B-Body	<sup>Each</sup> <sup>foreign</sup>   phrase  in  is translated into an En-	page=1 xpos=0 ypos=0 left-column left-indent font-largest hanged-line longer-tail headchar-super tailchar-hiphen
+I-Body	glish phrase  . The English phrases may be reordered.	page=1 xpos=0 ypos=0 left-column full-justified font-largest hanged-line headchar-lower tailchar-period
+I-Body	  <sub></sub>       . Recall that due to the Bayes rule, the translation	page=1 xpos=0 ypos=1 left-column full-justified font-largest aligned-line
+I-Body	<sup>Phrase</sup>  translation is modeled by a probability distribution	page=1 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-super above-double-space above-line-space
+E-Body	direction is inverted from a modeling standpoint.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail line-double-space line-space headchar-lower tailchar-period
+B-Body	<sup>Reordering</sup> <sup>of</sup> <sup>the</sup> <sup>English</sup> <sup>output</sup> <sup>phrases</sup> <sup>is</sup> <sup>modeled</sup>  	page=1 xpos=0 ypos=1 left-column left-indent font-largest indented-line longer-tail headchar-super
+I-Body	by a relative distortion probability distribution   	page=1 xpos=0 ypos=1 left-column right-indent font-largest hanged-line shorter-tail headchar-lower
+I-Body	  <sub>,</sub> where    denotes the start position of the foreign	page=1 xpos=0 ypos=1 left-column full-justified font-largest aligned-line longer-tail
+I-Body	<sup>phrase</sup>   <sub>denotes</sub> that was the translated end position into of the the  th English phrase, and	page=1 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-super
+I-Body	lated into the      th English phrase. <sup>foreign</sup> phrase trans-	page=1 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	In all our experiments, the distortion probability distri-	page=1 xpos=0 ypos=2 left-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Body	bution   is trained using a joint probability model (see	page=1 xpos=0 ypos=2 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	<sup>Section</sup> <sup>3.3).</sup> <sup>Alternatively,</sup>     we  could         also    " use !   a  <sub>with</sub> simpler an distortion model   	page=1 xpos=0 ypos=3 left-column full-justified box aligned-line headchar-super
+E-Body	appropriate value for the parameter  .	page=1 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In order to calibrate the output length, we introduce a	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	factor # for each generated English word in addition to	page=1 xpos=0 ypos=3 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	the trigram language model  LM . This is a simple means	page=1 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	to optimize performance. Usually, this factor is larger	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	than 1, biasing longer output.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In summary, the best English output sentence  best	page=1 xpos=0 ypos=4 left-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	given a foreign input sentence according to our model	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	is	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Equation	 	page=1 xpos=1 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	 best argmax   	page=1 xpos=0 ypos=5 left-column left-indent right-indent font-largest hanged-line longer-tail
+I-Equation	argmax      <sub>LM</sub>  # length $ % 	page=1 xpos=1 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail headchar-lower
+I-Equation	 	page=1 xpos=1 ypos=5 left-column left-indent right-indent font-largest hanged-line shorter-tail above-double-space above-line-space
+I-Equation	where     is decomposed  into	page=1 xpos=0 ypos=5 left-column right-indent box hanged-line longer-tail line-double-space line-space headchar-lower
+I-Equation	 &        )( '    &            *      	page=1 xpos=0 ypos=5 left-column left-indent right-indent box indented-line longer-tail above-double-space above-line-space
+B-Body	For all our experiments we use the same training data,	page=1 xpos=0 ypos=6 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	trigram language model [Seymore and Rosenfeld, 1997],	page=1 xpos=0 ypos=6 left-column full-justified hanged-line year headchar-lower tailchar-comma
+E-Body	and a specialized decoder.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 Decoder	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The phrase-based decoder we developed for purpose of	page=1 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	comparing different phrase-based translation models em-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ploys a beam search algorithm, similar to the one by Je-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	linek [1998]. The English output sentence is generated	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	left to right in form of partial translations (or hypothe-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ses).	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We start with an initial empty hypothesis. A new hy-	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	pothesis is expanded from an existing hypothesis by the	page=1 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	translation of a phrase as follows: A sequence of un-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	translated foreign words and a possible English phrase	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	translation for them is selected. The English phrase is at-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tached to the existing English output sequence. The for-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eign words are marked as translated and the probability	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	cost of the hypothesis is updated.	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	The cheapest (highest probability) final hypothesis	page=1 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	with no untranslated foreign words is the output of the	page=1 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+E-Body	search.	page=1 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The hypotheses are stored in stacks. The stack +,	page=1 xpos=5 ypos=0 right-column left-indent right-indent font-largest indented-line longer-tail headchar-capital tailchar-comma
+I-Body	contains all hypotheses in which - foreign words have	page=1 xpos=5 ypos=0 right-column full-justified font-largest hanged-line longer-tail headchar-lower
+I-Body	been translated. We recombine search hypotheses as done	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	by Och et al. [2001]. While this reduces the number of	page=1 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower
+I-Body	hypotheses stored in each stack somewhat, stack size is	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	exponential with respect to input sentence length. This	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	makes an exhaustive search impractical.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Thus, we prune out weak hypotheses based on the cost	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	they incurred so far and a future cost estimate. For each	page=1 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	stack, we only keep a beam of the best . hypotheses.	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	Since the future cost estimate is not perfect, this leads to	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	search errors. Our future cost estimate takes into account	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the estimated phrase translation cost, but not the expected	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	distortion cost.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We compute this estimate as follows: For each possi-	page=1 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ble phrase translation anywhere in the sentence (we call	page=1 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	it a translation option), we multiply its phrase translation	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	probability with the language model probability for the	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	generated English phrase. As language model probabil-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity we use the unigram probability for the first word, the	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	bigram probability for the second, and the trigram proba-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	bility for all following words.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Given the costs for the translation options, we can com-	page=1 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	pute the estimated future cost for any sequence of con-	page=1 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	secutive foreign words by dynamic programming. Note	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	<sup>that</sup> <sup>this</sup> <sup>is</sup> <sup>only</sup> <sup>possible,</sup> <sup>since</sup>  we 3254 ignore <sub>such</sub> sequences distortion costs. for a Since there are only . /.10 	page=1 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-super
+I-Body	foreign input sentence of length . , we can pre-compute	page=1 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	these cost estimates beforehand and store them in a table.	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period above-line-space
+B-Body	During translation, future costs for uncovered foreign	page=1 xpos=5 ypos=6 right-column left-indent indented-line line-space headchar-capital
+I-Body	words can be quickly computed by consulting this table.	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	If a hypothesis has broken sequences of untranslated for-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	eign words, we look up the cost for each sequence and	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	take the product of their costs.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The beam size, e.g. the maximum number of hypothe-	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ses in each stack, is fixed to a certain number. The	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	number of translation options is linear with the sentence	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	length. Hence, the time complexity of the beam search is	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	quadratic with sentence length, and linear with the beam	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	size.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Since the beam size limits the search space and there-	page=1 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	fore search quality, we have to find the proper trade-off	page=1 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	between speed (low beam size) and performance (high	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	beam size). For our experiments, a beam size of only	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	100 proved to be sufficient. With larger beams sizes,	page=1 xpos=5 ypos=8 right-column full-justified aligned-line tailchar-comma
+I-Body	only few sentences are translated differently. With our	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	decoder, translating 1755 sentence of length 5-15 words	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	takes about 10 minutes on a 2 GHz Linux system. In	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	other words, we achieved fast decoding, while ensuring	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	high quality.	page=1 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-SectionHeader	3 Methods for Learning Phrase	page=2 xpos=0 ypos=0 left-column right-indent font-largest page-top numbered-heading1
+I-SectionHeader	Translation	page=2 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	We carried out experiments to compare the performance	page=2 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	of three different methods to build phrase translation	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	probability tables. We also investigate a number of varia-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions. We report most experimental results on a German-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	English translation task, since we had sufficient resources	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	available for this language pair. We confirm the major	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	points in experiments on additional language pairs.	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As the first method, we learn phrase alignments from	page=2 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	a corpus that has been word-aligned by a training toolkit	page=2 xpos=0 ypos=2 left-column full-justified hanged-line itemization headchar-lower
+I-Body	for a word-based translation model: the Giza++ [Och and	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	Ney, 2000] toolkit for the IBM models [Brown et al.,	page=2 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-capital tailchar-comma
+I-Body	1993]. The extraction heuristic is similar to the one used	page=2 xpos=0 ypos=2 left-column full-justified aligned-line year
+E-Body	in the alignment template work by Och et al. [1999].	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	A number of researchers have proposed to focus on	page=2 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	the translation of phrases that have a linguistic motiva-	page=2 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tion [Yamada and Knight, 2001; Imamura, 2002]. They	page=2 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower
+I-Body	only consider word sequences as phrases, if they are con-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stituents, i.e. subtrees in a syntax tree (such as a noun	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	phrase). To identify these, we use a word-aligned corpus	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	annotated with parse trees generated by statistical syntac-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic parsers [Collins, 1997; Schmidt and Schulte im Walde,	page=2 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-comma
+E-Body	2000].	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail year tailchar-period
+B-Body	The third method for comparison is the joint phrase	page=2 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	model proposed by Marcu and Wong [2002]. This model	page=2 xpos=0 ypos=4 left-column full-justified hanged-line year headchar-lower
+I-Body	learns directly a phrase-level alignment of the parallel	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	corpus.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1 Phrases from Word-Based Alignments	page=2 xpos=0 ypos=5 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The Giza++ toolkit was developed to train word-based	page=2 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	translation models from parallel corpora. As a by-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	product, it generates word alignments for this data. We	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	improve this alignment with a number of heuristics,	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	which are described in more detail in Section 4.5.	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We collect all aligned phrase pairs that are consistent	page=2 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	with the word alignment: The words in a legal phrase pair	page=2 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	are only aligned to each other, and not to words outside	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	[Och et al., 1999].	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail year tailchar-period
+B-Body	Given the collected phrase pairs, we estimate the	page=2 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	phrase translation probability distribution by relative fre-	page=2 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	quency:	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	 	page=2 xpos=2 ypos=7 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	  <sub></sub>         count   count    <sub></sub>      	page=2 xpos=1 ypos=7 left-column left-indent right-indent box hanged-line longer-tail above-line-space
+B-Body	No smoothing is performed.	page=2 xpos=0 ypos=8 left-column left-indent right-indent hanged-line shorter-tail line-space headchar-capital tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Syntactic Phrases	page=2 xpos=0 ypos=8 left-column right-indent hanged-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	If we collect all phrase pairs that are consistent with word	page=2 xpos=0 ypos=9 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	alignments, this includes many non-intuitive phrases. For	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	instance, translations for phrases such as “house the”	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	may be learned. Intuitively we would be inclined to be-	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lieve that such phrases do not help: Restricting possible	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	phrases to syntactically motivated phrases could filter out	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+E-Body	such non-intuitive pairs.	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Another motivation to evaluate the performance of	page=2 xpos=5 ypos=0 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	a phrase translation model that contains only syntactic	page=2 xpos=5 ypos=0 right-column full-justified hanged-line itemization headchar-lower
+I-Body	phrases comes from recent efforts to built syntactic trans-	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lation models [Yamada and Knight, 2001; Wu, 1997]. In	page=2 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower
+I-Body	these models, reordering of words is restricted to reorder-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing of constituents in well-formed syntactic parse trees.	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	When augmenting such models with phrase translations,	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	typically only translation of phrases that span entire syn-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tactic subtrees is possible. It is important to know if this	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	is a helpful or harmful restriction.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Consistent with Imamura [2002], we define a syntac-	page=2 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Body	tic phrase as a word sequence that is covered by a single	page=2 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+E-Body	subtree in a syntactic parse tree.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We collect syntactic phrase pairs as follows: We word-	page=2 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	align a parallel corpus, as described in Section 3.1. We	page=2 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	then parse both sides of the corpus with syntactic parsers	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	[Collins, 1997; Schmidt and Schulte im Walde, 2000].	page=2 xpos=5 ypos=3 right-column full-justified aligned-line year tailchar-period
+I-Body	For all phrase pairs that are consistent with the word	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	alignment, we additionally check if both phrases are sub-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	trees in the parse trees. Only these phrases are included	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	in the model.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Hence, the syntactically motivated phrase pairs learned	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	are a subset of the phrase pairs learned without knowl-	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+E-Body	edge of syntax (Section 3.1).	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	As in Section 3.1, the phrase translation probability	page=2 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+E-Body	distribution is estimated by relative frequency.	page=2 xpos=5 ypos=5 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.3 Phrases from Phrase Alignments	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-blank-line above-double-space above-line-space
+B-Body	Marcu and Wong [2002] proposed a translation model	page=2 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space year headchar-capital
+I-Body	that assumes that lexical correspondences can be estab-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lished not only at the word level, but at the phrase level	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	as well. To learn such correspondences, they introduced a	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	phrase-based joint probability model that simultaneously	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	generates both the Source and Target sentences in a paral-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lel corpus. Expectation Maximization learning in Marcu	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	<sup>and</sup> <sup>Wong’s</sup> <sup>framework</sup>     yields both (i) a joint probabil-	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-super tailchar-hiphen
+I-Body	<sup>ity</sup> <sup>distribution</sup>  <sup></sup>   , which reflects the probability that	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-super
+I-Body	phrases   and   are translation equivalents; (ii) and a joint	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	distribution /  , which reflects the probability that a	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	phrase at position  is translated into a phrase at position	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	 <sub>.</sub> To use this model in the context of our framework, we	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line
+I-Body	simply marginalize to conditional probabilities the joint	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	probabilities estimated by Marcu and Wong [2002]. Note	page=2 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-lower
+I-Body	that this approach is consistent with the approach taken	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	by Marcu and Wong themselves, who use conditional	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	models during decoding.	page=2 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Table	__Table 1__	page=3 xpos=-1 ypos=-1 left-column left-over right-over box page-top table-area
+B-Caption	Table 1: Size of the phrase translation table in terms of	page=3 xpos=0 ypos=0 left-column full-justified shorter-tail string-table headchar-capital
+E-Caption	distinct phrase pairs (maximum phrase length 4)	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-SectionHeader	4 Experiments	page=3 xpos=0 ypos=0 left-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We used the freely available Europarl corpus <sup>2</sup> to carry	page=3 xpos=0 ypos=1 left-column full-justified font-largest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	out experiments. This corpus contains over 20 million	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	words in each of the eleven official languages of the Eu-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ropean Union, covering the proceedings of the European	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	Parliament 1996-2001. 1755 sentences of length 5-15	page=3 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-capital
+E-Body	were reserved for testing.	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In all experiments in Section 4.1-4.6 we translate from	page=3 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	German to English. We measure performance using the	page=3 xpos=0 ypos=2 left-column full-justified hanged-line headchar-capital
+I-Body	BLEU score [Papineni et al., 2001], which estimates the	page=3 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-capital
+I-Body	accuracy of translation output with respect to a reference	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	translation.	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Comparison of Core Methods	page=3 xpos=0 ypos=3 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	First, we compared the performance of the three methods	page=3 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	for phrase extraction head-on, using the same decoder	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	(Section 2) and the same trigram language model. Fig-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line tailchar-hiphen
+E-Body	ure 1 displays the results.	page=3 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In direct comparison, learning all phrases consistent	page=3 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	with the word alignment (AP) is superior to the joint	page=3 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	model (Joint), although not by much. The restriction to	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	only syntactic phrases (Syn) is harmful. We also included	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	in the figure the performance of an IBM Model 4 word-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based translation system (M4), which uses a greedy de-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	coder [Germann et al., 2001]. Its performance is worse	page=3 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	than both AP and Joint. These results are consistent	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	over training corpus sizes from 10,000 sentence pairs to	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	320,000 sentence pairs. All systems improve with more	page=3 xpos=0 ypos=6 left-column full-justified aligned-line
+E-Body	data.	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Table 1 lists the number of distinct phrase translation	page=3 xpos=0 ypos=6 left-column left-indent indented-line longer-tail string-table headchar-capital
+I-Body	pairs learned by each method and each corpus. The num-	page=3 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ber grows almost linearly with the training corpus size,	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	due to the large number of singletons. The syntactic re-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	striction eliminates over 80% of all phrase pairs.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Note that the millions of phrase pairs learned fit easily	page=3 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	into the working memory of modern computers. Even the	page=3 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	largest models take up only a few hundred megabyte of	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	RAM.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Weighting Syntactic Phrases	page=3 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The restriction on syntactic phrases is harmful, because	page=3 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	too many phrases are eliminated. But still, we might sus-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	pect, that these lead to more reliable phrase pairs.	page=3 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>2</sup> The Europarl corpus is available at	page=3 xpos=0 ypos=9 left-column left-indent font-largest indented-line longer-tail line-double-space line-space headchar-super
+I-Footnote	http://www.isi.edu/ koehn/europarl/	page=3 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower column-bottom
+Figure	__Figure 1__	page=3 xpos=6 ypos=-1 right-column left-indent right-indent box column-top figure-area
+B-Caption	Figure 1: Comparison of the core methods: all phrase	page=3 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail string-figure headchar-capital
+I-Caption	pairs consistent with a word alignment (AP), phrase pairs	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Caption	from the joint model (Joint), IBM Model 4 (M4), and	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Caption	only syntactic phrases (Syn)	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-Body	One way to check this is to use all phrase pairs and give	page=3 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	more weight to syntactic phrase translations. This can be	page=3 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	done either during the data collection – say, by counting	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	syntactic phrase pairs twice – or during translation – each	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	time the decoder uses a syntactic phrase pair, it credits a	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	bonus factor to the hypothesis score.	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We found that neither of these methods result in signif-	page=3 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	icant improvement of translation performance. Even pe-	page=3 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	nalizing the use of syntactic phrase pairs does not harm	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	performance significantly. These results suggest that re-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quiring phrases to be syntactically motivated does not	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	lead to better phrase pairs, but only to fewer phrase pairs,	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	with the loss of a good amount of valuable knowledge.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	One illustration for this is the common German “es	page=3 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	gibt”, which literally translates as “it gives”, but really	page=3 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	means “there is”. “Es gibt” and “there is” are not syn-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tactic constituents. Note that also constructions such as	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	“with regard to” and “note that” have fairly complex syn-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line tailchar-hiphen
+I-Body	tactic representations, but often simple one word trans-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lations. Allowing to learn phrase translations over such	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	sentence fragments is important for achieving high per-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	formance.	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.3 Maximum Phrase Length	page=3 xpos=5 ypos=8 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	How long do phrases have to be to achieve high perfor-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	mance? Figure 2 displays results from experiments with	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	different maximum phrase lengths. All phrases consis-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tent with the word alignment (AP) are used. Surprisingly,	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	limiting the length to a maximum of only three words	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Figure	__Figure 2__	page=4 xpos=0 ypos=-3 left-column left-indent right-indent box page-top figure-area
+B-Caption	Figure 2: Different limits for maximum phrase length	page=4 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail string-figure headchar-capital
+E-Caption	show that length 3 is enough	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+Table	__Table 2__	page=4 xpos=-1 ypos=1 left-column left-over right-over box longer-tail line-double-space line-space table-area
+B-Caption	Table 2: Size of the phrase translation table with varying	page=4 xpos=0 ypos=2 left-column full-justified shorter-tail string-table headchar-capital
+E-Caption	maximum phrase length limits	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	per phrase already achieves top performance. Learning	page=4 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	longer phrases does not yield much improvement, and	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	occasionally leads to worse results. Reducing the limit	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	to only two, however, is clearly detrimental.	page=4 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Allowing for longer phrases increases the phrase trans-	page=4 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	lation table size (see Table 2). The increase is almost lin-	page=4 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ear with the maximum length limit. Still, none of these	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	model sizes cause memory problems.	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.4 Lexical Weighting	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	One way to validate the quality of a phrase translation	page=4 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	pair is to check, how well its words translate to each other.	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	<sup>For</sup> <sup>this,</sup>  we  need a lexical translation probability distribu- tion   . We estimated it by relative frequency from	page=4 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-super
+E-Body	<sup>the</sup> <sup>same</sup> <sup>word</sup> <sup>alignments</sup> <sup>as</sup> <sup>the</sup>  phrase  model.	page=4 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail headchar-super tailchar-period
+B-Equation	         count  count  <sub></sub>   	page=4 xpos=1 ypos=7 left-column left-indent right-indent box indented-line shorter-tail above-double-space above-line-space
+B-Body	A special English NULL token is added to each En-	page=4 xpos=0 ypos=7 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	glish sentence and aligned to each unaligned foreign	page=4 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+E-Body	word.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Given a phrase pair     and a word <sub> </sub> alignment    be-	page=4 xpos=0 ypos=8 left-column left-indent box indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	English word positions tween the foreign word  positions        - , we  compute . and the the	page=4 xpos=0 ypos=8 left-column full-justified box hanged-line headchar-capital
+I-Body	<sup>lexical</sup> <sup>weight</sup> <sup></sup> <sup>by</sup> 	page=4 xpos=0 ypos=9 left-column right-indent font-largest aligned-line shorter-tail headchar-super
+B-Equation	             ' )(                 $     %        	page=4 xpos=0 ypos=9 left-column left-indent right-indent box longer-tail column-bottom
+Figure	__Figure 3__	page=4 xpos=5 ypos=-3 right-column left-indent right-indent box column-top figure-area
+B-Caption	Figure 3: Lexical weight  of a phrase pair     given	page=4 xpos=5 ypos=0 right-column full-justified font-largest hanged-line longer-tail string-figure headchar-capital
+I-Caption	an alignment   and a lexical translation probability distri-	page=4 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Caption	bution  	page=4 xpos=5 ypos=0 right-column right-indent font-largest aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-Body	See Figure 3 for an example.	page=4 xpos=5 ypos=1 right-column left-indent right-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-period
+B-Body	  , we use the one with the highest lexical weight: &   If  there are multiple alignments   for a phrase pair	page=4 xpos=5 ypos=1 right-column centered left-indent box hanged-line longer-tail
+B-Equation	 &        max   &       	page=4 xpos=6 ypos=2 right-column left-indent right-indent font-largest indented-line shorter-tail above-double-space above-line-space
+I-Body	additional factor. This means that the model   is <sup>We</sup> <sup>use</sup> <sup>the</sup> <sup>lexical</sup> <sup>weight</sup> <sup></sup> <sup>during</sup> <sup>translation</sup>   as a	page=4 xpos=5 ypos=2 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	<sup>extended</sup> <sup>to</sup> 	page=4 xpos=5 ypos=3 right-column right-indent font-largest aligned-line shorter-tail headchar-super
+B-Equation	         ( '                               /A	page=4 xpos=5 ypos=3 right-column left-indent right-indent box longer-tail above-double-space above-line-space
+B-Body	The parameter B defines the strength of the lexical	page=4 xpos=5 ypos=4 right-column left-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	weight  . Good values for this parameter are around	page=4 xpos=5 ypos=4 right-column full-justified font-largest hanged-line headchar-lower
+E-Body	0.25.	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	Figure 4 shows the impact of lexical weighting on ma-	page=4 xpos=5 ypos=4 right-column left-indent indented-line longer-tail string-figure headchar-capital tailchar-hiphen
+I-Body	chine translation performance. In our experiments, we	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	achieved improvements of up to 0.01 on the BLEU score	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	scale. Again, all phrases consistent with the word align-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ment are used (Section 3.1).	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Note that phrase translation with a lexical weight is a	page=4 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	special case of the alignment template model [Och et al.,	page=4 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	1999] with one word class for each word. Our simplifica-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	tion has the advantage that the lexical weights can be fac-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tored into the phrase translation table beforehand, speed-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing up decoding. In contrast to the beam search decoder	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	for the alignment template model, our decoder is able to	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	search all possible phrase segmentations of the input sen-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence, instead of choosing one segmentation before de-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	coding.	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.5 Phrase Extraction Heuristic	page=4 xpos=5 ypos=8 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Recall from Section 3.1 that we learn phrase pairs from	page=4 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	word alignments generated by Giza++. The IBM Models	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	that this toolkit implements only allow at most one En-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	glish word to be aligned with a foreign word. We remedy	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	this problem with a heuristic approach.	page=4 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Figure	__Figure 4__	page=5 xpos=0 ypos=-4 left-column left-indent right-indent box page-top figure-area
+B-Caption	Figure 4: Lexical weighting (lex) improves performance	page=5 xpos=0 ypos=0 left-column centered left-indent right-indent hanged-line longer-tail string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-Body	First, we align a parallel corpus bidirectionally – for-	page=5 xpos=0 ypos=0 left-column left-indent indented-line line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	eign to English and English to foreign. This gives us two	page=5 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	word alignments that we try to reconcile. If we intersect	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the two alignments, we get a high-precision alignment of	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	high-confidence alignment points. If we take the union of	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the two alignments, we get a high-recall alignment with	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	additional alignment points.	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We explore the space between intersection and union	page=5 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	with expansion heuristics that start with the intersection	page=5 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	and add additional alignment points. The decision which	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	points to add may depend on a number of criteria:	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Listitem	In which alignment does the potential alignment	page=5 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Listitem	point exist? Foreign-English or English-foreign?	page=5 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	Does the potential point neighbor already estab-	page=5 xpos=0 ypos=4 left-column left-indent aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Listitem	lished points?	page=5 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	Does “neighboring” mean directly adjacent (block-	page=5 xpos=0 ypos=4 left-column left-indent aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Listitem	distance), or also diagonally adjacent?	page=5 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	Is the English or the foreign word that the poten-	page=5 xpos=0 ypos=5 left-column left-indent aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Listitem	tial point connects unaligned so far? Are both un-	page=5 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	aligned?	page=5 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	What is the lexical probability for the potential	page=5 xpos=0 ypos=5 left-column left-indent aligned-line longer-tail headchar-capital
+I-Listitem	point?	page=5 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower above-line-space
+B-Body	The base heuristic [Och et al., 1999] proceeds as fol-	page=5 xpos=0 ypos=6 left-column left-indent hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Body	lows: We start with intersection of the two word align-	page=5 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ments. We only add new alignment points that exist in	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the union of two word alignments. We also always re-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quire that a new alignment point connects at least one	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	previously unaligned word.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	First, we expand to only directly adjacent alignment	page=5 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	points. We check for potential points starting from the top	page=5 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	right corner of the alignment matrix, checking for align-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment points for the first English word, then continue with	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	alignment points for the second English word, and so on.	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This is done iteratively until no alignment point can be	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital
+I-Body	added anymore. In a final step, we add non-adjacent	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	alignment points, with otherwise the same requirements.	page=5 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower tailchar-period column-bottom
+Figure	__Figure 5__	page=5 xpos=6 ypos=-4 right-column left-indent right-indent box column-top figure-area
+B-Caption	Figure 5: Different heuristics to symmetrize word align-	page=5 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail string-figure headchar-capital tailchar-hiphen
+E-Caption	ments from bidirectional Giza++ alignments	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-Body	Figure 5 shows the performance of this heuristic (base)	page=5 xpos=5 ypos=1 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space string-figure headchar-capital
+I-Body	compared against the two mono-directional alignments	page=5 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	(e2f, f2e) and their union (union). The figure also con-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line tailchar-hiphen
+I-Body	tains two modifications of the base heuristic: In the first	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	(diag) we also permit diagonal neighborhood in the itera-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line tailchar-hiphen
+I-Body	tive expansion stage. In a variation of this (diag-and), we	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	require in the final step that both words are unaligned.	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The ranking of these different methods varies for dif-	page=5 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ferent training corpus sizes. For instance, the alignment	page=5 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	f2e starts out second to worst for the 10,000 sentence pair	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	corpus, but ultimately is competitive with the best method	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	at 320,000 sentence pairs. The base heuristic is initially	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	the best, but then drops off.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The discrepancy between the best and the worst	page=5 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	method is quite large, about 0.02 BLEU. For almost	page=5 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	all training corpus sizes, the heuristic diag-and performs	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	best, albeit not always significantly.	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.6 Simpler Underlying Word-Based Models	page=5 xpos=5 ypos=6 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The initial word alignment for collecting phrase pairs	page=5 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	is generated by symmetrizing IBM Model 4 alignments.	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Model 4 is computationally expensive, and only approxi-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	mate solutions exist to estimate its parameters. The IBM	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	Models 1-3 are faster and easier to implement. For IBM	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	Model 1 and 2 word alignments can be computed effi-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ciently without relying on approximations. For more in-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation on these models, please refer to Brown et al.	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	[1993]. Again, we use the heuristics from the Section 4.5	page=5 xpos=5 ypos=8 right-column full-justified aligned-line year
+I-Body	to reconcile the mono-directional alignments obtained	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	through training parameters using models of increasing	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	complexity.	page=5 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	How much is performance affected, if we base word	page=5 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	alignments on these simpler methods? As Figure 6 indi-	page=5 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen page-bottom
+Figure	__Figure 6__	page=6 xpos=0 ypos=0 left-column left-indent right-indent box page-top figure-area
+B-Caption	Figure 6: Using simpler IBM models for word alignment	page=6 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail string-figure headchar-capital
+E-Caption	does not reduce performance much	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+Table	__Table 3__	page=6 xpos=0 ypos=3 left-column left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 3: Confirmation of our findings for additional lan-	page=6 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+E-Caption	guage pairs (measured with BLEU)	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	cates, not much. While Model 1 clearly results in worse	page=6 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	performance, the difference is less striking for Model 2	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	and 3. Using different expansion heuristics during sym-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	metrizing the word alignments has a bigger effect.	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We can conclude from this, that high quality phrase	page=6 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	alignments can be learned with fairly simple means. The	page=6 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	simpler and faster Model 2 provides similar performance	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	to the complex Model 4.	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.7 Other Language Pairs	page=6 xpos=0 ypos=7 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We validated our findings for additional language pairs.	page=6 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Body	Table 3 displays some of the results. For all language	page=6 xpos=0 ypos=7 left-column full-justified aligned-line string-table headchar-capital
+I-Body	pairs the phrase model (based on word alignments, Sec-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion 3.1) outperforms IBM Model 4. Lexicalization (Lex)	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	always helps as well.	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusion	page=6 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We created a framework (translation model and decoder)	page=6 xpos=0 ypos=9 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	that enables us to evaluate and compare various phrase	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	translation methods. Our results show that phrase transla-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion gives better performance than traditional word-based	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	methods. We obtain the best results even with small	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	phrases of up to three words. Lexical weighting of phrase	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+E-Body	translation helps.	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Straight-forward syntactic models that map con-	page=6 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	stituents into constituents fail to account for important	page=6 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	phrase alignments. As a consequence, straight-forward	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	syntax-based mappings do not lead to better translations	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	than unmotivated phrase mappings. This is a challenge	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	for syntactic translation models.	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	It matters how phrases are extracted. The results sug-	page=6 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	gest that choosing the right alignment heuristic is more	page=6 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	important than which model is used to create the initial	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	word alignments.	page=6 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=6 xpos=5 ypos=2 right-column right-indent font-largest aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Brown, P. F., Pietra, S. A. D., Pietra, V. J. D., and Mercer, R. L.	page=6 xpos=5 ypos=2 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	(1993). The mathematics of statistical machine translation.	page=6 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year tailchar-period
+I-Reference	Computational Linguistics, 19(2):263–313.	page=6 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Collins, M. (1997). Three generative, lexicalized models for	page=6 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	statistical parsing. In Proceedings of ACL 35.	page=6 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Germann, U., Jahr, M., Knight, K., Marcu, D., and Yamada,	page=6 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-space headchar-capital tailchar-comma
+I-Reference	K. (2001). Fast decoding and optimal decoding for machine	page=6 xpos=5 ypos=3 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	translation. In Proceedings of ACL 39.	page=6 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Imamura, K. (2002). Application of translation knowledge ac-	page=6 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	quired by hierarchical phrase alignment for pattern-based mt.	page=6 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In Proceedings of TMI.	page=6 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Jelinek, F. (1998). Statistical Methods for Speech Recognition.	page=6 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-period
+I-Reference	The MIT Press.	page=6 xpos=5 ypos=4 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Marcu, D. and Wong, W. (2002). A phrase-based, joint proba-	page=6 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	bility model for statistical machine translation. In Proceed-	page=6 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ings of the Conference on Empirical Methods in Natural Lan-	page=6 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	guage Processing, EMNLP.	page=6 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Och, F. J. and Ney, H. (2000). Improved statistical alignment	page=6 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	models. In Proceedings of ACL 38.	page=6 xpos=5 ypos=5 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Och, F. J., Tillmann, C., and Ney, H. (1999). Improved align-	page=6 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	ment models for statistical machine translation. In Proc. of	page=6 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	the Joint Conf. of Empirical Methods in Natural Language	page=6 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Processing and Very Large Corpora, pages 20–28.	page=6 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Och, F. J., Ueffing, N., and Ney, H. (2001). An efficient A*	page=6 xpos=5 ypos=6 right-column right-over font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	search algorithm for statistical machine translation. In Data-	page=6 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	Driven MT Workshop.	page=6 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Papineni, K., Roukos, S., Ward, T., and Zhu, W.-J. (2001).	page=6 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-period
+I-Reference	BLEU: a method for automatic evaluation of machine trans-	page=6 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	lation. Technical Report RC22176(W0109-022), IBM Re-	page=6 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	search Report.	page=6 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Schmidt, H. and Schulte im Walde, S. (2000). Robust German	page=6 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	noun chunking with a probabilistic context-free grammar. In	page=6 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Proceedings of COLING.	page=6 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Seymore, K. and Rosenfeld, R. (1997). Statistical language	page=6 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	modeling using the CMU-Cambridge toolkit. In Proceedings	page=6 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of Eurospeech.	page=6 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Wu, D. (1997). Stochastic inversion transduction grammars and	page=6 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	bilingual parsing of parallel corpora. Computational Linguis-	page=6 xpos=5 ypos=9 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tics, 23(3).	page=6 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Yamada, K. and Knight, K. (2001). A syntax-based statistical	page=6 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	translation model. In Proceedings of ACL 39.	page=6 xpos=5 ypos=9 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period

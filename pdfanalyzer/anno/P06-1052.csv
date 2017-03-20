@@ -1,0 +1,717 @@
+Title	An Improved Redundancy Elimination Algorithm	page=0 xpos=1 ypos=0 single-column left-indent right-indent font-largest page-top headchar-capital
+Title	for Underspecified Representations	page=0 xpos=2 ypos=0 single-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+Author	Alexander Koller and Stefan Thater	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Dept. of Computational Linguistics	page=0 xpos=3 ypos=0 single-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+I-Affiliation	Universität des Saarlandes, Saarbrücken, Germany	page=0 xpos=2 ypos=1 single-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Email	{koller,stth}@coli.uni-sb.de	page=0 xpos=3 ypos=1 single-column left-indent right-indent font-larger indented-line shorter-tail symbol-atmark column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=2 ypos=1 left-column left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	We present an efficient algorithm for the	page=0 xpos=0 ypos=2 left-column left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	redundancy elimination problem: Given	page=0 xpos=0 ypos=2 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	an underspecified semantic representation	page=0 xpos=0 ypos=2 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	(USR) of a scope ambiguity, compute an	page=0 xpos=0 ypos=2 left-column left-indent right-indent aligned-line
+I-Abstract	USR with fewer mutually equivalent read-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	ings. The algorithm operates on underspec-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ified chart representations which are de-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	rived from dominance graphs; it can be ap-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	plied to the USRs computed by large-scale	page=0 xpos=0 ypos=3 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	grammars. We evaluate the algorithm on	page=0 xpos=0 ypos=3 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	a corpus, and show that it reduces the de-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line itemization headchar-lower tailchar-hiphen
+I-Abstract	gree of ambiguity significantly while tak-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ing negligible runtime.	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=4 left-column right-indent font-largest hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Underspecification is nowadays the standard ap-	page=0 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	proach to dealing with scope ambiguities in com-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	putational semantics (van Deemter and Peters,	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	1996; Copestake et al., 2004; Egg et al., 2001;	page=0 xpos=0 ypos=5 left-column centered right-indent aligned-line year tailchar-semicolon
+I-Body	Blackburn and Bos, 2005). The basic idea be-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	hind it is to not enumerate all possible semantic	page=0 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	representations for each syntactic analysis, but to	page=0 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	derive a single compact underspecified represen-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tation (USR). This simplifies semantics construc-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, and current algorithms support the efficient	page=0 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	enumeration of the individual semantic representa-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tions from an USR (Koller and Thater, 2005b).	page=0 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	A major promise of underspecification is that it	page=0 xpos=0 ypos=7 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	makes it possible, in principle, to rule out entire	page=0 xpos=0 ypos=7 left-column right-indent hanged-line headchar-lower
+I-Body	subsets of readings that we are not interested in	page=0 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower
+I-Body	wholesale, without even enumerating them. For in-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	stance, real-world sentences with scope ambigui-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ties often have many readings that are semantically	page=0 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	equivalent. Subsequent modules (e.g. for doing in-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ference) will typically only be interested in one	page=0 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	reading from each equivalence class, and all oth-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ers could be deleted. This situation is illustrated	page=0 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	by the following two (out of many) sentences from	page=0 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	the Rondane treebank, which is distributed with	page=0 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower column-bottom
+I-Body	the English Resource Grammar (ERG; Flickinger	page=0 xpos=5 ypos=1 right-column right-indent column-top headchar-lower
+E-Body	(2002)), a large-scale HPSG grammar of English.	page=0 xpos=5 ypos=2 right-column right-indent aligned-line year tailchar-period above-double-space above-line-space
+B-Listitem	(1) For travellers going to Finnmark there is a	page=0 xpos=5 ypos=2 right-column right-indent aligned-line line-double-space line-space itemization
+I-Listitem	bus service from Oslo to Alta through Swe-	page=0 xpos=5 ypos=2 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	den. (Rondane 1262)	page=0 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	(2) We quickly put up the tents in the lee of a	page=0 xpos=5 ypos=3 right-column right-indent hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	small hillside and cook for the first time in	page=0 xpos=5 ypos=3 right-column left-indent right-indent indented-line headchar-lower
+I-Listitem	the open. (Rondane 892)	page=0 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	For the annotated syntactic analysis of (1), the	page=0 xpos=5 ypos=3 right-column left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	ERG derives an USR with eight scope bearing op-	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-capital tailchar-hiphen
+I-Body	erators, which results in a total of 3960 readings.	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	These readings are all semantically equivalent to	page=0 xpos=5 ypos=4 right-column right-indent aligned-line headchar-capital
+I-Body	each other. On the other hand, the USR for (2) has	page=0 xpos=5 ypos=4 right-column right-indent aligned-line headchar-lower
+I-Body	480 readings, which fall into two classes of mutu-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line tailchar-hiphen
+I-Body	ally equivalent readings, characterised by the rela-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tive scope of “the lee of” and “a small hillside.”	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Body	In this paper, we present an algorithm for the	page=0 xpos=5 ypos=5 right-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	redundancy elimination problem: Given an USR,	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	compute an USR which has fewer readings, but	page=0 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	still describes at least one representative of each	page=0 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	equivalence class – without enumerating any read-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ings. This algorithm makes it possible to compute	page=0 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	the one or two representatives of the semantic	page=0 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	equivalence classes in the examples, so subsequent	page=0 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	modules don’t have to deal with all the other equiv-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	alent readings. It also closes the gap between the	page=0 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	large number of readings predicted by the gram-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mar and the intuitively perceived much lower de-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gree of ambiguity of these sentences. Finally, it	page=0 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower
+I-Body	can be helpful for a grammar designer because it	page=0 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower
+I-Body	is much more feasible to check whether two read-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ings are linguistically reasonable than 480. Our al-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gorithm is applicable to arbitrary USRs (not just	page=0 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower
+I-Body	those computed by the ERG). While its effect is	page=0 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower
+I-Body	particularly significant on the ERG, which uni-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formly treats all kinds of noun phrases, including	page=0 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower
+I-Body	proper names and pronouns, as generalised quanti-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fiers, it will generally help deal with spurious ambi-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guities (such as scope ambiguities between indef-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	409	page=0 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only above-line-space
+B-Footer	Proceedings of the 21st International Conference on Computational Linguistics and 44th Annual Meeting of the ACL, pages 409–416,	page=0 xpos=0 ypos=9 single-column left-over right-over font-smallest hanged-line longer-tail line-space headchar-capital tailchar-comma
+I-Footer	Sydney, July 2006.  2006 c Association for Computational Linguistics	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital page-bottom
+I-Body	inites), which have been a ubiquitous problem in	page=1 xpos=0 ypos=0 left-column right-indent page-top headchar-lower
+E-Body	most theories of scope since Montague Grammar.	page=1 xpos=0 ypos=0 left-column right-indent aligned-line headchar-lower tailchar-period
+B-Body	We model equivalence in terms of rewrite rules	page=1 xpos=0 ypos=0 left-column left-indent right-indent indented-line headchar-capital
+I-Body	that permute quantifiers without changing the se-	page=1 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	mantics of the readings. The particular USRs we	page=1 xpos=0 ypos=0 left-column right-indent aligned-line headchar-lower
+I-Body	work with are underspecified chart representations,	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which can be computed from dominance graphs	page=1 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower
+I-Body	(or USRs in some other underspecification for-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line tailchar-hiphen
+I-Body	malisms) efficiently (Koller and Thater, 2005b).	page=1 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	We evaluate the performance of the algorithm on	page=1 xpos=0 ypos=1 left-column right-indent aligned-line headchar-capital
+I-Body	the Rondane treebank and show that it reduces the	page=1 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower
+I-Body	median number of readings from 56 to 4, by up	page=1 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	to a factor of 666.240 for individual USRs, while	page=1 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+E-Body	running in negligible time.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To our knowledge, our algorithm and its less	page=1 xpos=0 ypos=2 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	powerful predecessor (Koller and Thater, 2006)	page=1 xpos=0 ypos=2 left-column right-indent hanged-line year headchar-lower
+I-Body	are the first redundancy elimination algorithms in	page=1 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	the literature that operate on the level of USRs.	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	There has been previous research on enumerating	page=1 xpos=0 ypos=3 left-column right-indent aligned-line headchar-capital
+I-Body	only some representatives of each equivalence	page=1 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+I-Body	class (Vestre, 1991; Chaves, 2003), but these	page=1 xpos=0 ypos=3 left-column right-indent aligned-line year headchar-lower
+I-Body	approaches don’t maintain underspecification:	page=1 xpos=0 ypos=3 left-column centered right-indent aligned-line headchar-lower tailchar-colon
+I-Body	After running their algorithms, they are left with	page=1 xpos=0 ypos=4 left-column right-indent aligned-line headchar-capital
+I-Body	a set of readings rather than an underspecified	page=1 xpos=0 ypos=4 left-column right-indent aligned-line itemization headchar-lower
+I-Body	representation, i.e. we could no longer run other	page=1 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+E-Body	algorithms on an USR.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The paper is structured as follows. We will first de-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	fine dominance graphs and review the necessary	page=1 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	background theory in Section 2. We will then intro-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	duce our notion of equivalence in Section 3, and	page=1 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	present the redundancy elimination algorithm in	page=1 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	Section 4. In Section 5, we describe the evaluation	page=1 xpos=0 ypos=5 left-column right-indent aligned-line headchar-capital
+I-Body	of the algorithm on the Rondane corpus. Finally,	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	Section 6 concludes and points to further work.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Dominance graphs	page=1 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The basic underspecification formalism we as-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	sume here is that of (labelled) dominance graphs	page=1 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	(Althaus et al., 2003). Dominance graphs are	page=1 xpos=0 ypos=7 left-column right-indent aligned-line year
+I-Body	equivalent to leaf-labelled normal dominance con-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	straints (Egg et al., 2001), which have been dis-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+E-Body	cussed extensively in previous literature.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Definition	Definition 1. A (compact) dominance graph is a	page=1 xpos=0 ypos=7 left-column right-indent aligned-line longer-tail line-space headchar-capital
+I-Definition	directed graph (V, E ] D) with two kinds of edges,	page=1 xpos=0 ypos=8 left-column full-justified font-larger aligned-line headchar-lower tailchar-comma
+I-Definition	tree edges E and dominance edges D, such that:	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	1. The graph (V, E) defines a collection of node	page=1 xpos=0 ypos=8 left-column left-indent right-indent indented-line longer-tail line-double-space line-space itemization
+I-Listitem	disjoint trees of height 0 or 1. We call the	page=1 xpos=0 ypos=8 left-column left-indent right-indent indented-line headchar-lower
+I-Listitem	trees in (V, E) the fragments of the graph.	page=1 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	2. If (v, v <sup>0</sup> ) is a dominance edge in D, then v is	page=1 xpos=0 ypos=9 left-column left-indent right-indent font-largest hanged-line longer-tail line-double-space line-space itemization
+I-Listitem	a hole and v 0 is a root. A node v is a root if v	page=1 xpos=0 ypos=9 left-column left-indent right-indent font-largest indented-line itemization headchar-lower column-bottom
+I-Listitem	does not have incoming tree edges; otherwise,	page=1 xpos=5 ypos=0 right-column left-indent column-top headchar-lower tailchar-comma
+I-Listitem	v is a hole.	page=1 xpos=5 ypos=0 right-column left-indent right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period above-double-space above-line-space
+B-Body	A labelled dominance graph over a ranked sig-	page=1 xpos=5 ypos=0 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	nature Σ is a triple G = (V, E ] D, L) such that	page=1 xpos=5 ypos=0 right-column right-indent font-larger hanged-line headchar-lower
+I-Body	(V, E ] D) is a dominance graph and L : V <sub>Σ</sub>	page=1 xpos=5 ypos=0 right-column right-indent font-larger aligned-line
+I-Body	is a partial labelling function which assigns a node	page=1 xpos=5 ypos=1 right-column right-indent aligned-line headchar-lower
+I-Body	v a label with arity n iff v is a root with n outgoing	page=1 xpos=5 ypos=1 right-column right-indent aligned-line itemization headchar-lower
+I-Body	tree edges. Nodes without labels (i.e. holes) must	page=1 xpos=5 ypos=1 right-column right-indent aligned-line headchar-lower
+E-Body	have outgoing dominance edges.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	We will write R(F) for the root of the fragment	page=1 xpos=5 ypos=1 right-column left-indent right-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	F, and we will typically just say “graph” instead	page=1 xpos=5 ypos=2 right-column right-indent hanged-line headchar-capital
+E-Body	of “labelled dominance graph”.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	An example of a labelled dominance graph is	page=1 xpos=5 ypos=2 right-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	shown to the left of Fig. 1. Tree edges are drawn	page=1 xpos=5 ypos=2 right-column right-indent hanged-line headchar-lower
+I-Body	as solid lines, and dominance edges as dotted lines,	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	directed from top to bottom. This graph can serve	page=1 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+I-Body	as an USR for the sentence “a representative of	page=1 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+I-Body	a company saw a sample” if we demand that the	page=1 xpos=5 ypos=3 right-column right-indent aligned-line itemization headchar-lower
+I-Body	holes are “plugged” by roots while realising the	page=1 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+I-Body	dominance edges as dominance, as in the two con-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	figurations (of five) shown to the right. These con-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	figurations are trees that encode semantic represen-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tations of the sentence. We will freely read config-	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	urations as ground terms over the signature Σ.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.1 Hypernormally connected graphs	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Throughout this paper, we will only consider hy-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	pernormally connected (hnc) dominance graphs.	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Hnc graphs are equivalent to chain-connected	page=1 xpos=5 ypos=5 right-column right-indent aligned-line headchar-capital
+I-Body	dominance constraints (Koller et al., 2003), and	page=1 xpos=5 ypos=5 right-column right-indent aligned-line year headchar-lower
+I-Body	are closely related to dominance nets (Niehren and	page=1 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	Thater, 2003). Fuchss et al. (2004) have presented	page=1 xpos=5 ypos=5 right-column right-indent aligned-line year headchar-capital
+I-Body	a corpus study that strongly suggests that all dom-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	inance graphs that are generated by current large-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	scale grammars are (or should be) hnc.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Technically, a graph G is hypernormally con-	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	nected iff each pair of nodes is connected by a sim-	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ple hypernormal path in G. A hypernormal path	page=1 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower
+I-Body	(Althaus et al., 2003) in G is a path in the undi-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	rected version G <sub>u</sub> of G that does not use two dom-	page=1 xpos=5 ypos=7 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+E-Body	inance edges that are incident to the same hole.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Hnc graphs have a number of very useful struc-	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tural properties on which this paper rests. One	page=1 xpos=5 ypos=8 right-column right-indent hanged-line headchar-lower
+I-Body	which is particularly relevant here is that we can	page=1 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower
+I-Body	predict in which way different fragments can dom-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	inate each other.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Definition	Definition 2. Let G be a hnc dominance graph. A	page=1 xpos=5 ypos=8 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Definition	fragment F <sub>1</sub> in G is called a possible dominator	page=1 xpos=5 ypos=9 right-column right-indent font-largest aligned-line headchar-lower
+I-Definition	of another fragment F <sub>2</sub> in G iff it has exactly one	page=1 xpos=5 ypos=9 right-column right-indent font-largest aligned-line headchar-lower
+I-Definition	hole h which is connected to R(F <sub>2</sub> ) by a simple hy-	page=1 xpos=5 ypos=9 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	410	page=1 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Figure	__Figure 1__	page=2 xpos=0 ypos=-2 single-column left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 1: A dominance graph that represents the five readings of the sentence “a representative of a	page=2 xpos=0 ypos=0 single-column right-indent hanged-line longer-tail line-double-space line-space string-figure headchar-capital
+E-Caption	company saw a sample” (left) and two of its five configurations.	page=2 xpos=0 ypos=0 single-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-Figure	{1, 2, 3, 4, 5, 6, 7} :h1, h <sub>1</sub> 7→ {4}, h 2 7→ {2, 3, 5, 6, 7}i	page=2 xpos=0 ypos=0 left-column right-over font-largest column-top line-blank-line line-double-space line-space
+I-Figure	h2, h <sub>3</sub> 7→ {1, 4, 5}, h 4 7→ {3, 6, 7}i	page=2 xpos=1 ypos=0 left-column left-indent right-over font-largest indented-line headchar-lower
+I-Figure	h3, h <sub>5</sub> 7→ {5}, h 6 7→ {1, 2, 4, 5, 7}i	page=2 xpos=1 ypos=1 left-column left-indent right-over font-largest aligned-line headchar-lower
+I-Figure	{2, 3, 5, 6, 7} :h2, h <sub>3</sub> 7→ {5}, h 4 7→ {3, 6, 7}i	page=2 xpos=0 ypos=1 left-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Figure	h3, h <sub>5</sub> 7→ {6}, h 6 7→ {2, 5, 7}i	page=2 xpos=1 ypos=1 left-column left-indent right-indent font-largest indented-line headchar-lower
+I-Figure	{3, 6, 7} :h3, h <sub>5</sub> 7→ {6}, h 6 7→ {7}i	page=2 xpos=0 ypos=1 left-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Figure	{2, 5, 7} :h2, h <sub>3</sub> 7→ {5}, h 4 7→ {7}i	page=2 xpos=0 ypos=1 left-column left-indent right-indent font-largest aligned-line
+I-Figure	{1, 4, 5} :h1, h <sub>1</sub> 7→ {4}, h 2 7→ {5}i	page=2 xpos=0 ypos=2 left-column left-indent right-indent font-largest aligned-line
+I-Figure	{1, 2, 4, 5, 7} :h1, h <sub>1</sub> 7→ {4}, h 2 7→ {2, 5, 7}i	page=2 xpos=0 ypos=2 left-column left-indent right-indent font-largest hanged-line longer-tail
+E-Figure	h2, h <sub>3</sub> 7→ {1, 4, 5}, h 4 7→ {7}i	page=2 xpos=1 ypos=2 left-column left-indent right-indent font-largest indented-line headchar-lower above-double-space above-line-space
+B-Caption	Figure 2: The chart for the graph in Fig. 1.	page=2 xpos=0 ypos=2 left-column left-indent right-indent hanged-line shorter-tail line-double-space line-space string-figure headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+I-Definition	pernormal path which doesn’t use R(F <sub>1</sub> ). We write	page=2 xpos=0 ypos=3 left-column right-indent font-largest hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Definition	ch(F <sub>1</sub> , F 2 ) for this unique h.	page=2 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Lemma	Lemma 1 (Koller and Thater (2006)). Let F <sub>1</sub> , F 2	page=2 xpos=0 ypos=3 left-column right-indent font-largest aligned-line longer-tail line-space year headchar-capital
+I-Lemma	be fragments in a hnc dominance graph G. If there	page=2 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Lemma	is a configuration C of G in which R(F <sub>1</sub> ) dominates	page=2 xpos=0 ypos=4 left-column right-indent font-largest aligned-line headchar-lower
+I-Lemma	R(F <sub>2</sub> ), then F 1 is a possible dominator of F 2 , and	page=2 xpos=0 ypos=4 left-column right-indent font-largest aligned-line headchar-capital
+I-Lemma	in particular ch(F <sub>1</sub> , F 2 ) dominates R(F 2 ) in C.	page=2 xpos=0 ypos=4 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	By applying this rather abstract result, we can	page=2 xpos=0 ypos=5 left-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Body	derive a number of interesting facts about the ex-	page=2 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ample graph in Fig. 1. The fragments 1, 2, and 3	page=2 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	are possible dominators of all other fragments (and	page=2 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	of each other), while the fragments 4 through 7	page=2 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	aren’t possible dominators of anything (they have	page=2 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	no holes); so 4 through 7 must be leaves in any con-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	figuration of the graph. In addition, if fragment 2	page=2 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	dominates fragment 3 in any configuration, then in	page=2 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	particular the right hole of 2 will dominate the root	page=2 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+E-Body	of 3; and so on.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 Dominance charts	page=2 xpos=0 ypos=7 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Below we will not work with dominance graphs	page=2 xpos=0 ypos=7 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	directly. Rather, we will use dominance charts	page=2 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	(Koller and Thater, 2005b) as our USRs: they are	page=2 xpos=0 ypos=8 left-column right-indent aligned-line year
+I-Body	more explicit USRs, which support a more fine-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	grained deletion of reading sets than graphs.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	A dominance chart for the graph G is a mapping	page=2 xpos=0 ypos=8 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	of weakly connected subgraphs of G to sets of	page=2 xpos=0 ypos=9 left-column right-indent hanged-line headchar-lower
+I-Body	splits (see Fig. 2), which describe possible ways	page=2 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower column-bottom
+I-Body	of constructing configurations of the subgraph.	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-period
+I-Body	A subgraph G 0 is assigned one split for each	page=2 xpos=5 ypos=0 right-column right-indent font-largest aligned-line headchar-capital
+I-Body	fragment F in G 0 which can be at the root of a	page=2 xpos=5 ypos=1 right-column right-indent font-largest aligned-line headchar-lower
+I-Body	configuration of G 0 . If the graph is hnc, removing	page=2 xpos=5 ypos=1 right-column right-indent font-largest aligned-line headchar-lower
+I-Body	F from the graph splits G 0 into a set of weakly	page=2 xpos=5 ypos=1 right-column right-indent font-largest aligned-line headchar-capital
+I-Body	connected components (wccs), each of which is	page=2 xpos=5 ypos=1 right-column right-indent aligned-line headchar-lower
+I-Body	connected to exactly one hole of F. We also record	page=2 xpos=5 ypos=2 right-column right-indent aligned-line headchar-lower
+I-Body	the wccs, and the hole to which each wcc belongs,	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	in the split. In order to compute all configurations	page=2 xpos=5 ypos=2 right-column right-indent aligned-line headchar-lower
+I-Body	represented by a split, we can first compute	page=2 xpos=5 ypos=2 right-column right-indent aligned-line headchar-lower
+I-Body	recursively the configurations of each component;	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-semicolon
+I-Body	then we plug each combination of these sub-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	configurations into the appropriate holes of the	page=2 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+I-Body	root fragment. We define the configurations asso-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ciated with a subgraph as the union over its splits,	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and those of the entire chart as the configurations	page=2 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+E-Body	associated with the complete graph.	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Fig. 2 shows the dominance chart correspond-	page=2 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ing to the graph in Fig. 1. The chart represents	page=2 xpos=5 ypos=4 right-column right-indent hanged-line headchar-lower
+I-Body	exactly the configuration set of the graph, and is	page=2 xpos=5 ypos=4 right-column right-indent aligned-line headchar-lower
+I-Body	minimal in the sense that every subgraph and ev-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ery split in the chart can be used in constructing	page=2 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	some configuration. Such charts can be computed	page=2 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	efficiently (Koller and Thater, 2005b) from a dom-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	inance graph, and can also be used to compute the	page=2 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+E-Body	configurations of a graph efficiently.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The example chart expresses that three frag-	page=2 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ments can be at the root of a configuration of the	page=2 xpos=5 ypos=6 right-column right-indent hanged-line headchar-lower
+I-Body	complete graph: 1, 2, and 3. The entry for the split	page=2 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	with root fragment 2 tells us that removing 2 splits	page=2 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	the graph into the subgraphs {1, 4, 5} and {3, 6, 7}	page=2 xpos=5 ypos=7 right-column right-indent font-larger aligned-line headchar-lower
+I-Body	(see Fig. 3). If we configure these two subgraphs	page=2 xpos=5 ypos=7 right-column right-indent aligned-line
+I-Body	recursively, we obtain the configurations shown in	page=2 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower
+I-Body	the third column of Fig. 3; we can then plug these	page=2 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower
+I-Body	sub-configurations into the appropriate holes of 2	page=2 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower
+E-Body	and obtain a configuration for the entire graph.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Notice that charts can be exponentially larger	page=2 xpos=5 ypos=8 right-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Body	than the original graph, but they are still expo-	page=2 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	nentially smaller than the entire set of readings	page=2 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower
+I-Body	because common subgraphs (such as the graph	page=2 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower
+I-Body	{2, 5, 7} in the example) are represented only once,	page=2 xpos=5 ypos=9 right-column full-justified font-larger aligned-line tailchar-comma column-bottom above-blank-line above-double-space above-line-space
+Page	411	page=2 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Figure	__Figure 3__	page=3 xpos=0 ypos=-1 single-column left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 3: Extracting a configuration from a chart.	page=3 xpos=2 ypos=0 single-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	and are small in practice (see (Koller and Thater,	page=3 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-comma
+I-Body	2005b) for an analysis). Thus the chart can still	page=3 xpos=0 ypos=0 left-column right-indent aligned-line year
+E-Body	serve as an underspecified representation.	page=3 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Equivalence	page=3 xpos=0 ypos=1 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Now let’s define equivalence of readings more	page=3 xpos=0 ypos=1 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	precisely. Equivalence of semantic representations	page=3 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower
+I-Body	is traditionally defined as the relation between	page=3 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	formulas (say, of first-order logic) which have	page=3 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	the same interpretation. However, even first-order	page=3 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	equivalence is an undecidable problem, and broad-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	coverage semantic representations such as those	page=3 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	computed by the ERG usually have no well-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	defined model-theoretic semantics and therefore	page=3 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+E-Body	no concept of semantic equivalence.	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	On the other hand, we do not need to solve	page=3 xpos=0 ypos=3 left-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Body	the full semantic equivalence problem, as we only	page=3 xpos=0 ypos=3 left-column right-indent hanged-line headchar-lower
+I-Body	want to compare formulas that are readings of the	page=3 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	same sentence, i.e. different configurations of the	page=3 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	same USR. Such formulas only differ in the way	page=3 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	that the fragments are combined. We can therefore	page=3 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	approximate equivalence by using a rewrite system	page=3 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	that permutes fragments and defining equivalence	page=3 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+E-Body	of configurations as mutual rewritability as usual.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower tailchar-period above-line-space
+B-Body	By way of example, consider again the two con-	page=3 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	figurations shown in Fig. 1. We can obtain the sec-	page=3 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ond configuration from the (semantically equiva-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lent) first one by applying the following rewrite	page=3 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	rule, which rotates the fragments 1 and 2:	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	a <sub>x</sub> ( a z (P, Q), R) → a z (P, a x (Q, R)) (3)	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space itemization headchar-lower above-blank-line above-double-space above-line-space
+B-Body	Thus we take these two configurations to be	page=3 xpos=0 ypos=7 left-column left-indent right-indent hanged-line line-blank-line line-double-space line-space headchar-capital
+I-Body	equivalent with respect to the rewrite rule. (We	page=3 xpos=0 ypos=7 left-column right-indent hanged-line headchar-lower
+I-Body	could also have argued that the second configura-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion can be rewritten into the first by using the in-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	verted rule.)	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower above-line-space
+B-Body	We formalise this rewriting-based notion of	page=3 xpos=0 ypos=8 left-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Body	equivalence as follows. The definition uses the ab-	page=3 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	breviation x <sub>[1,k)</sub> for the sequence x 1 , . . . , x k−1 , and	page=3 xpos=0 ypos=8 left-column right-indent font-largest aligned-line headchar-lower
+E-Body	x <sub>(k,n]</sub> for x k+1 , . . . , x n .	page=3 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail itemization headchar-lower tailchar-period above-double-space above-line-space
+B-Definition	Definition 3. A permutation system R is a system	page=3 xpos=0 ypos=9 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Definition	of rewrite rules over the signature Σ of the follow-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Definition	ing form:	page=3 xpos=5 ypos=0 right-column right-indent column-top headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	f <sub>1</sub> (x <sub>[1,i)</sub> , f 2 (y [1,k) , z, y (k,m] ), x (i,n] ) →	page=3 xpos=5 ypos=0 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space itemization headchar-lower above-line-space
+I-Equation	f <sub>2</sub> (y <sub>[1,k)</sub> , f 1 (x [1,i) , z, x (i,n] ), y (k,m] )	page=3 xpos=6 ypos=1 right-column left-indent right-indent font-largest indented-line longer-tail line-space itemization headchar-lower above-double-space above-line-space
+B-Body	The permutability relation P(R) is the binary rela-	page=3 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tion P(R) ⊆ (Σ × N) <sup>2</sup> which contains exactly the	page=3 xpos=5 ypos=1 right-column right-indent font-largest aligned-line headchar-lower
+I-Body	tuples (( f <sub>1</sub> , i), ( f 2 , k)) and (( f 2 , k), ( f 1 , i)) for each	page=3 xpos=5 ypos=2 right-column right-indent font-largest aligned-line headchar-lower
+I-Body	such rewrite rule. Two terms are equivalent with re-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	spect to R, s ≈ <sub>R</sub> t, iff there is a sequence of rewrite	page=3 xpos=5 ypos=2 right-column right-indent font-largest aligned-line headchar-lower
+E-Body	steps and inverse rewrite steps that rewrite s into t.	page=3 xpos=5 ypos=2 right-column centered right-indent aligned-line headchar-lower tailchar-period
+B-Body	If G is a graph over Σ and R a permutation sys-	page=3 xpos=5 ypos=2 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Body	tem, then we write SC <sub>R</sub> (G) for the set of equiva-	page=3 xpos=5 ypos=3 right-column full-justified font-largest hanged-line headchar-lower tailchar-hiphen
+I-Body	lence classes Conf(G)/≈ <sub>R</sub> , where Conf(G) is the	page=3 xpos=5 ypos=3 right-column right-indent font-larger aligned-line headchar-lower
+E-Body	set of configurations of G.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The rewrite rule (3) above is an instance of this	page=3 xpos=5 ypos=3 right-column left-indent right-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	schema, as are the other three permutations of ex-	page=3 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	istential quantifiers. These rules approximate clas-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sical semantic equivalence of first-order logic, as	page=3 xpos=5 ypos=4 right-column right-indent aligned-line headchar-lower
+I-Body	they rewrite formulas into classically equivalent	page=3 xpos=5 ypos=4 right-column right-indent aligned-line headchar-lower
+I-Body	ones. Indeed, all five configurations of the graph	page=3 xpos=5 ypos=4 right-column right-indent aligned-line headchar-lower
+E-Body	in Fig. 1 are rewriting-equivalent to each other.	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the case of the semantic representations gen-	page=3 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	erated by the ERG, we don’t have access to an	page=3 xpos=5 ypos=5 right-column right-indent hanged-line headchar-lower
+I-Body	underlying interpretation. But we can capture lin-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guistic intuitions about the equivalence of readings	page=3 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	in permutation rules. For instance, proper names	page=3 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	and pronouns (which the ERG analyses as scope-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bearers, although they can be reduced to constants	page=3 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	without scope) can be permuted with anything. In-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	definites and definites permute with each other if	page=3 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	they occur in each other’s scope, but not if they	page=3 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+E-Body	occur in each other’s restriction; and so on.	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Redundancy elimination	page=3 xpos=5 ypos=7 right-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Given a permutation system, we can now try to get	page=3 xpos=5 ypos=7 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	rid of readings that are equivalent to other readings.	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	One way to formalise this is to enumerate exactly	page=3 xpos=5 ypos=8 right-column right-indent aligned-line headchar-capital
+I-Body	one representative of each equivalence class. How-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ever, after such a step we would be left with a col-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lection of semantic representations rather than an	page=3 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower
+I-Body	USR, and could not use the USR for ruling out	page=3 xpos=5 ypos=9 right-column right-indent aligned-line headchar-capital
+I-Body	further readings. Besides, a naive algorithm which	page=3 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	412	page=3 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	first enumerates all configurations would be pro-	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+E-Body	hibitively slow.	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We will instead tackle the following underspec-	page=4 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ified redundancy elimination problem: Given an	page=4 xpos=0 ypos=0 left-column right-indent hanged-line headchar-lower
+I-Body	USR G, compute an USR G 0 with Conf(G 0 ) ⊆	page=4 xpos=0 ypos=0 left-column right-indent font-largest aligned-line headchar-capital
+I-Body	Conf(G) and SC <sub>R</sub> (G) = SC R (G <sup>0</sup> ). We want	page=4 xpos=0 ypos=0 left-column right-indent font-largest aligned-line headchar-capital
+I-Body	Conf(G 0 ) to be as small as possible. Ideally, it	page=4 xpos=0 ypos=1 left-column right-indent font-largest aligned-line headchar-capital
+I-Body	would contain no two equivalent readings, but in	page=4 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower
+I-Body	practice we won’t always achieve this kind of com-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pleteness. Our redundancy elimination algorithm	page=4 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower
+I-Body	will operate on a dominance chart and successively	page=4 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower
+E-Body	delete splits and subgraphs from the chart.	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Permutable fragments	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Because the algorithm must operate on USRs	page=4 xpos=0 ypos=2 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	rather than configurations, it needs a way to pre-	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dict from the USR alone which fragments can be	page=4 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	permuted in configurations. This is not generally	page=4 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+I-Body	possible in unrestricted graphs, but for hnc graphs	page=4 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+E-Body	it is captured by the following criterion.	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Definition	Definition 4. Let R be a permutation system. Two	page=4 xpos=0 ypos=3 left-column right-indent aligned-line longer-tail line-space headchar-capital
+I-Definition	fragments F <sub>1</sub> and F 2 with root labels f 1 and f 2	page=4 xpos=0 ypos=3 left-column right-indent font-largest aligned-line headchar-lower
+I-Definition	in a hnc graph G are called R-permutable iff	page=4 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Definition	they are possible dominators of each other and	page=4 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Definition	(( f <sub>1</sub> , ch(F 1 , F 2 )), ( f 2 , ch(F 2 , F 1 ))) ∈ P(R).	page=4 xpos=0 ypos=4 left-column right-indent font-largest aligned-line shorter-tail tailchar-period above-line-space
+B-Body	For example, in Fig. 1, the fragments 1 and 2	page=4 xpos=0 ypos=4 left-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Body	are permutable, and indeed they can be permuted	page=4 xpos=0 ypos=4 left-column right-indent hanged-line headchar-lower
+I-Body	in any configuration in which one is the parent of	page=4 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	the other. This is true more generally:	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Lemma	Lemma 2 (Koller and Thater (2006)). Let G be a	page=4 xpos=0 ypos=5 left-column right-indent aligned-line longer-tail line-space year headchar-capital
+I-Lemma	hnc graph, F <sub>1</sub> and F 2 be R-permutable fragments	page=4 xpos=0 ypos=5 left-column right-indent font-largest aligned-line headchar-lower
+I-Lemma	with root labels f <sub>1</sub> and f 2 , and C 1 any config-	page=4 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Lemma	uration of G of the form C( f <sub>1</sub> (. . . , f 2 (. . .), . . .))	page=4 xpos=0 ypos=6 left-column right-indent font-largest aligned-line headchar-lower
+I-Lemma	(where C is the context of the subterm). Then	page=4 xpos=0 ypos=6 left-column right-indent aligned-line
+I-Lemma	C <sub>1</sub> can be R-rewritten into a tree C 2 of the form	page=4 xpos=0 ypos=6 left-column right-indent font-largest aligned-line headchar-capital
+I-Lemma	C( f <sub>2</sub> (. . . , f 1 (. . .), . . .)) which is also a configura-	page=4 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Lemma	tion of G.	page=4 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The proof uses the hn connectedness of G in two	page=4 xpos=0 ypos=7 left-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Body	ways: in order to ensure that C <sub>2</sub> is still a configu-	page=4 xpos=0 ypos=7 left-column full-justified font-largest hanged-line headchar-lower tailchar-hiphen
+I-Body	ration of G, and to make sure that F <sub>2</sub> is plugged	page=4 xpos=0 ypos=7 left-column right-indent font-largest aligned-line headchar-lower
+I-Body	into the correct hole of F <sub>1</sub> for a rule application	page=4 xpos=0 ypos=7 left-column right-indent font-largest aligned-line headchar-lower
+E-Body	(cf. Lemma 1). Note that C <sub>2</sub> ≈ R C 1 by definition.	page=4 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 The redundancy elimination algorithm	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Now we can use permutability of fragments to	page=4 xpos=0 ypos=8 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	define eliminable splits. Intuitively, a split of a	page=4 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	subgraph G is eliminable if each of its configura-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions is equivalent to a configuration of some other	page=4 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	split of G. Removing such a split from the chart	page=4 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower
+I-Body	will rule out some configurations; but it does not	page=4 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower
+E-Body	change the set of equivalence classes.	page=4 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Definition	Definition 5. Let R be a permutation system. A	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-capital
+I-Definition	split S = (F, . . . , h <sub>i</sub> 7→ G i , . . .) of a graph G is called	page=4 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Definition	eliminable in a chart Ch if some G <sub>i</sub> contains a frag-	page=4 xpos=5 ypos=0 right-column right-over font-larger aligned-line headchar-lower tailchar-hiphen
+I-Definition	ment F 0 such that (a) Ch contains a split S 0 of G	page=4 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Definition	with root fragment F 0 , and (b) F 0 is R-permutable	page=4 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Definition	with F and all possible dominators of F 0 in G <sub>i</sub> .	page=4 xpos=5 ypos=0 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In Fig. 1, each of the three splits is eliminable.	page=4 xpos=5 ypos=1 right-column left-indent right-over indented-line longer-tail line-space headchar-capital tailchar-period
+I-Body	For example, the split with root fragment 1 is elim-	page=4 xpos=5 ypos=1 right-column right-over hanged-line headchar-capital tailchar-hiphen
+I-Body	inable because the fragment 3 permutes both with	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	2 (which is the only possible dominator of 3 in the	page=4 xpos=5 ypos=1 right-column full-justified aligned-line numbered-heading1
+E-Body	same wcc) and with 1 itself.	page=4 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Proposition	Proposition 3. Let Ch be a dominance chart, and	page=4 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Proposition	let S be an eliminable split of a hnc subgraph. Then	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Proposition	SC(Ch) = SC(Ch − S).	page=4 xpos=5 ypos=2 right-column right-indent font-larger aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Body	Proof. Let C be an arbitrary configuration of S =	page=4 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	(F, h <sub>1</sub> 7→ G 1 , . . . , h n 7→ G n ), and let F <sup>0</sup> ∈ G i be the	page=4 xpos=5 ypos=2 right-column full-justified font-largest aligned-line
+E-Body	root fragment of the assumed second split S 0 .	page=4 xpos=5 ypos=3 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Let F <sub>1</sub> , . . . , F n be those fragments in C that are	page=4 xpos=5 ypos=3 right-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	properly dominated by F and properly dominate	page=4 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	F 0 . All of these fragments must be possible domi-	page=4 xpos=5 ypos=3 right-column right-over font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	nators of F 0 , and all of them must be in G <sub>i</sub> as well,	page=4 xpos=5 ypos=3 right-column right-over font-largest aligned-line headchar-lower tailchar-comma
+I-Body	so F 0 is permutable with each of them. F 0 must	page=4 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	also be permutable with F. This means that we can	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	apply Lemma 2 repeatedly to move F 0 to the root	page=4 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	of the configuration, obtaining a configuration of	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	S 0 which is equivalent to C.	page=4 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Body	Notice that we didn’t require that Ch must be	page=4 xpos=5 ypos=5 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	the complete chart of a dominance graph. This	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	means we can remove eliminable splits from a	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	chart repeatedly, i.e. we can apply the following	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	redundancy elimination algorithm:	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Algorithm	R EDUNDANCY -E LIMINATION (Ch, R)	page=4 xpos=5 ypos=6 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Algorithm	1 for each split S in Ch	page=4 xpos=5 ypos=6 right-column left-indent right-indent shorter-tail numbered-heading1
+I-Algorithm	2 do if S is eliminable with respect to R	page=4 xpos=5 ypos=6 right-column left-indent right-indent aligned-line longer-tail numbered-heading1
+E-Algorithm	3 then remove S from Ch	page=4 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail numbered-heading1 above-blank-line above-double-space above-line-space
+B-Body	Prop. 3 shows that the algorithm is a correct	page=4 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	algorithm for the underspecified redundancy	page=4 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	elimination problem. The particular order in	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	which eliminable splits are removed doesn’t	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	affect the correctness of the algorithm, but it may	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	change the number of remaining configurations.	page=4 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower tailchar-period
+I-Body	The algorithm generalises an earlier elimination	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	algorithm (Koller and Thater, 2006) in that the	page=4 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	earlier algorithm required the existence of a single	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	split which could be used to establish eliminability	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	of all other splits of the same subgraph.	page=4 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We can further optimise this algorithm by keep-	page=4 xpos=5 ypos=9 right-column left-indent right-over indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ing track of how often each subgraph is referenced	page=4 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	413	page=4 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Figure	__Figure 4__	page=5 xpos=0 ypos=0 left-column left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 4: A graph for which the algorithm is not	page=5 xpos=0 ypos=1 left-column right-indent hanged-line longer-tail line-double-space line-space string-figure headchar-capital
+E-Caption	complete.	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	by the splits in the chart. Once a reference count	page=5 xpos=0 ypos=1 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	drops to zero, we can remove the entry for this	page=5 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	subgraph and all of its splits from the chart. This	page=5 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	doesn’t change the set of configurations of the	page=5 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	chart, but may further reduce the chart size. The	page=5 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	overall runtime for the algorithm is O(n <sup>2</sup> S), where	page=5 xpos=0 ypos=2 left-column right-indent font-largest aligned-line headchar-lower
+I-Body	S is the number of splits in Ch and n is the num-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ber of nodes in the graph. This is asymptotically	page=5 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+I-Body	not much slower than the runtime O((n + m)S) it	page=5 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+I-Body	takes to compute the chart in the first place (where	page=5 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+E-Body	m is the number of edges in the graph).	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.3 Examples and discussion	page=5 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Let’s look at a run of the algorithm on the chart	page=5 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	in Fig. 2. The algorithm can first delete the elim-	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	inable split with root 1 for the entire graph G. After	page=5 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	this deletion, the splits for G with root fragments	page=5 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	2 and 3 are still eliminable; so we can e.g. delete	page=5 xpos=0 ypos=5 left-column right-indent aligned-line numbered-heading1
+I-Body	the split for 3. At this point, only one split is left	page=5 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	for G. The last split for a subgraph can never be	page=5 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	eliminable, so we are finished with the splits for	page=5 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	G. This reduces the reference count of some sub-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	graphs (e.g. {2, 3, 5, 6, 7}) to 0, so we can remove	page=5 xpos=0 ypos=5 left-column right-indent font-larger aligned-line headchar-lower
+I-Body	these subgraphs too. The output of the algorithm is	page=5 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	the chart shown below, which represents a single	page=5 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+E-Body	configuration (the one shown in Fig. 3).	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	{1, 2, 3, 4, 5, 6, 7} :h2, h <sub>2</sub> 7→ {1, 4}, h 4 7→ {3, 6, 7}i	page=5 xpos=0 ypos=6 left-column left-indent font-largest indented-line longer-tail line-double-space line-space
+I-Equation	{1, 4} :h1, h <sub>1</sub> 7→ {4}i	page=5 xpos=1 ypos=7 left-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	{3, 6, 7} :h3, h <sub>5</sub> 7→ {6}, h 6 7→ {7}i	page=5 xpos=0 ypos=7 left-column left-indent right-indent font-largest hanged-line longer-tail above-double-space above-line-space
+B-Body	In this case, the algorithm achieves complete re-	page=5 xpos=0 ypos=7 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	duction, in the sense that the final chart has no two	page=5 xpos=0 ypos=7 left-column right-indent hanged-line headchar-lower
+I-Body	equivalent configurations. It remains complete for	page=5 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower
+I-Body	all variations of the graph in Fig. 1 in which some	page=5 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	or all existential quantifiers are replaces by univer-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sal quantifiers. This is an improvement over our	page=5 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	earlier algorithm (Koller and Thater, 2006), which	page=5 xpos=0 ypos=8 left-column right-indent aligned-line year headchar-lower
+I-Body	computed a chart with four configurations for the	page=5 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	graph in which 1 and 2 are existential and 3 is uni-	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	versal, as opposed to the three equivalence classes	page=5 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower
+E-Body	of this graph’s configurations.	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	However, the present algorithm still doesn’t	page=5 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	achieve complete reduction for all USRs. One ex-	page=5 xpos=5 ypos=0 right-column right-over hanged-line headchar-lower tailchar-hiphen
+I-Body	ample is shown in Fig. 4. This graph has six config-	page=5 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	urations in four equivalence classes, but no split of	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	the whole graph is eliminable. The algorithm will	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	delete a split for the subgraph {1, 2, 4, 5, 7}, but the	page=5 xpos=5 ypos=0 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	final chart will still have five, rather than four, con-	page=5 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	figurations. A complete algorithm would have to	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	recognise that {1, 3, 4, 6, 7} and {2, 3, 5, 6, 7} have	page=5 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	splits (for 1 and 2, respectively) that lead to equiv-	page=5 xpos=5 ypos=1 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	alent configurations and delete one of them. But	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	it is far from obvious how such a non-local deci-	page=5 xpos=5 ypos=2 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	sion could be made efficiently, and we leave this	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	for future work.	page=5 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Evaluation	page=5 xpos=5 ypos=2 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this final section, we evaluate the the effective-	page=5 xpos=5 ypos=3 right-column right-over aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ness and efficiency of the elimination algorithm:	page=5 xpos=5 ypos=3 right-column centered right-over aligned-line headchar-lower tailchar-colon
+I-Body	We run it on USRs from a treebank and measure	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	how many readings are redundant, to what extent	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the algorithm eliminates this redundancy, and how	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	much time it takes to do this.	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Resources. The experiments are based on the	page=5 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	Rondane corpus, a Redwoods (Oepen et al., 2002)	page=5 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-capital
+I-Body	style corpus which is distributed with the English	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	Resource Grammar (Flickinger, 2002). The cor-	page=5 xpos=5 ypos=4 right-column right-over aligned-line year headchar-capital tailchar-hiphen
+I-Body	pus contains analyses for 1076 sentences from the	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	tourism domain, which are associated with USRs	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	based upon Minimal Recursion Semantics (MRS).	page=5 xpos=5 ypos=5 right-column right-over aligned-line headchar-lower tailchar-period
+I-Body	The MRS representations are translated into dom-	page=5 xpos=5 ypos=5 right-column right-over aligned-line headchar-capital tailchar-hiphen
+I-Body	inance graphs using the open-source utool tool	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	(Koller and Thater, 2005a), which is restricted to	page=5 xpos=5 ypos=5 right-column full-justified aligned-line year
+I-Body	MRS representations whose translations are hnc.	page=5 xpos=5 ypos=6 right-column right-over aligned-line headchar-capital tailchar-period
+I-Body	By restricting ourselves to such MRSs, we end up	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	with a data set of 999 dominance graphs. The aver-	page=5 xpos=5 ypos=6 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	age number of scope bearing operators in the data	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	set is 6.5, and the median number of readings is 56.	page=5 xpos=5 ypos=6 right-column right-over aligned-line headchar-lower tailchar-period
+B-Body	We then defined a (rather conservative) rewrite	page=5 xpos=5 ypos=7 right-column left-indent indented-line headchar-capital
+I-Body	system R <sub>ERG</sub> for capturing the permutability rela-	page=5 xpos=5 ypos=7 right-column right-over font-larger hanged-line headchar-lower tailchar-hiphen
+I-Body	tion of the quantifiers in the ERG. This amounted	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	to 34 rule schemata, which are automatically ex-	page=5 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower tailchar-hiphen
+E-Body	panded to 494 rewrite rules.	page=5 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Experiment: Reduction. We first analysed the	page=5 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	extent to which our algorithm eliminated the re-	page=5 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	dundancy of the USRs in the corpus. We com-	page=5 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	puted dominance charts for all USRs, ran the al-	page=5 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	gorithm on them, and counted the number of con-	page=5 xpos=5 ypos=8 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	figurations of the reduced charts. We then com-	page=5 xpos=5 ypos=9 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	pared these numbers against a baseline and an up-	page=5 xpos=5 ypos=9 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	per bound. The upper bound is the true number of	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	414	page=5 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Figure	__Figure 5__	page=6 xpos=0 ypos=-3 left-column left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 5: Mean reduction factor on Rondane.	page=6 xpos=0 ypos=0 left-column left-indent right-indent line-double-space line-space string-figure headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+I-Body	equivalence classes with respect to R <sub>ERG</sub> ; for effi-	page=6 xpos=0 ypos=0 left-column full-justified font-larger hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ciency reasons we could only compute this num-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ber for USRs with up to 500.000 configurations	page=6 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower
+I-Body	(95 % of the data set). The baseline is given by	page=6 xpos=0 ypos=1 left-column right-indent aligned-line
+I-Body	the number of readings that remain if we replace	page=6 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower
+I-Body	proper names and pronouns by constants and vari-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ables, respectively. This simple heuristic is easy to	page=6 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower
+I-Body	compute, and still achieves nontrivial redundancy	page=6 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	elimination because proper names and pronouns	page=6 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Body	are quite frequent (28% of the noun phrase occur-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rences in the data set). It also shows the degree of	page=6 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+E-Body	non-trivial scope ambiguity in the corpus.	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For each measurement, we sorted the USRs ac-	page=6 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	cording to the number N of configurations, and	page=6 xpos=0 ypos=3 left-column right-indent hanged-line headchar-lower
+I-Body	grouped USRs according to the natural logarithm	page=6 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+E-Body	of N (rounded down) to obtain a logarithmic scale.	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	First, we measured the mean reduction factor	page=6 xpos=0 ypos=4 left-column left-indent right-indent indented-line headchar-capital
+I-Body	for each log(N) class, i.e. the ratio of the num-	page=6 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ber of all configurations to the number of remain-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing configurations after redundancy elimination	page=6 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	(Fig. 5). The upper-bound line in the figure shows	page=6 xpos=0 ypos=5 left-column right-indent aligned-line
+I-Body	that there is a great deal of redundancy in the USRs	page=6 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	in the data set. The average performance of our	page=6 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	algorithm is close to the upper bound and much	page=6 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower above-double-space above-line-space
+Figure	__Figure 6__	page=6 xpos=0 ypos=6 left-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 6: Percentage of USRs for which the algo-	page=6 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space string-figure headchar-capital tailchar-hiphen
+E-Caption	rithm and the baseline achieve complete reduction.	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period column-bottom
+Figure	__Figure 7__	page=6 xpos=5 ypos=-3 right-column left-indent right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 7: Mean runtimes.	page=6 xpos=6 ypos=0 right-column left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+I-Body	better than the baseline. For USRs with fewer than	page=6 xpos=5 ypos=0 right-column right-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	e <sup>8</sup> = 2980 configurations (83 % of the data set), the	page=6 xpos=5 ypos=0 right-column right-indent font-largest aligned-line itemization headchar-lower
+I-Body	mean reduction factor of our algorithm is above	page=6 xpos=5 ypos=1 right-column right-indent aligned-line headchar-lower
+I-Body	86 % of the upper bound. The median number	page=6 xpos=5 ypos=1 right-column right-indent aligned-line numbered-heading1
+I-Body	of configurations for the USRs in the whole data	page=6 xpos=5 ypos=1 right-column right-indent aligned-line headchar-lower
+I-Body	set is 56, and the median number of equivalence	page=6 xpos=5 ypos=1 right-column right-indent aligned-line headchar-lower
+I-Body	classes is 3; again, the median number of config-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	urations of the reduced charts is very close to the	page=6 xpos=5 ypos=2 right-column right-indent aligned-line headchar-lower
+I-Body	upper bound, at 4 (baseline: 8). The highest reduc-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion factor for an individual USR is 666.240.	page=6 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We also measured the ratio of USRs for which	page=6 xpos=5 ypos=2 right-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	the algorithm achieves complete reduction (Fig. 6):	page=6 xpos=5 ypos=3 right-column centered right-indent hanged-line headchar-lower tailchar-colon
+I-Body	The algorithm is complete for 56 % of the USRs	page=6 xpos=5 ypos=3 right-column right-indent aligned-line headchar-capital
+I-Body	in the data set. It is complete for 78 % of the USRs	page=6 xpos=5 ypos=3 right-column right-indent aligned-line headchar-lower
+I-Body	with fewer than e <sup>5</sup> = 148 configurations (64 % of	page=6 xpos=5 ypos=3 right-column right-indent font-largest aligned-line headchar-lower
+I-Body	the data set), and still complete for 66 % of the	page=6 xpos=5 ypos=4 right-column right-indent aligned-line headchar-lower
+E-Body	USRs with fewer than e <sup>8</sup> configurations.	page=6 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Body	Experiment: Efficiency. Finally, we measured	page=6 xpos=5 ypos=4 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the runtime of the elimination algorithm. The run-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	time of the elimination algorithm is generally com-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	parable to the runtime for computing the chart in	page=6 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	the first place. However, in our experiments we	page=6 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+I-Body	used an optimised version of the elimination algo-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rithm, which computes the reduced chart directly	page=6 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	from a dominance graph by checking each split	page=6 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	for eliminability before it is added to the chart.	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We compare the performance of this algorithm to	page=6 xpos=5 ypos=6 right-column right-indent aligned-line headchar-capital
+I-Body	the baseline of computing the complete chart. For	page=6 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower
+I-Body	comparison, we have also added the time it takes	page=6 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower
+I-Body	to enumerate all configurations of the graph, as a	page=6 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower
+I-Body	lower bound for any algorithm that computes the	page=6 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower
+I-Body	equivalence classes based on the full set of config-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	urations. Fig. 7 shows the mean runtimes for each	page=6 xpos=5 ypos=8 right-column right-indent aligned-line headchar-lower
+I-Body	log(N) class, on the USRs with less than one mil-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	lion configurations (958 USRs).	page=6 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As the figure shows, the asymptotic runtimes	page=6 xpos=5 ypos=8 right-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Body	for computing the complete chart and the reduced	page=6 xpos=5 ypos=9 right-column right-indent hanged-line headchar-lower
+I-Body	chart are about the same, whereas the time for	page=6 xpos=5 ypos=9 right-column right-indent aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	415	page=6 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	enumerating all configurations grows much faster.	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-period
+I-Body	(Note that the runtime is reported on a logarithmic	page=7 xpos=0 ypos=0 left-column right-indent aligned-line
+I-Body	scale.) For USRs with many configurations, com-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	puting the reduced chart actually takes less time	page=7 xpos=0 ypos=0 left-column right-indent aligned-line headchar-lower
+I-Body	on average than computing the complete chart	page=7 xpos=0 ypos=0 left-column right-indent aligned-line headchar-lower
+I-Body	because the chart-filling algorithm is called on	page=7 xpos=0 ypos=0 left-column right-indent aligned-line headchar-lower
+I-Body	fewer subgraphs. While the reduced-chart algo-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rithm seems to be slower than the complete-chart	page=7 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower
+I-Body	one for USRs with less than e <sup>5</sup> configurations,	page=7 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	these runtimes remain below 20 milliseconds on	page=7 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower
+I-Body	average, and the measurements are thus quite un-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	reliable. In summary, we can say that there is no	page=7 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+E-Body	overhead for redundancy elimination in practice.	page=7 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Conclusion	page=7 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We presented an algorithm for redundancy elimina-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tion on underspecified chart representations. This	page=7 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+I-Body	algorithm successively deletes eliminable splits	page=7 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+I-Body	from the chart, which reduces the set of described	page=7 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+I-Body	readings while making sure that at least one rep-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	resentative of each original equivalence class re-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mains. Equivalence is defined with respect to a cer-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tain class of rewriting systems; this definition ap-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proximates semantic equivalence of the described	page=7 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	formulas and fits well with the underspecification	page=7 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+I-Body	setting. The algorithm runs in polynomial time in	page=7 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower
+E-Body	the size of the chart.	page=7 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We then evaluated the algorithm on the Ron-	page=7 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	dane corpus and showed that it is useful in practice:	page=7 xpos=0 ypos=5 left-column centered right-indent hanged-line headchar-lower tailchar-colon
+I-Body	the median number of readings drops from 56 to	page=7 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	4, and the maximum individual reduction factor is	page=7 xpos=0 ypos=5 left-column right-indent aligned-line
+I-Body	666.240. The algorithm achieves complete reduc-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line tailchar-hiphen
+I-Body	tion for 56% of all sentences. It does this in neg-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ligible runtime; even the most difficult sentences	page=7 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	in the corpus are reduced in a matter of seconds,	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	whereas the enumeration of all readings would	page=7 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	take about a year. This is the first corpus evalua-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion of a redundancy elimination in the literature.	page=7 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The algorithm improves upon previous work	page=7 xpos=0 ypos=7 left-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Body	(Koller and Thater, 2006) in that it eliminates more	page=7 xpos=0 ypos=7 left-column right-indent hanged-line year
+I-Body	splits from the chart. It is an improvement over ear-	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lier algorithms for enumerating irredundant read-	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ings (Vestre, 1991; Chaves, 2003) in that it main-	page=7 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tains underspecifiedness; note that these earlier pa-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pers never made any claims with respect to, or eval-	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	uated, completeness.	page=7 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	There are a number of directions in which the	page=7 xpos=0 ypos=8 left-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Body	present algorithm could be improved. We are cur-	page=7 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	rently pursuing some ideas on how to improve the	page=7 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower
+I-Body	completeness of the algorithm further. It would	page=7 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower
+I-Body	also be worthwhile to explore heuristics for the or-	page=7 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	der in which splits of the same subgraph are elim-	page=7 xpos=5 ypos=0 right-column right-over column-top headchar-lower tailchar-hiphen
+I-Body	inated. The present work could be extended to al-	page=7 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower tailchar-hiphen
+I-Body	low equivalence with respect to arbitrary rewrite	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	systems. Most generally, we hope that the methods	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	developed here will be useful for defining other	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	elimination algorithms, which take e.g. full world	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	knowledge into account.	page=7 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=5 ypos=1 right-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-line-space
+B-Reference	E. Althaus, D. Duchier, A. Koller, K. Mehlhorn, J. Niehren,	page=7 xpos=5 ypos=1 right-column full-justified font-smallest aligned-line longer-tail line-space headchar-capital tailchar-comma
+I-Reference	and S. Thiel. 2003. An efficient graph algorithm for dom-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line year headchar-lower tailchar-hiphen
+I-Reference	inance constraints. Journal of Algorithms, 48:194–219.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	P. Blackburn and J. Bos. 2005. Representation and Inference	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	for Natural Language. A First Course in Computational	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Semantics. CSLI Publications.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	R. P. Chaves. 2003. Non-redundant scope disambiguation	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	in underspecified semantics. In Proc. 8th ESSLLI Student	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Session.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	A. Copestake, D. Flickinger, C. Pollard, and I. Sag. 2004.	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Minimal recursion semantics: An introduction. Journal of	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Language and Computation. To appear.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	M. Egg, A. Koller, and J. Niehren. 2001. The Constraint	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Language for Lambda Structures. Logic, Language, and	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Information, 10.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	D. Flickinger. 2002. On building a more efficient grammar	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	by exploiting types. In J. Tsujii S. Oepen, D. Flickinger	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	and H. Uszkoreit, editors, Collaborative Language Engi-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	neering. CSLI Publications, Stanford.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	R. Fuchss, A. Koller, J. Niehren, and S. Thater. 2004. Mini-	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	mal recursion semantics as dominance constraints: Trans-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	lation, evaluation, and analysis. In Proc. of the 42nd ACL.	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	A. Koller and S. Thater. 2005a. Efficient solving and ex-	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ploration of scope ambiguities. In ACL-05 Demonstration	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Notes, Ann Arbor.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	A. Koller and S. Thater. 2005b. The evolution of dominance	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	constraint solvers. In Proceedings of the ACL-05 Work-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	shop on Software, Ann Arbor.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	A. Koller and S. Thater. 2006. Towards a redundancy elimi-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	nation algorithm for underspecified descriptions. In Proc.	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	5th Intl. Workshop on Inference in Computational Seman-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line tailchar-hiphen
+I-Reference	tics (ICoS-5).	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	A. Koller, J. Niehren, and S. Thater. 2003. Bridging the gap	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	between underspecification formalisms: Hole semantics as	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	dominance constraints. In Proc. 10th EACL.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	J. Niehren and S. Thater. 2003. Bridging the gap between	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	underspecification formalisms: Minimal recursion seman-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tics as dominance constraints. In Proc. of the 41st ACL.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	S. Oepen, K. Toutanova, S. Shieber, C. Manning,	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	D. Flickinger, and T. Brants. 2002. The LinGO Red-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	woods treebank: Motivation and preliminary applications.	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	In Proceedings of COLING’02.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	K. van Deemter and S. Peters. 1996. Semantic Ambiguity	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	and Underspecification. CSLI, Stanford.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	E. Vestre. 1991. An algorithm for generating non-redundant	page=7 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	quantifier scopings. In Proc. of the Fifth EACL, Berlin.	page=7 xpos=5 ypos=9 right-column centered left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	416	page=7 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only

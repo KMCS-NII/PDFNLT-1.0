@@ -1,0 +1,764 @@
+Title	A Localized Prediction Model for Statistical Machine Translation	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Christoph Tillmann and Tong Zhang	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	IBM T.J. Watson Research Center	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+Address	Yorktown Heights, NY 10598 USA	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-largest hanged-line headchar-capital
+Email	ctill,tzhang  @us.ibm.com	page=0 xpos=3 ypos=1 single-column left-indent right-indent font-largest longer-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-blank-line above-double-space above-line-space
+B-Abstract	In this paper, we present a novel training	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Abstract	method for a localized phrase-based predic-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion model for statistical machine translation	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	(SMT). The model predicts blocks with orien-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line tailchar-hiphen
+I-Abstract	tation to handle local phrase re-ordering. We	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	use a maximum likelihood criterion to train a	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	log-linear block bigram model which uses real-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	valued features (e.g. a language model score)	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	as well as binary features based on the block	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	identities themselves, e.g. block bigram fea-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tures. Our training algorithm can easily handle	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	millions of features. The best system obtains	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	a   % improvement over the baseline on a	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-largest aligned-line itemization headchar-lower
+I-Abstract	standard Arabic-English translation task.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-largest hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper, we present a block-based model for statis-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tical machine translation. A block is a pair of phrases	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	which are translations of each other. For example, Fig. 1	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	shows an Arabic-English translation example that uses 	page=0 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	blocks. During decoding, we view translation as a block	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail headchar-lower
+I-Body	segmentation process, where the input sentence is seg-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mented from left to right and the target sentence is gener-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ated from bottom to top, one block at a time. A monotone	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	block sequence is generated except for the possibility to	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	swap a pair of neighbor blocks. We use an orientation	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	model similar to the lexicalized block re-ordering model	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	in (Tillmann, 2004; Och et al., 2004): to generate a block    	page=0 xpos=0 ypos=7 left-column full-justified font-largest aligned-line year headchar-lower
+I-Body	with orientation relative to its predecessor block      .	page=0 xpos=0 ypos=8 left-column left-indent font-largest indented-line headchar-lower tailchar-period
+I-Body	During decoding, we   compute  the probability   	page=0 xpos=0 ypos=8 left-column right-indent font-largest hanged-line shorter-tail headchar-capital
+I-Body	of a block sequence with orientation as a product	page=0 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail headchar-lower
+I-Body	of block bigram probabilities:	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation		page=0 xpos=2 ypos=8 left-column left-indent right-indent font-largest indented-line shorter-tail line-space
+I-Equation	                 (1)	page=0 xpos=2 ypos=8 left-column left-indent font-largest hanged-line longer-tail
+I-Equation	      	page=0 xpos=0 ypos=8 left-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	 	page=0 xpos=0 ypos=8 left-column left-indent right-indent font-largest hanged-line shorter-tail above-blank-line above-double-space above-line-space
+Page	557	page=0 xpos=4 ypos=9 left-column left-indent right-over font-larger indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Unknown	GF	page=0 xpos=9 ypos=2 right-column left-indent right-indent font-largest column-top headchar-capital
+Figure	__Figure 1__	page=0 xpos=5 ypos=2 right-column left-indent right-indent box hanged-line longer-tail figure-area above-double-space above-line-space
+B-Caption	Figure 1: An Arabic-English block translation example,	page=0 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space string-figure headchar-capital tailchar-comma
+I-Caption	where the Arabic words are romanized. IHKJ The  M L HK following N  M O H orientation sequence is generated:	page=0 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower tailchar-colon
+I-Caption	J  HKQ	page=0 xpos=5 ypos=6 right-column right-indent font-largest aligned-line shorter-tail headchar-capital
+E-Caption	.	page=0 xpos=6 ypos=6 right-column left-indent right-indent indented-line longer-tail tailchar-period above-double-space above-line-space
+I-Body	where  is a block and SRUT N  eft   Q  ight V J  eutral 6W	page=0 xpos=5 ypos=6 right-column right-indent font-largest hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	 	page=0 xpos=5 ypos=6 right-column left-indent right-indent font-largest indented-line shorter-tail above-double-space above-line-space
+I-Body	is a three-valued   orientation  component linked to the	page=0 xpos=5 ypos=7 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	block  (the orientation  of the predecessor block	page=0 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	is currently  X  ignored.).     <sub>is</sub> generated Here, the under block the sequence restriction   with that ori-	page=0 xpos=5 ypos=7 right-column full-justified box aligned-line headchar-lower tailchar-hiphen
+I-Body	entation 	page=0 xpos=5 ypos=7 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	the concatenated source phrases of the blocks  yield the	page=0 xpos=5 ypos=7 right-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	input sentence. In modeling a block sequence, we em-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	phasize adjacent block neighbors that have Right or Left	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	orientation. Blocks with neutral orientation are supposed	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	to be less strongly ’linked’ to their predecessor block and	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	are handled separately. During HYQ  <sub>,</sub> since decoding, the block most transla- blocks have right orientation	page=0 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	tions are mostly monotone.	page=0 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of the 43rd Annual Meeting of the ACL, pages 557–564,	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Footer	Ann Arbor, June 2005.  2005 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smaller hanged-line longer-tail year headchar-capital page-bottom
+B-Body	The focus of this paper is to investigate issues in dis-	page=1 xpos=0 ypos=0 left-column left-indent page-top headchar-capital tailchar-hiphen
+I-Body	criminative training of decoder parameters. Instead of di-	page=1 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	rectly minimizing error as in earlier work (Och, 2003),	page=1 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	we decompose the decoding process into a sequence of	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	local decision steps based on Eq. 1, and then train each	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	local decision rule using convex optimization techniques.	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The advantage of this approach is that it can easily han-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	dle a large amount of features. Moreover, under this	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	view, SMT becomes quite similar to sequential natural	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	language annotation problems such as part-of-speech tag-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ging, phrase chunking, and shallow parsing.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The paper is structured as follows: Section 2 introduces	page=1 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	the concept of block orientation bigrams. Section 3	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	describes details of the localized log-linear prediction	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	model used in this paper. Section 4 describes the on-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	line training procedure and compares it to the well known	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	perceptron training algorithm (Collins, 2002). Section 5	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower
+I-Body	shows experimental results on an Arabic-English transla-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion task. Section 6 presents a final discussion.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Block Orientation Bigrams	page=1 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	This section describes a phrase-based model for SMT	page=1 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	similar to the models presented in (Koehn et al., 2003;	page=1 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Och et al., 1999; Tillmann and Xia, 2003). In our pa-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	per, phrase pairs are named blocks and our model is de-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	signed to generate block sequences. We also model the	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	position of blocks relative to each other: this is called	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	orientation. To define block sequences with orienta-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, we define the notion of block orientation bigrams.	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Z Starting H   point H V[ for V\] collecting H V^_ `baXc these d . Here, bigrams   is is a a block block \ con- set	page=1 xpos=0 ypos=5 left-column full-justified box aligned-line headchar-capital
+I-Body	sisting of a source phrase [ and a target phrase . e is	page=1 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the source phrase length and f is the target phrase length.	page=1 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	Single source and target H words di+i+i are e denoted and j H by  Z di+ikiM ^g `l and f Z .	page=1 xpos=0 ypos=5 left-column full-justified box aligned-line headchar-capital tailchar-period
+I-Body	a  <sub>respectively,</sub> where h 	page=1 xpos=0 ypos=5 left-column right-indent font-largest aligned-line shorter-tail itemization headchar-lower
+I-Body	We will also use a special single-word block H set H	page=1 xpos=0 ypos=6 left-column right-indent font-largest aligned-line longer-tail headchar-capital
+I-Body	which contains only blocks for which e f  . For	page=1 xpos=0 ypos=6 left-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	the experiments in this paper, the block set is the one used	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	in (Al-Onaizan et al., 2004). Although this is not inves-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	tigated in the present paper, different blocksets may be	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	used for computing the block statistics introduced in this	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	paper, which may effect Z translation results.	page=1 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For the block set and a training sentence pair, we	page=1 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	carry out a two-dimensional pattern matching algorithm	page=1 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	to find adjacent matching blocks along with their position	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	in the coordinate system defined by source and target po-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sitions (see Fig. 2). Here, we do not insist on a consistent	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	block coverage as one would do during   decoding.   Among	page=1 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the matching blocks, \ two \`  blocks and are adjacent if	page=1 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the target   phrases and   as well as the source phrases    	page=1 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	[ and   [ are adjacent.   is predecessor   of block if	page=1 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail
+I-Body	successor block is said to have right orientation and are adjacent   and occurs below . A right adjacent HmQ <sub>.</sub>	page=1 xpos=0 ypos=9 left-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	A left adjacent successor block is said to have left orienta-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	558	page=1 xpos=4 ypos=9 left-column left-indent right-over font-larger indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 2__	page=1 xpos=5 ypos=-1 right-column centered left-indent right-indent box column-top figure-area above-line-space
+I-Caption	 6   	page=1 xpos=6 ypos=2 right-column left-indent right-indent font-largest indented-line shorter-tail line-space
+B-Caption	Figure 2: Block   is the predecessor of block HN . The	page=1 xpos=5 ypos=2 right-column full-justified font-largest hanged-line longer-tail string-figure headchar-capital
+I-Caption	successor HQ <sub>orientation.</sub> block occurs ’left’ with and ’right’ either are left defined or relative right	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Caption	to the  axis ; ’below’ is defined relative to the  axis. For	page=1 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+E-Caption	some discussion on global re-ordering see Section 6.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+I-Body	HN  	page=1 xpos=5 ypos=3 right-column left-indent right-indent font-largest indented-line shorter-tail line-double-space line-space headchar-capital
+I-Body	tion	page=1 xpos=5 ypos=3 right-column right-indent hanged-line shorter-tail headchar-lower
+I-Body	decessor, such a block has neutral orientation ( . There are matching blocks that have no HY pre- J <sub>).</sub>	page=1 xpos=5 ypos=3 right-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	After matching blocks for a training sentence pair, we	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	look for adjacent block pairs to H collect      k k block <sub>.</sub> Our bigram model ori- to entation events  of the type  	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	be presented in Section    <sub>given</sub> 3 is used its predecessor to predict a block future history block	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	cur:  orientation   <sub>.</sub> In Fig. i J k  1, pair  the  <sub>,</sub>     following   N +  L  ,  i block J +  O orientation  ,    O  Q +  P bigrams  . Collect- oc-	page=1 xpos=5 ypos=4 right-column full-justified box aligned-line headchar-lower tailchar-hiphen
+I-Body	ing orientation bigrams on all parallel  sentence pairs, we	page=1 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	obtain an orientation bigram list  :	page=1 xpos=5 ypos=5 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	   H    |    H X      +    .  u    <sub>(2)</sub>          	page=1 xpos=5 ypos=5 right-column left-indent font-largest indented-line longer-tail line-space
+I-Equation		page=1 xpos=5 ypos=5 right-column left-indent right-indent font-largest shorter-tail
+B-Body	Here,  is the number of orientation J bigrams in the ^ -th	page=1 xpos=5 ypos=5 right-column full-justified font-largest hanged-line longer-tail headchar-capital
+I-Body	sentence pair. The total number JH of orientation bigrams	page=1 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	ing data consisting of [ JH       is about HM"   " million <sub>sentence</sub> for pairs. our train- The	page=1 xpos=5 ypos=6 right-column full-justified box aligned-line headchar-lower
+I-Body	orientation bigram list is used for the parameter training	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	presented in J Section 3. Ignoring the bigrams with neutral	page=1 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	 orientation   million orientation reduces the bigrams. list defined The Neutral in Eq. orientation 2 to about	page=1 xpos=5 ypos=6 right-column full-justified font-largest aligned-line
+I-Body	is handled separately as described in Section 5. Using the	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	reduced orientation J  d bigram  list, we collect unigram ori-	page=1 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	entation counts  : how N  Q often W J` a block  k  occurs     i J`¡ with   d a	page=1 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	given orientation  R T   . 	page=1 xpos=5 ypos=7 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	typically holds for blocks  involved  d in block swapping	page=1 xpos=5 ypos=8 right-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	and the orientation model   is defined as:	page=1 xpos=5 ypos=8 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	  k H J`  d(¢ J   d J¡   kG	page=1 xpos=6 ypos=8 right-column left-indent right-indent box indented-line shorter-tail
+I-Equation	 	page=1 xpos=6 ypos=8 right-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation		page=1 xpos=7 ypos=8 right-column left-indent right-indent font-largest indented-line longer-tail above-double-space above-line-space
+B-Body	In order to train a block bigram orientation model as  de-  V	page=1 xpos=5 ypos=9 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	scribed in Section   3.2, we define a successor set £ 	page=1 xpos=5 ypos=9 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	for a block in the ^ -th training sentence pair:	page=1 xpos=5 ypos=9 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon page-bottom
+B-Equation	      V H T <sub>number</sub>  ¤ of Q triples + k R of     type W   ¤ N + k or	page=2 xpos=0 ypos=0 left-column left-indent right-indent box page-top
+I-Equation	£ 	page=2 xpos=0 ypos=0 left-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	type 	page=2 xpos=1 ypos=0 left-column left-indent right-indent font-largest indented-line longer-tail headchar-lower
+B-Body	The successor  set £"  V is defined  6 V for  each event in the	page=2 xpos=0 ypos=0 left-column full-justified font-largest hanged-line longer-tail headchar-capital
+I-Body	list  . The average size of £" is r successor blocks.	page=2 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	If we were to compute a Viterbi block alignment for a	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	training sentence pair, each block in this block alignment	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	would have at most  successor: Blocks may have sev-	page=2 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	eral successors, because we do not inforce any kind of	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	consistent coverage during training.	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	During decoding, we generate a list of block orien-	page=2 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tation bigrams as described above. A DP-based beam	page=2 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	search procedure identical to the one used in (Tillmann,	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2004) is used  X  to  maximize    over all oriented block seg-	page=2 xpos=0 ypos=2 left-column full-justified font-largest aligned-line year tailchar-hiphen
+I-Body	mentations      N  + k . During decoding orientation bi-	page=2 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+E-Body	grams J  k  ¦¥  <sub>for</sub> with the successor left orientation block   are . only generated if 	page=2 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower above-double-space above-line-space
+B-SectionHeader	3 Localized Block Model and	page=2 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1
+I-SectionHeader	Discriminative Training	page=2 xpos=0 ypos=3 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	In this section, we describe the components         used   to  com-   <sub>in</sub>	page=2 xpos=0 ypos=3 left-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	pute the block bigram probability  §+ V¨   k k	page=2 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	as a feature-vector ©ª Eq. 1. A block orientation   ¨M  pair       R« ¬ <sub>.</sub> For is a represented model that	page=2 xpos=0 ypos=4 left-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	uses all the components defined below, ­ is  . As feature-	page=2 xpos=0 ypos=4 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	vector components, we take the negative logarithm of	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	some block model probabilities. We use the term ’float’	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	feature for these feature-vector components (the model	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	score is stored as a float number). Additionally, we use	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	binary block features. The letters (a)-(f) refer to Table 1:	page=2 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	Unigram Models:  k we compute (a) the unigram proba-   k	page=2 xpos=0 ypos=5 left-column full-justified font-largest aligned-line line-double-space line-space headchar-capital
+I-Listitem	bility   and (b) the orientation probability   .	page=2 xpos=0 ypos=5 left-column left-indent font-largest indented-line headchar-lower tailchar-period
+I-Listitem	These probabilities are simple relative frequency es-	page=2 xpos=0 ypos=5 left-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Listitem	timates based on unigram and unigram orientation	page=2 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Listitem	counts derived from the data in Eq. 2. For details	page=2 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Listitem	see (Tillmann, 2004). During decoding, the uni-	page=2 xpos=0 ypos=6 left-column left-indent aligned-line year headchar-lower tailchar-hiphen
+I-Listitem	gram probability is normalized by the source phrase	page=2 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Listitem	length.	page=2 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Listitem	Two types of Trigram language model: (c) probability	page=2 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Listitem	of predicting    the first target word in the target clump	page=2 xpos=0 ypos=7 left-column left-indent font-largest indented-line headchar-lower
+I-Listitem	of   <sup>given</sup>  the final two words of the target clump	page=2 xpos=0 ypos=7 left-column left-indent font-largest aligned-line headchar-lower
+I-Listitem	of ¤ , (d) probability of predicting   the rest of the	page=2 xpos=0 ypos=7 left-column left-indent font-largest aligned-line headchar-lower
+I-Listitem	words in the target clump of  . The language model	page=2 xpos=0 ypos=7 left-column left-indent font-largest aligned-line headchar-lower
+I-Listitem	is trained on a separate corpus.	page=2 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	Lexical Weighting:   H (e)  [ the V\] lexical is computed weight similarly   [  \] to of the block	page=2 xpos=0 ypos=8 left-column full-justified box hanged-line longer-tail line-space headchar-capital
+I-Listitem	(Koehn et al., 2003), details are given in Section 3.4.	page=2 xpos=0 ypos=8 left-column left-indent indented-line year tailchar-period above-double-space above-line-space
+B-Listitem	Binary features: (f) binary  ++ V features <sub>which</sub> are is defined  if the using block an	page=2 xpos=0 ypos=8 left-column full-justified font-largest hanged-line line-double-space line-space headchar-capital
+I-Listitem	indicator  + V function ©ª	page=2 xpos=0 ypos=9 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower
+I-Listitem	pair J 	page=2 xpos=0 ypos=9 left-column left-indent right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Listitem	old , e.g J® occurs H¯ <sub>.</sub> more Here, often the orientation than a given between thresh-	page=2 xpos=0 ypos=9 left-column left-indent font-largest aligned-line longer-tail headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	559	page=2 xpos=4 ypos=9 left-column left-indent right-over font-larger indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	the blocks is ignored.	page=2 xpos=5 ypos=0 right-column left-indent right-indent column-top headchar-lower tailchar-period
+B-Equation	J  + V° J	page=2 xpos=8 ypos=0 right-column left-indent right-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	 +     H	page=2 xpos=6 ypos=0 right-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	  <sub>else</sub> 	page=2 xpos=7 ypos=0 right-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	©ª (3)	page=2 xpos=6 ypos=0 right-column left-indent font-largest hanged-line longer-tail above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.1 Global Model	page=2 xpos=5 ypos=0 right-column right-indent hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-line-space
+B-Body	In our linear block model, for a given source sen-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tence ^ , each translation is represented as a sequence	page=2 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	of block/orientation pairs T  X    W consistent with the	page=2 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	source. Using features such as those described above,	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we can     parameterize    ±  ^  , where the ± probability is a vector of of such unknown a sequence model as  	page=2 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	parameters to be estimated from the training data. We use	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	a log-linear probability model and maximum likelihood	page=2 xpos=5 ypos=2 right-column full-justified aligned-line itemization headchar-lower
+I-Body	training— the parameter ± is estimated by maximizing 	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	the joint likelihood over all sentences. Denote by    ²³   ^  W	page=2 xpos=5 ypos=2 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	the set of possible block/orientation sequences T	page=2 xpos=5 ypos=2 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	that are consistent with the source sentence ^ , then a log-	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line longer-tail headchar-lower tailchar-hiphen
+I-Body	linear probability model can be represented as	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Equation	       ±  ^  Hµ´+¶·  ±¸ ¹ ©ª V^           	page=2 xpos=6 ypos=3 right-column left-indent right-indent box indented-line
+I-Equation	  (4)	page=2 xpos=5 ypos=3 right-column left-indent font-largest hanged-line longer-tail above-line-space
+I-Equation	     	page=2 xpos=5 ypos=3 right-column left-indent right-indent font-largest aligned-line shorter-tail line-space
+I-Body	where ©ª denotes the feature vector of the corre-	page=2 xpos=5 ypos=3 right-column full-justified font-largest hanged-line longer-tail headchar-lower tailchar-hiphen
+I-Body	sponding block translation, and the partition function is:	page=2 xpos=5 ypos=4 right-column right-indent aligned-line headchar-lower tailchar-colon
+B-Equation	¹  H º	page=2 xpos=5 ypos=4 right-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	» ¼ ½¾  ¿  ¼ ½SÀwÁdÂIÃ  § Ä ´+¶·  ± ¸ ©ª    Å Æ  uÅ `6 	page=2 xpos=6 ypos=4 right-column left-indent right-indent box indented-line longer-tail
+I-Equation	V^	page=2 xpos=5 ypos=4 right-column left-indent right-indent font-largest hanged-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	A disadvantage  of this approach is that the summation	page=2 xpos=5 ypos=4 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	over ²³V^ can be rather difficult to compute. Conse-	page=2 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	quently some sophisticated approximate inference meth-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ods are needed to carry out the computation. A detailed	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	investigation of the global model will be left to another	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	study.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Local Model Restrictions	page=2 xpos=5 ypos=5 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In the following, we consider a simplification of the di-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	rect global model in Eq. 4. As in (Tillmann,     2004),  R	page=2 xpos=5 ypos=6 right-column full-justified font-largest aligned-line year headchar-lower
+I-Body	we N  model Q W    ¤ the    block   <sub>in</sub> Eq. bigram 1. We probability distinguish as the  two  cases T	page=2 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	(1)  S R Ç T N  Q W , and (2)  HK J . Orientation is modeled	page=2 xpos=5 ypos=6 right-column full-justified font-largest aligned-line itemization
+I-Body	only in the context of immediate neighbors for blocks that	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	have left or right orientation. The log-linear model is de-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fined as:	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	    RÇT N  Q W        ¨ ±  ^  (5)	page=2 xpos=6 ypos=7 right-column left-indent font-largest indented-line longer-tail
+I-Equation	H ´+¶·  ±¸ ¹  ©ª           ¨ ¨ ^ M          V   6   	page=2 xpos=6 ypos=7 right-column left-indent right-indent box indented-line shorter-tail headchar-capital
+I-Equation	  ¨M ¤  V	page=2 xpos=8 ypos=8 right-column left-indent right-indent font-largest indented-line longer-tail
+I-Body	where ^ is the source sentence, ©ª is a locally	page=2 xpos=5 ypos=8 right-column full-justified font-largest hanged-line longer-tail headchar-lower
+I-Body	defined feature vector that depends  + only  on   the  §  § current <sub>.</sub> The and the previous oriented blocks  and 	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	features were described at the beginning of the section.	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The partition function is given by	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-capital
+B-Equation	Ã» ¾  Ä ÁdÂIÃ »  ¾   É È  § Ä ´+¶·  ± ¸ ©ª   ¨M       6    (6)	page=2 xpos=6 ypos=9 right-column left-indent box indented-line longer-tail
+I-Equation	¹       ¨  H	page=2 xpos=5 ypos=9 right-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	 ^	page=2 xpos=5 ypos=9 right-column left-indent right-indent font-largest indented-line shorter-tail page-bottom
+I-Equation	 §  §¨ 	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-largest page-top
+B-Body	The set ²³ ^ is a restricted set of possible succes-	page=3 xpos=0 ypos=0 left-column full-justified font-largest hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Body	sor oriented blocks that are consistent with the current	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	block position and the source sentence ^ , to be described	page=3 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	in the following paragraph. Note that a straightforward	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	normalization over all block orientation pairs in Eq. 5	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	is not feasible: there   are tens of millions of possible	page=3 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	successor blocks   (if H we V[ do  \] not  , impose aligned any with restriction). a source For each block	page=3 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	sentence ^ , we define a source-induced alternative set:	page=3 xpos=0 ypos=1 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	Z  k H T <sub>all</sub> blocks     R Z that  ÆW share an identical	page=3 xpos=0 ypos=1 left-column left-indent right-indent font-largest indented-line headchar-capital
+I-Equation		page=3 xpos=0 ypos=1 left-column left-indent right-indent font-largest indented-line shorter-tail
+I-Equation	Z  k source phrase with  	page=3 xpos=0 ypos=1 left-column left-indent right-indent font-largest indented-line longer-tail headchar-capital
+B-Body	The set  contains the block itself and the block	page=3 xpos=0 ypos=2 left-column full-justified font-largest hanged-line longer-tail headchar-capital
+I-Body	target phrases of blocks in that set might differ. To	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	restrict Z  k the number of alternatives further, the elements J    V	page=3 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	of  are sorted according to the unigram count 	page=3 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	and we keep at most the top Ê blocks for each Z source   k	page=3 xpos=0 ypos=2 left-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	interval ^ . We also   use a modified alternative set  ,	page=3 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	Z where    k are the single block word as well blocks. as the The elements partition in function the set	page=3 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-capital
+I-Body	is computed slightly differently during training and	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	decoding:	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	 ¤ + d	page=3 xpos=2 ypos=3 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Listitem	Training: for each event 	page=3 xpos=0 ypos=3 left-column right-indent font-largest hanged-line shorter-tail headchar-capital
+I-Listitem	in a sentence   § pair ^ in	page=3 xpos=2 ypos=3 left-column left-indent font-largest indented-line longer-tail headchar-lower
+I-Listitem	Eq. 2 we compute the successor set £  . This de-	page=3 xpos=0 ypos=4 left-column left-indent font-largest hanged-line headchar-capital tailchar-hiphen
+I-Listitem	fines a set of   ’true’ block successors. For each Z true   k .	page=3 xpos=0 ypos=4 left-column left-indent font-largest aligned-line headchar-lower tailchar-period
+I-Listitem	successor  6   V¨ ^    is , we the compute union of the the alternative alternative set set for each	page=3 xpos=0 ypos=4 left-column left-indent box aligned-line headchar-lower
+I-Listitem	²³	page=3 xpos=0 ypos=4 left-column left-indent right-indent font-largest aligned-line shorter-tail
+I-Listitem	successor   . Here, the orientation from the Z true  k	page=3 xpos=0 ypos=4 left-column left-indent font-largest aligned-line longer-tail headchar-lower
+I-Listitem	successor is assigned to  each alternative in  .	page=3 xpos=0 ypos=4 left-column left-indent font-largest aligned-line headchar-lower tailchar-period
+I-Listitem	ing event  We obtain  6  on the + k average <sub>in</sub> the list      alternatives . per train-	page=3 xpos=0 ypos=5 left-column left-indent font-largest aligned-line headchar-lower tailchar-hiphen
+I-Listitem	 	page=3 xpos=2 ypos=5 left-column left-indent right-indent font-largest indented-line shorter-tail
+B-Listitem	Decoding: Here, each  6  block that matches a source in-	page=3 xpos=0 ypos=5 left-column full-justified font-largest hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Listitem	terval following in the sentence        ¨  ^ H is Z a  k potential	page=3 xpos=0 ypos=5 left-column left-indent font-largest indented-line headchar-lower
+I-Listitem	successor. We ¹ simply  ¤  ¨ ^ set  HË ²³   during Z ^  k decoding  . More- does	page=3 xpos=0 ypos=5 left-column left-indent box aligned-line headchar-lower
+I-Listitem	over, setting 	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Listitem	not change performance: the list  just restricts	page=3 xpos=0 ypos=6 left-column left-indent font-largest aligned-line longer-tail headchar-lower
+I-Listitem	the possible target translations for a source phrase.	page=3 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Under this model, the log-probability of a possible	page=3 xpos=0 ypos=6 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	translation of a source sentence ^ , as in Eq. 1, can be	page=3 xpos=0 ypos=6 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	written as	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Equation	Ì¿Í       ±  ^  H  	page=3 xpos=0 ypos=7 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	ÌÍ ´k¶·  ±¸ ¹ ©ª             M ¨     ¨  ^       6  <sup>(7)</sup>	page=3 xpos=1 ypos=7 left-column left-indent box indented-line longer-tail
+I-Equation		page=3 xpos=1 ypos=7 left-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation	H	page=3 xpos=0 ypos=7 left-column left-indent right-indent font-largest hanged-line shorter-tail headchar-capital
+I-Equation	 	page=3 xpos=1 ypos=7 left-column left-indent right-indent font-largest indented-line longer-tail above-double-space above-line-space
+B-Body	In the maximum-likelihood training, we find ± by maxi-	page=3 xpos=0 ypos=8 left-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	mizing the sum of the log-likelihood over observed sen-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences, each of them has the form in Eq. 7. Although the	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	training methodology is similar to the global formulation	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	given in Eq. 4, this localized version is computationally	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	much easier to ¹ manage     since  ¨ the  summation in the par-	page=3 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	tition function   ¤ ^ is now over a relatively	page=3 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	small set of candidates. This computational advantage	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	560	page=3 xpos=4 ypos=9 left-column left-indent right-over font-larger indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	is the main reason that we adopt the local model in this	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+E-Body	paper.	page=3 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.3 Global versus Local Models	page=3 xpos=5 ypos=0 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Both the global and the localized log-linear models de-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	scribed in this section can be considered as maximum-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	entropy models, similar to those used in natural language	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	processing, e.g. maximum-entropy models for POS tag-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ging and shallow parsing. In the parsing context, global	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	models such as in Eq. 4 are sometimes referred to as con-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ditional random field or CRF (Lafferty et al., 2001).	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	Although there are some arguments that indicate that	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	this approach has some advantages over localized models	page=3 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	such as Eq. 5, the potential improvements are relatively	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	small, at least in NLP applications. For SMT, the differ-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence can be potentially more significant. This is because	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	in our current localized model, successor blocks of dif-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent sizes are directly compared to each other, which	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	is intuitively not the best approach (i.e., probabilities	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	of blocks with identical lengths are more comparable).	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This issue is closely related to the phenomenon of multi-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ple counting of events, which means that a source/target	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	sentence pair can be decomposed into different oriented	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	blocks in our model. In our current training procedure,	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we select one as the truth, while consider the other (pos-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sibly also correct) decisions as non-truth alternatives. In	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the global modeling, with appropriate normalization, this	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	issue becomes less severe. With this limitation in mind,	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the localized model proposed here is still an effective	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	approach, as demonstrated by our experiments. More-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	over, it is simple both computationally and conceptually.	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Various issues such as the ones described above can be	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	addressed with more sophisticated modeling techniques,	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	which we shall be left to future studies.	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.4 Lexical Weighting	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2
+B-Body	The lexical weight   [  \] of the block   H  [ V\] is	page=3 xpos=5 ypos=6 right-column full-justified font-largest aligned-line longer-tail headchar-capital
+I-Body	computed similarly to (Koehn ad et al., 2003), but the lexical	page=3 xpos=5 ypos=6 right-column full-justified font-largest aligned-line year headchar-lower
+I-Body	translation probability   ^  is derived from the block	page=3 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	set itself rather than from a word alignment, resulting in	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	a simplified training. The lexical weight is computed as	page=3 xpos=5 ypos=7 right-column full-justified aligned-line itemization headchar-lower
+I-Body	follows:	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	  [  \] H _  JIÎ  ^  g  \] Ï c      M ^ g  a   g	page=3 xpos=5 ypos=7 right-column left-indent right-indent box indented-line longer-tail
+I-Equation	J  k	page=3 xpos=7 ypos=7 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+I-Equation	  ^ g a   H	page=3 xpos=5 ypos=7 right-column left-indent right-indent font-largest hanged-line shorter-tail
+I-Equation		page=3 xpos=7 ypos=8 right-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	»  Á Î ½ Ã» Ä J      	page=3 xpos=7 ypos=8 right-column left-indent right-indent font-largest hanged-line longer-tail above-double-space above-line-space
+B-Body	Here, a the  single-word-based translation   probability H Va  	page=3 xpos=5 ypos=8 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	    ^  g     H is  ^Mg derived  aXÐ. are from single-word the block J blocks, set Î itself.  a c k where  ^g source	page=3 xpos=5 ypos=8 right-column full-justified box aligned-line
+I-Body	and	page=3 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower
+I-Body	and target phrases   Ð H are of   length a Ð   . R V^g di+ikiM f is for the which num-	page=3 xpos=5 ypos=9 right-column full-justified font-largest aligned-line longer-tail headchar-lower tailchar-hiphen
+E-Body	  ^ g  ber of a Ð blocks °    .  ^ g for Ñ 	page=3 xpos=5 ypos=9 right-column right-indent font-largest aligned-line shorter-tail page-bottom
+B-SectionHeader	4 Online Training of Maximum-entropy	page=4 xpos=0 ypos=0 left-column right-indent font-largest page-top numbered-heading1
+I-SectionHeader	Model	page=4 xpos=0 ypos=0 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	The local model described in Section 3 leads to the fol-	page=4 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	lowing abstract maximum entropy training formulation:	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	± Ò HËÓÕÔÖS×]Ø Ù Í C Å  Ì¿Í g ´k¶· Á d ÂÛÚ  ´ k ± ¶· ¸   ±  ¾ Ü ¸ Ú    ¾ g   (8)	page=4 xpos=0 ypos=0 left-column left-indent box indented-line longer-tail line-space above-double-space above-line-space
+B-Body	In this formulation, ± is the weight vector which we want	page=4 xpos=0 ypos=1 left-column full-justified font-largest hanged-line line-double-space line-space headchar-capital
+I-Body	to compute. The set ²  consists of candidate labels for	page=4 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the j -th training instance, with the true label   R ²  .	page=4 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	The labels here are block  ¤  V¨ identities ^  and  V the , ² ’true’  corresponds blocks are to	page=4 xpos=0 ypos=2 left-column full-justified box aligned-line headchar-capital
+I-Body	the alternative set ²Ý	page=4 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	defined by the successor set £" . The vector   ¾ g is the	page=4 xpos=0 ypos=2 left-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	feature vector of the j -th instance, corresponding to la-	page=4 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	bel h R ²    . ¨M ¤ The symbol  V <sub>.</sub> This  formulation is short-hand is for slightly the feature- differ- vector ©ª	page=4 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	ent from the standard maximum entropy formulation typ-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ically encountered in NLP applications, in that we restrict	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	the summation over a subset ²  of all labels.	page=4 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Intuitively, this method favors a weight vector H such that	page=4 xpos=0 ypos=3 left-column full-justified font-largest aligned-line longer-tail headchar-capital
+I-Body	for each j , ±¸   ¾ ÜkÚ(Þ ±¸   ¾ g is large when hUß   . This	page=4 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	effect is desirable since it tries to separate the correct clas-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sification from the incorrect alternatives. If the problem	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	is completely separable, then it can be shown that the	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	computed linear separator, with appropriate regulariza-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, achieves the largest possible separating margin. The	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	effect is similar to some multi-category generalizations of	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	support vector machines (SVM). However, Eq. 8 is more	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	suitable for non-separable problems (which is often the	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	case for SMT) since it directly models the conditional	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	probability for the candidate labels.	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	A related method is multi-category perceptron, which	page=4 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	explicitly finds a weight vector that separates correct la-	page=4 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	bels from the incorrect ones in a mistake driven fashion	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	(Collins, 2002). The method works by examining ¢ one	page=4 xpos=0 ypos=6 left-column full-justified font-largest aligned-line year
+I-Body	sample  at a time, and makes  an update ±áàâ± u  ¾ Ü+ÚÞ	page=4 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	  ¾ g when ±¸ ¿  ¾ ÜkÚªÞ   ¾ g is not positive. To compute	page=4 xpos=0 ypos=6 left-column full-justified font-largest aligned-line longer-tail
+I-Body	the update for a training instance  j , one usually pick the h	page=4 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	such that ±p¸ u  ¾ Ü+ÚÞ   ¾ g is the smallest. It can be shown	page=4 xpos=0 ypos=7 left-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	that if there exist weight vectors that separate the H correct	page=4 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	label   from incorrect labels h R ²  for all hUß   , then	page=4 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the perceptron method can find such a separator. How-	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ever, it is not entirely clear what this method does when	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the training data are not completely separable. Moreover,	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the standard mistake bound justification does not apply	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	when we go through the training data more than once, as	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	typically done in practice. In spite of some issues in its	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	justification, the perceptron algorithm is still very attrac-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tive due to its simplicity and computational efficiency. It	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	also works quite well for a number of NLP applications.	page=4 xpos=0 ypos=9 left-column right-indent aligned-line headchar-lower tailchar-period above-line-space
+B-Body	In the following, we show that a simple and efficient	page=4 xpos=0 ypos=9 left-column left-indent indented-line line-space headchar-capital
+I-Body	online training procedure can also be developed for the	page=4 xpos=0 ypos=9 left-column full-justified hanged-line headchar-lower above-blank-line above-double-space above-line-space
+Page	561	page=4 xpos=4 ypos=9 left-column left-indent right-over font-larger indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	maximum entropy formulation Eq. 8. The proposed up-	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	date rule is similar to the perceptron method but with a	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	soft mistake-driven update rule, where the influence of	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	each feature is weighted by the significance of its mis-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	take. The method is essentially a version of the so-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	called stochastic gradient descent method, which has	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	been widely used in complicated stochastic optimization	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	problems such as neural networks. It was argued re-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cently in (Zhang, 2004) that this method also works well	page=4 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower
+I-Body	for standard convex formulations of binary-classification	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	problems including SVM and logistic regression. Con-	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vergence bounds similar to perceptron mistake bounds	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	can be developed, although unlike perceptron, the theory	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	justifies the standard practice of going through the train-	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing data more than once. In the non-separable case, the	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	method solves a regularized version of Eq. 8, which has	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the statistical interpretation of estimating the conditional	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	probability. Consequently, it does not have the potential	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	issues of the perceptron method which we pointed out	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	earlier. Due to the nature of online update, just like per-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ceptron, this method is also very simple to implement and	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	is scalable to large problem size. This is important in the	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	SMT application because we can have a huge number of	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	training instances which we are not able to keep in mem-	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ory at the same time.	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In stochastic gradient descent, we examine one train-	page=4 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ing instance at a time. At the j -th instance, we derive	page=4 xpos=5 ypos=4 right-column full-justified font-largest hanged-line headchar-lower
+I-Body	the update rule by maximizing with respect to the term	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	associated with the instance	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Equation	N  ±  H ÌÍ g ´k¶· d Á Â Ú  + ´ ± ¶· ¸   ±¸  ¾ ÜkÚ    ¾ g 	page=4 xpos=6 ypos=5 right-column left-indent right-indent box indented-line longer-tail headchar-capital above-double-space above-line-space
+I-Body	in Eq. 8. We do a gradient N descent  localized  to  <sub>is</sub> this a pa- in-	page=4 xpos=5 ypos=5 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	stance as ± ã ä à ± Þæå  ` ç ç Ù   ± , where å 	page=4 xpos=5 ypos=5 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	rameter often referred to as the learning rate. For Eq. 8,	page=4 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail headchar-lower tailchar-comma
+I-Body	the update rule becomes:	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	±áàâ± ¢ å  g ÁdÂÛÚ ´+¶·  ±¸   ¾ g  ¿    ¾ ÜkÚ(Þ   ¾g   (9)	page=4 xpos=5 ypos=6 right-column left-indent font-largest indented-line longer-tail
+I-Equation	g ÁdÂÛÚ ´k¶·  ± ¸   ¾ g 	page=4 xpos=7 ypos=6 right-column left-indent right-indent font-largest indented-line shorter-tail itemization headchar-lower above-double-space above-line-space
+B-Body	Similar to online algorithms such as the perceptron, we	page=4 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	apply this update rule one by one to each training instance	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	(randomly ordered), and may go-through data points re-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line tailchar-hiphen
+I-Body	peatedly. Compare Eq. 9 to the perceptron update, there	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	are two main differences, which we discuss below.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The first difference is the weighting scheme. In-	page=4 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	stead of putting the update weight to a single	page=4 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	(most mistaken) feature component, as in the per-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line tailchar-hiphen
+I-Body	ceptron algorithm, we use a soft-weighting scheme,	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	tor ´ + ¶  ·  p ± ¸   ¾g with each feature  è component Ð ÁdÂ Ú ´ k  ¶ ·   ± h ¸  weighted  ¾ Ð  . A component by a fac- h	page=4 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	with larger ± p ¸   ¾ g gets more weight. This effect is in	page=4 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	principle similar to the perceptron update. The smooth-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing effect in Eq. 9 is useful for non-separable problems	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	since it does not force an update rule that attempts to sep-	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	arate the data. Each feature component gets a weight that	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	is proportional to its conditional probability.	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The second difference is the introduction of a learn-	page=5 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ing rate parameter å  . For the algorithm to converge, one	page=5 xpos=0 ypos=0 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	should pick a decreasing learning rate. In practice, how- H	page=5 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	ever, it is often more convenient to select a fixed å  å	page=5 xpos=0 ypos=0 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	for all j . This leads to an algorithm that approximately	page=5 xpos=0 ypos=1 left-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	solve a regularized version of Eq. 8. If we go through the	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	data repeatedly, one may also decrease the fixed learning	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	rate by monitoring the progress made each time we go	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	through the H data.  .é For practical purposes, a fixed small å	page=5 xpos=0 ypos=1 left-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	such as å  is usually sufficient. We typically run	page=5 xpos=0 ypos=2 left-column full-justified font-largest aligned-line longer-tail headchar-lower
+I-Body	forty updates over the training data. Using techniques	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	similar to those of (Zhang, 2004), we can obtain a con-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	vergence theorem for our algorithm. Due to the space	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	limitation, we will not present the analysis here.	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	An advantage of this method over standard maximum	page=5 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	entropy training such as GIS (generalized iterative scal-	page=5 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ing) is that it does not require us to store all the data	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	in memory at once. Moreover, the convergence analy-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sis can be used to show that if ê is large, we can get	page=5 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	a very good approximate solution by going through the	page=5 xpos=0 ypos=3 left-column full-justified aligned-line itemization headchar-lower
+I-Body	data only once. This desirable property implies that the	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	method is particularly suitable for large scale problems.	page=5 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Experimental Results	page=5 xpos=0 ypos=4 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The translation system is tested on an Arabic-to-English	page=5 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	translation task. The training data comes from the UN	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	news sources. Some punctuation tokenization and some	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	number classing are carried out on the English and the	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	Arabic training data. In this paper, we present results for	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	two test sets: (1) the devtest   set uses data provided   by	page=5 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	LDC, which consists of   sentences with Õ"Ê Ara-	page=5 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	bic words with  reference translations. (2) the blind test	page=5 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	set is the MT03 Arabic-English  DARPA b evaluation test	page=5 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	set consisting of " sentences with M  Arabic words	page=5 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	with also  reference translations. Experimental results	page=5 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	are reported in Table 2: here cased BLEU results are re-	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ported on MT03 Arabic-English test set (Papineni et al.,	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2002). The word casing is added as post-processing step	page=5 xpos=0 ypos=7 left-column full-justified aligned-line year
+E-Body	using a statistical model (details are omitted here).	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In order to speed up the parameter training we filter the	page=5 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	original training data according to the two test sets: for	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	each of the  test sets we take all the Arabic substrings up	page=5 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	to length  and filter the parallel training data to include	page=5 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	only those training sentence pairs that contain at least one	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	out of b these M phrases: the ’LDC’ training data contains	page=5 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	about thousand sentence Õ" pairs and the ’MT03’ train-	page=5 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ing data contains about thousand sentence pairs. Two	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	block sets are derived for each of the training sets using	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	a phrase-pair selection algorithm similar to (Koehn et al.,	page=5 xpos=0 ypos=9 left-column full-justified aligned-line itemization headchar-lower tailchar-comma
+I-Body	2003; Tillmann and Xia, 2003). These block sets also	page=5 xpos=0 ypos=9 left-column full-justified aligned-line year
+I-Body	include blocks that occur only once in the training data.	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	562	page=5 xpos=4 ypos=9 left-column left-indent right-over font-larger indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	Additionally, some heuristic filtering is used to increase	page=5 xpos=5 ypos=0 right-column full-justified column-top headchar-capital
+E-Body	phrase translation accuracy (Al-Onaizan et al., 2004).	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.1 Likelihood Training Results	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We compare model performance with respect to the num-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ber and type of features used as well as with respect	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	to different re-ordering models. Results for Ê experi-	page=5 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ments are shown in Table 2, where  the feature types are	page=5 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	described in Table 1. The first experimental results	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	are obtained by carrying out the likelihood training de-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scribed in Section 3. Line  in Table 2 shows the per-	page=5 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	formance of the baseline block unigram ’MON’ model	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	which uses two ’float’ features: the unigram probabil-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity and the boundary-word language model probability.	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	No block re-ordering is allowed for the baseline model	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	(a monotone block  sequence is generated). The ’SWAP’	page=5 xpos=5 ypos=2 right-column full-justified font-largest aligned-line
+I-Body	model in line uses the same two features, but neigh-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bor blocks can be swapped. No performance increase is	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	obtained for this model. The ’SWAP & OR’ model uses	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	an orientation model as described in Section 3. Here, we	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	obtain a small but significant improvement over the base-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	line model. Line  shows that by including two additional	page=5 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	’float’ features: the lexical weighting and the language	page=5 xpos=5 ypos=3 right-column full-justified aligned-line
+I-Body	model probability of predicting the second and subse-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quent words of the target  clump yields a further signif-	page=5 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	icant improvement. Line shows that including binary	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	features and training their weights on the training data	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	actually decreases performance. This issue is addressed	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	in Section 5.2.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The training is carried out as follows: the results in line	page=5 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	 -  are obtained by training ’float’ weights only. Here, 	page=5 xpos=5 ypos=5 right-column full-justified font-largest hanged-line
+I-Body	the training is carried out by running only once over 	page=5 xpos=5 ypos=5 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	% of the training data. The model including the binary	page=5 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail
+I-Body	features  b is  trained on the entire training data. We obtain	page=5 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	about  million features JëHì of  the <sub>.</sub> Forty type iterations defined over in Eq. the 3	page=5 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	by setting the threshold 	page=5 xpos=5 ypos=6 right-column right-indent font-largest aligned-line shorter-tail headchar-lower
+I-Body	training data take about hours on a single Intel machine.	page=5 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail headchar-lower tailchar-period
+I-Body	Although the online algorithm does not require us to do	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	so, our training procedure keeps  the entire training data	page=5 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	and the weight vector ± in about gigabytes HãJ of <sub>,</sub> memory. we train For blocks with neutral orientation	page=5 xpos=5 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	a separate model that does not use the orientation model	page=5 xpos=5 ypos=7 right-column full-justified aligned-line itemization headchar-lower
+I-Body	 feature <sub>in</sub>   Table V or the   2, binary the  neutral features. model  k E.g. would for  the use results the features in line	page=5 xpos=5 ypos=7 right-column full-justified box aligned-line
+I-Body	Ví Vî  ­   , but not  and V© . Here, the neutral	page=5 xpos=5 ypos=7 right-column full-justified font-largest headchar-capital
+I-Body	model is trained on the neutral orientation bigram subse-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	quence that is part of Eq. 2.	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.2 Modified Weight Training	page=5 xpos=5 ypos=8 right-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We implemented the following variation of the likeli-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	hood training procedure described in Section 3, where	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	we make use of the ’LDC’ devtest set.  First, we train	page=5 xpos=5 ypos=9 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	a model on the ’LDC’ training data using float features	page=5 xpos=5 ypos=9 right-column full-justified aligned-line itemization headchar-lower
+I-Body	and the binary features. We use this model to decode	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+B-Caption	Table 1: List of feature-vector components. For a de-	page=6 xpos=0 ypos=0 left-column full-justified page-top string-table headchar-capital tailchar-hiphen
+E-Caption	scription, see Section 3.	page=6 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Table	Description	page=6 xpos=0 ypos=0 left-column left-indent right-indent indented-line shorter-tail line-space headchar-capital above-line-space
+I-Table	(a) Unigram probability	page=6 xpos=0 ypos=0 left-column left-indent right-indent aligned-line longer-tail line-space itemization
+I-Table	(b) Orientation probability	page=6 xpos=0 ypos=0 left-column left-indent right-indent aligned-line longer-tail itemization
+I-Table	(c) LM first word probability	page=6 xpos=0 ypos=1 left-column left-indent right-indent aligned-line longer-tail itemization
+I-Table	(d) LM second and following words probability	page=6 xpos=0 ypos=1 left-column centered left-indent right-indent aligned-line longer-tail itemization
+I-Table	(e) Lexical weighting	page=6 xpos=0 ypos=1 left-column left-indent right-indent aligned-line shorter-tail itemization
+E-Table	(f) Binary Block Bigram Features	page=6 xpos=0 ypos=1 left-column left-indent right-indent aligned-line longer-tail itemization above-blank-line above-double-space above-line-space
+B-Caption	Table 2: Cased BLEU translation results with confidence	page=6 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital
+I-Caption	intervals on the MT03 test data. The third column sum-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Caption	marizes the model variations. The results in lines  and	page=6 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Caption	Ê are for a cheating experiment: the float weights are	page=6 xpos=0 ypos=2 left-column full-justified font-largest aligned-line
+E-Caption	trained on the test data itself.	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Table	Re-ordering Components	page=6 xpos=0 ypos=3 left-column left-indent right-indent indented-line longer-tail line-space headchar-capital
+I-Table	" BLEU pï 	page=6 xpos=3 ypos=3 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Table	"  pï G 	page=6 xpos=3 ypos=3 left-column left-indent right-indent font-largest aligned-line
+I-Table	1 ’MON’ (a),(c)	page=6 xpos=0 ypos=3 left-column left-indent right-indent hanged-line shorter-tail numbered-heading1
+I-Table	"  ï G	page=6 xpos=3 ypos=3 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Table	2 ’SWAP’ (a),(c)	page=6 xpos=0 ypos=3 left-column left-indent right-indent hanged-line shorter-tail numbered-heading1
+I-Table	 Ê ðï G  	page=6 xpos=3 ypos=3 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Table	3 ’SWAP & OR’ (a),(b),(c)	page=6 xpos=0 ypos=3 left-column left-indent right-indent hanged-line shorter-tail numbered-heading1
+I-Table	  pï G	page=6 xpos=3 ypos=3 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Table	4 ’SWAP & OR’ (a)-(e)	page=6 xpos=0 ypos=3 left-column left-indent right-indent hanged-line shorter-tail numbered-heading1
+I-Table	5 ’SWAP & OR’ (a)-(f)  G 	page=6 xpos=0 ypos=3 left-column left-indent right-indent font-largest aligned-line longer-tail numbered-heading1
+I-Table	 ï 	page=6 xpos=3 ypos=3 left-column left-indent right-indent font-largest indented-line
+I-Table	6 ’SWAP & OR’ (a)-(e) (ldc devtest)    pï G 	page=6 xpos=0 ypos=4 left-column left-indent right-indent font-largest hanged-line numbered-heading1
+I-Table	7 ’SWAP & OR’ (a)-(f) (ldc devtest)   pï G 	page=6 xpos=0 ypos=4 left-column left-indent right-indent font-largest aligned-line numbered-heading1
+I-Table	8 ’SWAP & OR’ (a)-(e) (mt03 test)  Ê pï G	page=6 xpos=0 ypos=4 left-column left-indent right-indent font-largest aligned-line numbered-heading1
+E-Table	9 ’SWAP & OR’ (a)-(f) (mt03 test) Ê G 	page=6 xpos=0 ypos=4 left-column left-indent right-indent font-largest aligned-line numbered-heading1 above-blank-line above-double-space above-line-space
+I-Body	the devtest ’LDC’ set. During decoding, we generate a	page=6 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	’translation graph’ for every input sentence using a proce-	page=6 xpos=0 ypos=5 left-column full-justified aligned-line tailchar-hiphen
+I-Body	dure similar to (Ueffing et al., 2002): a translation graph	page=6 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	is a compact way of representing candidate translations	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	which are close in terms of Õ likelihood. " From the transla-	page=6 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	tion graph, we obtain the  best translations accord-	page=6 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ing to the translation score. Out of this list, we find the	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	block sequence that generated the top BLEU-scoring tar-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	get translation. Computing the top BLEU-scoring block	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	sequence for all the input sentences we obtain:	page=6 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	  H      k        6    	page=6 xpos=1 ypos=6 left-column left-indent right-indent font-largest indented-line shorter-tail line-space
+I-Equation	      C (10)	page=6 xpos=1 ypos=7 left-column left-indent font-largest hanged-line longer-tail
+I-Equation	J    " J  	page=6 xpos=0 ypos=7 left-column left-indent right-indent font-largest hanged-line shorter-tail headchar-capital
+I-Body	where ÊÕ . Here, is the number of blocks	page=6 xpos=0 ypos=7 left-column full-justified font-largest hanged-line longer-tail headchar-lower
+I-Body	needed to decode the entire   devtest set. Alternatives for	page=6 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	each of the events in M are generated as described in	page=6 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	Section 3.2. The set of alternatives is further restricted	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	by using " only " those blocks  that occur in some translation	page=6 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	in the  -best list. The float weights are trained on	page=6 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	the modified training data in Eq. 10, where the training	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	takes only a few seconds. We then decode the ’MT03’	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	test set using the modified ’float’ weights. As shown in	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	line  and line  there is almost no change in perfor-	page=6 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	mance between training on the original training data in	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	Eq. 2 or on the modified training data in Eq. 10. Line	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital above-blank-line above-double-space above-line-space
+Page	563	page=6 xpos=4 ypos=9 left-column left-indent right-over font-larger indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	 shows that even when training the float weights on an	page=6 xpos=5 ypos=0 right-column full-justified font-largest column-top
+I-Body	event set obtained from the test data itself in a cheating	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	experiment, we obtain b  only  a  moderate performance im-	page=6 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	provement from   to Ê . For the experimental re-	page=6 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	sults in line and Ê , we use the same five float weights	page=6 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	as trained for the experiments in line  and  and keep	page=6 xpos=5 ypos=0 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	them fixed while training the binary feature weights only.	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Using the binary features b leads  to  only a minor  improve-	page=6 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-capital tailchar-hiphen
+I-Body	ment in BLEU from   to  in line . For this best	page=6 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	model, we obtain a Mñ  % BLEU improvement over the	page=6 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	baseline.	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	From our experimental results, we draw the following	page=6 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	conclusions: (1) the translation performance is largely	page=6 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	dominated by the ’float’ features, (2) using the same set	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	of ’float’ features, the performance doesn’t change much	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	when training on training, devtest, or even test data. Al-	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	though, we do not obtain a significant improvement from	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the use of binary features, currently, we expect the use of	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	binary features to be a promising approach for the follow-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing reasons:	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Listitem	ò The current training does not take into account the	page=6 xpos=5 ypos=3 right-column left-indent font-largest indented-line longer-tail line-space
+I-Listitem	block interaction on the sentence level. A more ac-	page=6 xpos=5 ypos=3 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	curate approximation of the global model as dis-	page=6 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	cussed in Section 3.1 might improve performance.	page=6 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	ò As described in Section 3.2 and Section 5.2, for	page=6 xpos=5 ypos=4 right-column left-indent font-largest hanged-line longer-tail line-space
+I-Listitem	efficiency reasons alternatives are computed from	page=6 xpos=5 ypos=4 right-column left-indent indented-line headchar-lower
+I-Listitem	source phrase matches only. During training, more	page=6 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower
+I-Listitem	accurate local approximations for the partition func-	page=6 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tion in Eq. 6 can be obtained by looking at block	page=6 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower
+I-Listitem	translations in the context of translation sequences.	page=6 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower tailchar-period
+I-Listitem	This involves the computationally expensive genera-	page=6 xpos=5 ypos=5 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Listitem	tion of a translation graph for each training sentence	page=6 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower
+I-Listitem	pair. This is future work.	page=6 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	ò As mentioned in Section 1, viewing the translation	page=6 xpos=5 ypos=6 right-column left-indent font-largest hanged-line longer-tail line-space
+I-Listitem	process as a sequence of local discussions makes it	page=6 xpos=5 ypos=6 right-column left-indent indented-line headchar-lower
+I-Listitem	similar to other NLP problems such as POS tagging,	page=6 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Listitem	phrase chunking, and also statistical parsing. This	page=6 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower
+I-Listitem	similarity may facilitate the incorporation of these	page=6 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower
+I-Listitem	approaches into our translation model.	page=6 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Discussion and Future Work	page=6 xpos=5 ypos=7 right-column right-indent font-largest hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper we proposed a method for discriminatively	page=6 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	training the parameters of a block SMT decoder. We	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	discussed two possible approaches: global versus local.	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This work focused on the latter, due to its computational	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	advantages. Some limitations of our approach have also	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	been pointed out, although our experiments showed that	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	this simple method can significantly improve the baseline	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	model.	page=6 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As far as the log-linear combination of float features	page=6 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	is concerned, similar training procedures have been pro-	page=6 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	posed in (Och, 2003). This paper reports the use of 	page=6 xpos=5 ypos=9 right-column right-indent font-largest aligned-line shorter-tail year headchar-lower page-bottom
+I-Body	features whose parameter are trained to optimize per-	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	formance in terms of different evaluation criteria, e.g.	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	BLEU. On the contrary, our paper shows that a signifi-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	cant improvement can also be obtained using a likelihood	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	training criterion.	page=7 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our modified training procedure is related to the dis-	page=7 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	criminative re-ranking procedure presented in (Shen et	page=7 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	al., 2004). In fact, one may view discriminative rerank-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ing as a simplification of the global model we discussed,	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	in that it restricts the number of candidate global transla-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions to make the computation more manageable. How-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ever, the number of possible translations is often expo-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nential in the sentence length, while the number of can-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	didates in a typically reranking approach is fixed. Un-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	less one employs an elaborated procedure, the candi-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	date translations may also be very similar to one another,	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and thus do not give a good coverage of representative	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	translations. Therefore the reranking approach may have	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	some severe limitations which need to be addressed. For	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	this reason, we think that a more principled treatment of	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	global modeling can potentially lead to further perfor-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mance improvements.	page=7 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For future work, our training technique may be used	page=7 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	to train models that handle global sentence-level reorder-	page=7 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ings. This might be achieved by introducing orienta-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion sequences over phrase types that have been used in	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	((Schafer and Yarowsky, 2003)). To incorporate syntac-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	tic knowledge into the block-based model, we will exam-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ine the use of additional real-valued or binary features,	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	e.g. features that look at whether the block phrases cross	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	syntactic boundaries. This can be done with only minor	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	modifications to our training method.	page=7 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgment	page=7 xpos=0 ypos=5 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	This work was partially supported by DARPA and mon-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Acknowledgement	itored by SPAWAR under contract No. N66001-99-2-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Acknowledgement	8916. The paper has greatly profited from suggestions	page=7 xpos=0 ypos=6 left-column full-justified aligned-line
+E-Acknowledgement	by the anonymous reviewers.	page=7 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=7 left-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Yaser Al-Onaizan, Niyu Ge, Young-Suk Lee, Kishore Pa-	page=7 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	pineni, Fei Xia, and Christoph Tillmann. 2004. IBM	page=7 xpos=0 ypos=7 left-column left-indent indented-line year headchar-lower
+I-Reference	Site Report. In NIST 2004 Machine Translation Work-	page=7 xpos=0 ypos=7 left-column left-indent aligned-line year headchar-capital tailchar-hiphen
+I-Reference	shop, Alexandria, VA, June.	page=7 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Michael Collins. 2002. Discriminative training methods	page=7 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	for hidden markov models: Theory and experiments	page=7 xpos=0 ypos=8 left-column left-indent indented-line headchar-lower
+I-Reference	with perceptron algorithms. In Proc. EMNLP’02.	page=7 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Philipp Koehn, Franz-Josef Och, and Daniel Marcu.	page=7 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2003. Statistical Phrase-Based Translation. In Proc.	page=7 xpos=0 ypos=9 left-column left-indent indented-line year tailchar-period
+I-Reference	of the HLT-NAACL 2003 conference, pages 127–133,	page=7 xpos=0 ypos=9 left-column left-indent aligned-line year headchar-lower tailchar-comma
+I-Reference	Edmonton, Canada, May.	page=7 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+Page	564	page=7 xpos=4 ypos=9 left-column left-indent right-over font-larger indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Reference	J. Lafferty, A. McCallum, and F. Pereira. 2001. Con-	page=7 xpos=5 ypos=0 right-column full-justified column-top year headchar-capital tailchar-hiphen
+I-Reference	ditional random fields: Probabilistic models for seg-	page=7 xpos=5 ypos=0 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Reference	menting and labeling sequence data. In Proceedings	page=7 xpos=5 ypos=0 right-column left-indent aligned-line headchar-lower
+I-Reference	of ICML-01, pages 282–289.	page=7 xpos=5 ypos=0 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Franz-Josef Och, Christoph Tillmann, and Hermann Ney.	page=7 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	1999. Improved Alignment Models for Statistical Ma-	page=7 xpos=5 ypos=0 right-column left-indent indented-line year tailchar-hiphen
+I-Reference	chine Translation. In Proc. of the Joint Conf. on Em-	page=7 xpos=5 ypos=1 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	pirical Methods in Natural Language Processing and	page=7 xpos=5 ypos=1 right-column left-indent aligned-line headchar-lower
+I-Reference	Very Large Corpora (EMNLP/VLC 99), pages 20–28,	page=7 xpos=5 ypos=1 right-column left-indent aligned-line headchar-capital tailchar-comma
+I-Reference	College Park, MD, June.	page=7 xpos=5 ypos=1 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Och et al. 2004. A Smorgasbord of Features for Statis-	page=7 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tical Machine Translation. In Proceedings of the Joint	page=7 xpos=5 ypos=2 right-column left-indent indented-line headchar-lower
+I-Reference	HLT and NAACL Conference (HLT 04), pages 161–	page=7 xpos=5 ypos=2 right-column left-indent aligned-line headchar-capital
+I-Reference	168, Boston, MA, May.	page=7 xpos=5 ypos=2 right-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Franz-Josef Och. 2003. Minimum Error Rate Train-	page=7 xpos=5 ypos=2 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ing in Statistical Machine Translation. In Proc. of	page=7 xpos=5 ypos=2 right-column left-indent indented-line headchar-lower
+I-Reference	the 41st Annual Conf. of the Association for Computa-	page=7 xpos=5 ypos=2 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	tional Linguistics (ACL 03), pages 160–167, Sapporo,	page=7 xpos=5 ypos=3 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	Japan, July.	page=7 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Kishore Papineni, Salim Roukos, Todd Ward, and Wei-	page=7 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	Jing Zhu. 2002. BLEU: a Method for Automatic	page=7 xpos=5 ypos=3 right-column left-indent indented-line year headchar-capital
+I-Reference	Evaluation of machine translation. In Proc. of the	page=7 xpos=5 ypos=3 right-column left-indent aligned-line headchar-capital
+I-Reference	40th Annual Conf. of the Association for Computa-	page=7 xpos=5 ypos=4 right-column left-indent aligned-line tailchar-hiphen
+I-Reference	tional Linguistics (ACL 02), pages 311–318, Philadel-	page=7 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	phia, PA, July.	page=7 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Charles Schafer and David Yarowsky. 2003. Statistical	page=7 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Machine Translation Using Coercive Two-Level Syn-	page=7 xpos=5 ypos=4 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Reference	tactic Translation. In Proc. of the Conf. on Empiri-	page=7 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	cal Methods in Natural Language Processing (EMNLP	page=7 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower
+I-Reference	03), pages 9–16, Sapporo, Japan, July.	page=7 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Libin Shen, Anoop Sarkar, and Franz-Josef Och. 2004.	page=7 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Discriminative Reranking of Machine Translation. In	page=7 xpos=5 ypos=5 right-column left-indent indented-line headchar-capital
+I-Reference	Proceedings of the Joint HLT and NAACL Conference	page=7 xpos=5 ypos=5 right-column left-indent aligned-line headchar-capital
+I-Reference	(HLT 04), pages 177–184, Boston, MA, May.	page=7 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Christoph Tillmann and Fei Xia. 2003. A Phrase-based	page=7 xpos=5 ypos=6 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Unigram Model for Statistical Machine Translation. In	page=7 xpos=5 ypos=6 right-column left-indent indented-line headchar-capital
+I-Reference	Companian Vol. of the Joint HLT and NAACL Confer-	page=7 xpos=5 ypos=6 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	ence (HLT 03), pages 106–108, Edmonton, Canada,	page=7 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower tailchar-comma
+I-Reference	June.	page=7 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Christoph Tillmann. 2004. A Unigram Orientation	page=7 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	Model for Statistical Machine Translation. In Com-	page=7 xpos=5 ypos=7 right-column left-indent indented-line headchar-capital tailchar-hiphen
+I-Reference	panian Vol. of the Joint HLT and NAACL Conference	page=7 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower
+I-Reference	(HLT 04), pages 101–104, Boston, MA, May.	page=7 xpos=5 ypos=7 right-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Nicola Ueffing, Franz-Josef Och, and Hermann Ney.	page=7 xpos=5 ypos=7 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2002. Generation of Word Graphs in Statistical Ma-	page=7 xpos=5 ypos=8 right-column left-indent indented-line year tailchar-hiphen
+I-Reference	chine Translation. In Proc. of the Conf. on Empiri-	page=7 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	cal Methods in Natural Language Processing (EMNLP	page=7 xpos=5 ypos=8 right-column left-indent aligned-line headchar-lower
+I-Reference	02), pages 156–163, Philadelphia, PA, July.	page=7 xpos=5 ypos=8 right-column left-indent right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Tong Zhang. 2004. Solving large scale linear prediction	page=7 xpos=5 ypos=8 right-column full-justified hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	problems using stochastic gradient descent algorithms.	page=7 xpos=5 ypos=9 right-column left-indent indented-line headchar-lower tailchar-period
+I-Reference	In ICML 04, pages 919–926.	page=7 xpos=5 ypos=9 right-column left-indent right-indent aligned-line shorter-tail headchar-capital tailchar-period

@@ -1,0 +1,694 @@
+Title	Exploring Various Knowledge in Relation Extraction	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	ZHOU GuoDong SU Jian ZHANG Jie ZHANG Min	page=0 xpos=1 ypos=0 single-column left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital above-line-space
+B-Affiliation	Institute for Infocomm research	page=0 xpos=3 ypos=0 single-column left-indent right-indent indented-line shorter-tail line-space headchar-capital
+Address	21 Heng Mui Keng Terrace, Singapore 119613	page=0 xpos=2 ypos=0 single-column left-indent right-indent hanged-line longer-tail numbered-heading1 year
+Email	Email: {zhougd, sujian, zhangjie, mzhang}@i2r.a-star.edu.sg	page=0 xpos=0 ypos=1 single-column left-indent right-indent hanged-line longer-tail symbol-atmark headchar-capital column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=1 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	Extracting semantic relationships between en-	page=0 xpos=0 ypos=2 left-column left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	tities is challenging. This paper investigates	page=0 xpos=0 ypos=2 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	the incorporation of diverse lexical, syntactic	page=0 xpos=0 ypos=2 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	and semantic knowledge in feature-based rela-	page=0 xpos=0 ypos=2 left-column left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	tion extraction using SVM. Our study illus-	page=0 xpos=0 ypos=2 left-column left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	trates that the base phrase chunking	page=0 xpos=0 ypos=2 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	information is very effective for relation ex-	page=0 xpos=0 ypos=3 left-column left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	traction and contributes to most of the per-	page=0 xpos=0 ypos=3 left-column left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	formance improvement from syntactic aspect	page=0 xpos=0 ypos=3 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	while additional information from full parsing	page=0 xpos=0 ypos=3 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	gives limited further enhancement. This sug-	page=0 xpos=0 ypos=3 left-column left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	gests that most of useful information in full	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	parse trees for relation extraction is shallow	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	and can be captured by chunking. We also	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	demonstrate how semantic information such as	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	WordNet and Name List, can be used in fea-	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	ture-based relation extraction to further im-	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	prove the performance. Evaluation on the	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	ACE corpus shows that effective incorporation	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line headchar-capital
+I-Abstract	of diverse features enables our system outper-	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	form previously best-reported systems on the	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	24 ACE relation subtypes and significantly	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line numbered-heading1
+I-Abstract	outperforms tree kernel-based systems by over	page=0 xpos=0 ypos=6 left-column left-indent right-indent aligned-line headchar-lower
+I-Abstract	20 in F-measure on the 5 ACE relation types.	page=0 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail numbered-heading1 tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	With the dramatic increase in the amount of textual	page=0 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	information available in digital archives and the	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	WWW, there has been growing interest in tech-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	niques for automatically extracting information	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	from text. Information Extraction (IE) systems are	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	expected to identify relevant information (usually	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of pre-defined types) from text documents in a cer-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tain domain and put them in a structured format.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	According to the scope of the NIST Automatic	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	Content Extraction (ACE) program, current	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-capital
+I-Body	research in IE has three main objectives: Entity	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	Detection and Tracking (EDT), Relation Detection	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-capital above-blank-line above-double-space above-line-space
+Page	427	page=0 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	and Characterization (RDC), and Event Detection	page=0 xpos=5 ypos=1 right-column full-justified column-top headchar-lower
+I-Body	and Characterization (EDC). The EDT task entails	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	the detection of entity mentions and chaining them	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	together by identifying their coreference. In ACE	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	vocabulary, entities are objects, mentions are	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	references to them, and relations are semantic	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	relationships between entities. Entities can be of	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	five types: persons, organizations, locations,	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	facilities and geo-political entities (GPE:	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-colon
+I-Body	geographically defined regions that indicate a	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	political boundary, e.g. countries, states, cities,	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	etc.). Mentions have three levels: names, nomial	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	expressions or pronouns. The RDC task detects	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	and classifies implicit and explicit relations <sup>1</sup>	page=0 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	between entities identified by the EDT task. For	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	example, we want to determine whether a person is	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	at a location, based on the evidence in the context.	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Extraction of semantic relationships between	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	entities can be very useful for applications such as	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	question answering, e.g. to answer the query “Who	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	is the president of the United States?”.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	This paper focuses on the ACE RDC task and	page=0 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	employs diverse lexical, syntactic and semantic	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	knowledge in feature-based relation extraction	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	using Support Vector Machines (SVMs). Our	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	study illustrates that the base phrase chunking	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	information contributes to most of the performance	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	inprovement from syntactic aspect while additional	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	full parsing information does not contribute much,	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	largely due to the fact that most of relations	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	defined in ACE corpus are within a very short	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	distance. We also demonstrate how semantic in-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation such as WordNet (Miller 1990) and	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	Name List can be used in the feature-based frame-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	work. Evaluation shows that the incorporation of	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	diverse features enables our system achieve best	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	reported performance. It also shows that our fea-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>1</sup> In ACE (http://www.ldc.upenn.edu/Projects/ACE),	page=0 xpos=5 ypos=8 right-column full-justified aligned-line line-double-space line-space headchar-super tailchar-comma
+I-Footnote	explicit relations occur in text with explicit evidence	page=0 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	suggesting the relationships. Implicit relations need not	page=0 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	have explicit supporting evidence in text, though they	page=0 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	should be evident from a reading of the document.	page=0 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of the 43rd Annual Meeting of the ACL, pages 427–434,	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Footer	Ann Arbor, June 2005.  2005 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail year headchar-capital page-bottom
+I-Body	ture-based approach outperforms tree kernel-based	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	approaches by 11 F-measure in relation detection	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	and more than 20 F-measure in relation detection	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	and classification on the 5 ACE relation types.	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The rest of this paper is organized as follows.	page=1 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital tailchar-period
+I-Body	Section 2 presents related work. Section 3 and	page=1 xpos=0 ypos=0 left-column full-justified hanged-line headchar-capital
+I-Body	Section 4 describe our approach and various	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	features employed respectively. Finally, we present	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	experimental setting and results in Section 5 and	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	conclude with some general observations in	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	relation extraction in Section 6.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Related Work	page=1 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The relation extraction task was formulated at the	page=1 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	7 <sup>th</sup> Message Understanding Conference (MUC-7	page=1 xpos=0 ypos=2 left-column full-justified font-largest aligned-line numbered-heading1
+I-Body	1998) and is starting to be addressed more and	page=1 xpos=0 ypos=2 left-column full-justified aligned-line year
+I-Body	more within the natural language processing and	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	machine learning communities.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Miller et al (2000) augmented syntactic full	page=1 xpos=0 ypos=3 left-column left-indent indented-line longer-tail year headchar-capital
+I-Body	parse trees with semantic information correspond-	page=1 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ing to entities and relations, and built generative	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	models for the augmented trees. Zelenko et al	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	(2003) proposed extracting relations by computing	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year
+I-Body	kernel functions between parse trees. Culotta et al	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	(2004) extended this work to estimate kernel func-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	tions between augmented dependency trees and	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	achieved 63.2 F-measure in relation detection and	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	45.8 F-measure in relation detection and classifica-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line numbered-heading2 tailchar-hiphen
+I-Body	tion on the 5 ACE relation types. Kambhatla	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	(2004) employed Maximum Entropy models for	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year
+I-Body	relation extraction with features derived from	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	word, entity type, mention level, overlap, depend-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ency tree and parse tree. It achieves 52.8 F-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	measure on the 24 ACE relation subtypes. Zhang	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	(2004) approached relation classification by com-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	bining various lexical and syntactic features with	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	bootstrapping on top of Support Vector Machines.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Tree kernel-based approaches proposed by Ze-	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	lenko et al (2003) and Culotta et al (2004) are able	page=1 xpos=0 ypos=7 left-column full-justified hanged-line year headchar-lower
+I-Body	to explore the implicit feature space without much	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	feature engineering. Yet further research work is	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	still expected to make it effective with complicated	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	relation extraction tasks such as the one defined in	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	ACE. Complicated relation extraction tasks may	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	also impose a big challenge to the modeling ap-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proach used by Miller et al (2000) which integrates	page=1 xpos=0 ypos=8 left-column full-justified aligned-line year headchar-lower
+I-Body	various tasks such as part-of-speech tagging,	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	named entity recognition, template element extrac-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion and relation extraction, in a single model.	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	428	page=1 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Body	This paper will further explore the feature-based	page=1 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	approach with a systematic study on the extensive	page=1 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	incorporation of diverse lexical, syntactic and se-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantic information. Compared with Kambhatla	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	(2004), we separately incorporate the base phrase	page=1 xpos=5 ypos=0 right-column full-justified aligned-line year
+I-Body	chunking information, which contributes to most	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	of the performance improvement from syntactic	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	aspect. We also show how semantic information	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	like WordNet and Name List can be equipped to	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	further improve the performance. Evaluation on	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	the ACE corpus shows that our system outper-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	forms Kambhatla (2004) by about 3 F-measure on	page=1 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower
+I-Body	extracting 24 ACE relation subtypes. It also shows	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	that our system outperforms tree kernel-based sys-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems (Culotta et al 2004) by over 20 F-measure on	page=1 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower
+E-Body	extracting 5 ACE relation types.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Support Vector Machines	page=1 xpos=5 ypos=3 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Support Vector Machines (SVMs) are a supervised	page=1 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	machine learning technique motivated by the sta-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tistical learning theory (Vapnik 1998). Based on	page=1 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower
+I-Body	the structural risk minimization of the statistical	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	learning theory, SVMs seek an optimal separating	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	hyper-plane to divide the training examples into	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	two classes and make decisions based on support	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	vectors which are selected as the only effective	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	instances in the training set.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Basically, SVMs are binary classifiers.	page=1 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital tailchar-period
+I-Body	Therefore, we must extend SVMs to multi-class	page=1 xpos=5 ypos=5 right-column full-justified hanged-line headchar-capital
+I-Body	(e.g. K) such as the ACE RDC task. For efficiency,	page=1 xpos=5 ypos=5 right-column full-justified aligned-line tailchar-comma
+I-Body	we apply the one vs. others strategy, which builds	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	K classifiers so as to separate one class from all	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	others, instead of the pairwise strategy, which	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	builds K*(K-1)/2 classifiers considering all pairs of	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	classes. The final decision of an instance in the	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	multiple binary classification is determined by the	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	class which has the maximal SVM output.	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Moreover, we only apply the simple linear kernel,	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-comma
+E-Body	although other kernels can peform better.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The reason why we choose SVMs for this	page=1 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	purpose is that SVMs represent the state-of–the-art	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	in the machine learning research community, and	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	there are good implementations of the algorithm	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	available. In this paper, we use the binary-class	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	SVMLight <sup>2</sup> deleveloped by Joachims (1998).	page=1 xpos=5 ypos=8 right-column right-indent font-largest aligned-line shorter-tail year headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-Footnote	<sup>2</sup> Joachims has just released a new version of SVMLight	page=1 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-super
+I-Footnote	for multi-class classification. However, this paper only	page=1 xpos=5 ypos=8 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	uses the binary-class version. For details about	page=1 xpos=5 ypos=9 right-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	SVMLight, please see http://svmlight.joachims.org/	page=1 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-capital page-bottom
+B-SectionHeader	4 Features	page=2 xpos=0 ypos=0 left-column right-indent font-larger page-top numbered-heading1 above-double-space above-line-space
+B-Body	The semantic relation is determined between two	page=2 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	mentions. In addition, we distinguish the argument	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	order of the two mentions (M1 for the first mention	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	and M2 for the second mention), e.g. M1-Parent-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	Of-M2 vs. M2-Parent-Of-M1. For each pair of	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	mentions3, we compute various lexical, syntactic	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	and semantic features .	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Words	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	According to their positions, four categories of	page=2 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	words are considered: 1) the words of both the	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	mentions, 2) the words between the two mentions,	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	3) the words before M1, and 4) the words after M2.	page=2 xpos=0 ypos=2 left-column full-justified aligned-line tailchar-period
+I-Body	For the words of both the mentions, we also differ-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	entiate the head word <sup>4</sup> of a mention from other	page=2 xpos=0 ypos=2 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	words since the head word is generally much more	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	important. The words between the two mentions	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	are classified into three bins: the first word in be-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tween, the last word in between and other words in	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	between. Both the words before M1 and after M2	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	are classified into two bins: the first word next to	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the mention and the second word next to the men-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. Since a pronominal mention (especially neu-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tral pronoun such as ‘it’ and ‘its’) contains little	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	information about the sense of the mention, the co-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	reference chain is used to decide its sense. This is	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	done by replacing the pronominal mention with the	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	most recent non-pronominal antecedent when de-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	termining the word features, which include:	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	• WM1: bag-of-words in M1	page=2 xpos=0 ypos=5 left-column right-indent font-largest aligned-line shorter-tail itemization
+B-Listitem	• HM1: head word of M1	page=2 xpos=0 ypos=5 left-column right-indent font-largest aligned-line shorter-tail itemization above-blank-line above-double-space above-line-space
+B-Footnote	<sup>3</sup> In ACE, each mention has a head annotation and an	page=2 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-super
+I-Footnote	extent annotation. In all our experimentation, we only	page=2 xpos=0 ypos=6 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	consider the word string between the beginning point of	page=2 xpos=0 ypos=6 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	the extent annotation and the end point of the head an-	page=2 xpos=0 ypos=6 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	notation. This has an effect of choosing the base phrase	page=2 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	contained in the extent annotation. In addition, this also	page=2 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	can reduce noises without losing much of information in	page=2 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	the mention. For example, in the case where the noun	page=2 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	phrase “the former CEO of McDonald” has the head	page=2 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	annotation of “CEO” and the extent annotation of “the	page=2 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	former CEO of McDonald”, we only consider “the for-	page=2 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	mer CEO” in this paper.	page=2 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>4</sup> In this paper, the head word of a mention is normally	page=2 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail headchar-super
+I-Footnote	set as the last word of the mention. However, when a	page=2 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	preposition exists in the mention, its head word is set as	page=2 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	the last word before the preposition. For example, the	page=2 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	head word of the name mention “University of Michi-	page=2 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	gan” is “University”.	page=2 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	429	page=2 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Listitem	• WM2: bag-of-words in M2	page=2 xpos=5 ypos=0 right-column right-indent font-largest column-top itemization
+B-Listitem	• HM2: head word of M2	page=2 xpos=5 ypos=0 right-column right-indent font-largest aligned-line shorter-tail itemization
+B-Listitem	• HM12: combination of HM1 and HM2	page=2 xpos=5 ypos=0 right-column right-indent font-largest aligned-line longer-tail itemization
+B-Listitem	• WBNULL: when no word in between	page=2 xpos=5 ypos=0 right-column right-indent font-largest aligned-line shorter-tail itemization
+B-Listitem	• WBFL: the only word in between when only	page=2 xpos=5 ypos=0 right-column full-justified font-largest aligned-line longer-tail itemization
+I-Listitem	one word in between	page=2 xpos=5 ypos=0 right-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• WBF: first word in between when at least two	page=2 xpos=5 ypos=1 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	words in between	page=2 xpos=5 ypos=1 right-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• WBL: last word in between when at least two	page=2 xpos=5 ypos=1 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	words in between	page=2 xpos=5 ypos=1 right-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• WBO: other words in between except first and	page=2 xpos=5 ypos=1 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	last words when at least three words in between	page=2 xpos=5 ypos=2 right-column left-indent right-indent indented-line headchar-lower
+B-Listitem	• BM1F: first word before M1	page=2 xpos=5 ypos=2 right-column right-indent font-largest hanged-line shorter-tail itemization
+B-Listitem	• BM1L: second word before M1	page=2 xpos=5 ypos=2 right-column right-indent font-largest aligned-line longer-tail itemization
+B-Listitem	• AM2F: first word after M2	page=2 xpos=5 ypos=2 right-column right-indent font-largest aligned-line shorter-tail itemization
+B-Listitem	• AM2L: second word after M2	page=2 xpos=5 ypos=2 right-column right-indent font-largest aligned-line longer-tail itemization above-double-space above-line-space
+B-SubsectionHeader	4.2 Entity Type	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	This feature concerns about the entity type of both	page=2 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the mentions, which can be PERSON,	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	ORGANIZATION, FACILITY, LOCATION and	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	Geo-Political Entity or GPE:	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-colon
+B-Listitem	• ET12: combination of mention entity types	page=2 xpos=5 ypos=4 right-column right-indent font-largest aligned-line longer-tail itemization above-double-space above-line-space
+B-SubsectionHeader	4.3 Mention Level	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	This feature considers the entity level of both the	page=2 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	mentions, which can be NAME, NOMIAL and	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	PRONOUN:	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-colon
+B-Listitem	• ML12: combination of mention levels	page=2 xpos=5 ypos=5 right-column right-indent font-largest aligned-line longer-tail itemization above-double-space above-line-space
+B-SubsectionHeader	4.4 Overlap	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	This category of features includes:	page=2 xpos=5 ypos=6 right-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-colon
+B-Listitem	• #MB: number of other mentions in between	page=2 xpos=5 ypos=6 right-column right-indent font-largest aligned-line longer-tail itemization
+B-Listitem	• #WB: number of words in between	page=2 xpos=5 ypos=6 right-column right-indent font-largest aligned-line shorter-tail itemization
+B-Listitem	• M1>M2 or M1<M2: flag indicating whether	page=2 xpos=5 ypos=6 right-column full-justified font-largest aligned-line longer-tail itemization
+I-Listitem	M2/M1is included in M1/M2.	page=2 xpos=5 ypos=6 right-column left-indent right-indent indented-line shorter-tail headchar-capital tailchar-period
+B-Body	Normally, the above overlap features are too	page=2 xpos=5 ypos=6 right-column left-indent aligned-line longer-tail headchar-capital
+I-Body	general to be effective alone. Therefore, they are	page=2 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	also combined with other features: 1)	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	ET12+M1>M2; 2) ET12+M1<M2; 3)	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+E-Body	HM12+M1>M2; 4) HM12+M1<M2.	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.5 Base Phrase Chunking	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	It is well known that chunking plays a critical role	page=2 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	in the Template Relation task of the 7 <sup>th</sup> Message	page=2 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	Understanding Conference (MUC-7 1998). The	page=2 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-capital
+I-Body	related work mentioned in Section 2 extended to	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	explore the information embedded in the full parse	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	trees. In this paper, we separate the features of base	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	phrase chunking from those of full parsing. In this	page=3 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	way, we can separately evaluate the contributions	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	of base phrase chunking and full parsing. Here, the	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	base phrase chunks are derived from full parse	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	trees using the Perl script <sup>5</sup> written by Sabine	page=3 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	Buchholz from Tilburg University and the Collins’	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	parser (Collins 1999) is employed for full parsing.	page=3 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	Most of the chunking features concern about the	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	head words of the phrases between the two men-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions. Similar to word features, three categories of	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	phrase heads are considered: 1) the phrase heads in	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	between are also classified into three bins: the first	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	phrase head in between, the last phrase head in	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	between and other phrase heads in between; 2) the	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	phrase heads before M1 are classified into two	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	bins: the first phrase head before and the second	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	phrase head before; 3) the phrase heads after M2	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	are classified into two bins: the first phrase head	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	after and the second phrase head after. Moreover,	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	we also consider the phrase path in between.	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	• CPHBNULL when no phrase in between	page=3 xpos=0 ypos=3 left-column right-indent font-largest aligned-line itemization
+B-Listitem	• CPHBFL: the only phrase head when only one	page=3 xpos=0 ypos=3 left-column full-justified font-largest aligned-line longer-tail itemization
+I-Listitem	phrase in between	page=3 xpos=0 ypos=4 left-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• CPHBF: first phrase head in between when at	page=3 xpos=0 ypos=4 left-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	least two phrases in between	page=3 xpos=0 ypos=4 left-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• CPHBL: last phrase head in between when at	page=3 xpos=0 ypos=4 left-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	least two phrase heads in between	page=3 xpos=0 ypos=4 left-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• CPHBO: other phrase heads in between except	page=3 xpos=0 ypos=5 left-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	first and last phrase heads when at least three	page=3 xpos=0 ypos=5 left-column left-indent indented-line headchar-lower
+I-Listitem	phrases in between	page=3 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower
+B-Listitem	• CPHBM1F: first phrase head before M1	page=3 xpos=0 ypos=5 left-column right-indent font-largest hanged-line longer-tail itemization
+B-Listitem	• CPHBM1L: second phrase head before M1	page=3 xpos=0 ypos=5 left-column right-indent font-largest aligned-line longer-tail itemization
+B-Listitem	• CPHAM2F: first phrase head after M2	page=3 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail itemization
+B-Listitem	• CPHAM2F: second phrase head after M2	page=3 xpos=0 ypos=6 left-column right-indent font-largest aligned-line longer-tail itemization
+B-Listitem	• CPP: path of phrase labels connecting the two	page=3 xpos=0 ypos=6 left-column full-justified font-largest aligned-line longer-tail itemization
+I-Listitem	mentions in the chunking	page=3 xpos=0 ypos=6 left-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• CPPH: path of phrase labels connecting the two	page=3 xpos=0 ypos=6 left-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	mentions in the chunking augmented with head	page=3 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower
+I-Listitem	words, if at most two phrases in between	page=3 xpos=0 ypos=7 left-column left-indent right-indent aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-SubsectionHeader	4.6 Dependency Tree	page=3 xpos=0 ypos=7 left-column right-indent hanged-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	This category of features includes information	page=3 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	about the words, part-of-speeches and phrase la-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bels of the words on which the mentions are de-	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pendent in the dependency tree derived from the	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	syntactic full parse tree. The dependency tree is	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	built by using the phrase head information returned	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	by the Collins’ parser and linking all the other	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+B-Footnote	<sup>5</sup> http://ilk.kub.nl/~sabine/chunklink/	page=3 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space headchar-super above-blank-line above-double-space above-line-space
+Page	430	page=3 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	fragments in a phrase to its head. It also includes	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	flags indicating whether the two mentions are in	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	the same NP/PP/VP.	page=3 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	• ET1DW1: combination of the entity type and	page=3 xpos=5 ypos=0 right-column full-justified font-largest aligned-line longer-tail itemization
+I-Listitem	the dependent word for M1	page=3 xpos=5 ypos=0 right-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• H1DW1: combination of the head word and the	page=3 xpos=5 ypos=0 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	dependent word for M1	page=3 xpos=5 ypos=1 right-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• ET2DW2: combination of the entity type and	page=3 xpos=5 ypos=1 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	the dependent word for M2	page=3 xpos=5 ypos=1 right-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• H2DW2: combination of the head word and the	page=3 xpos=5 ypos=1 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	dependent word for M2	page=3 xpos=5 ypos=1 right-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• ET12SameNP: combination of ET12 and	page=3 xpos=5 ypos=2 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	whether M1 and M2 included in the same NP	page=3 xpos=5 ypos=2 right-column centered left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• ET12SamePP: combination of ET12 and	page=3 xpos=5 ypos=2 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	whether M1 and M2 exist in the same PP	page=3 xpos=5 ypos=2 right-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• ET12SameVP: combination of ET12 and	page=3 xpos=5 ypos=2 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	whether M1 and M2 included in the same VP	page=3 xpos=5 ypos=3 right-column centered left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-SubsectionHeader	4.7 Parse Tree	page=3 xpos=5 ypos=3 right-column right-indent hanged-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	This category of features concerns about the in-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+E-Body	formation inherent only in the full parse tree.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	• PTP: path of phrase labels (removing dupli-	page=3 xpos=5 ypos=4 right-column full-justified font-largest aligned-line longer-tail itemization tailchar-hiphen
+I-Listitem	cates) connecting M1 and M2 in the parse tree	page=3 xpos=5 ypos=4 right-column left-indent right-indent indented-line shorter-tail headchar-lower
+B-Listitem	• PTPH: path of phrase labels (removing dupli-	page=3 xpos=5 ypos=4 right-column full-justified font-largest hanged-line longer-tail itemization tailchar-hiphen
+I-Listitem	cates) connecting M1 and M2 in the parse tree	page=3 xpos=5 ypos=4 right-column left-indent indented-line headchar-lower
+I-Listitem	augmented with the head word of the top phrase	page=3 xpos=5 ypos=4 right-column left-indent aligned-line headchar-lower
+I-Listitem	in the path.	page=3 xpos=5 ypos=4 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.8 Semantic Resources	page=3 xpos=5 ypos=5 right-column right-indent hanged-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Semantic information from various resources, such	page=3 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	as WordNet, is used to classify important words	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	into different semantic lists according to their indi-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cating relationships.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-BlockHeader	Country Name List	page=3 xpos=5 ypos=6 right-column right-indent aligned-line line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	This is to differentiate the relation subtype	page=3 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	“ROLE.Citizen-Of”, which defines the relationship	page=3 xpos=5 ypos=6 right-column full-justified aligned-line
+I-Body	between a person and the country of the person’s	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	citizenship, from other subtypes, especially	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	“ROLE.Residence”, where defines the relationship	page=3 xpos=5 ypos=7 right-column full-justified aligned-line
+I-Body	between a person and the location in which the	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	person lives. Two features are defined to include	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	this information:	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	• ET1Country: the entity type of M1 when M2 is	page=3 xpos=5 ypos=8 right-column full-justified font-largest aligned-line longer-tail itemization
+I-Listitem	a country name	page=3 xpos=5 ypos=8 right-column left-indent right-indent indented-line shorter-tail itemization headchar-lower
+B-Listitem	• CountryET2: the entity type of M2 when M1 is	page=3 xpos=5 ypos=8 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	a country name	page=3 xpos=5 ypos=8 right-column left-indent right-indent indented-line shorter-tail itemization headchar-lower page-bottom
+B-BlockHeader	Personal Relative Trigger Word List	page=4 xpos=0 ypos=0 left-column right-indent page-top headchar-capital above-double-space above-line-space
+B-Body	This is used to differentiate the six personal social	page=4 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	relation subtypes in ACE: Parent, Grandparent,	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	Spouse, Sibling, Other-Relative and Other-	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	Personal. This trigger word list is first gathered	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	from WordNet by checking whether a word has the	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	semantic class “person|…|relative”. Then, all the	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	trigger words are semi-automatically <sup>6</sup> classified	page=4 xpos=0 ypos=1 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	into different categories according to their related	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	personal social relation subtypes. We also extend	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the list by collecting the trigger words from the	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	head words of the mentions in the training data	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	according to their indicating relationships. Two	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	features are defined to include this information:	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	• ET1SC2: combination of the entity type of M1	page=4 xpos=0 ypos=2 left-column full-justified font-largest aligned-line longer-tail itemization
+I-Listitem	and the semantic class of M2 when M2 triggers	page=4 xpos=0 ypos=2 left-column left-indent indented-line headchar-lower
+I-Listitem	a personal social subtype.	page=4 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period
+B-Listitem	• SC1ET2: combination of the entity type of M2	page=4 xpos=0 ypos=3 left-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	and the semantic class of M1 when the first	page=4 xpos=0 ypos=3 left-column left-indent indented-line headchar-lower
+I-Listitem	mention triggers a personal social subtype.	page=4 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Experimentation	page=4 xpos=0 ypos=3 left-column right-indent font-larger hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	This paper uses the ACE corpus provided by LDC	page=4 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	to train and evaluate our feature-based relation ex-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	traction system. The ACE corpus is gathered from	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	various newspapers, newswire and broadcasts. In	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	this paper, we only model explicit relations be-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cause of poor inter-annotator agreement in the an-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	notation of implicit relations and their limited	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	number.	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.1 Experimental Setting	page=4 xpos=0 ypos=5 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We use the official ACE corpus from LDC. The	page=4 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	training set consists of 674 annotated text docu-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments (~300k words) and 9683 instances of rela-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions. During development, 155 of 674 documents	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	in the training set are set aside for fine-tuning the	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	system. The testing set is held out only for final	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	evaluation. It consists of 97 documents (~50k	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	words) and 1386 instances of relations. Table 1	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	lists the types and subtypes of relations for the	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	ACE Relation Detection and Characterization	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	(RDC) task, along with their frequency of occur-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line tailchar-hiphen
+I-Body	rence in the ACE training set. It shows that the	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+B-Footnote	<sup>6</sup> Those words that have the semantic classes “Parent”,	page=4 xpos=0 ypos=8 left-column full-justified aligned-line line-blank-line line-double-space line-space headchar-super tailchar-comma
+I-Footnote	“GrandParent”, “Spouse” and “Sibling” are automati-	page=4 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line tailchar-hiphen
+I-Footnote	cally set with the same classes without change. How-	page=4 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	ever, The remaining words that do not have above four	page=4 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	classes are manually classified.	page=4 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	431	page=4 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	ACE corpus suffers from a small amount of anno-	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-capital tailchar-hiphen
+I-Body	tated data for a few subtypes such as the subtype	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	“Founder” under the type “ROLE”. It also shows	page=4 xpos=5 ypos=0 right-column full-justified aligned-line
+I-Body	that the ACE RDC task defines some difficult sub-	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	types such as the subtypes “Based-In”, “Located”	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	and “Residence” under the type “AT”, which are	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	difficult even for human experts to differentiate.	page=4 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 1__	page=4 xpos=5 ypos=1 right-column left-over right-indent box longer-tail line-double-space line-space table-area
+B-Caption	Table 1: Relation types and subtypes in the ACE	page=4 xpos=5 ypos=5 right-column centered left-indent right-indent indented-line shorter-tail string-table headchar-capital
+E-Caption	training data	page=4 xpos=6 ypos=5 right-column centered left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	In this paper, we explicitly model the argument	page=4 xpos=5 ypos=5 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	order of the two mentions involved. For example,	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	when comparing mentions m1 and m2, we distin-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guish between m1-ROLE.Citizen-Of-m2 and m2-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ROLE.Citizen-Of-m1. Note that only 6 of these 24	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	relation subtypes are symmetric: “Relative-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	Location”, “Associate”, “Other-Relative”, “Other-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	Professional”, “Sibling”, and “Spouse”. In this	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	way, we model relation extraction as a multi-class	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	classification problem with 43 classes, two for	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	each relation subtype (except the above 6 symmet-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ric subtypes) and a “NONE” class for the case	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	where the two mentions are not related.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	5.2 Experimental Results	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-line-space
+B-Body	In this paper, we only measure the performance of	page=4 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	relation extraction on “true” mentions with “true”	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	chaining of coreference (i.e. as annotated by the	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	corpus annotators) in the ACE corpus. Table 2	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	measures the performance of our relation extrac-	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+I-Body	tion system over the 43 ACE relation subtypes on	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	the testing set. It shows that our system achieves	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	best performance of 63.1%/49.5%/ 55.5 in preci-	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sion/recall/F-measure when combining diverse	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	lexical, syntactic and semantic features. Table 2	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	also measures the contributions of different fea-	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures by gradually increasing the feature set. It	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	shows that:	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+Table	__Table 2__	page=5 xpos=-1 ypos=1 left-column left-over right-over box longer-tail line-double-space line-space table-area
+B-Caption	Table 2: Contribution of different features over 43	page=5 xpos=0 ypos=2 left-column centered left-indent right-indent indented-line shorter-tail string-table headchar-capital
+E-Caption	relation subtypes in the test data	page=5 xpos=0 ypos=3 left-column centered left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Listitem	• Using word features only achieves the perform-	page=5 xpos=0 ypos=3 left-column full-justified font-largest hanged-line longer-tail line-double-space line-space itemization tailchar-hiphen
+I-Listitem	ance of 69.2%/23.7%/35.3 in precision/recall/F-	page=5 xpos=0 ypos=3 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	measure.	page=5 xpos=0 ypos=3 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	• Entity type features are very useful and improve	page=5 xpos=0 ypos=3 left-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	the F-measure by 8.1 largely due to the recall	page=5 xpos=0 ypos=4 left-column left-indent indented-line headchar-lower
+I-Listitem	increase.	page=5 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	• The usefulness of mention level features is quite	page=5 xpos=0 ypos=4 left-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	limited. It only improves the F-measure by 0.8	page=5 xpos=0 ypos=4 left-column left-indent indented-line headchar-lower
+I-Listitem	due to the recall increase.	page=5 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	• Incorporating the overlap features gives some	page=5 xpos=0 ypos=5 left-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	balance between precision and recall. It in-	page=5 xpos=0 ypos=5 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	creases the F-measure by 3.6 with a big preci-	page=5 xpos=0 ypos=5 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	sion decrease and a big recall increase.	page=5 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	• Chunking features are very useful. It increases	page=5 xpos=0 ypos=5 left-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	the precision/recall/F-measure by 4.1%/5.6%/	page=5 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower
+I-Listitem	5.2 respectively.	page=5 xpos=0 ypos=6 left-column left-indent right-indent aligned-line shorter-tail numbered-heading2 tailchar-period
+B-Listitem	• To our surprise, incorporating the dependency	page=5 xpos=0 ypos=6 left-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	tree and parse tree features only improve the F-	page=5 xpos=0 ypos=6 left-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	measure by 0.6 and 0.4 respectively. This may	page=5 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Listitem	be due to the fact that most of relations in the	page=5 xpos=0 ypos=6 left-column left-indent aligned-line headchar-lower
+I-Listitem	ACE corpus are quite local. Table 3 shows that	page=5 xpos=0 ypos=7 left-column left-indent aligned-line headchar-capital
+I-Listitem	about 70% of relations exist where two men-	page=5 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tions are embedded in each other or separated	page=5 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Listitem	by at most one word. While short-distance rela-	page=5 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	tions dominate and can be resolved by above	page=5 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Listitem	simple features, the dependency tree and parse	page=5 xpos=0 ypos=8 left-column left-indent aligned-line headchar-lower
+I-Listitem	tree features can only take effect in the remain-	page=5 xpos=0 ypos=8 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	ing much less long-distance relations. However,	page=5 xpos=0 ypos=8 left-column left-indent aligned-line headchar-lower tailchar-comma
+I-Listitem	full parsing is always prone to long distance er-	page=5 xpos=0 ypos=8 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Listitem	rors although the Collins’ parser used in our	page=5 xpos=0 ypos=8 left-column left-indent aligned-line headchar-lower
+I-Listitem	system represents the state-of-the-art in full	page=5 xpos=0 ypos=9 left-column left-indent aligned-line headchar-lower
+I-Listitem	parsing.	page=5 xpos=0 ypos=9 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	432	page=5 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Listitem	• Incorporating semantic resources such as the	page=5 xpos=5 ypos=0 right-column full-justified font-largest column-top itemization
+I-Listitem	country name list and the personal relative trig-	page=5 xpos=5 ypos=0 right-column left-indent indented-line headchar-lower tailchar-hiphen
+I-Listitem	ger word list further increases the F-measure by	page=5 xpos=5 ypos=0 right-column left-indent aligned-line headchar-lower
+I-Listitem	1.5 largely due to the differentiation of the rela-	page=5 xpos=5 ypos=0 right-column left-indent aligned-line numbered-heading2 tailchar-hiphen
+I-Listitem	tion subtype “ROLE.Citizen-Of” from “ROLE.	page=5 xpos=5 ypos=0 right-column left-indent aligned-line headchar-lower tailchar-period
+I-Listitem	Residence” by distinguishing country GPEs	page=5 xpos=5 ypos=0 right-column left-indent aligned-line headchar-capital
+I-Listitem	from other GPEs. The effect of personal relative	page=5 xpos=5 ypos=1 right-column left-indent aligned-line headchar-lower
+I-Listitem	trigger words is very limited due to the limited	page=5 xpos=5 ypos=1 right-column left-indent aligned-line headchar-lower
+I-Listitem	number of testing instances over personal social	page=5 xpos=5 ypos=1 right-column left-indent aligned-line headchar-lower
+I-Listitem	relation subtypes.	page=5 xpos=5 ypos=1 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Table 4 separately measures the performance of	page=5 xpos=5 ypos=1 right-column left-indent aligned-line longer-tail string-table headchar-capital
+I-Body	different relation types and major subtypes. It also	page=5 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	indicates the number of testing instances, the num-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ber of correctly classified instances and the number	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	of wrongly classified instances for each type or	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	subtype. It is not surprising that the performance	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	on the relation type “NEAR” is low because it oc-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	curs rarely in both the training and testing data.	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Others like “PART.Subsidary” and “SOCIAL.	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	Other-Professional” also suffer from their low oc-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	currences. It also shows that our system performs	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	best on the subtype “SOCIAL.Parent” and “ROLE.	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Citizen-Of”. This is largely due to incorporation of	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	two semantic resources, i.e. the country name list	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	and the personal relative trigger word list. Table 4	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	also indicates the low performance on the relation	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	type “AT” although it frequently occurs in both the	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	training and testing data. This suggests the diffi-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	culty of detecting and classifying the relation type	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	“AT” and its subtypes.	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	Table 5 separates the performance of relation	page=5 xpos=5 ypos=5 right-column left-indent indented-line longer-tail string-table headchar-capital
+I-Body	detection from overall performance on the testing	page=5 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	set. It shows that our system achieves the perform-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ance of 84.8%/66.7%/74.7 in precision/recall/F-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	measure on relation detection. It also shows that	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	our system achieves overall performance of	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	77.2%/60.7%/68.0 and 63.1%/49.5%/55.5 in preci-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line tailchar-hiphen
+I-Body	sion/recall/F-measure on the 5 ACE relation types	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	and the best-reported systems on the ACE corpus.	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	It shows that our system achieves better perform-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ance by ~3 F-measure largely due to its gain in	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	recall. It also shows that feature-based methods	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	dramatically outperform kernel methods. This sug-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gests that feature-based methods can effectively	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	combine different features from a variety of	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	sources (e.g. WordNet and gazetteers) that can be	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	brought to bear on relation extraction. The tree	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	kernels developed in Culotta et al (2004) are yet to	page=5 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+E-Body	be effective on the ACE RDC task.	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Finally, Table 6 shows the distributions of er-	page=5 xpos=5 ypos=9 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	rors. It shows that 73% (627/864) of errors results	page=5 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower page-bottom
+I-Body	from relation detection and 27% (237/864) of er-	page=6 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	rors results from relation characterization, among	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	which 17.8% (154/864) of errors are from misclas-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sification across relation types and 9.6% (83/864)	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	of errors are from misclassification of relation sub-	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	types inside the same relation types. This suggests	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	that relation detection is critical for relation extrac-	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion.	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-double-space above-line-space
+Table	__Table 3__	page=6 xpos=-1 ypos=0 single-column left-over right-over box column-top line-double-space line-space table-area
+B-Caption	Table 3: Distribution of relations over #words and #other mentions in between in the training data	page=6 xpos=0 ypos=2 single-column centered left-indent right-indent indented-line shorter-tail string-table headchar-capital above-double-space above-line-space
+Table	__Table 4__	page=6 xpos=-1 ypos=2 single-column left-over right-over box hanged-line longer-tail line-double-space line-space table-area
+B-Caption	Table 4: Performance of different relation types and major subtypes in the test data	page=6 xpos=1 ypos=5 single-column centered left-indent right-indent indented-line shorter-tail string-table headchar-capital above-double-space above-line-space
+B-Table	System	page=6 xpos=0 ypos=5 single-column right-indent font-smallest hanged-line shorter-tail line-double-space line-space headchar-capital
+I-Table	__Table 5__	page=6 xpos=9 ypos=5 single-column left-indent right-over box indented-line longer-tail table-area
+I-Table	Relation Detection RDC on Types RDC on	page=6 xpos=3 ypos=5 single-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Table	P R F P R F P R	page=6 xpos=3 ypos=5 single-column left-indent right-indent font-smallest aligned-line longer-tail headchar-capital
+I-Table	Ours: feature-based 84.8 66.7 74.7 77.2 60.7 68.0 63.1	page=6 xpos=0 ypos=6 single-column right-indent font-smaller hanged-line shorter-tail headchar-capital column-bottom
+I-Table	Kambhatla (2004):feature-based - -	page=6 xpos=0 ypos=6 left-column right-indent font-smallest column-top year headchar-capital tailchar-hiphen column-bottom
+I-Table	Culotta et al (2004):tree kernel	page=6 xpos=0 ypos=6 single-column right-indent font-smallest column-top year headchar-capital column-bottom
+I-Table	- 63.5 - - -	page=6 xpos=5 ypos=6 right-column left-over right-indent font-smaller column-top tailchar-hiphen column-bottom
+E-Table	81.2 51.8 63.2 67.1 35.0 45.8 - -	page=6 xpos=3 ypos=6 single-column left-indent right-indent font-smallest column-top numbered-heading2 tailchar-hiphen
+B-Caption	Table 5: Comparison of our system with other best-reported systems on the ACE	page=6 xpos=0 ypos=6 single-column left-indent right-indent hanged-line shorter-tail string-table headchar-capital column-bottom above-double-space above-line-space
+Table	__Table 6__	page=6 xpos=-1 ypos=6 left-column left-over right-over box column-top line-double-space line-space table-area
+B-Caption	Table 6: Distribution of errors	page=6 xpos=1 ypos=7 left-column centered left-indent right-indent indented-line shorter-tail string-table headchar-capital above-double-space above-line-space
+B-SectionHeader	6 Discussion and Conclusion	page=6 xpos=0 ypos=7 left-column right-indent font-larger hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper, we have presented a feature-based	page=6 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	approach for relation extraction where diverse	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	lexical, syntactic and semantic knowledge are em-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ployed. Instead of exploring the full parse tree in-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation directly as previous related work, we	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	incorporate the base phrase chunking information	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	433	page=6 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	first. Evaluation on the ACE corpus shows that	page=6 xpos=5 ypos=6 right-column full-justified column-top headchar-lower
+I-Body	base phrase chunking contributes to most of the	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	performance improvement from syntactic aspect	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	while further incorporation of the parse tree and	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	dependence tree information only slightly im-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proves the performance. This may be due to three	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	reasons: First, most of relations defined in ACE	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	have two mentions being close to each other.	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	While short-distance relations dominate and can be	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	resolved by simple features such as word and	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	chunking features, the further dependency tree and	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	parse tree features can only take effect in the re-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	maining much less and more difficult long-distance	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	relations. Second, it is well known that full parsing	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	is always prone to long-distance parsing errors al-	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	though the Collins’ parser used in our system	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	achieves the state-of-the-art performance. There-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fore, the state-of-art full parsing still needs to be	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	further enhanced to provide accurate enough in-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation, especially PP (Preposition Phrase) at-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tachment. Last, effective ways need to be explored	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	to incorporate information embedded in the full	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	parse trees. Besides, we also demonstrate how se-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantic information such as WordNet and Name	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	List, can be used in feature-based relation extrac-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	tion to further improve the performance.	page=7 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The effective incorporation of diverse features	page=7 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	enables our system outperform previously best-	page=7 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	reported systems on the ACE corpus. Although	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	tree kernel-based approaches facilitate the explora-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of the implicit feature space with the parse tree	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	structure, yet the current technologies are expected	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	to be further advanced to be effective for relatively	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	complicated relation extraction tasks such as the	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	one defined in ACE where 5 types and 24 subtypes	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	need to be extracted. Evaluation on the ACE RDC	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	task shows that our approach of combining various	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	kinds of evidence can scale better to problems,	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	where we have a lot of relation types with a rela-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tively small amount of annotated data. The ex-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	periment result also shows that our feature-based	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	approach outperforms the tree kernel-based ap-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proaches by more than 20 F-measure on the extrac-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion of 5 ACE relation types.	page=7 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the future work, we will focus on exploring	page=7 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	more semantic knowledge in relation extraction,	page=7 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	which has not been covered by current research.	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Moreover, our current work is done when the En-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tity Detection and Tracking (EDT) has been per-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fectly done. Therefore, it would be interesting to	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	see how imperfect EDT affects the performance in	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	relation extraction.	page=7 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=7 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Agichtein E. and Gravano L. (2000). Snowball: Extract-	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ing relations from large plain text collections. In Pro-	page=7 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ceedings of 5 <sup>th</sup> ACM International Conference on	page=7 xpos=0 ypos=7 left-column left-indent aligned-line headchar-lower
+I-Reference	Digital Libraries. 4-7 June 2000. San Antonio, TX.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-line-space
+B-Reference	Brin S. (1998). Extracting patterns and relations from	page=7 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	the World Wide Web. In Proceedings of WebDB	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	workshop at 6 <sup>th</sup> International Conference on Extend-	page=7 xpos=0 ypos=8 left-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ing DataBase Technology (EDBT’1998).23-27	page=7 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line year headchar-lower
+I-Reference	March 1998, Valencia, Spain	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital above-blank-line above-double-space above-line-space
+Page	434	page=7 xpos=4 ypos=9 left-column left-indent right-over font-smallest indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Reference	Collins M. (1999). Head-driven statistical models for	page=7 xpos=5 ypos=0 right-column full-justified font-smallest column-top year headchar-capital
+I-Reference	natural language parsing. Ph.D. Dissertation, Univer-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	sity of Pennsylvania.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Collins M. and Duffy N. (2002). Covolution kernels for	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	natural language. In Dietterich T.G., Becker S. and	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Ghahramani Z. editors. Advances in Neural Informa-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	tion Processing Systems 14. Cambridge, MA.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Culotta A. and Sorensen J. (2004). Dependency tree	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	kernels for relation extraction. In Proceedings of 42 <sup>th</sup>	page=7 xpos=5 ypos=1 right-column left-indent indented-line headchar-lower
+I-Reference	Annual Meeting of the Association for Computational	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Linguistics. 21-26 July 2004. Barcelona, Spain	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital above-line-space
+B-Reference	Cumby C.M. and Roth D. (2003). On kernel methods	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	for relation learning. In Fawcett T. and Mishra N.	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	editors. In Proceedings of 20 <sup>th</sup> International Confer-	page=7 xpos=5 ypos=2 right-column left-indent aligned-line headchar-lower tailchar-hiphen
+I-Reference	ence on Machine Learning (ICML’2003). 21-24 Aug	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line year headchar-lower
+I-Reference	2003. Washington D.C. USA. AAAI Press.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail year tailchar-period above-line-space
+B-Reference	Haussler D. (1999). Covention kernels on discrete struc-	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	tures. Technical Report UCS-CRL-99-10. University	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of California, Santa Cruz.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Reference	Joachims T. (1998). Text categorization with Support	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	Vector Machines: Learning with many relevant fea-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	tures. In Proceedings of European Conference on	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Machine Learning(ECML’1998). 21-23 April 1998.	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line year headchar-capital tailchar-period
+I-Reference	Chemnitz, Germany	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital above-line-space
+B-Reference	Miller G.A. (1990). WordNet: An online lexical data-	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	base. International Journal of Lexicography.	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	3(4):235-312.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-line-space
+B-Reference	Miller S., Fox H., Ramshaw L. and Weischedel R.	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-space headchar-capital tailchar-period
+I-Reference	(2000). A novel use of statistical parsing to extract	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line year
+I-Reference	information from text. In Proceedings of 6 <sup>th</sup> Applied	page=7 xpos=5 ypos=5 right-column left-indent aligned-line headchar-lower
+I-Reference	Natural Language Processing Conference. 29 April	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	- 4 May 2000, Seattle, USA	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail year
+B-Reference	MUC-7. (1998). Proceedings of the 7 <sup>th</sup> Message Under-	page=7 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	standing Conference (MUC-7). Morgan Kaufmann,	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	San Mateo, CA.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Kambhatla N. (2004). Combining lexical, syntactic and	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	semantic features with Maximum Entropy models for	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	extracting relations. In Proceedings of 42 <sup>th</sup> Annual	page=7 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower
+I-Reference	Meeting of the Association for Computational Lin-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	guistics. 21-26 July 2004. Barcelona, Spain.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Reference	Roth D. and Yih W.T. (2002). Probabilistic reasoning	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	for entities and relation recognition. In Proceedings	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of 19 <sup>th</sup> International Conference on Computational	page=7 xpos=5 ypos=7 right-column left-indent aligned-line headchar-lower
+I-Reference	Linguistics(CoLING’2002). Taiwan.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-line-space
+B-Reference	Vapnik V. (1998). Statistical Learning Theory. Whiley,	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-comma
+I-Reference	Chichester, GB.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Zelenko D., Aone C. and Richardella. (2003). Kernel	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital
+I-Reference	methods for relation extraction. Journal of Machine	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Learning Research. pp1083-1106.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-line-space
+B-Reference	Zhang Z. (2004). Weekly-supervised relation classifica-	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-space year headchar-capital tailchar-hiphen
+I-Reference	tion for Information Extraction. In Proceedings of	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	ACM 13 <sup>th</sup> Conference on Information and Knowl-	page=7 xpos=5 ypos=8 right-column left-indent aligned-line headchar-capital tailchar-hiphen
+I-Reference	edge Management (CIKM’2004). 8-13 Nov 2004.	page=7 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-period
+I-Reference	Washington D.C., USA.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period

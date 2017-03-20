@@ -1,0 +1,801 @@
+Title	Dependency Treelet Translation: Syntactically Informed Phrasal SMT	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Author	Chris Quirk, Arul Menezes	page=0 xpos=0 ypos=0 left-column left-indent right-indent font-larger column-top line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Microsoft Research	page=0 xpos=1 ypos=0 left-column left-indent right-indent indented-line shorter-tail headchar-capital
+Address	One Microsoft Way	page=0 xpos=1 ypos=0 left-column left-indent right-indent headchar-capital
+Address	Redmond, WA 98052	page=0 xpos=1 ypos=1 left-column left-indent right-indent hanged-line longer-tail headchar-capital
+Email	{chrisq,arulm}@microsoft.com	page=0 xpos=0 ypos=1 left-column left-indent right-indent font-smallest hanged-line longer-tail symbol-atmark above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=1 left-column centered left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	We describe a novel approach to	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	statistical machine translation that	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	combines syntactic information in the	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	source language with recent advances in	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	phrasal translation. This method requires a	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	source-language dependency parser, target	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	language word segmentation and an	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	unsupervised word alignment component.	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	We align a parallel corpus, project the	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-capital
+I-Abstract	source dependency parse onto the target	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	sentence, extract dependency treelet	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	translation pairs, and train a tree-based	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	ordering model. We describe an efficient	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	decoder and show that using these tree-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	based models in combination with	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	conventional SMT models provides a	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	promising approach that incorporates the	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	power of phrasal SMT with the linguistic	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	generality available in a parser.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1. Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-larger hanged-line shorter-tail line-double-space line-space itemization above-double-space above-line-space
+B-Body	Over the past decade, we have witnessed a	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	revolution in the field of machine translation	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	(MT) toward statistical or corpus-based methods.	page=0 xpos=0 ypos=6 left-column full-justified aligned-line tailchar-period
+I-Body	Yet despite this success, statistical machine	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	translation (SMT) has many hurdles to overcome.	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	While it excels at translating domain-specific	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	terminology and fixed phrases, grammatical	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	generalizations are poorly captured and often	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	mangled during translation (Thurmair, 04).	page=0 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	1.1. Limitations of string-based phrasal SMT	page=0 xpos=0 ypos=7 left-column right-indent aligned-line longer-tail line-double-space line-space above-double-space above-line-space
+B-Body	State-of-the-art phrasal SMT systems such as	page=0 xpos=0 ypos=8 left-column full-justified aligned-line line-double-space line-space headchar-capital
+I-Body	(Koehn et al., 03) and (Vogel et al., 03) model	page=0 xpos=0 ypos=8 left-column full-justified aligned-line
+I-Body	translations of phrases (here, strings of adjacent	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	words, not syntactic constituents) rather than	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	individual words. Arbitrary reordering of words is	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	allowed within memorized phrases, but typically	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	271	page=0 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Author	Colin Cherry	page=0 xpos=6 ypos=0 right-column left-indent right-indent font-larger column-top headchar-capital
+B-Affiliation	University of Alberta	page=0 xpos=6 ypos=0 right-column left-indent right-indent hanged-line longer-tail headchar-capital
+Address	Edmonton, Alberta	page=0 xpos=6 ypos=0 right-column left-indent right-indent indented-line shorter-tail headchar-capital
+Address	Canada T6G 2E1	page=0 xpos=6 ypos=1 right-column left-indent right-indent indented-line shorter-tail headchar-capital
+Email	colinc@cs.ualberta.ca	page=0 xpos=6 ypos=1 right-column left-indent right-indent font-smallest hanged-line longer-tail symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+I-Body	only a small amount of phrase reordering is	page=0 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	allowed, modeled in terms of offset positions at	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	the string level. This reordering model is very	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	limited in terms of linguistic generalizations. For	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	instance, when translating English to Japanese, an	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	ideal system would automatically learn large-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scale typological differences: English SVO	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	clauses generally become Japanese SOV clauses,	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	English post-modifying prepositional phrases	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	become Japanese pre-modifying postpositional	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	phrases, etc. A phrasal SMT system may learn the	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	internal reordering of specific common phrases,	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	but it cannot generalize to unseen phrases that	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	share the same linguistic structure.	page=0 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In addition, these systems are limited to	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	phrases contiguous in both source and target, and	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	thus cannot learn the generalization that English	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	not may translate as French ne…pas except in the	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	context of specific intervening words.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	1.2. Previous work on syntactic SMT <sup>1</sup>	page=0 xpos=5 ypos=5 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space above-double-space above-line-space
+B-Body	The hope in the SMT community has been that	page=0 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the incorporation of syntax would address these	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	issues, but that promise has yet to be realized.	page=0 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	One simple means of incorporating syntax into	page=0 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	SMT is by re-ranking the n-best list of a baseline	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-capital
+I-Body	SMT system using various syntactic models, but	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	Och et al. (04) found very little positive impact	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	with this approach. However, an n-best list of	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	even 16,000 translations captures only a tiny	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	fraction of the ordering possibilities of a 20 word	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	sentence; re-ranking provides the syntactic model	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	no opportunity to boost or prune large sections of	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	that search space.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Inversion Transduction Grammars (Wu, 97), or	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	ITGs, treat translation as a process of parallel	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-capital
+I-Body	parsing of the source and target language via a	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	synchronized grammar. To make this process	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+B-Footnote	<sup>1</sup> Note that since this paper does not address the word alignment problem	page=0 xpos=5 ypos=8 right-column right-indent font-smallest aligned-line shorter-tail line-blank-line line-double-space line-space headchar-super
+I-Footnote	directly, we do not discuss the large body of work on incorporating syntactic	page=0 xpos=5 ypos=8 right-column right-indent font-smallest aligned-line longer-tail headchar-lower
+I-Footnote	information into the word alignment process.	page=0 xpos=5 ypos=8 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of the 43rd Annual Meeting of the ACL, pages 271–279,	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Footer	Ann Arbor, June 2005.  2005 c Association for Computational Linguistics	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail year headchar-capital page-bottom
+I-Body	computationally efficient, however, some severe	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	simplifying assumptions are made, such as using	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	a single non-terminal label. This results in the	page=1 xpos=0 ypos=0 left-column full-justified aligned-line itemization headchar-lower
+I-Body	model simply learning a very high level	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	preference regarding how often nodes should	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	switch order without any contextual information.	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Also these translation models are intrinsically	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	word-based; phrasal combinations are not	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	modeled directly, and results have not been	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	competitive with the top phrasal SMT systems.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Along similar lines, Alshawi et al. (2000) treat	page=1 xpos=0 ypos=1 left-column left-indent indented-line longer-tail year headchar-capital
+I-Body	translation as a process of simultaneous induction	page=1 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	of source and target dependency trees using head-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	transduction; again, no separate parser is used.	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Yamada and Knight (01) employ a parser in the	page=1 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	target language to train probabilities on a set of	page=1 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	operations that convert a target language tree to a	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	source language string. This improves fluency	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	slightly (Charniak et al., 03), but fails to	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	significantly impact overall translation quality.	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This may be because the parser is applied to MT	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	output, which is notoriously unlike native	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	language, and no additional insight is gained via	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	source language analysis.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Lin (04) translates dependency trees using	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	paths. This is the first attempt to incorporate large	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	phrasal SMT-style memorized patterns together	page=1 xpos=0 ypos=4 left-column centered right-indent aligned-line headchar-lower
+I-Body	with a separate source dependency parser and	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	SMT models. However the phrases are limited to	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	linear paths in the tree, the only SMT model used	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	is a maximum likelihood channel model and there	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	is no ordering model. Reported BLEU scores are	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	far below the leading phrasal SMT systems.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	MSR-MT (Menezes & Richardson, 01) parses	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	both source and target languages to obtain a	page=1 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	logical form (LF), and translates source LFs using	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	memorized aligned LF patterns to produce a	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	target LF. It utilizes a separate sentence	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	realization component (Ringger et al., 04) to turn	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	this into a target sentence. As such, it does not use	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	a target language model during decoding, relying	page=1 xpos=0 ypos=7 left-column full-justified aligned-line itemization headchar-lower
+I-Body	instead on MLE channel probabilities and	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	heuristics such as pattern size. Recently Aue et al.	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	(04) incorporated an LF-based language model	page=1 xpos=0 ypos=8 left-column full-justified aligned-line itemization
+I-Body	(LM) into the system for a small quality boost. A	page=1 xpos=0 ypos=8 left-column full-justified aligned-line
+I-Body	key disadvantage of this approach and related	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	work (Ding & Palmer, 02) is that it requires a	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	parser in both languages, which severely limits	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	the language pairs that can be addressed.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	272	page=1 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-SectionHeader	2. Dependency Treelet Translation	page=1 xpos=5 ypos=0 right-column right-indent font-larger column-top itemization above-double-space above-line-space
+B-Body	In this paper we propose a novel dependency tree-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	based approach to phrasal SMT which uses tree-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based ‘phrases’ and a tree-based ordering model	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	in combination with conventional SMT models to	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	produce state-of-the-art translations.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our system employs a source-language	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	dependency parser, a target language word	page=1 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	segmentation component, and an unsupervised	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	word alignment component to learn treelet	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	translations from a parallel sentence-aligned	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	corpus. We begin by parsing the source text to	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	obtain dependency trees and word-segmenting the	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	target side, then applying an off-the-shelf word	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	alignment component to the bitext.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The word alignments are used to project the	page=1 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	source dependency parses onto the target	page=1 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	sentences. From this aligned parallel dependency	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	corpus we extract a treelet translation model	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	incorporating source and target treelet pairs,	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	where a treelet is defined to be an arbitrary	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	connected subgraph of the dependency tree. A	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	unique feature is that we allow treelets with a	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	wildcard root, effectively allowing mappings for	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	siblings in the dependency tree. This allows us to	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	model important phenomena, such as not …	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower
+I-Body	ne…pas. We also train a variety of statistical	page=1 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail headchar-lower
+I-Body	models on this aligned dependency tree corpus,	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	including a channel model and an order model.	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To translate an input sentence, we parse the	page=1 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	sentence, producing a dependency tree for that	page=1 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	sentence. We then employ a decoder to find a	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	combination and ordering of treelet translation	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	pairs that cover the source tree and are optimal	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	according to a set of models that are combined in	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	a log-linear framework as in (Och, 03).	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period
+B-Body	This approach offers the following advantages	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	over string-based SMT systems: Instead of	page=1 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	limiting learned phrases to contiguous word	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	sequences, we allow translation by all possible	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	phrases that form connected subgraphs (treelets)	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in the source and target dependency trees. This is	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	a powerful extension: the vast majority of	page=1 xpos=5 ypos=7 right-column full-justified aligned-line itemization headchar-lower
+I-Body	surface-contiguous phrases are also treelets of the	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	tree; in addition, we gain discontiguous phrases,	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	including combinations such as verb-object,	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	article-noun, adjective-noun etc. regardless of the	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	number of intervening words.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+Figure	__Figure 1__	page=2 xpos=0 ypos=-1 left-column left-indent right-indent box page-top figure-area
+B-Caption	Figure 1. An example dependency tree.	page=2 xpos=0 ypos=0 left-column left-indent right-indent font-smallest hanged-line shorter-tail string-figure headchar-capital tailchar-period above-double-space above-line-space
+B-Body	Another major advantage is the ability to	page=2 xpos=0 ypos=0 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	employ more powerful models for reordering	page=2 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	source language constituents. These models can	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	incorporate information from the source analysis.	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For example, we may model directly the	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	probability that the translation of an object of a	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	preposition in English should precede the	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	corresponding postposition in Japanese, or the	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	probability that a pre-modifying adjective in	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	English translates into a post-modifier in French.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.1. Parsing and alignment	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail line-double-space line-space above-double-space above-line-space
+B-Body	We require a source language dependency parser	page=2 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	that produces unlabeled, ordered dependency	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	trees and annotates each source word with a part-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	of-speech (POS). An example dependency tree is	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	shown in Figure 1. The arrows indicate the head	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	annotation, and the POS for each candidate is	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	listed underneath. For the target language we only	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	require word segmentation.	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	To obtain word alignments we currently use	page=2 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	GIZA++ (Och & Ney, 03). We follow the	page=2 xpos=0 ypos=4 left-column full-justified hanged-line headchar-capital
+I-Body	common practice of deriving many-to-many	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	alignments by running the IBM models in both	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	directions and combining the results heuristically.	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Our heuristics differ in that they constrain many-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	to-one alignments to be contiguous in the source	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	dependency tree. A detailed description of these	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	heuristics can be found in Quirk et al. (04).	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2. Projecting dependency trees	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail line-double-space line-space above-double-space above-line-space
+B-Body	Given a word aligned sentence pair and a source	page=2 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	dependency tree, we use the alignment to project	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the source structure onto the target sentence. One-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	to-one alignments project directly to create a	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	target tree isomorphic to the source. Many-to-one	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	alignments project similarly; since the ‘many’	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	source nodes are connected in the tree, they act as	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	if condensed into a single node. In the case of	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	one-to-many alignments we project the source	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	node to the rightmost <sup>2</sup> of the ‘many’ target words,	page=2 xpos=0 ypos=8 left-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+I-Body	and make the rest of the target words dependent	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	on it.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Footnote	<sup>2</sup> If the target language is Japanese, leftmost may be more appropriate.	page=2 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line longer-tail line-blank-line line-double-space line-space headchar-super tailchar-period above-blank-line above-double-space above-line-space
+Page	273	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 2__	page=2 xpos=5 ypos=-1 right-column left-indent right-indent box column-top figure-area above-line-space
+B-Caption	Figure 2. Projection of dependencies.	page=2 xpos=5 ypos=3 right-column left-indent right-indent font-smallest shorter-tail line-space string-figure headchar-capital tailchar-period above-double-space above-line-space
+B-Body	Unaligned target words <sup>3</sup> are attached into the	page=2 xpos=5 ypos=4 right-column left-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	dependency structure as follows: assume there is	page=2 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	an unaligned word t <sub>j</sub> in position j. Let i < j and k	page=2 xpos=5 ypos=4 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	> j be the target positions closest to j such that t <sub>i</sub>	page=2 xpos=5 ypos=4 right-column full-justified font-larger aligned-line
+I-Body	depends on t <sub>k</sub> or vice versa: attach t j to the lower	page=2 xpos=5 ypos=4 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	of t <sub>i</sub> or t k . If all the nodes to the left (or right) of	page=2 xpos=5 ypos=5 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	position j are unaligned, attach t <sub>j</sub> to the left-most	page=2 xpos=5 ypos=5 right-column full-justified font-larger aligned-line headchar-lower
+E-Body	(or right-most) word that is aligned.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail tailchar-period
+B-Body	The target dependency tree created in this	page=2 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	process may not read off in the same order as the	page=2 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	target string, since our alignments do not enforce	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	phrasal cohesion. For instance, consider the	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	projection of the parse in Figure 1 using the word	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	alignment in Figure 2a. Our algorithm produces	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the dependency tree in Figure 2b. If we read off	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the leaves in a left-to-right in-order traversal, we	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	do not get the original input string: de démarrage	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	appears in the wrong place.	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	A second reattachment pass corrects this	page=2 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	situation. For each node in the wrong order, we	page=2 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	reattach it to the lowest of its ancestors such that	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	it is in the correct place relative to its siblings and	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	parent. In Figure 2c, reattaching démarrage to et	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	suffices to produce the correct order.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Footnote	<sup>3</sup> Source unaligned nodes do not present a problem, with the exception that if	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line longer-tail line-blank-line line-double-space line-space headchar-super
+I-Footnote	the root is unaligned, the projection process produces a forest of target trees	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower
+I-Footnote	anchored by a dummy root.	page=2 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-SubsectionHeader	2.3. Extracting treelet translation pairs	page=3 xpos=0 ypos=0 left-column right-indent page-top above-double-space above-line-space
+B-Body	From the aligned pairs of dependency trees we	page=3 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	extract all pairs of aligned source and target	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	treelets along with word-level alignment linkages,	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	up to a configurable maximum size. We also keep	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	treelet counts for maximum likelihood estimation.	page=3 xpos=0 ypos=1 left-column right-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.4. Order model	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail line-double-space line-space above-double-space above-line-space
+B-Body	Phrasal SMT systems often use a model to score	page=3 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	the ordering of a set of phrases. One approach is	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	to penalize any deviation from monotone	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	decoding; another is to estimate the probability	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	that a source phrase in position i translates to a	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	target phrase in position j (Koehn et al., 03).	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We attempt to improve on these approaches by	page=3 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	incorporating syntactic information. Our model	page=3 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	assigns a probability to the order of a target tree	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	__Figure 3__	page=3 xpos=4 ypos=-1 right-column left-over right-indent box column-top figure-area column-bottom above-line-space
+I-Body	given a source tree. Under the assumption that Figure 3. Aligned dependency tree pair, annotated with	page=3 xpos=0 ypos=3 single-column centered right-indent font-largest column-top line-space headchar-lower
+I-Body	constituents generally move as a whole, we head-relative positions	page=3 xpos=0 ypos=3 single-column right-indent font-largest aligned-line shorter-tail headchar-lower column-bottom
+I-Body	predict the probability of each given ordering of	page=3 xpos=0 ypos=3 left-column full-justified column-top headchar-lower
+I-Body	modifiers independently. That is, we make the	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	following simplifying assumption (where c is a	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	function returning the set of nodes modifying t):	page=3 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	P( order ( T ) | S , T ) = ∏ <sub>t</sub> <sub>∈</sub> T P( order ( c ( t )) | S , T )	page=3 xpos=0 ypos=4 left-column centered left-indent right-indent font-largest indented-line headchar-capital
+B-Body	Furthermore, we assume that the position of each	page=3 xpos=0 ypos=4 left-column full-justified hanged-line longer-tail headchar-capital
+I-Body	child can be modeled independently in terms of a	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	head-relative position:	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	P( order ( c ( t )) | S , T ) = ∏ P( pos ( m , t ) | S , T )	page=3 xpos=0 ypos=5 left-column centered left-indent right-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	m ∈ c ( t )	page=3 xpos=2 ypos=5 left-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower above-line-space
+B-Body	Figure 3a demonstrates an aligned dependency	page=3 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-space string-figure headchar-capital
+I-Body	tree pair annotated with head-relative positions;	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-semicolon
+I-Body	Figure 3b presents the same information in an	page=3 xpos=0 ypos=6 left-column full-justified aligned-line string-figure headchar-capital
+E-Body	alternate tree-like representation.	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We currently use a small set of features	page=3 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	reflecting very local information in the	page=3 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	dependency tree to model P(pos(m,t) | S, T):	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Listitem	• The lexical items of the head and modifier.	page=3 xpos=0 ypos=7 left-column right-indent font-largest aligned-line longer-tail itemization tailchar-period
+B-Listitem	• The lexical items of the source nodes aligned	page=3 xpos=0 ypos=7 left-column full-justified font-largest aligned-line longer-tail itemization
+I-Listitem	to the head and modifier.	page=3 xpos=0 ypos=7 left-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-period
+B-Listitem	• The part-of-speech ("cat") of the source nodes	page=3 xpos=0 ypos=7 left-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	aligned to the head and modifier.	page=3 xpos=0 ypos=8 left-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-period
+B-Listitem	• The head-relative position of the source node	page=3 xpos=0 ypos=8 left-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	aligned to the source modifier. <sup>4</sup>	page=3 xpos=0 ypos=8 left-column left-indent right-indent font-largest indented-line shorter-tail headchar-lower
+B-Body	As an example, consider the children of	page=3 xpos=0 ypos=8 left-column left-indent hanged-line longer-tail headchar-capital
+I-Body	propriété in Figure 3. The head-relative positions	page=3 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower above-blank-line above-double-space above-line-space
+B-Footnote	4	page=3 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail line-blank-line line-double-space line-space numeric-only
+I-Footnote	One can also include features of siblings to produce a Markov ordering	page=3 xpos=0 ypos=9 left-column left-indent right-indent font-smallest indented-line longer-tail headchar-capital
+I-Footnote	model. However, we found that this had little impact in practice.	page=3 xpos=0 ypos=9 left-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	274	page=3 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	of its modifiers la and Cancel are -1 and +1,	page=3 xpos=5 ypos=3 right-column full-justified column-top headchar-lower tailchar-comma
+I-Body	respectively. Thus we try to predict as follows:	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	P(pos(m <sub>1</sub> ) = -1 |	page=3 xpos=5 ypos=4 right-column left-indent right-indent font-smaller indented-line shorter-tail headchar-capital
+I-Equation	lex(m <sub>1</sub> )="la", lex(h)="propriété",	page=3 xpos=5 ypos=4 right-column left-indent right-indent font-smaller indented-line longer-tail headchar-lower tailchar-comma
+I-Equation	lex(src(m <sub>1</sub> ))="the", lex(src(h)="property",	page=3 xpos=5 ypos=4 right-column left-indent right-indent font-smaller aligned-line longer-tail headchar-lower tailchar-comma
+I-Equation	cat(src(m <sub>1</sub> ))=Determiner, cat(src(h))=Noun,	page=3 xpos=5 ypos=4 right-column centered left-indent right-indent font-smaller aligned-line longer-tail headchar-lower tailchar-comma
+I-Equation	position(src(m <sub>1</sub> ))=-2) ·	page=3 xpos=5 ypos=4 right-column left-indent right-indent font-smaller aligned-line shorter-tail headchar-lower
+I-Equation	P(pos(m <sub>2</sub> ) = +1 |	page=3 xpos=5 ypos=5 right-column left-indent right-indent font-smaller hanged-line shorter-tail headchar-capital
+I-Equation	lex(m <sub>2</sub> )="Cancel", lex(h)="propriété",	page=3 xpos=5 ypos=5 right-column left-indent right-indent font-smaller indented-line longer-tail headchar-lower tailchar-comma
+I-Equation	lex(src(m <sub>2</sub> ))="Cancel", lex(src(h))="property",	page=3 xpos=5 ypos=5 right-column left-indent right-indent font-smaller aligned-line longer-tail headchar-lower tailchar-comma
+I-Equation	cat(src(m <sub>2</sub> ))=Noun, cat(src(h))=Noun,	page=3 xpos=5 ypos=5 right-column left-indent right-indent font-smaller aligned-line shorter-tail headchar-lower tailchar-comma
+I-Equation	position(src(m <sub>2</sub> ))=-1)	page=3 xpos=5 ypos=5 right-column left-indent right-indent font-smaller aligned-line shorter-tail headchar-lower
+B-Body	The training corpus acts as a supervised training	page=3 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail headchar-capital
+I-Body	set: we extract a training feature vector from each	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of the target language nodes in the aligned	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	dependency tree pairs. Together these feature	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	vectors are used to train a decision tree	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	(Chickering, 02). The distribution at each leaf of	page=3 xpos=5 ypos=6 right-column full-justified aligned-line
+I-Body	the DT can be used to assign a probability to each	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	possible target language position. A more detailed	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	description is available in (Quirk et al., 04).	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.5. Other models	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail line-double-space line-space above-double-space above-line-space
+B-Body	Channel Models: We incorporate two distinct	page=3 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	channel models, a maximum likelihood estimate	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	(MLE) model and a model computed using	page=3 xpos=5 ypos=8 right-column full-justified aligned-line
+I-Body	Model-1 word-to-word alignment probabilities as	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	in (Vogel et al., 03). The MLE model effectively	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	captures non-literal phrasal translations such as	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	idioms, but suffers from data sparsity. The word-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen page-bottom
+I-Body	to-word model does not typically suffer from data	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+E-Body	sparsity, but prefers more literal translations.	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Given a set of treelet translation pairs that	page=4 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	cover a given input dependency tree and produce	page=4 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	a target dependency tree, we model the	page=4 xpos=0 ypos=0 left-column full-justified aligned-line itemization headchar-lower
+I-Body	probability of source given target as the product	page=4 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	of the individual treelet translation probabilities:	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-colon
+I-Body	we assume a uniform probability distribution over	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	the decompositions of a tree into treelets.	page=4 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Target Model: Given an ordered target language	page=4 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	dependency tree, it is trivial to read off the surface	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	string. We evaluate this string using a trigram	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	model with modified Kneser-Ney smoothing.	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Miscellaneous Feature Functions: The log-linear	page=4 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	framework allows us to incorporate other feature	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	functions as ‘models’ in the translation process.	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For instance, using fewer, larger treelet translation	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	pairs often provides better translations, since they	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	capture more context and allow fewer possibilities	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	for search and model error. Therefore we add a	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	feature function that counts the number of phrases	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	used. We also add a feature that counts the	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	number of target words; this acts as an	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	insertion/deletion bonus/penalty.	page=4 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3. Decoding	page=4 xpos=0 ypos=4 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space itemization above-double-space above-line-space
+B-Body	The challenge of tree-based decoding is that the	page=4 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	traditional left-to-right decoding approach of	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	string-based systems is inapplicable. Additional	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	challenges are posed by the need to handle	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	treelets—perhaps discontiguous or overlapping—	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	and a combinatorially explosive ordering space.	page=4 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our decoding approach is influenced by ITG	page=4 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	(Wu, 97) with several important extensions. First,	page=4 xpos=0 ypos=6 left-column full-justified hanged-line tailchar-comma
+I-Body	we employ treelet translation pairs instead of	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	single word translations. Second, instead of	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	modeling rearrangements as either preserving	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	source order or swapping source order, we allow	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the dependents of a node to be ordered in any	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	arbitrary manner and use the order model	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	described in section 2.4 to estimate probabilities.	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Finally, we use a log-linear framework for model	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	combination that allows any amount of other	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	information to be modeled.	page=4 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We will initially approach the decoding	page=4 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	problem as a bottom up, exhaustive search. We	page=4 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	define the set of all possible treelet translation	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	pairs of the subtree rooted at each input node in	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	the following manner: A treelet translation pair x	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	is said to match the input dependency tree S iff	page=4 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	275	page=4 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+Figure	__Figure 4__	page=4 xpos=5 ypos=-1 right-column left-over right-indent box column-top figure-area above-line-space
+B-Caption	Figure 4. Example decoder structures.	page=4 xpos=5 ypos=3 right-column left-over right-indent font-smallest shorter-tail line-space string-figure headchar-capital tailchar-period above-double-space above-line-space
+I-Body	there is some connected subgraph S’ that is	page=4 xpos=5 ypos=3 right-column full-justified indented-line longer-tail line-double-space line-space headchar-lower
+I-Body	identical to the source side of x. We say that x	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	covers all the nodes in S’ and is rooted at source	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	node s, where s is the root of matched subgraph	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	S’.	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	We first find all treelet translation pairs that	page=4 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	match the input dependency tree. Each matched	page=4 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower
+I-Body	pair is placed on a list associated with the input	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	node where the match is rooted. Moving bottom-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	up through the input dependency tree, we	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	compute a list of candidate translations for the	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	input subtree rooted at each node s, as follows:	page=4 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Body	Consider in turn each treelet translation pair x	page=4 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	rooted at s. The treelet pair x may cover only a	page=4 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	portion of the input subtree rooted at s. Find all	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	descendents s' of s that are not covered by x, but	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	whose parent s'' is covered by x. At each such	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	node s'' look at all interleavings of the children of	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	s'' specified by x, if any, with each translation t'	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	from the candidate translation list <sup>5</sup> of each child	page=4 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	s'. Each such interleaving is scored using the	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	models previously described and added to the	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	candidate translation list for that input node. The	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	resultant translation is the best scoring candidate	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	for the root input node.	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As an example, see the example dependency	page=4 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	tree in Figure 4a and treelet translation pair in 4b.	page=4 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	This treelet translation pair covers all the nodes in	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	4a except the subtrees rooted at software and is.	page=4 xpos=5 ypos=8 right-column full-justified aligned-line tailchar-period above-blank-line above-double-space above-line-space
+B-Footnote	<sup>5</sup> Computed by the previous application of this procedure to s' during the	page=4 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail line-blank-line line-double-space line-space headchar-super
+I-Footnote	bottom-up traversal.	page=4 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period page-bottom
+B-Body	We first compute (and cache) the candidate	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-capital
+I-Body	translation lists for the subtrees rooted at software	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	and is, then construct full translation candidates	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	by attaching those subtree translations to installés	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	in all possible ways. The order of sur relative to	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	installés is fixed; it remains to place the translated	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	subtrees for the software and is. Note that if c is	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the count of children specified in the mapping and	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	r is the count of subtrees translated via recursive	page=5 xpos=0 ypos=1 left-column full-justified aligned-line itemization headchar-lower
+I-Body	calls, then there are (c+r+1)!/(c+1)! orderings.	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Thus (1+2+1)!/(1+1)! = 12 candidate translations	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	are produced for each combination of translations	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	of the software and is.	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.1. Optimality-preserving optimizations	page=5 xpos=0 ypos=2 left-column right-indent aligned-line longer-tail line-double-space line-space above-double-space above-line-space
+B-BlockHeader	Dynamic Programming	page=5 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space headchar-capital
+B-Body	Converting this exhaustive search to dynamic	page=5 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	programming relies on the observation that	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	scoring a translation candidate at a node depends	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	on the following information from its	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	descendents: the order model requires features	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	from the root of a translated subtree, and the	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	target language model is affected by the first and	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	last two words in each subtree. Therefore, we	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	need to keep the best scoring translation candidate	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	for a given subtree for each combination of (head,	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	leading bigram, trailing bigram), which is, in the	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	worst case, O(V <sup>5</sup> ), where V is the vocabulary size.	page=5 xpos=0 ypos=5 left-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	The dynamic programming approach therefore	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	does not allow for great savings in practice	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	because a trigram target language model forces	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	consideration of context external to each subtree.	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-BlockHeader	Duplicate elimination	page=5 xpos=0 ypos=6 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space headchar-capital
+B-Body	To eliminate unnecessary ordering operations, we	page=5 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail headchar-capital
+I-Body	first check that a given set of words has not been	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	previously ordered by the decoder. We use an	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	order-independent hash table where two trees are	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	considered equal if they have the same tree	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	structure and lexical choices after sorting each	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	child list into a canonical order. A simpler	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	alternate approach would be to compare bags-of-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	words. However since our possible orderings are	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	bound by the induced tree structure, we might	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	overzealously prune a candidate with a different	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	tree structure that allows a better target order.	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2. Lossy optimizations	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail line-double-space line-space above-double-space above-line-space
+B-Body	The following optimizations do not preserve	page=5 xpos=0 ypos=9 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+E-Body	optimality, but work well in practice.	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	276	page=5 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-BlockHeader	N-best lists	page=5 xpos=5 ypos=0 right-column right-indent font-larger column-top headchar-capital
+B-Body	Instead of keeping the full list of translation	page=5 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	candidates for a given input node, we keep a top-	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	scoring subset of the candidates. While the	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	decoder is no longer guaranteed to find the	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	optimal translation, in practice the quality impact	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	is minimal with a list size ≥ 10 (see Table 5.6).	page=5 xpos=5 ypos=1 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Variable-sized n-best lists: A further speedup	page=5 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	can be obtained by noting that the number of	page=5 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	translations using a given treelet pair is	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	exponential in the number of subtrees of the input	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	not covered by that pair. To limit this explosion	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	we vary the size of the n-best list on any recursive	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	call in inverse proportion to the number of	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	subtrees uncovered by the current treelet. This has	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the intuitive appeal of allowing a more thorough	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	exploration of large treelet translation pairs (that	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	are likely to result in better translations) than of	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	smaller, less promising pairs.	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-BlockHeader	Pruning treelet translation pairs	page=5 xpos=5 ypos=3 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space headchar-capital
+B-Body	Channel model scores and treelet size are	page=5 xpos=5 ypos=3 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	powerful predictors of translation quality.	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Heuristically pruning low scoring treelet	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	translation pairs before the search starts allows	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the decoder to focus on combinations and	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	orderings of high quality treelet pairs.	page=5 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	• Only keep those treelet translation pairs with	page=5 xpos=5 ypos=4 right-column full-justified font-largest aligned-line longer-tail itemization
+I-Listitem	an MLE probability above a threshold t.	page=5 xpos=5 ypos=5 right-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-period
+B-Listitem	• Given a set of treelet translation pairs with	page=5 xpos=5 ypos=5 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	identical sources, keep those with an MLE	page=5 xpos=5 ypos=5 right-column left-indent indented-line headchar-lower
+I-Listitem	probability within a ratio r of the best pair.	page=5 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Listitem	• At each input node, keep only the top k treelet	page=5 xpos=5 ypos=5 right-column full-justified font-largest hanged-line longer-tail itemization
+I-Listitem	translation pairs rooted at that node, as ranked	page=5 xpos=5 ypos=6 right-column left-indent indented-line headchar-lower
+I-Listitem	first by size, then by MLE channel model	page=5 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower
+I-Listitem	score, then by Model 1 score. The impact of	page=5 xpos=5 ypos=6 right-column left-indent aligned-line headchar-lower
+I-Listitem	this optimization is explored in Table 5.6.	page=5 xpos=5 ypos=6 right-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-BlockHeader	Greedy ordering	page=5 xpos=5 ypos=7 right-column right-indent font-larger hanged-line shorter-tail line-double-space line-space headchar-capital
+B-Body	The complexity of the ordering step at each node	page=5 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	grows with the factorial of the number of children	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	to be ordered. This can be tamed by noting that	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	given a fixed pre- and post-modifier count, our	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	order model is capable of evaluating a single	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	ordering decision independently from other	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	ordering decisions.	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	One version of the decoder takes advantage of	page=5 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	this to severely limit the number of ordering	page=5 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	possibilities considered. Instead of considering all	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	interleavings, it considers each potential modifier	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	position in turn, greedily picking the most	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+B-Table	English French	page=6 xpos=2 ypos=0 left-column left-indent right-indent page-top headchar-capital
+I-Table	Training Sentences 570,562	page=6 xpos=0 ypos=0 left-column left-indent right-indent hanged-line shorter-tail headchar-capital
+I-Table	Words 7,327,251 8,415,882	page=6 xpos=1 ypos=0 left-column left-indent right-indent indented-line longer-tail headchar-capital
+I-Table	Vocabulary 72,440 80,758	page=6 xpos=1 ypos=0 left-column left-indent right-indent aligned-line headchar-capital
+I-Table	Singletons 38,037 39,496	page=6 xpos=1 ypos=0 left-column left-indent right-indent aligned-line headchar-capital
+I-Table	Test Sentences 10,000	page=6 xpos=0 ypos=1 left-column left-indent right-indent hanged-line shorter-tail headchar-capital
+E-Table	Words 133,402 153,701	page=6 xpos=1 ypos=1 left-column left-indent right-indent indented-line longer-tail headchar-capital above-double-space above-line-space
+B-Caption	Table 4.1 Data characteristics	page=6 xpos=0 ypos=1 left-column left-indent right-indent font-smallest hanged-line shorter-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+I-Body	probable child for that slot, moving on to the next	page=6 xpos=0 ypos=1 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	slot, picking the most probable among the	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	remaining children for that slot and so on.	page=6 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The complexity of greedy ordering is linear,	page=6 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	but at the cost of a noticeable drop in BLEU score	page=6 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	(see Table 5.4). Under default settings our system	page=6 xpos=0 ypos=2 left-column full-justified aligned-line
+I-Body	tries to decode a sentence with exhaustive	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	ordering until a specified timeout, at which point	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	it falls back to greedy ordering.	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4. Experiments	page=6 xpos=0 ypos=3 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space itemization above-double-space above-line-space
+B-Body	We evaluated the translation quality of the system	page=6 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	using the BLEU metric (Papineni et al., 02) under	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	a variety of configurations. We compared against	page=6 xpos=0 ypos=4 left-column full-justified aligned-line itemization headchar-lower
+I-Body	two radically different types of systems to	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	demonstrate the competitiveness of this approach:	page=6 xpos=0 ypos=4 left-column right-indent aligned-line headchar-lower tailchar-colon
+B-Listitem	• Pharaoh: A leading phrasal SMT decoder	page=6 xpos=0 ypos=4 left-column full-justified font-largest aligned-line itemization
+I-Listitem	(Koehn et al., 03).	page=6 xpos=0 ypos=5 left-column left-indent right-indent indented-line shorter-tail tailchar-period
+B-Listitem	• The MSR-MT system described in Section 1,	page=6 xpos=0 ypos=5 left-column full-justified font-largest hanged-line longer-tail itemization tailchar-comma
+I-Listitem	an EBMT/hybrid MT system.	page=6 xpos=0 ypos=5 left-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1. Data	page=6 xpos=0 ypos=5 left-column right-indent hanged-line shorter-tail line-double-space line-space above-double-space above-line-space
+B-Body	We used a parallel English-French corpus	page=6 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	containing 1.5 million sentences of Microsoft	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	technical data (e.g., support articles, product	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	documentation). We selected a cleaner subset of	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	this data by eliminating sentences with XML or	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	HTML tags as well as very long (>160 characters)	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	and very short (<40 characters) sentences. We	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	held out 2,000 sentences for development testing	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	and parameter tuning, 10,000 sentences for	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	testing, and 250 sentences for lambda training.	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We ran experiments on subsets of the training	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	data ranging from 1,000 to 300,000 sentences.	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+E-Body	Table 4.1 presents details about this dataset.	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail string-table headchar-capital tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2. Training	page=6 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail line-double-space line-space above-double-space above-line-space
+B-Body	We parsed the source (English) side of the corpus	page=6 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	using NLPWIN, a broad-coverage rule-based	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	parser developed at Microsoft Research able to	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	277	page=6 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	produce syntactic analyses at varying levels of	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	depth (Heidorn, 02). For the purposes of these	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	experiments we used a dependency tree output	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	with part-of-speech tags and unstemmed surface	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	words.	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For word alignment, we used GIZA++,	page=6 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	following a standard training regimen of five	page=6 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	iterations of Model 1, five iterations of the HMM	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	Model, and five iterations of Model 4, in both	page=6 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+E-Body	directions.	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We then projected the dependency trees and	page=6 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	used the aligned dependency tree pairs to extract	page=6 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	treelet translation pairs and train the order model	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	as described above. The target language model	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	was trained using only the French side of the	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	corpus; additional data may improve its	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	performance. Finally we trained lambdas via	page=6 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	Maximum BLEU (Och, 03) on 250 held-out	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	sentences with a single reference translation, and	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	tuned the decoder optimization parameters (n-best	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	list size, timeouts etc) on the development test set.	page=6 xpos=5 ypos=3 right-column centered right-indent aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-BlockHeader	Pharaoh	page=6 xpos=5 ypos=4 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space headchar-capital
+B-Body	The same GIZA++ alignments as above were	page=6 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	used in the Pharaoh decoder. We used the	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	heuristic combination described in (Och & Ney,	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	03) and extracted phrasal translation pairs from	page=6 xpos=5 ypos=4 right-column full-justified aligned-line
+I-Body	this combined alignment as described in (Koehn	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	et al., 03). Except for the order model (Pharaoh	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	uses its own ordering approach), the same models	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	were used: MLE channel model, Model 1 channel	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	model, target language model, phrase count, and	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	word count. Lambdas were trained in the same	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	manner (Och, 03).	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-BlockHeader	MSR-MT	page=6 xpos=5 ypos=6 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space headchar-capital
+B-Body	MSR-MT used its own word alignment approach	page=6 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail headchar-capital
+I-Body	as described in (Menezes & Richardson, 01) on	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the same training data. MSR-MT does not use	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+E-Body	lambdas or a target language model.	page=6 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5. Results	page=6 xpos=5 ypos=7 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space itemization above-double-space above-line-space
+B-Body	We present BLEU scores on an unseen 10,000	page=6 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	sentence test set using a single reference	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	translation for each sentence. Speed numbers are	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the end-to-end translation speed in sentences per	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	minute. All results are based on a training set size	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	of 100,000 sentences and a phrase size of 4,	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	except Table 5.2 which varies the phrase size and	page=6 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	Table 5.3 which varies the training set size.	page=6 xpos=5 ypos=9 right-column full-justified aligned-line string-table headchar-capital tailchar-period page-bottom
+I-Body	Results for our system and the comparison	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-capital
+I-Body	systems are presented in Table 5.1. Pharaoh	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	monotone refers to Pharaoh with phrase	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	reordering disabled. The difference between	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	Pharaoh and the Treelet system is significant at	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	the 99% confidence level under a two-tailed	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	paired t-test.	page=7 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Table	BLEU Score Sents/min	page=7 xpos=2 ypos=1 left-column left-indent right-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Table	Pharaoh monotone 37.06 4286	page=7 xpos=0 ypos=1 left-column right-indent hanged-line shorter-tail headchar-capital
+I-Table	Pharaoh 38.83 162	page=7 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-capital
+I-Table	MSR-MT 35.26 453	page=7 xpos=0 ypos=1 left-column right-indent aligned-line headchar-capital
+E-Table	Treelet 40.66 10.1	page=7 xpos=0 ypos=2 left-column right-indent aligned-line headchar-capital above-double-space above-line-space
+B-Caption	Table 5.1 System comparisons	page=7 xpos=1 ypos=2 left-column centered left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+B-Body	Table 5.2 compares Pharaoh and the Treelet	page=7 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+I-Body	system at different phrase sizes. While all the	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	differences are statistically significant at the 99%	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	confidence level, the wide gap at smaller phrase	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	sizes is particularly striking. We infer that	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	whereas Pharaoh depends heavily on long phrases	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	to encapsulate reordering, our dependency tree-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based ordering model enables credible	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	performance even with single-word ‘phrases’. We	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	conjecture that in a language pair with large-scale	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	ordering differences, such as English-Japanese,	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	even long phrases are unlikely to capture the	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	necessary reorderings, whereas our tree-based	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	ordering model may prove more robust.	page=7 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Table	Max. size Treelet BLEU Pharaoh BLEU	page=7 xpos=0 ypos=5 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Table	1 37.50 23.18	page=7 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail numbered-heading1
+I-Table	2 39.84 32.07	page=7 xpos=0 ypos=5 left-column right-indent aligned-line numbered-heading1
+I-Table	3 40.36 37.09	page=7 xpos=0 ypos=5 left-column right-indent aligned-line numbered-heading1
+I-Table	4 (default) 40.66 38.83	page=7 xpos=0 ypos=6 left-column right-indent aligned-line numbered-heading1
+I-Table	5 40.71 39.41	page=7 xpos=0 ypos=6 left-column right-indent aligned-line numbered-heading1
+E-Table	6 40.74 39.72	page=7 xpos=0 ypos=6 left-column right-indent aligned-line numbered-heading1 above-double-space above-line-space
+B-Caption	Table 5.2 Effect of maximum treelet/phrase size	page=7 xpos=0 ypos=6 left-column centered left-indent right-indent font-smallest indented-line longer-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+B-Body	Table 5.3 compares the same systems at different	page=7 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+I-Body	training corpus sizes. All of the differences are	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	statistically significant at the 99% confidence	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	level. Noting that the gap widens at smaller	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	corpus sizes, we suggest that our tree-based	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	approach is more suitable than string-based	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	phrasal SMT when translating from English into	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	languages or domains with limited parallel data.	page=7 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Table	1k 3k 10k	page=7 xpos=1 ypos=8 left-column left-indent right-indent font-smallest indented-line longer-tail line-double-space line-space
+I-Table	Pharaoh 17.20 22.51 27.70	page=7 xpos=0 ypos=8 left-column right-over font-smallest hanged-line longer-tail headchar-capital
+E-Table	Treelet 18.70 25.39 30.96	page=7 xpos=0 ypos=9 left-column right-over font-smallest aligned-line headchar-capital column-bottom
+B-Body	We also ran experiments varying different	page=7 xpos=5 ypos=0 right-column left-indent right-over column-top headchar-capital
+I-Body	system parameters. Table 5.4 explores different	page=7 xpos=5 ypos=0 right-column right-over hanged-line headchar-lower
+I-Body	ordering strategies, Table 5.5 looks at the impact	page=7 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower
+I-Body	of discontiguous phrases and Table 5.6 looks at	page=7 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower
+I-Body	the impact of decoder optimizations such as	page=7 xpos=5 ypos=0 right-column right-over aligned-line headchar-lower
+E-Body	treelet pruning and n-best list size.	page=7 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Table	Ordering strategy BLEU Sents/min	page=7 xpos=5 ypos=1 right-column right-over aligned-line longer-tail line-double-space line-space headchar-capital
+I-Table	No order model (monotone) 35.35 39.7	page=7 xpos=5 ypos=1 right-column right-over aligned-line shorter-tail headchar-capital
+I-Table	Greedy ordering 38.85 13.1	page=7 xpos=5 ypos=1 right-column right-over aligned-line headchar-capital
+E-Table	Exhaustive (default) 40.66 10.1	page=7 xpos=5 ypos=1 right-column right-over aligned-line headchar-capital above-double-space above-line-space
+B-Caption	Table 5.4 Effect of ordering strategies	page=7 xpos=6 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+B-Table	BLEU Score Sents/min	page=7 xpos=7 ypos=2 right-column left-indent right-over indented-line longer-tail line-double-space line-space headchar-capital
+I-Table	Contiguous only 40.08 11.0	page=7 xpos=5 ypos=2 right-column right-over hanged-line shorter-tail headchar-capital
+E-Table	Allow discontiguous 40.66 10.1	page=7 xpos=5 ypos=2 right-column right-over aligned-line headchar-capital above-double-space above-line-space
+B-Caption	Table 5.5 Effect of allowing treelets that correspond to	page=7 xpos=5 ypos=3 right-column right-over font-smallest aligned-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	discontiguous phrases	page=7 xpos=6 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Table	BLEU Score Sents/min	page=7 xpos=7 ypos=3 right-column left-indent right-over indented-line longer-tail line-double-space line-space headchar-capital
+I-Table	Pruning treelets	page=7 xpos=5 ypos=3 right-column right-indent hanged-line shorter-tail headchar-capital
+I-Table	Keep top 1 28.58 144.9	page=7 xpos=5 ypos=3 right-column left-indent right-over indented-line longer-tail headchar-capital
+I-Table	… top 3 39.10 21.2	page=7 xpos=5 ypos=4 right-column left-indent right-over aligned-line shorter-tail
+I-Table	… top 5 40.29 14.6	page=7 xpos=5 ypos=4 right-column left-indent right-over aligned-line
+I-Table	… top 10 (default) 40.66 10.1	page=7 xpos=5 ypos=4 right-column left-indent right-over aligned-line
+I-Table	… top 20 40.70 3.5	page=7 xpos=5 ypos=4 right-column left-indent aligned-line shorter-tail
+I-Table	Keep all 40.29 3.2	page=7 xpos=5 ypos=4 right-column left-indent aligned-line headchar-capital
+I-Table	N-best list size	page=7 xpos=5 ypos=4 right-column right-indent hanged-line shorter-tail headchar-capital
+I-Table	1-best 37.28 175.4	page=7 xpos=5 ypos=5 right-column left-indent right-over indented-line longer-tail
+I-Table	5-best 39.96 79.4	page=7 xpos=5 ypos=5 right-column left-indent right-over aligned-line shorter-tail
+I-Table	10-best 40.42 23.3	page=7 xpos=5 ypos=5 right-column left-indent right-over aligned-line
+I-Table	20-best (default) 40.66 10.1	page=7 xpos=5 ypos=5 right-column left-indent right-over aligned-line
+E-Table	50-best 39.39 3.7	page=7 xpos=5 ypos=5 right-column left-indent aligned-line shorter-tail above-double-space above-line-space
+B-Caption	Table 5.6 Effect of optimizations	page=7 xpos=6 ypos=6 right-column left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space string-table headchar-capital above-double-space above-line-space
+B-SectionHeader	6. Discussion	page=7 xpos=5 ypos=6 right-column right-indent font-larger hanged-line shorter-tail line-double-space line-space itemization above-double-space above-line-space
+B-Body	We presented a novel approach to syntactically-	page=7 xpos=5 ypos=6 right-column right-over aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	informed statistical machine translation that	page=7 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower
+I-Body	leverages a parsed dependency tree representation	page=7 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower
+I-Body	of the source language via a tree-based ordering	page=7 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower
+I-Body	model and treelet phrase extraction. We showed	page=7 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower
+I-Body	that it significantly outperforms a leading phrasal	page=7 xpos=5 ypos=7 right-column right-over aligned-line headchar-lower
+I-Body	SMT system over a wide range of training set	page=7 xpos=5 ypos=8 right-column right-over aligned-line headchar-capital
+E-Body	sizes and phrase sizes.	page=7 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Constituents vs. dependencies: Most attempts at	page=7 xpos=5 ypos=8 right-column right-over aligned-line longer-tail headchar-capital above-double-space above-line-space
+B-Table	30k 100k 300k	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space
+I-Table	33.73 38.83 42.75	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line numbered-heading2
+E-Table	35.81 40.66 44.32	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line numbered-heading2 column-bottom above-double-space above-line-space
+B-Caption	Table 5.3 Effect of training set size on treelet translation and comparison system	page=7 xpos=1 ypos=9 single-column left-indent right-indent font-smallest column-top line-double-space line-space string-table headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	278	page=7 xpos=4 ypos=9 left-column left-indent right-over column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	syntactic SMT have relied on a constituency	page=8 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	analysis rather than dependency analysis. While	page=8 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	this is a natural starting point due to its well-	page=8 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	understood nature and commonly available tools,	page=8 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we feel that this is not the most effective	page=8 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	representation for syntax in MT. Dependency	page=8 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	analysis, in contrast to constituency analysis,	page=8 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	tends to bring semantically related elements	page=8 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	together (e.g., verbs become adjacent to all their	page=8 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	arguments) and is better suited to lexicalized	page=8 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	models, such as the ones presented in this paper.	page=8 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	7. Future work	page=8 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space itemization above-double-space above-line-space
+B-Body	The most important contribution of our system is	page=8 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	a linguistically motivated ordering approach	page=8 xpos=0 ypos=2 left-column full-justified aligned-line itemization headchar-lower
+I-Body	based on the source dependency tree, yet this	page=8 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	paper only explores one possible model. Different	page=8 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	model structures, machine learning techniques,	page=8 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and target feature representations all have the	page=8 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	potential for significant improvements.	page=8 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Currently we only consider the top parse of an	page=8 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	input sentence. One means of considering	page=8 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	alternate possibilities is to build a packed forest of	page=8 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	dependency trees and use this in decoding	page=8 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	translations of each input sentence.	page=8 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As noted above, our approach shows particular	page=8 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	promise for language pairs such as English-	page=8 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	Japanese that exhibit large-scale reordering and	page=8 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	have proven difficult for string-based approaches.	page=8 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Further experimentation with such language pairs	page=8 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	is necessary to confirm this. Our experience has	page=8 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	been that the quality of GIZA++ alignments for	page=8 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	such language pairs is inadequate. Following up	page=8 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	on ideas introduced by (Cherry & Lin, 03) we	page=8 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	plan to explore ways to leverage the dependency	page=8 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	tree to improve alignment quality.	page=8 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=8 xpos=0 ypos=7 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Alshawi, Hiyan, Srinivas Bangalore, and Shona	page=8 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Douglas. Learning dependency translation models	page=8 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	as collections of finite-state head transducers.	page=8 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	Computational Linguistics, 26(1):45–60, 2000.	page=8 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Aue, Anthony, Arul Menezes, Robert C. Moore, Chris	page=8 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Quirk, and Eric Ringger. Statistical machine	page=8 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	translation using labeled semantic dependency	page=8 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	graphs. TMI 2004.	page=8 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Charniak, Eugene, Kevin Knight, and Kenji Yamada.	page=8 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Syntax-based language models for statistical	page=8 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	machine translation. MT Summit 2003.	page=8 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	279	page=8 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Reference	Cherry, Colin and Dekang Lin. A probability model to	page=8 xpos=5 ypos=0 right-column full-justified font-smallest column-top headchar-capital
+I-Reference	improve word alignment. ACL 2003.	page=8 xpos=5 ypos=0 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Chickering, David Maxwell. The WinMine Toolkit.	page=8 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Microsoft Research Technical Report: MSR-TR-	page=8 xpos=5 ypos=0 right-column left-indent font-smallest indented-line headchar-capital tailchar-hiphen
+I-Reference	2002-103.	page=8 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Reference	Ding, Yuan and Martha Palmer. Automatic learning of	page=8 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	parallel dependency treelet pairs. IJCNLP 2004.	page=8 xpos=5 ypos=1 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Heidorn, George. (2000). “Intelligent writing	page=8 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	assistance”. In Dale et al. Handbook of Natural	page=8 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Language Processing, Marcel Dekker.	page=8 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Koehn, Philipp, Franz Josef Och, and Daniel Marcu.	page=8 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Statistical phrase based translation. NAACL 2003.	page=8 xpos=5 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Lin, Dekang. A path-based transfer model for machine	page=8 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	translation. COLING 2004.	page=8 xpos=5 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Menezes, Arul and Stephen D. Richardson. A best-	page=8 xpos=5 ypos=2 right-column left-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	first alignment algorithm for automatic extraction of	page=8 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	transfer mappings from bilingual corpora. DDMT	page=8 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Workshop, ACL 2001.	page=8 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Och, Franz Josef and Hermann Ney. A systematic	page=8 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	comparison of various statistical alignment models,	page=8 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	Computational Linguistics, 29(1):19-51, 2003.	page=8 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Och, Franz Josef. Minimum error rate training in	page=8 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	statistical machine translation. ACL 2003.	page=8 xpos=5 ypos=4 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Och, Franz Josef, et al. A smorgasbord of features for	page=8 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	statistical machine translation. HLT/NAACL 2004.	page=8 xpos=5 ypos=4 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Papineni, Kishore, Salim Roukos, Todd Ward, and	page=8 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Wei-Jing Zhu. BLEU: a method for automatic	page=8 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	evaluation of machine translation. ACL 2002.	page=8 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Quirk, Chris, Arul Menezes, and Colin Cherry.	page=8 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	Dependency Tree Translation. Microsoft Research	page=8 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Technical Report: MSR-TR-2004-113.	page=8 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Ringger, Eric, et al. Linguistically informed statistical	page=8 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	models of constituent structure for ordering in	page=8 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	sentence realization. COLING 2004.	page=8 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Thurmair, Gregor. Comparing rule-based and	page=8 xpos=5 ypos=6 right-column left-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	statistical MT output. Workshop on the amazing	page=8 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	utility of parallel and comparable corpora, LREC,	page=8 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	2004.	page=8 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year tailchar-period above-double-space above-line-space
+B-Reference	Vogel, Stephan, Ying Zhang, Fei Huang, Alicia	page=8 xpos=5 ypos=7 right-column left-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Tribble, Ashish Venugopal, Bing Zhao, and Alex	page=8 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Waibel. The CMU statistical machine translation	page=8 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	system. MT Summit 2003.	page=8 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Wu, Dekai. Stochastic inversion transduction	page=8 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	grammars and bilingual parsing of parallel corpora.	page=8 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	Computational Linguistics, 23(3):377–403, 1997.	page=8 xpos=5 ypos=8 right-column centered left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Yamada, Kenji and Kevin Knight. A syntax-based	page=8 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	statistical translation model. ACL, 2001.	page=8 xpos=5 ypos=9 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-lower tailchar-period

@@ -1,0 +1,281 @@
+Title	Interactively Exploring a Machine Translation Model	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Steve DeNeefe, Kevin Knight, and Hayward H. Chan	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Information Sciences Institute and Department of Computer Science	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Affiliation	The Viterbi School of Engineering, University of Southern California	page=0 xpos=1 ypos=1 single-column centered left-indent right-indent font-larger headchar-capital
+Address	4676 Admiralty Way, Suite 1001	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail
+Address	Marina del Rey, CA 90292	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Email	{sdeneefe,knight}@isi.edu, hhchan@umich.edu	page=0 xpos=1 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail symbol-atmark column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-blank-line above-double-space above-line-space
+B-Abstract	This paper describes a method of in-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	teractively visualizing and directing the	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	process of translating a sentence. The	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	method allows a user to explore a model	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	of syntax-based statistical machine trans-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	lation (MT), to understand the model’s	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	strengths and weaknesses, and to compare	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	it to other MT systems. Using this visual-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ization method, we can find and address	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	conceptual and practical problems in an	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	MT system. In our demonstration at ACL,	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-comma
+I-Abstract	new users of our tool will drive a syntax-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	based decoder for themselves.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	There are many new approaches to statistical ma-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	chine translation, and more ideas are being sug-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gested all the time. However, it is difficult to deter-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mine how well a model will actually perform. Ex-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	perienced researchers have been surprised by the ca-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pability of unintuitive word-for-word models; at the	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	same time, seemingly capable models often have se-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rious hidden problems — intuition is no substitute	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	for experimentation. With translation ideas growing	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	more complex, capturing aspects of linguistic struc-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture in different ways, it becomes difficult to try out	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	a new idea without a large-scale software develop-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+E-Body	ment effort.	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Anyone who builds a full-scale, trainable trans-	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	lation system using syntactic information faces this	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	problem. We know that syntactic models often do	page=0 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	97	page=0 xpos=4 ypos=9 left-column left-indent right-over indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	not fit the data. For example, the syntactic sys-	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	tem described in Yamada and Knight (2001) can-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	not translate n-to-m-word phrases and does not al-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	low for multi-level syntactic transformations; both	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	phenomena are frequently observed in real data. In	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	building a new syntax-based MT system which ad-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dresses these flaws, we wanted to find problems in	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	our framework as early as possible. So we decided	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	to create a tool that could help us answer questions	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	like:	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Listitem	1. Does our framework allow good translations	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-double-space line-space itemization
+I-Listitem	for real data, and if not, where does it get stuck?	page=0 xpos=5 ypos=4 right-column left-indent indented-line headchar-lower above-double-space above-line-space
+B-Listitem	2. How does our framework compare to exist-	page=0 xpos=5 ypos=5 right-column left-indent hanged-line line-double-space line-space itemization tailchar-hiphen
+I-Listitem	ing state-of-the-art phrase-based statistical MT	page=0 xpos=5 ypos=5 right-column left-indent indented-line headchar-lower
+I-Listitem	systems such as Och and Ney (2004)?	page=0 xpos=5 ypos=5 right-column left-indent right-indent aligned-line shorter-tail year headchar-lower above-double-space above-line-space
+B-Body	The result is DerivTool, an interactive translation	page=0 xpos=5 ypos=6 right-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	visualization tool. It allows a user to build up a	page=0 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	translation from one language to another, step by	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	step, presenting the user with the myriad of choices	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	available to the decoder at each point in the pro-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cess. DerivTool simplifies the user’s experience of	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	exploring these choices by presenting only the de-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cisions relevant to the context in which the user is	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	working, and allowing the user to search for choices	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	that fit a particular set of conditions. Some previ-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ous tools have allowed the user to visualize word	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	alignment information (Callison-Burch et al., 2004;	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Smith and Jahr, 2000), but there has been no cor-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	responding deep effort into visualizing the decoding	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	experience itself. Other tools use visualization to aid	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the user in manually developing a grammar (Copes-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	take and Flickinger, 2000), while our tool visualizes	page=0 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-lower column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of the ACL Interactive Poster and Demonstration Sessions,	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Footer	pages 97–100, Ann Arbor, June 2005.  2005 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail year headchar-lower page-bottom
+Table	__Table 1__	page=1 xpos=-1 ypos=-3 single-column centered box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: By applying applying four rules, a Chinese verb phrase is translated to English.	page=1 xpos=0 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	the translation process itself, using rules from very	page=1 xpos=0 ypos=0 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower
+I-Body	large, automatically learned rule sets. DerivTool can	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	be adapted to visualize other syntax-based MT mod-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els, other tree-to-tree or tree-to-string MT models, or	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	models for paraphrasing.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Translation Framework	page=1 xpos=0 ypos=2 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	It is useful at this point to give a brief descrip-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tion of the syntax-based framework that we work	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	with, which is based on translating Chinese sen-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences into English syntax trees. Galley et al. (2004)	page=1 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower
+I-Body	describe how to learn hundreds of millions of tree-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	transformation rules from a parsed, aligned Chi-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nese/English corpus, and Galley et al. (submitted)	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	describe probability estimators for those rules. We	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	decode a new Chinese sentence with a method simi-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lar to parsing, where we apply learned rules to build	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	up a complete English tree hypothesis from the Chi-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	nese string.	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The rule extractor learns rules for many situations.	page=1 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital tailchar-period
+I-Body	Some are simple phrase-to-phrase rules such as:	page=1 xpos=0 ypos=5 left-column right-indent hanged-line shorter-tail headchar-capital tailchar-colon above-line-space
+B-Equation	NPB(DT(the) NNS(police)) ↔ ´ 0	page=1 xpos=0 ypos=6 left-column centered left-indent right-indent indented-line shorter-tail line-space headchar-capital above-line-space
+B-Body	This rule should be read as follows: replace the Chi-	page=1 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	nese word ´ 0 with the noun phrase “the police”.	page=1 xpos=0 ypos=6 left-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	Others rules can take existing tree fragments and	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+E-Body	build upon them. For example, the rule	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower above-line-space
+B-Equation	S(x0:NP-C x1:VP x2:.) ↔ x0 x1 x2	page=1 xpos=0 ypos=7 left-column centered left-indent right-indent font-smallest indented-line longer-tail line-space headchar-capital above-line-space
+I-Body	takes three parts of a sentence, a noun phrase (x0),	page=1 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-space headchar-lower tailchar-comma
+I-Body	a verb phrase (x1), and a period (x2) and ties them	page=1 xpos=0 ypos=7 left-column full-justified aligned-line itemization headchar-lower
+I-Body	together to build a complete sentence. Rules also	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	can involve phrase re-ordering, as in	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower above-line-space
+B-Equation	NPB(x0:JJ x1:NN) ↔ x1 x0	page=1 xpos=1 ypos=8 left-column centered left-indent right-indent font-smallest indented-line longer-tail line-space headchar-capital above-line-space
+B-Body	This rule builds an English noun phrase out of an	page=1 xpos=0 ypos=9 left-column full-justified hanged-line longer-tail line-space headchar-capital
+I-Body	adjective (x0) and a noun (x1), but in the Chinese,	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-comma above-blank-line above-double-space above-line-space
+Page	98	page=1 xpos=4 ypos=9 left-column left-indent right-over indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	the order is reversed. Multilevel rules can tie several	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	of these concepts together; the rule	page=1 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower above-line-space
+B-Equation	VP(VBD(was) VP-C(x0:VBN PP(IN(by) x1:NP-C)))	page=1 xpos=5 ypos=1 right-column left-indent right-indent font-smallest indented-line longer-tail line-space headchar-capital above-line-space
+I-Equation	↔ ú x1 x0	page=1 xpos=7 ypos=1 right-column centered left-indent right-indent font-smallest indented-line shorter-tail line-space above-line-space
+I-Body	takes a Chinese word ú and two English con-	page=1 xpos=5 ypos=1 right-column full-justified font-largest hanged-line longer-tail line-space headchar-lower tailchar-hiphen
+I-Body	stituents — x1, a noun phrase, and x0, a past-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	participle verb — and translates them into a phrase	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	of the form “was [verb] by [noun-phrase]”. Notice	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	that the order of the constituents has been reversed in	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the resulting English phrase, and that English func-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion words have been generated.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The decoder builds up a translation from the	page=1 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	Chinese sentence into an English tree by apply-	page=1 xpos=5 ypos=3 right-column full-justified hanged-line headchar-capital tailchar-hiphen
+I-Body	ing these rules. It follows the decoding-as-parsing	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	idea exemplified by Wu (1996) and Yamada and	page=1 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	Knight (2002). For example, the Chinese verb	page=1 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-capital
+I-Body	phrase ú ´ 0 â (literally, “[passive] police	page=1 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	kill”) can be translated to English via four rules (see	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	Table 1).	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail string-table headchar-capital tailchar-period above-double-space above-line-space
+B-SectionHeader	3 DerivTool	page=1 xpos=5 ypos=5 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In order to test whether good translations can be gen-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	erated with rules learned by Galley et al. (2004),	page=1 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	we created DerivTool as an environment for interac-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tively using these rules as a decoder would. A user	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	starts with a Chinese sentence and applies rules one	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	after another, building up a translation from Chinese	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	to English. After finishing the translation, the user	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	can save the trace of rule-applications (the deriva-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion tree) for later analysis.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We now outline the typical procedure for a user	page=1 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	to translate a sentence with DerivTool. To start, the	page=1 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	user loads a set of sentences to translate and chooses	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	a particular one to work with. The tool then presents	page=1 xpos=5 ypos=9 right-column full-justified aligned-line itemization headchar-lower
+I-Body	the user with a window split halfway up. The top	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+Figure	__Figure 1__	page=2 xpos=0 ypos=-12 single-column centered left-indent right-indent box page-top figure-area above-double-space above-line-space
+B-Caption	Figure 1: DerivTool with a completed derivation.	page=2 xpos=2 ypos=0 single-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-figure headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+I-Body	half is the workspace where the user builds a transla-	page=2 xpos=0 ypos=1 left-column full-justified column-top line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	tion. It initially displays only the Chinese sentence,	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	with each word as a separate node. The bottom half	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	presents a set of tabbed panels which allow the user	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	to select rules to build up the translation. See Fig-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ure 1 for a picture of the interface showing a com-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	pleted derivation tree.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The most immediately useful panel is called Se-	page=2 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	lecting Template, which shows a grid of possible En-	page=2 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	glish phrasal translations for Chinese phrases from	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the sentence. This phrase grid contains both phrases	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	learned in our extracted rules (e.g., “the police”	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	from earlier) and phrases learned by the phrase-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based translation system (Och and Ney, 2004) <sup>1</sup> . The	page=2 xpos=0 ypos=6 left-column full-justified font-largest aligned-line year headchar-lower
+I-Body	user presses a grid button to choose a phrase to in-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	clude in the translation. At this point, a frequency-	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen above-double-space above-line-space
+B-Footnote	<sup>1</sup> The phrase-based system serves as a sparring partner. We	page=2 xpos=0 ypos=8 left-column left-indent indented-line line-double-space line-space headchar-super
+I-Footnote	display its best decoding in the center of the screen. Note that	page=2 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	in Figure 1 its output lacks an auxiliary verb and an article.	page=2 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	99	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	ordered list of rules will appear; these rules trans-	page=2 xpos=5 ypos=1 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	late the Chinese phrase into the button-selected En-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	glish phrase, and the user specifies which one to use.	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Often there will be more than one rule (e.g., â	page=2 xpos=5 ypos=2 right-column right-indent font-largest aligned-line shorter-tail headchar-capital
+I-Body	may translate via the rule VBD(killed) ↔ â or	page=2 xpos=5 ypos=2 right-column full-justified font-larger aligned-line longer-tail headchar-lower
+I-Body	VBN(killed) ↔ â ), and sometimes there are no	page=2 xpos=5 ypos=3 right-column full-justified font-larger aligned-line headchar-capital
+I-Body	rules available. When there are no rules, the buttons	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	are marked in red, telling us that the phrase-based	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	system has access to this phrasal translation but our	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	learned syntactic rules did not capture it. Other but-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tons are marked green to represent translations from	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the specialized number/name/date system, and oth-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ers are blue, indicating the phrases in the phrase-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based decoder’s best output. A purple button indi-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cates both red and blue, i.e., the phrase was cho-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sen by the phrase-based decoder but is unavailable	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in our syntactic framework. This is a bad combina-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, showing us where rule learning is weak. The	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower page-bottom
+E-Body	remaining buttons are gray.	page=3 xpos=0 ypos=0 left-column right-indent page-top headchar-lower tailchar-period above-line-space
+B-Body	Once the user has chosen the phrasal rules re-	page=3 xpos=0 ypos=0 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	quired for translating the sentence, the next step is	page=3 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	to stitch these phrases together into a complete En-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	glish syntax tree using more general rules. These are	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	found in another panel called Searching. This panel	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	allows a user to select a set of adjacent, top-level	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	nodes in the tree and find a rule that will connect	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	them together. It is commonly used for building up	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	larger constituents from smaller ones. For example,	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	if one has a noun-phrase, a verb-phrase, and a pe-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	riod, the user can search for the rule that connects	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	them and builds an “S” on top, completing the sen-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tence. The results of a search are presented in a list,	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	again ordered by frequency.	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	A few more features to note are: 1) loading and	page=3 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	saving your work at any point, 2) adding free-form	page=3 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	notes to the document (e.g. “I couldn’t find a rule	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	that...”), and 3) manually typing rules if one cannot	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	be found by the above methods. This allows us to	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	see deficiencies in the framework.	page=3 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 How DerivTool Helps	page=3 xpos=0 ypos=4 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	First, DerivTool has given us confidence that our	page=3 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	syntax-based framework can work, and that the rules	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	we are learning are good. We have been able to	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	manually build a good translation for each sentence	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	we tried, both for short and long sentences. In fact,	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	there are multiple good ways to translate sentences	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	using these rules, because different DerivTool users	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	translate sentences differently. Ordering rules by	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	frequency and/or probability helps us determine if	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the rules we want are also frequent and favored by	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	our model.	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	DerivTool has also helped us to find problems	page=3 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	with the framework and to see clearly how to fix	page=3 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	them. For example, in one of our first sentences	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	we realized that there was no rule for translat-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing a date — likewise for numbers, names, cur-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rency values, and times of day. Our phrase-based	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	system solves these problems with a specialized	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	date/name/number translator. Through the process	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	of manually typing syntactic transformation rules	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	for dates and numbers in DerivTool, it became clear	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	that our current date/name/number translator did not	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	provide enough information to create such syntac-	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic rules automatically. This sparked a new area of	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	100	page=3 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+E-Body	research before we had a fully-functional decoder.	page=3 xpos=5 ypos=0 right-column right-indent column-top headchar-lower tailchar-period
+B-Body	We also found that multi-word noun phrases, such	page=3 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	as “Israeli Prime Minister Sharon” and “the French	page=3 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower
+I-Body	Ambassador’s visit” were often parsed in a way that	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital
+I-Body	did not allow us to learn good translation rules.	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The flat structure of the constituents in the syntax	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	tree makes it difficult to learn rules that are general	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	enough to be useful. Phrases with possessives also	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	gave particular difficulty due to the awkward mul-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tilevel structure of the parser’s output. We are re-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	searching solutions to these problems involving re-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	structuring the syntax trees before training.	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Finally, our tool has helped us find bugs in our	page=3 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	system. We found many cases where rules we	page=3 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	wanted to use were unexpectedly absent. We eventu-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ally traced these bugs to our rule extraction system.	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Our decoder would have simply worked around this	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	problem, producing less desirable translations, but	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	DerivTool allowed us to quickly spot the missing	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+E-Body	rules.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusion	page=3 xpos=5 ypos=4 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We created DerivTool to test our MT framework	page=3 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	against real-world data before building a fully-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	functional decoder. By allowing us to play the role	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of a decoder and translate sentences manually, it has	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	given us insight into how well our framework fits	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the data, what some of its weaknesses are, and how	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	it compares to other systems. We continue to use	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	it as we try out new rule-extraction techniques and	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	finish the decoding system.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+ReferenceHeader	References	page=3 xpos=5 ypos=6 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space string-reference headchar-capital above-line-space
+B-Reference	Chris Callison-Burch, Colin Bannard and Josh Schroeder.	page=3 xpos=5 ypos=6 right-column full-justified font-smallest aligned-line longer-tail line-space headchar-capital tailchar-period
+I-Reference	2004. Improved statistical translation through editing.	page=3 xpos=5 ypos=6 right-column left-indent font-smallest indented-line year tailchar-period
+I-Reference	EAMT-2004 Workshop.	page=3 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	Ann Copestake and Dan Flickinger. 2000. An open source	page=3 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	grammar development environment and broad-coverage En-	page=3 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	glish grammar using HPSG. Proc. of LREC 2000.	page=3 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period
+B-Reference	Michel Galley, Mark Hopkins, Kevin Knight, and Daniel	page=3 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	Marcu. 2004. What’s in a translation rule? Proc. of NAACL-	page=3 xpos=5 ypos=7 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	HLT 2004.	page=3 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-capital tailchar-period
+B-Reference	Franz Och and Hermann Ney. 2004. The alignment template	page=3 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	approach to statistical machine translation. Computational	page=3 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Linguistics, 30(4).	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Noah A. Smith and Michael E. Jahr. 2000. Cairo: An Align-	page=3 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ment Visualization Tool. Proc. of LREC 2000.	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-lower tailchar-period
+B-Reference	Dekai Wu. 1996. A polynomial-time algorithm for statistical	page=3 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	machine translation. Proc. of ACL.	page=3 xpos=5 ypos=8 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period
+B-Reference	Kenji Yamada and Kevin Knight. 2001. A syntax-based statis-	page=3 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tical translation model. Proc. of ACL.	page=3 xpos=5 ypos=9 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period
+B-Reference	Kenji Yamada and Kevin Knight. 2002. A decoder for syntax-	page=3 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	based statistical MT. Proc. of ACL.	page=3 xpos=5 ypos=9 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period

@@ -1,0 +1,376 @@
+Title	A methodology for obtaining concept graphs from word graphs	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Marcos Calvo, Jon Ander Gómez, Lluı́s-F. Hurtado, Emilio Sanchis	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Departament de Sistemes Informàtics i Computació	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+I-Affiliation	Universitat Politècnica de València	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Address	Camı́ de Vera s/n, 46022, València, Spain	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital above-line-space
+Email	{mcalvo,jon,lhurtado,esanchis}@dsic.upv.es	page=0 xpos=1 ypos=1 single-column centered left-indent right-indent font-largest hanged-line longer-tail line-space symbol-atmark column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	In this work, we describe a methodology	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	based on the Stochastic Finite State Trans-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ducers paradigm for Spoken Language Under-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	standing (SLU) for obtaining concept graphs	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	from word graphs. In the edges of these con-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cept graphs, both semantic and lexical infor-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	mation are represented. This makes these	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower
+I-Abstract	graphs a very useful representation of the in-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	formation for SLU. The best path in these con-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cept graphs provides the best sequence of con-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cepts.	page=0 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=5 left-column right-indent font-largest hanged-line longer-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The task of SLU can be seen as the process that,	page=0 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	given an utterance, computes a semantic interpreta-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of the information contained in it. This semantic	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	interpretation will be based on a task-dependent set	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	of concepts.	page=0 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	An area where SLU systems are typically applied	page=0 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	is the construction of spoken dialog systems. The	page=0 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	goal of the SLU subsystem in the context of a dia-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	log system is to process the information given by the	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	Automatic Speech Recognition (ASR) module, and	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	provide the semantic interpretation of it to the Dia-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	log Manager, which will determine the next action	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	of the dialog. Thus, the work of the SLU module	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	can be split into two subtasks, the first of them is	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the identification of the sequence of concepts and the	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	segments of the original sentence according to them,	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and the other is the extraction of the relevant infor-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation underlying to these labeled segments. In this	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	work we will focus on concept labeling, but we will	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	also consider the other subtask in our evaluation.	page=0 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	75	page=0 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-Body	We can distinguish between the SLU systems that	page=0 xpos=5 ypos=2 right-column left-indent column-top headchar-capital
+I-Body	work with the 1-best transcription and those that take	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	a representation of the n-best (Hakkani-Tür et al.,	page=0 xpos=5 ypos=2 right-column full-justified aligned-line itemization headchar-lower tailchar-comma
+I-Body	2006; Tur et al., 2002). The use of a word graph as	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year
+I-Body	the input of the SLU module makes this task more	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	difficult, as the search space becomes larger. On the	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	other hand, the advantage of using them is that there	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	is more information that could help to find the cor-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rect semantic interpretation, rather than just taking	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	the best sentence given by the ASR.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In the recent literature, a variety of approaches for	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	automatic SLU have been proposed, like those ex-	page=0 xpos=5 ypos=4 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	plained in (Hahn et al., 2010; Raymond and Ric-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	cardi, 2007; McCallum et al., 2000; Macherey et	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower
+I-Body	al., 2001; Léfèvre, 2007; Lafferty et al., 2001). The	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower
+I-Body	methodology that we propose in this paper is based	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	on Stochastic Finite State Transducers (SFST). This	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	is a generative approach that composes several trans-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ducers containing acoustic, lexical and semantic	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	knowledge. Our method performs this composition	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	on-the-fly, obtaining as a result a concept graph,	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	where semantic information is associated with seg-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments of words. To carry out this step, we use a	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	different language model for each concept and also	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	study the use of lexical categorization and lemmas.	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The best sequence of concepts can be determined by	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	finding the best path in the concept graph, with the	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	help of a language model of sequences of the con-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cepts.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The rest of this paper is structured as follows. In	page=0 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	Section 2, the theoretical model for SLU based on	page=0 xpos=5 ypos=8 right-column full-justified hanged-line headchar-capital
+I-Body	SFST is briefly presented. Then, in Section 3 the	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	methodology for converting word graphs into con-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cept graphs is described. A experimentation to eval-	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of the 10th International Workshop on Finite State Methods and Natural Language Processing, pages 75–79,	page=0 xpos=0 ypos=9 single-column left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space headchar-capital tailchar-comma
+I-Footer	Donostia–San Sebastián, July 23–25, 2012.  2012 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital page-bottom
+I-Body	uate this methodology for the SLU task is shown in	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	Section 4. Finally, we draw some conclusions and	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+E-Body	future work.	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 The SFST approach for SLU	page=1 xpos=0 ypos=0 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The Bayes classifier for the SLU problem can be ex-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	pressed as stated in equation 1, where C represents	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	a sequence of concepts or semantic labels and A is	page=1 xpos=0 ypos=1 left-column full-justified aligned-line itemization headchar-lower
+E-Body	the utterance that constitutes the input to the system.	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Equation	Ĉ = arg max p(C|A) (1)	page=1 xpos=1 ypos=2 left-column left-indent indented-line line-blank-line line-double-space line-space headchar-capital
+I-Equation	C	page=1 xpos=2 ypos=2 left-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital above-line-space
+B-Body	Taking into account the underlying sequence of	page=1 xpos=0 ypos=2 left-column left-indent hanged-line longer-tail line-space headchar-capital
+I-Body	words W , and assuming that the acoustics may de-	page=1 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	pend on W but not on C, this equation can be rewrit-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ten as follows.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Equation	Ĉ = arg max max p(A|W ) · p(W, C) (2) C W	page=1 xpos=0 ypos=3 left-column left-indent font-largest indented-line longer-tail line-blank-line line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	To compute the best sequence of concepts Ĉ ex-	page=1 xpos=0 ypos=4 left-column left-indent hanged-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	pressed as in equation 2, the proposal made by the	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	paradigm based on SFST is to search the best path in	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	a transducer λ <sub>SLU</sub> result of composing four SFST:	page=1 xpos=0 ypos=4 left-column right-indent font-larger aligned-line shorter-tail itemization headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	λ <sub>SLU</sub> = λ G ◦ λ gen ◦ λ W 2C ◦ λ SLM (3)	page=1 xpos=0 ypos=5 left-column left-indent font-largest indented-line longer-tail line-double-space line-space
+B-Body	In this equation λ <sub>G</sub> is a SFST provided by	page=1 xpos=0 ypos=5 left-column left-indent font-larger hanged-line headchar-capital
+I-Body	the ASR module where the acoustic probabilities	page=1 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	p(A|W ) are represented, λ <sub>gen</sub> introduces prior in-	page=1 xpos=0 ypos=5 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	formation of the task by means of a lexical cate-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gorization, λ <sub>W</sub> 2C provides the probability of a se-	page=1 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	quence of words and labels it with a semantic label	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	and λ <sub>SLM</sub> modelizes a language model of sequences	page=1 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower
+E-Body	of concepts.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 From word graphs to concept graphs	page=1 xpos=0 ypos=7 left-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	The output of an ASR can be represented as a word	page=1 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	graph. This word graph can be enriched with se-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mantic information, obtaining a concept graph. This	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	concept graph constitutes a useful representation of	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the possible semantics, considering the uncertainty	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	expressed in the original word graph. Finally, find-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the best path in the concept graph using a lan-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage model of sequences of concepts provides as	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	a result the best sequence of concepts Ĉ, the recog-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	nized sentence W̃ , and its segmentation according	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+E-Body	to Ĉ.	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+Page	76	page=1 xpos=4 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only column-bottom
+B-SubsectionHeader	3.1 Topology and semantics of the word graph	page=1 xpos=5 ypos=0 right-column right-indent font-larger column-top numbered-heading2 above-double-space above-line-space
+B-Body	To perform the transformations for obtaining the	page=1 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	concept graph, the input graph given by the ASR	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	should represent the information in the following	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	way. First, its nodes will be labeled with times-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tamps. Also, for every two nodes i, j such that	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	i < j − 1, there will be an edge from i to j labeled	page=1 xpos=5 ypos=1 right-column full-justified font-largest aligned-line itemization headchar-lower
+I-Body	with w and weight s if the ASR detected w between	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	the instants i and j − 1 with an acoustic score s.	page=1 xpos=5 ypos=1 right-column full-justified font-largest aligned-line headchar-lower tailchar-period
+I-Body	Finally, there may exist a λ-transition between any	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	pair of adjacent nodes. The score of this edge should	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	be computed by means of a smoothing method.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Defining the word graph in this way allows us to	page=1 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	model on it the distribution p(A|w), where A is the	page=1 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	sequence of acoustic frames between the initial and	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	final nodes of any edge, and w the word attached to	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	it. This probability distribution is represented in the	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	theoretical model by λ <sub>G</sub> .	page=1 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.2 Building the concept graph	page=1 xpos=5 ypos=3 right-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The concept graph that is obtained has the following	page=1 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	features. First, its set of nodes is the same of the	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	word graph, and its meaning is kept. There is at most	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	one edge between every two nodes i and j (i < j)	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	labeled with the concept c. Every edge is labeled	page=1 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	with a pair (W, c), where W is a sequence of words	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	and c the concept that they represent. The weight	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of the edge is max <sub>W</sub> (p(A ji |W ) · p(W |c)), where A ji	page=1 xpos=5 ypos=5 right-column centered right-indent font-largest aligned-line headchar-lower
+I-Body	are the acoustic frames in the interval [i, j[ and W	page=1 xpos=5 ypos=5 right-column right-indent aligned-line headchar-lower
+E-Body	the argument that maximizes the former expression.	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period above-line-space
+B-Body	In this specification appears the probability distri-	page=1 xpos=5 ypos=6 right-column left-indent indented-line line-space headchar-capital tailchar-hiphen
+I-Body	bution p(W |c), which can be estimated by using a	page=1 xpos=5 ypos=6 right-column full-justified font-largest hanged-line headchar-lower
+E-Body	language model for each available concept.	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	This concept graph can be built using a Dynamic	page=1 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	Programming algorithm that finds for each concept	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-capital
+I-Body	c and each pair of nodes i, j, with i < j, the	page=1 xpos=5 ypos=7 right-column full-justified aligned-line itemization headchar-lower
+I-Body	path from i to j on the word graph that maximizes	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	p(A ji |W )·p(W |c). In this case, W is the sequence of	page=1 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	words obtained by concatenating the words attached	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	to the edges of the path. Each of the “best paths”	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	computed in this way will become an edge in the	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	resulting concept graph.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Thus, in the concept graph it is represented infor-	page=1 xpos=5 ypos=8 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	mation about possible sequences of words that might	page=1 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	have been uttered by the speaker, along with the con-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cepts each of these sequences expresses. This pair is	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	weighted with a score that is the result of combining	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower page-bottom
+I-Body	the acoustic score expressed in the word graph, and	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	the lexical and syntactic score given by the language	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	model, which is dependent on the current concept.	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Furthermore, this information is enriched with tem-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	poral information, since the initial and final nodes	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	of every edge represent the beginning and ending	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	timestamps of the sequence of words. Consequently,	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	this way of building the concept graph corresponds	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	to the transducer λ <sub>W</sub> 2C of equation 3, since we find	page=2 xpos=0 ypos=1 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	sequences of words and attach them to a concept.	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	However, we also take advantage of and keep other	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+E-Body	information, such as the temporal one.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Experiments and results	page=2 xpos=0 ypos=2 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	To evaluate this methodology, we have performed	page=2 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	SLU experiments using the concept graphs obtained	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	as explained in Section 3 and then finding the best	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	path in each of them. For this experimentation we	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	have used the DIHANA corpus (Benedı́ et al., 2006).	page=2 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	This is a corpus of telephone spontaneous speech in	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	Spanish composed by 900 dialogs acquired by 225	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	speakers using the Wizard of Oz technique, with a	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	total of 6,229 user turns. All these dialogs simulate	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	real conversations in an automatic train information	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	phone service. The experiments reported here were	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	performed using the user turns of the dialogs, split-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ting them into a set of 1,340 utterances (turns) for	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	test and all the remaining 4,889 for training. Some	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	interesting statistics about the DIHANA corpus are	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	given in table 1.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 1__	page=2 xpos=0 ypos=6 left-column right-over box aligned-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 1: Characteristics of the DIHANA corpus.	page=2 xpos=0 ypos=7 left-column centered left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space string-table headchar-capital tailchar-period above-double-space above-line-space
+B-Body	In the DIHANA corpus, the orthographic tran-	page=2 xpos=0 ypos=7 left-column left-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	scriptions of the utterances are semi-automatically	page=2 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	segmented and labeled in terms of semantic units.	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This segmentation is used by our methodology as a	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital
+I-Body	language model of sequences of words for each con-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cept. All the language models involved in this exper-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	imentation are bigram models trained using Witten-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	Bell smoothing and linear interpolation.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	In our experimentation, we have considered three	page=2 xpos=0 ypos=9 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	different ways for building the λ <sub>gen</sub> transducer ex-	page=2 xpos=0 ypos=9 left-column full-justified font-larger hanged-line headchar-lower tailchar-hiphen above-blank-line above-double-space above-line-space
+Page	77	page=2 xpos=4 ypos=9 left-column left-indent right-over indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+I-Body	plained in Section 2. The first way consists of con-	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	sidering a transducer that given a word as its input,	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	outputs that word with probability 1. This means	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Body	that no generalization is being done.	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The second λ <sub>gen</sub> transducer performs a lexical	page=2 xpos=5 ypos=0 right-column left-indent font-larger indented-line longer-tail headchar-capital
+I-Body	categorization of some of the nouns of the vocab-	page=2 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ulary. Some extra words have been added to some	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	lexical categories, in order to make the task more	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	realistic, as the lexical coverage is increased. Never-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	theless, it also makes the task harder, as the size of	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	the vocabulary increases. We have used a total of 11	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	lexical categories.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Finally, the third λ <sub>gen</sub> , transducer we have gen-	page=2 xpos=5 ypos=2 right-column left-indent font-larger indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	erated performs the same lexical categorization but	page=2 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	it also includes a lemmatization of the verbs. This	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	process is normally needed for real-world systems	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	that work with spontaneous (and maybe telephonic)	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	speech.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We have generated three sets of word graphs to	page=2 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	take them as the input for the method. The first of	page=2 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	these sets, G <sub>1</sub> , is made up by the whole graphs ob-	page=2 xpos=5 ypos=3 right-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	tained from a word graph builder module that works	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	without using any language model. The Oracle	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	WER of these graphs is 4.10. With Oracle WER we	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	mean the WER obtained considering the sequence of	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	words S(G) corresponding to the path in the graph	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	G that is the nearest to the reference sentence.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	The second set, G <sub>2</sub> , is composed by word graphs	page=2 xpos=5 ypos=5 right-column left-indent font-larger indented-line longer-tail headchar-capital
+I-Body	that only contain the path corresponding to S(G) for	page=2 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	each graph G ∈ G 1 . These graphs give an idea of	page=2 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	the best results we could achieve if we could mini-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mize the confusion due to misrecognized words.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The third set, G <sub>3</sub> is formed by a synthetic word	page=2 xpos=5 ypos=6 right-column left-indent font-larger indented-line longer-tail headchar-capital
+I-Body	graph for each reference sentence, in which only that	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	sentence is contained. This set of graphs allows us	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	to simulate an experimentation on plain text.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For our evaluation, we have taken two measures.	page=2 xpos=5 ypos=7 right-column left-indent indented-line longer-tail headchar-capital tailchar-period
+I-Body	First, we have evaluated the Concept Error Rate	page=2 xpos=5 ypos=7 right-column full-justified hanged-line headchar-capital
+I-Body	(CER) over the best sequence of concepts. The def-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line tailchar-hiphen
+I-Body	inition of the CER is analogous to that of the WER	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	but taking concepts instead of words. Second, we	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	have also evaluated the slot-level error (SLE). The	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	SLE is similar to the CER but deleting the non-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	relevant segments (such as courtesies) and substitut-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the relevant concepts by a canonic value for the	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	sequence of words associated to them.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Tables 2, 3, and 4 show the results obtained using	page=2 xpos=5 ypos=9 right-column left-indent indented-line longer-tail string-table headchar-capital
+E-Body	the different λ <sub>gen</sub> transducers explained before.	page=2 xpos=5 ypos=9 right-column right-indent font-larger hanged-line shorter-tail headchar-lower tailchar-period page-bottom
+Table	__Table 2__	page=3 xpos=0 ypos=-2 left-column left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 2: CER and SLE without any categorization.	page=3 xpos=0 ypos=0 left-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-period above-double-space above-line-space
+Table	__Table 3__	page=3 xpos=0 ypos=0 left-column left-indent right-indent box indented-line shorter-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 3: CER and SLE with lexical categorization.	page=3 xpos=0 ypos=1 left-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-Body	From the results of Tables 2, 3, and 4 several facts	page=3 xpos=0 ypos=2 left-column left-indent longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	come to light. First, we can see that, in all the exper-	page=3 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	iments performed with the G <sub>1</sub> set, the CER is lower	page=3 xpos=0 ypos=2 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	than the SLE, while with the other sets the CER is	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	larger than the SLE. It is due to the fact that the	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	whole graphs obtained from the word graph builder	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	have more lexical confusion than those from G <sub>2</sub> and	page=3 xpos=0 ypos=3 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	G <sub>3</sub> , which are based on the reference sentence. This	page=3 xpos=0 ypos=3 left-column full-justified font-larger aligned-line headchar-capital
+I-Body	lexical confusion may cause that a well-recognized	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	concept is associated to a misrecognized sequence	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	of words. This would imply that a hit would be con-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sidered for the CER calculation, while the value for	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	this slot is missed.	page=3 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Other interesting fact is that, for the G <sub>1</sub> set, the	page=3 xpos=0 ypos=4 left-column left-indent font-larger indented-line longer-tail line-space headchar-capital
+I-Body	more complex λ <sub>gen</sub> transducers give the worse re-	page=3 xpos=0 ypos=5 left-column full-justified font-larger hanged-line headchar-lower tailchar-hiphen
+I-Body	sults. This is because in these graphs there is a	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	significant confusion between phonetically similar	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	words, as the graphs were generated without any	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	language model. This phonetic confusion, combined	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	with the generalizations expressed by the lexical cat-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	egorization and the lemmas, makes the task harder,	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which leads to worse results. Nevertheless, in a real-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	world application of this system these generaliza-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tions would be needed in order to have a larger cov-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erage of the lexicon of the language. The experi-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments on G <sub>2</sub> and G 3 show that when the confusion	page=3 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	introduced in the graphs due to misrecognized words	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	is minimized, the use of lexical categorization and	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	lemmatization helps to improve the results.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusions and future work	page=3 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper we have described a methodology,	page=3 xpos=0 ypos=9 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	based on the SFST paradigm for SLU, for obtaining	page=3 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower above-blank-line above-double-space above-line-space
+Page	78	page=3 xpos=4 ypos=9 left-column left-indent right-over indented-line line-blank-line line-double-space line-space numeric-only column-bottom
+Table	__Table 4__	page=3 xpos=5 ypos=-2 right-column left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 4: CER and SLE with lemmatization and lexical	page=3 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	categorization.	page=3 xpos=5 ypos=0 right-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	concept graphs from word graphs. The edges of the	page=3 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	concept graphs represent information about possible	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	sequences of words that might have been uttered by	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	the speaker, along with the concept each of these se-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quences expresses. Each of these edges is weighted	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	with a score that combines acoustic, lexical, syntac-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic and semantic information. Furthermore, this in-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formation is enriched with temporal information, as	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the nodes represent the beginning and ending of the	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	sequence of words. These concepts graphs consti-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tute a very useful representation of the information	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	for SLU.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	To evaluate this methodology we have performed	page=3 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	an experimental evaluation in which different types	page=3 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	of lexical generalization have been considered. The	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	results show that a trade-off between the lexical con-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fusion expressed in the word graphs and the general-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	izations encoded in the other transducers should be	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	achieved, in order to obtain the best results.	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	It would be interesting to apply this methodology	page=3 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	to word graphs generated with a language model,	page=3 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	although this way of generating the graphs would	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	not fit exactly the theoretical model. If a language	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	model is used to generate the graphs, then their lex-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ical confusion could be reduced, so better results	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	could be achieved. Other interesting task in which	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	this methodology could help is in performing SLU	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	experiments on a combination of the output of some	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	different ASR engines. All these interesting appli-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cations constitute a line of our future work.	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgments	page=3 xpos=5 ypos=7 right-column right-indent font-largest aligned-line shorter-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	This work has been supported by the Spanish Mi-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Acknowledgement	nisterio de Economı́a y Competitividad, under the	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Acknowledgement	project TIN2011-28169-C05-01, by the Vicerrec-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Acknowledgement	torat d’Investigació, Desenvolupament i Innovació	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Acknowledgement	de la Universitat Politècnica de València, under the	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Acknowledgement	project PAID-06-10, and by the Spanish Ministerio	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Acknowledgement	de Educación under FPU Grant AP2010-4193.	page=3 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period page-bottom
+ReferenceHeader	References	page=4 xpos=0 ypos=0 left-column right-indent font-largest page-top string-reference headchar-capital above-double-space above-line-space
+B-Reference	José-Miguel Benedı́, Eduardo Lleida, Amparo Varona,	page=4 xpos=0 ypos=0 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	Marı́a-José Castro, Isabel Galiano, Raquel Justo, Iñigo	page=4 xpos=0 ypos=0 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	López de Letona, and Antonio Miguel. 2006. Design	page=4 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line year headchar-capital
+I-Reference	and acquisition of a telephone spontaneous speech di-	page=4 xpos=0 ypos=0 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	alogue corpus in Spanish: DIHANA. In Proceedings	page=4 xpos=0 ypos=1 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	of LREC 2006, pages 1636–1639, Genoa (Italy).	page=4 xpos=0 ypos=1 left-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period
+B-Reference	S. Hahn, M. Dinarelli, C. Raymond, F. Léfèvre,	page=4 xpos=0 ypos=1 left-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-comma
+I-Reference	P. Lehnen, R. De Mori, A. Moschitti, H. Ney, and	page=4 xpos=0 ypos=1 left-column left-indent font-smallest indented-line headchar-capital
+I-Reference	G. Riccardi. 2010. Comparing stochastic approaches	page=4 xpos=0 ypos=1 left-column left-indent font-smallest aligned-line year headchar-capital
+I-Reference	to spoken language understanding in multiple lan-	page=4 xpos=0 ypos=1 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	guages. Audio, Speech, and Language Processing,	page=4 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	IEEE Transactions on, 6(99):1569–1583.	page=4 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	D. Hakkani-Tür, F. Béchet, G. Riccardi, and G. Tur.	page=4 xpos=0 ypos=2 left-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-period
+I-Reference	2006. Beyond ASR 1-best: Using word confusion net-	page=4 xpos=0 ypos=2 left-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	works in spoken language understanding. Computer	page=4 xpos=0 ypos=2 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Speech & Language, 20(4):495–514.	page=4 xpos=0 ypos=2 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	J. Lafferty, A. McCallum, and F. Pereira. 2001. Con-	page=4 xpos=0 ypos=3 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ditional random fields: Probabilistic models for seg-	page=4 xpos=0 ypos=3 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	menting and labeling sequence data. In International	page=4 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Conference on Machine Learning, pages 282–289.	page=4 xpos=0 ypos=3 left-column left-indent font-smallest aligned-line headchar-capital tailchar-period
+I-Reference	Citeseer.	page=4 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	F. Léfèvre. 2007. Dynamic bayesian networks and dis-	page=4 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	criminative classifiers for multi-stage semantic inter-	page=4 xpos=0 ypos=4 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	pretation. In Acoustics, Speech and Signal Processing,	page=4 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	2007. ICASSP 2007. IEEE International Conference	page=4 xpos=0 ypos=4 left-column left-indent font-smallest aligned-line year
+I-Reference	on, volume 4, pages 13–16. IEEE.	page=4 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	K. Macherey, F.J. Och, and H. Ney. 2001. Natural lan-	page=4 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	guage understanding using statistical machine transla-	page=4 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tion. In European Conf. on Speech Communication	page=4 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	and Technology, pages 2205–2208. Citeseer.	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	A. McCallum, D. Freitag, and F. Pereira. 2000. Maxi-	page=4 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	mum entropy markov models for information extrac-	page=4 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	tion and segmentation. In Proceedings of the Seven-	page=4 xpos=0 ypos=5 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	teenth International Conference on Machine Learning,	page=4 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	pages 591–598. Citeseer.	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	C. Raymond and G. Riccardi. 2007. Generative and	page=4 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	discriminative algorithms for spoken language under-	page=4 xpos=0 ypos=6 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	standing. Proceedings of Interspeech2007, Antwerp,	page=4 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line year headchar-lower tailchar-comma
+I-Reference	Belgium, pages 1605–1608.	page=4 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	G. Tur, J. Wright, A. Gorin, G. Riccardi, and D. Hakkani-	page=4 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Reference	Tür. 2002. Improving spoken language understanding	page=4 xpos=0 ypos=7 left-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	using word confusion networks. In Proceedings of the	page=4 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	ICSLP. Citeseer.	page=4 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+Page	79	page=4 xpos=9 ypos=9 left-column left-indent right-over indented-line longer-tail line-blank-line line-double-space line-space numeric-only

@@ -1,0 +1,788 @@
+Title	Ensemble Methods for Unsupervised WSD	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-smallest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Samuel Brody Roberto Navigli Mirella Lapata	page=0 xpos=1 ypos=0 single-column left-indent right-indent font-smallest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	School of Informatics Dipartimento di Informatica School of Informatics	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital
+I-Affiliation	University of Edinburgh Università di Roma “La Sapienza” University of Edinburgh	page=0 xpos=0 ypos=0 single-column centered left-indent right-indent font-largest hanged-line longer-tail headchar-capital above-double-space above-line-space
+Email	s.brody@sms.ed.ac.uk navigli@di.uniroma1.it mlap@inf.ed.ac.uk	page=0 xpos=0 ypos=1 single-column left-indent right-indent font-smallest shorter-tail line-double-space line-space symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=2 ypos=1 left-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	Combination methods are an effective way	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	of improving system performance. This	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	paper examines the benefits of system	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	combination for unsupervised WSD. We	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	investigate several voting- and arbiter-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	based combination strategies over a di-	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	verse pool of unsupervised WSD systems.	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	Our combination methods rely on predom-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	inant senses which are derived automati-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cally from raw text. Experiments using the	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	SemCor and Senseval-3 data sets demon-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-capital tailchar-hiphen
+I-Abstract	strate that our ensembles yield signifi-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cantly better results when compared with	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	state-of-the-art.	page=0 xpos=0 ypos=4 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=4 left-column right-indent font-smallest hanged-line line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Word sense disambiguation (WSD), the task of	page=0 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	identifying the intended meanings (senses) of	page=0 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	words in context, holds promise for many NLP	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	applications requiring broad-coverage language	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	understanding. Examples include summarization,	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	question answering, and text simplification. Re-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cent studies have also shown that WSD can ben-	page=0 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	efit machine translation (Vickrey et al., 2005) and	page=0 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+E-Body	information retrieval (Stokoe, 2005).	page=0 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period
+B-Body	Given the potential of WSD for many NLP	page=0 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	tasks, much work has focused on the computa-	page=0 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tional treatment of sense ambiguity, primarily us-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing data-driven methods. Most accurate WSD sys-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tems to date are supervised and rely on the avail-	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ability of training data, i.e., corpus occurrences of	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	ambiguous words marked up with labels indicat-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the appropriate sense given the context (see	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	Mihalcea and Edmonds 2004 and the references	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-capital
+I-Body	therein). A classifier automatically learns disam-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	biguation cues from these hand-labeled examples.	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	Although supervised methods typically achieve	page=0 xpos=0 ypos=8 left-column left-indent indented-line headchar-capital
+I-Body	better performance than unsupervised alternatives,	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	their applicability is limited to those words for	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	which sense labeled data exists, and their accu-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	racy is strongly correlated with the amount of la-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	beled data available (Yarowsky and Florian, 2002).	page=0 xpos=0 ypos=9 left-column full-justified aligned-line year headchar-lower tailchar-period column-bottom
+I-Body	Furthermore, obtaining manually labeled corpora	page=0 xpos=5 ypos=1 right-column full-justified column-top headchar-capital
+I-Body	with word senses is costly and the task must be	page=0 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	repeated for new domains, languages, or sense in-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ventories. Ng (1997) estimates that a high accu-	page=0 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	racy domain independent system for WSD would	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	probably need a corpus of about 3.2 million sense	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	tagged words. At a throughput of one word per	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	minute (Edmonds, 2000), this would require about	page=0 xpos=5 ypos=2 right-column full-justified aligned-line year headchar-lower
+E-Body	27 person-years of human annotation effort.	page=0 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail numbered-heading1 tailchar-period above-double-space above-line-space
+B-Body	This paper focuses on unsupervised methods	page=0 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	which we argue are useful for broad coverage	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	sense disambiguation. Unsupervised WSD algo-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rithms fall into two general classes: those that per-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	form token-based WSD by exploiting the simi-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	larity or relatedness between an ambiguous word	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	and its context (e.g., Lesk 1986); and those that	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	perform type-based WSD, simply by assigning	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	all instances of an ambiguous word its most fre-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quent (i.e., predominant) sense (e.g., McCarthy	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	et al. 2004; Galley and McKeown 2003). The pre-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	dominant senses are automatically acquired from	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	raw text without recourse to manually annotated	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	data. The motivation for assigning all instances	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of a word to its most prevalent sense stems from	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the observation that current supervised approaches	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	rarely outperform the simple heuristic of choos-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the most common sense in the training data,	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	despite taking local context into account (Hoste	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	et al., 2002). Furthermore, the approach allows	page=0 xpos=5 ypos=6 right-column full-justified aligned-line year headchar-lower
+I-Body	sense inventories to be tailored to specific do-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mains.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The work presented here evaluates and com-	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	pares the performance of well-established unsu-	page=0 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	pervised WSD algorithms. We show that these	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	algorithms yield sufficiently diverse outputs, thus	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	motivating the use of combination methods for im-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proving WSD performance. While combination	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	approaches have been studied previously for su-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pervised WSD (Florian et al., 2002), their use	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	in an unsupervised setting is, to our knowledge,	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	novel. We examine several existing and novel	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	combination methods and demonstrate that our	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	combined systems consistently outperform the	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	97	page=0 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only above-blank-line above-double-space above-line-space
+B-Footer	Proceedings of the 21st International Conference on Computational Linguistics and 44th Annual Meeting of the ACL, pages 97–104,	page=0 xpos=0 ypos=9 single-column left-over right-over font-smallest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-comma above-line-space
+I-Footer	Sydney, July 2006.  2006 c Association for Computational Linguistics	page=0 xpos=2 ypos=9 single-column left-indent right-indent font-smallest indented-line shorter-tail line-space year headchar-capital page-bottom
+I-Body	state-of-the-art (e.g., McCarthy et al. 2004). Im-	page=1 xpos=0 ypos=0 left-column full-justified page-top year headchar-lower tailchar-hiphen
+I-Body	portantly, our WSD algorithms and combination	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	methods do not make use of training material in	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	any way, nor do they use the first sense informa-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tion available in WordNet.	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the following section, we briefly describe the	page=1 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	unsupervised WSD algorithms considered in this	page=1 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	paper. Then, we present a detailed comparison of	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	their performance on SemCor (Miller et al., 1993).	page=1 xpos=0 ypos=1 left-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	Next, we introduce our system combination meth-	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ods and report on our evaluation experiments. We	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	conclude the paper by discussing our results.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	2 The Disambiguation Algorithms	page=1 xpos=0 ypos=2 left-column right-indent font-smallest aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this section we briefly describe the unsuper-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	vised WSD algorithms used in our experiments.	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We selected methods that vary along the follow-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ing dimensions: (a) the type of WSD performed	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	(i.e., token-based vs. type-based), (b) the represen-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line tailchar-hiphen
+I-Body	tation and size of the context surrounding an am-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguous word (i.e., graph-based vs. word-based,	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	document vs. sentence), and (c) the number and	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	type of semantic relations considered for disam-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguation. We base most of our discussion below	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	on the WordNet sense inventory; however, the ap-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proaches are not limited to this particular lexicon	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	but could be adapted for other resources with tra-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ditional dictionary-like sense definitions and alter-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	native structure.	page=1 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Extended Gloss Overlap Gloss Overlap was	page=1 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	originally introduced by Lesk (1986) for perform-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ing token-based WSD. The method assigns a sense	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	to a target word by comparing the dictionary defi-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nitions of each of its senses with those of the words	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	in the surrounding context. The sense whose defi-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nition has the highest overlap (i.e., words in com-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mon) with the context words is assumed to be the	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	correct one. Banerjee and Pedersen (2003) aug-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ment the dictionary definition (gloss) of each sense	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	with the glosses of related words and senses. The	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	extended glosses increase the information avail-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	able in estimating the overlap between ambiguous	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	words and their surrounding context.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The range of relationships used to extend the	page=1 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	glosses is a parameter, and can be chosen from	page=1 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	any combination of WordNet relations. For every	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	sense s <sub>k</sub> of the target word we estimate:	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	SenseScore(s <sub>k</sub> ) = ∑ Overlap(context, Rel(s k ))	page=1 xpos=0 ypos=8 left-column left-indent right-indent font-largest longer-tail line-double-space line-space headchar-capital above-line-space
+I-Equation	Rel∈Relations	page=1 xpos=1 ypos=8 left-column left-indent right-indent font-smallest indented-line shorter-tail line-space headchar-capital above-double-space above-line-space
+I-Body	where context is a simple (space separated) con-	page=1 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	catenation of all words w <sub>i</sub> for −n ≤ i ≤ n, i 6 = 0 in	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	a context window of length ±n around the target	page=1 xpos=0 ypos=9 left-column full-justified aligned-line itemization headchar-lower
+I-Body	word w <sub>0</sub> . The overlap scoring mechanism is also	page=1 xpos=0 ypos=9 left-column full-justified font-larger aligned-line headchar-lower column-bottom
+I-Body	parametrized and can be adjusted to take the into	page=1 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+E-Body	account gloss length or to ignore function words.	page=1 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Body	Distributional and WordNet Similarity	page=1 xpos=5 ypos=0 right-column full-justified font-smallest aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital above-line-space
+I-Body	McCarthy et al. (2004) propose a method for	page=1 xpos=5 ypos=0 right-column full-justified aligned-line line-space year headchar-capital
+I-Body	automatically ranking the senses of ambiguous	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	words from raw text. Key in their approach is the	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	observation that distributionally similar neighbors	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	often provide cues about a word’s senses. As-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	suming that a set of neighbors is available, sense	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	ranking is equivalent to quantifying the degree	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	of similarity among the neighbors and the sense	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	descriptions of the polysemous word.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Let N(w) = {n <sub>1</sub> , n 2 , . . . , n k } be the k most (dis-	page=1 xpos=5 ypos=2 right-column left-indent font-larger indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tributionally) similar words to an ambiguous tar-	page=1 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	get word w and senses(w) = {s <sub>1</sub> , s 2 , . . . s n } the set	page=1 xpos=5 ypos=2 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	of senses for w. For each sense s <sub>i</sub> and for each	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	neighbor n <sub>j</sub> , the algorithm selects the neighbor’s	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	sense which has the highest WordNet similarity	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	score (wnss) with regard to s <sub>i</sub> . The ranking score	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	of sense s <sub>i</sub> is then increased as a function of the	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	WordNet similarity score and the distributional	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	similarity score (dss) between the target word and	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the neighbor:	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	RankScore(s <sub>i</sub> ) = ∑ dss(w, n j ) <sup>wnss(s</sup> ∑ wnss(s i <sup>,</sup> n j 0 ) , n )	page=1 xpos=5 ypos=4 right-column left-over right-indent font-largest longer-tail line-double-space line-space headchar-capital
+I-Equation	s 0 <sub>i</sub> ∈senses(w) <sup>i</sup> <sup>j</sup>	page=1 xpos=8 ypos=4 right-column left-indent right-indent font-largest indented-line shorter-tail itemization headchar-lower
+I-Equation	n <sub>j</sub> ∈N w	page=1 xpos=6 ypos=4 right-column left-indent right-indent font-smallest hanged-line shorter-tail itemization headchar-lower above-blank-line above-double-space above-line-space
+E-Body	where wnss(s <sub>i</sub> , n j ) = max wnss(s i , ns x ).	page=1 xpos=5 ypos=4 right-column right-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-period above-line-space
+B-Body	The predominant sense <sup>ns</sup> x <sup>∈senses(n</sup> is simply j ) the sense with	page=1 xpos=5 ypos=4 right-column left-indent font-largest indented-line longer-tail line-space headchar-capital
+I-Body	the highest ranking score (RankScore) and can be	page=1 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	consequently used to perform type-based disam-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguation. The method presented above has four	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	parameters: (a) the semantic space model repre-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	senting the distributional properties of the target	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	words (it is acquired from a large corpus repre-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sentative of the domain at hand and can be aug-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mented with syntactic relations such as subject or	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	object), (b) the measure of distributional similarity	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	for discovering neighbors (c) the number of neigh-	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bors that the ranking score takes into account, and	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	(d) the measure of sense similarity.	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail itemization tailchar-period above-line-space
+B-Body	Lexical Chains Lexical cohesion is often rep-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	resented via lexical chains, i.e., sequences of re-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lated words spanning a topical text unit (Mor-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ris and Hirst, 1991). Algorithms for computing	page=1 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	lexical chains often perform WSD before infer-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ring which words are semantically related. Here	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	we describe one such disambiguation algorithm,	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	proposed by Galley and McKeown (2003), while	page=1 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	omitting the details of creating the lexical chains	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	themselves.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Galley and McKeown’s (2003) method consists	page=1 xpos=5 ypos=8 right-column left-indent indented-line longer-tail year headchar-capital
+I-Body	of two stages. First, a graph is built represent-	page=1 xpos=5 ypos=9 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	ing all possible interpretations of the target words	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	98	page=1 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	in question. The text is processed sequentially,	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-comma
+I-Body	comparing each word against all words previously	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	read. If a relation exists between the senses of the	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	current word and any possible sense of a previous	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	word, a connection is formed between the appro-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	priate words and senses. The strength of the con-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nection is a function of the type of relationship and	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	of the distance between the words in the text (in	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	terms of words, sentences and paragraphs). Words	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	are represented as nodes in the graph and seman-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tic relations as weighted edges. Again, the set of	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	relations being considered is a parameter that can	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	be tuned experimentally.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	In the disambiguation stage, all occurrences of a	page=2 xpos=0 ypos=2 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	given word are collected together. For each sense	page=2 xpos=0 ypos=2 left-column full-justified hanged-line headchar-lower
+I-Body	of a target word, the strength of all connections	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	involving that sense are summed, giving that sense	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	a unified score. The sense with the highest unified	page=2 xpos=0 ypos=2 left-column full-justified aligned-line itemization headchar-lower
+I-Body	score is chosen as the correct sense for the target	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	word. In subsequent stages the actual connections	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	comprising the winning unified score are used as a	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	basis for computing the lexical chains.	page=2 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The algorithm is based on the “one sense per	page=2 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	discourse” hypothesis and uses information from	page=2 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	every occurrence of the ambiguous target word in	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	order to decide its appropriate sense. It is there-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fore a type-based algorithm, since it tries to de-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	termine the sense of the word in the entire doc-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ument/discourse at once, and not separately for	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	each instance.	page=2 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Structural Semantic Interconnections In-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	spired by lexical chains, Navigli and Velardi	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	(2005) developed Structural Semantic Intercon-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	nections (SSI), a WSD algorithm which makes use	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	of an extensive lexical knowledge base. The latter	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	is primarily based on WordNet and its standard re-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lation set (i.e., hypernymy, meronymy, antonymy,	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	similarity, nominalization, pertainymy) but is also	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	enriched with collocation information represent-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing semantic relatedness between sense pairs. Col-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	locations are gathered from existing resources	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	(such as the Oxford Collocations, the Longman	page=2 xpos=0 ypos=7 left-column full-justified aligned-line
+I-Body	Language Activator, and collocation web sites).	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	Each collocation is mapped to the WordNet sense	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	inventory in a semi-automatic manner (Navigli,	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	2005) and transformed into a relatedness edge.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail year tailchar-period above-line-space
+B-Body	Given a local word context C = {w <sub>1</sub> , ..., w n },	page=2 xpos=0 ypos=8 left-column left-indent font-larger indented-line longer-tail line-space headchar-capital tailchar-comma
+I-Body	SSI <sub>n</sub> builds a graph G = (V, E) such that V =	page=2 xpos=0 ypos=8 left-column full-justified font-largest hanged-line headchar-capital
+I-Body	S senses(w <sub>i</sub> ) and (s, s 0 ) ∈ E if there is at least	page=2 xpos=0 ypos=8 left-column left-indent headchar-capital above-line-space
+I-Body	i=1	page=2 xpos=0 ypos=8 left-column right-indent font-smallest shorter-tail line-space headchar-lower
+I-Body	one interconnection j between s (a sense of the	page=2 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail headchar-lower
+I-Body	word) and s 0 (a sense of its context) in the lexical	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	knowledge base. The set of valid interconnections	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	is determined by a manually-created context-free	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+Table	__Table 1__	page=2 xpos=5 ypos=-1 right-column left-over right-over box column-top table-area above-double-space above-line-space
+B-Caption	Table 1: Properties of the WSD algorithms	page=2 xpos=5 ypos=1 right-column centered left-indent right-indent indented-line shorter-tail line-double-space line-space string-table headchar-capital above-blank-line above-double-space above-line-space
+I-Body	grammar consisting of a small number of rules.	page=2 xpos=5 ypos=1 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-period
+I-Body	Valid interconnections are computed in advance	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+E-Body	on the lexical database, not at runtime.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Disambiguation is performed in an iterative	page=2 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	fashion. At each step, for each sense s of a word	page=2 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower
+I-Body	in C (the set of senses of words yet to be disam-	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	biguated), SSI determines the degree of connectiv-	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity between s and the other senses in C :	page=2 xpos=5 ypos=2 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-colon above-blank-line above-double-space above-line-space
+B-Equation	∑ ∑ <sub>length(</sub> <sup>1</sup> j)	page=2 xpos=7 ypos=3 right-column left-indent right-indent font-smaller indented-line longer-tail line-blank-line line-double-space line-space
+I-Equation	SSIScore(s) = <sup>s</sup> <sup>0</sup> ∈ <sup>C</sup> \{s} <sub>∑</sub> j∈Interconn(s,s |Interconn(s,s 0 ) 0 )|	page=2 xpos=5 ypos=3 right-column left-indent right-indent font-largest hanged-line shorter-tail headchar-capital
+I-Equation	s 0 ∈ C \{s}	page=2 xpos=7 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower above-blank-line above-double-space above-line-space
+I-Body	where Interconn(s, s 0 ) is the set of interconnec-	page=2 xpos=5 ypos=4 right-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	tions between senses s and s 0 . The contribution of a	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	single interconnection is given by the reciprocal of	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	its length, calculated as the number of edges con-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	necting its ends. The overall degree of connectiv-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ity is then normalized by the number of contribut-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing interconnections. The highest ranking sense s	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of word w <sub>i</sub> is chosen and the senses of w i are re-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	moved from the context C . The procedure termi-	page=2 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	nates when either C is the empty set or there is no	page=2 xpos=5 ypos=5 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	sense such that its SSIScore exceeds a fixed thresh-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	old.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Body	Summary The properties of the different	page=2 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	WSD algorithms just described are summarized	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	in Table 1. The methods vary in the amount of	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	data they employ for disambiguation. SSI and Ex-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tended Gloss Overlap (Overlap) rely on sentence-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	level information for disambiguation whereas Mc-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	Carthy et al. (2004) (Similarity) and Galley and	page=2 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital
+I-Body	McKeown (2003) (LexChains) utilize the entire	page=2 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital
+I-Body	document or corpus. This enables the accumula-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion of large amounts of data regarding the am-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguous word, but does not allow separate consid-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	eration of each individual occurrence of that word.	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	LexChains and Overlap take into account a re-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	stricted set of semantic relations (paths of length	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	one) between any two words in the whole docu-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ment, whereas SSI and Similarity use a wider set	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	of relations.	page=2 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	99	page=2 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-SectionHeader	3 Experiment 1: Comparison of	page=3 xpos=0 ypos=0 left-column right-indent font-smallest page-top numbered-heading1 above-double-space above-line-space
+I-SectionHeader	Unsupervised Algorithms for WSD	page=3 xpos=0 ypos=0 left-column left-indent right-indent font-smallest indented-line longer-tail line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.1 Method	page=3 xpos=0 ypos=0 left-column right-indent font-smallest hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-line-space
+B-Body	We evaluated the disambiguation algorithms out-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	lined above on two tasks: predominant sense ac-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	quisition and token-based WSD. As previously	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	explained, Overlap and SSI were not designed for	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	acquiring predominant senses (see Table 1), but	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	a token-based WSD algorithm can be trivially	page=3 xpos=0 ypos=1 left-column full-justified aligned-line itemization headchar-lower
+I-Body	modified to acquire predominant senses by dis-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ambiguating every occurrence of the target word	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	in context and selecting the sense which was cho-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sen most frequently. Type-based WSD algorithms	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	simply tag all occurrences of a target word with its	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	predominant sense, disregarding the surrounding	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	context.	page=3 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Our first set of experiments was conducted on	page=3 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	the SemCor corpus, on the same 2,595 polyse-	page=3 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	mous nouns (53,674 tokens) used as a test set by	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	McCarthy et al. (2004). These nouns were attested	page=3 xpos=0 ypos=3 left-column full-justified aligned-line year headchar-capital
+I-Body	in SemCor with a frequency > 2 and occurred in	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	the British National Corpus (BNC) more than 10	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	times. We used the WordNet 1.7.1 sense inventory.	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+B-Body	The following notation describes our evaluation	page=3 xpos=0 ypos=4 left-column left-indent indented-line headchar-capital
+I-Body	measures: W is the set of all noun types in the	page=3 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	SemCor corpus (|W | = 2, 595), and W <sub>f</sub> is the set	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	of noun types with a dominant sense. senses(w)	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	is the set of senses for noun type w, while f <sub>s</sub> (w)	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	and f <sub>m</sub> (w) refer to w’s first sense according to the	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	SemCor gold standard and our algorithms, respec-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tively. Finally, T (w) is the set of tokens of w and	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	sense <sub>s</sub> (t) denotes the sense assigned to token t ac-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cording to SemCor.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We first measure how well our algorithms can	page=3 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	identify the predominant sense, if one exists:	page=3 xpos=0 ypos=6 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon above-blank-line above-double-space above-line-space
+B-Equation	|{w ∈ W <sub>f</sub> | f s (w) = f m (w)}|	page=3 xpos=1 ypos=6 left-column left-indent right-indent font-smallest indented-line shorter-tail line-blank-line line-double-space line-space
+I-Equation	Acc <sub>ps</sub> =	page=3 xpos=0 ypos=6 left-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Equation	|W <sub>f</sub> |	page=3 xpos=2 ypos=6 left-column left-indent right-indent font-smallest indented-line longer-tail above-double-space above-line-space
+B-Body	A baseline for this task can be easily defined for	page=3 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	each word type by selecting a sense at random	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	from its sense inventory and assuming that this is	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the predominant sense:	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	1	page=3 xpos=3 ypos=7 left-column left-indent right-indent indented-line longer-tail line-double-space line-space numeric-only
+I-Equation	Baseline <sub>sr</sub> = 1 ∑	page=3 xpos=0 ypos=7 left-column left-indent right-indent font-largest hanged-line shorter-tail headchar-capital
+I-Equation	|W <sub>f</sub> | <sub>w</sub> <sub>∈W</sub> <sub>f</sub> |senses(w)|	page=3 xpos=1 ypos=7 left-column left-indent right-indent font-smaller indented-line longer-tail above-double-space above-line-space
+B-Body	We evaluate the algorithms’ disambiguation per-	page=3 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	formance by measuring the ratio of tokens for	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	which our models choose the right sense:	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-blank-line above-double-space above-line-space
+B-Equation	∑ |{t ∈ T (w)| f m (w) = sense s (t)}|	page=3 xpos=1 ypos=9 left-column left-indent right-indent font-smaller indented-line longer-tail line-blank-line line-double-space line-space above-line-space
+I-Equation	Acc <sub>wsd</sub> = <sup>w∈W</sup>	page=3 xpos=0 ypos=9 left-column left-indent right-indent font-smaller hanged-line shorter-tail line-space headchar-capital
+I-Equation	w∈W ∑ |T (w)|	page=3 xpos=2 ypos=9 left-column left-indent right-indent font-largest indented-line longer-tail headchar-lower column-bottom
+B-Body	In the predominant sense detection task, in case of	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-capital
+I-Body	ties in SemCor, any one of the predominant senses	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	was considered correct. Also, all algorithms were	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	designed to randomly choose from among the top	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	scoring options in case of a tie in the calculated	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	scores. This introduces a small amount of ran-	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	domness (less than 0.5%) in the accuracy calcu-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lation, and was done to avoid the pitfall of default-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing to the first sense listed in WordNet, which is	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	usually the actual predominant sense (the order of	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	senses in WordNet is based primarily on the Sem-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	Cor sense distribution).	page=3 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.2 Parameter Settings	page=3 xpos=5 ypos=2 right-column right-indent font-smallest aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-line-space
+B-Body	We did not specifically tune the parameters of our	page=3 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	WSD algorithms on the SemCor corpus, as our	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	goal was to use hand labeled data solely for testing	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	purposes. We selected parameters that have been	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	considered “optimal” in the literature, although	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	admittedly some performance gains could be ex-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	pected had parameter optimization taken place.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For Overlap, we used the semantic relations	page=3 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	proposed by Banerjee and Pedersen (2003),	page=3 xpos=5 ypos=3 right-column full-justified hanged-line year headchar-lower tailchar-comma
+I-Body	namely hypernyms, hyponyms, meronyms,	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	holonyms, and troponym synsets. We also	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	adopted their overlap scoring mechanism which	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	treats each gloss as a bag of words and assigns an	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	n word overlap the score of n <sup>2</sup> . Function words	page=3 xpos=5 ypos=4 right-column full-justified font-larger aligned-line itemization headchar-lower
+I-Body	were not considered in the overlap computation.	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	For LexChains, we used the relations reported	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	in Galley and McKeown (2003). These are all	page=3 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower
+I-Body	first-order WordNet relations, with the addition of	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the siblings – two words are considered siblings	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	if they are both hyponyms of the same hypernym.	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The relations have different weights, depending	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	on their type and the distance between the words	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	in the text. These weights were imported from	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	Galley and McKeown into our implementation	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+E-Body	without modification.	page=3 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Because the SemCor corpus is relatively small	page=3 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	(less than 700,00 words), it is not ideal for con-	page=3 xpos=5 ypos=6 right-column full-justified hanged-line tailchar-hiphen
+I-Body	structing a neighbor thesaurus appropriate for Mc-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	Carthy et al.’s (2004) method. The latter requires	page=3 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital
+I-Body	each word to participate in a large number of co-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	occurring contexts in order to obtain reliable dis-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tributional information. To overcome this prob-	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lem, we followed McCarthy et al. and extracted	page=3 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	the neighbor thesaurus from the entire BNC. We	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	also recreated their semantic space, using a RASP-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	parsed (Briscoe and Carroll, 2002) version of the	page=3 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower
+I-Body	BNC and their set of dependencies (i.e., Verb-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	Object, Verb-Subject, Noun-Noun and Adjective-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	Noun relations). Similarly to McCarthy et al., we	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital
+I-Body	used Lin’s (1998) measure of distributional simi-	page=3 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	larity, and considered only the 50 highest ranked	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	100	page=3 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 2__	page=4 xpos=0 ypos=-2 left-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 2: Results of individual disambiguation al-	page=4 xpos=0 ypos=0 left-column full-justified hanged-line line-double-space line-space string-table headchar-capital tailchar-hiphen
+I-Caption	gorithms on SemCor nouns <sup>2</sup> ( ∗ : sig. diff. from	page=4 xpos=0 ypos=0 left-column full-justified font-larger aligned-line headchar-lower
+I-Caption	Baseline, <sup>†</sup> : sig. diff. from Similarity, $ : sig diff.	page=4 xpos=0 ypos=0 left-column full-justified font-larger aligned-line symbol-dagger headchar-capital tailchar-period
+E-Caption	from SSI, <sup>#</sup> : sig. diff. from Overlap, p < 0.01)	page=4 xpos=0 ypos=1 left-column right-indent font-larger aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	neighbors for a given target word. Sense similar-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	ity was computed using the Lesk’s (Banerjee and	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	Pedersen, 2003) similarity measure <sup>1</sup> .	page=4 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail year headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.3 Results	page=4 xpos=0 ypos=2 left-column right-indent font-smallest aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The performance of the individual algorithms is	page=4 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	shown in Table 2. We also include the baseline	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	discussed in Section 3 and the upper bound of	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	defaulting to the first (i.e., most frequent) sense	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	provided by the manually annotated SemCor. We	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	report predominant sense accuracy (Acc <sub>ps</sub> ), and	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	WSD accuracy when using the automatically ac-	page=4 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	quired predominant sense (Acc <sub>wsd/ps</sub> ). For token-	page=4 xpos=0 ypos=4 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	based algorithms, we also report their WSD per-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formance in context, i.e., without use of the pre-	page=4 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	dominant sense (Acc <sub>wsd/dir</sub> ).	page=4 xpos=0 ypos=4 left-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	As expected, the accuracy scores in the WSD	page=4 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	task are lower than the respective scores in the	page=4 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	predominant sense task, since detecting the pre-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dominant sense correctly only insures the correct	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	tagging of the instances of the word with that	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	first sense. All methods perform significantly bet-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ter than the baseline in the predominant sense de-	page=4 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tection task (using a χ <sup>2</sup> -test, as indicated in Ta-	page=4 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower tailchar-hiphen
+I-Body	ble 2). LexChains and Overlap perform signif-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	icantly worse than Similarity and SSI, whereas	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	LexChains is not significantly different from Over-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	lap. Likewise, the difference in performance be-	page=4 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tween SSI and Similarity is not significant. With	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	respect to WSD, all the differences in performance	page=4 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	are statistically significant.	page=4 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Footnote	1 This measure is identical to the Extended gloss Overlap	page=4 xpos=0 ypos=7 left-column left-indent font-smallest indented-line longer-tail line-blank-line line-double-space line-space numbered-heading1
+I-Footnote	from Section 2, but instead of searching for overlap between	page=4 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	an extended gloss and a word’s context, the comparison is	page=4 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	done between two extended glosses of two synsets.	page=4 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	2 The LexChains results presented here are not directly	page=4 xpos=0 ypos=8 left-column left-indent font-smallest indented-line longer-tail numbered-heading1
+I-Footnote	comparable to those reported by Galley and McKeown	page=4 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	(2003), since they tested on a subset of SemCor, and included	page=4 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line year
+I-Footnote	monosemous nouns. They also used the first sense in Sem-	page=4 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Footnote	Cor in case of ties. The results for the Similarity method are	page=4 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-capital
+I-Footnote	slightly better than those reported by McCarthy et al. (2004)	page=4 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line year headchar-lower
+I-Footnote	due to minor improvements in implementation.	page=4 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+Table	__Table 3__	page=4 xpos=5 ypos=-2 right-column centered left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 3: Algorithms’ pairwise agreement in de-	page=4 xpos=5 ypos=0 right-column full-justified line-double-space line-space string-table headchar-capital tailchar-hiphen
+E-Caption	tecting the predominant sense (as % of all words)	page=4 xpos=5 ypos=0 right-column right-indent aligned-line headchar-lower above-blank-line above-double-space above-line-space
+B-Body	Interestingly, using the predominant sense de-	page=4 xpos=5 ypos=0 right-column left-indent indented-line line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tected by the Gloss Overlap and the SSI algo-	page=4 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	rithm to tag all instances is preferable to tagging	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	each instance individually (compare Acc <sub>wsd/dir</sub>	page=4 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower
+I-Body	and Acc <sub>wsd/ps</sub> for Overlap and SSI in Table 2).	page=4 xpos=5 ypos=1 right-column full-justified font-larger aligned-line headchar-lower tailchar-period
+I-Body	This means that a large part of the instances which	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	were not tagged individually with the predominant	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	sense were actually that sense.	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	A close examination of the performance of the	page=4 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	individual methods in the predominant-sense de-	page=4 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tection task shows that while the accuracy of all	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the methods is within a range of 7%, the actual	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	words for which each algorithm gives the cor-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rect predominant sense are very different. Table 3	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	shows the degree of overlap in assigning the ap-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	propriate predominant sense among the four meth-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ods. As can be seen, the largest amount of over-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lap is between Similarity and SSI, and this cor-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	responds approximately to <sub>3</sub> <sup>2</sup> of the words they	page=4 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	correctly label. This means that each of these two	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	methods gets more than 350 words right which the	page=4 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	other labels incorrectly.	page=4 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	If we had an “oracle” which would tell us	page=4 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	which method to choose for each word, we would	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	achieve approximately 82.4% in the predominant	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	sense task, giving us 58% in the WSD task. We	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	see that there is a large amount of complementa-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion between the algorithms, where the successes	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of one make up for the failures of the others. This	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	suggests that the errors of the individual methods	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	are sufficiently uncorrelated, and that some advan-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tage can be gained by combining their predictions.	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	4 Combination Methods	page=4 xpos=5 ypos=7 right-column right-indent font-smallest aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	An important finding in machine learning is that	page=4 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	a set of classifiers whose individual decisions are	page=4 xpos=5 ypos=7 right-column full-justified aligned-line itemization headchar-lower
+I-Body	combined in some way (an ensemble) can be more	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	accurate than any of its component classifiers, pro-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vided that the individual components are relatively	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	accurate and diverse (Dietterich, 1997). This sim-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ple idea has been applied to a variety of classi-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	fication problems ranging from optical character	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	recognition to medical diagnosis, part-of-speech	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	tagging (see Dietterich 1997 and van Halteren	page=4 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-lower
+I-Body	et al. 2001 for overviews), and notably supervised	page=4 xpos=5 ypos=9 right-column full-justified aligned-line year headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	101	page=4 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+E-Body	WSD (Florian et al., 2002).	page=5 xpos=0 ypos=0 left-column right-indent page-top year headchar-capital tailchar-period
+B-Body	Since our effort is focused exclusively on un-	page=5 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	supervised methods, we cannot use most ma-	page=5 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	chine learning approaches for creating an en-	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	semble (e.g., stacking, confidence-based combina-	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion), as they require a labeled training set. We	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	therefore examined several basic ensemble com-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bination approaches that do not require parameter	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	estimation from training data.	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We define Score(M <sub>i</sub> , s j ) as the (normalized)	page=5 xpos=0 ypos=1 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	score which a method M <sub>i</sub> gives to word sense s j .	page=5 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	The predominant sense calculated by method M <sub>i</sub>	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Body	for word w is then determined by:	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	PS(M <sub>i</sub> , w) = argmax Score(M i , s j )	page=5 xpos=0 ypos=2 left-column left-indent right-indent indented-line longer-tail line-double-space line-space headchar-capital above-line-space
+I-Equation	s <sub>j</sub> ∈senses(w)	page=5 xpos=1 ypos=2 left-column left-indent right-indent font-smallest indented-line shorter-tail line-space itemization headchar-lower above-double-space above-line-space
+B-Body	All ensemble methods receive a set {M <sub>i</sub> } ki=1 of in-	page=5 xpos=0 ypos=2 left-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	dividual methods to combine, so we denote each	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	ensemble method by MethodName({M <sub>i</sub> } ki=1 ).	page=5 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Direct Voting Each ensemble component has	page=5 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	one vote for the predominant sense, and the sense	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	with the most votes is chosen. The scoring func-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion for the voting ensemble is defined as:	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	Score(Voting({M <sub>i</sub> } ki=1 ), s)) = ∑ <sub>i=1</sub> <sup>k</sup> eq[s, PS(M i , w)]	page=5 xpos=0 ypos=4 left-column left-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+E-Body	where eq[s, PS(M <sub>i</sub> , w)] =  0 1 if otherwise s = PS(M i , w)	page=5 xpos=0 ypos=4 left-column right-indent font-largest hanged-line shorter-tail line-double-space line-space headchar-lower above-double-space above-line-space
+B-Body	Probability Mixture Each method provides	page=5 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	a probability distribution over the senses. These	page=5 xpos=0 ypos=5 left-column full-justified aligned-line itemization headchar-lower
+I-Body	probabilities (normalized scores) are summed, and	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the sense with the highest score is chosen:	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	Score(ProbMix({M <sub>i</sub> } ki=1 ), s)) = ∑ <sup>k</sup> Score(M i , s)	page=5 xpos=0 ypos=6 left-column left-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital above-line-space
+I-Equation	i=1	page=5 xpos=3 ypos=6 left-column left-indent right-indent font-smallest indented-line shorter-tail line-space headchar-lower above-double-space above-line-space
+B-Body	Rank-Based Combination Each method	page=5 xpos=0 ypos=6 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	provides a ranking of the senses for a given target	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	word. For each sense, its placements according to	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	each of the methods are summed and the sense	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	with the lowest total placement (closest to first	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	place) wins.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Equation	Score(Ranking({M <sub>i</sub> } ki=1 ), s)) = ∑ <sup>k</sup> (−1)·Place i (s)	page=5 xpos=0 ypos=7 left-column centered right-over font-largest aligned-line longer-tail line-double-space line-space headchar-capital above-line-space
+I-Equation	i=1	page=5 xpos=3 ypos=8 left-column left-indent right-indent font-smallest indented-line shorter-tail line-space headchar-lower above-double-space above-line-space
+I-Body	where Place <sub>i</sub> (s) is the number of distinct scores	page=5 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower
+E-Body	that are larger or equal to Score(M <sub>i</sub> , s).	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Arbiter-based Combination One WSD	page=5 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	method can act as an arbiter for adjudicating dis-	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	agreements among component systems. It makes	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	sense for the adjudicator to have reasonable	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	performance on its own. We therefore selected	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+Table	__Table 4__	page=5 xpos=5 ypos=-1 right-column centered left-indent right-indent box column-top table-area above-double-space above-line-space
+B-Caption	Table 4: Ensemble Combination Results ( <sup>†</sup> : sig.	page=5 xpos=5 ypos=1 right-column full-justified font-larger hanged-line longer-tail line-double-space line-space symbol-dagger string-table headchar-capital tailchar-period
+I-Caption	diff. from Similarity, $: sig. diff. from SSI, ‡: sig.	page=5 xpos=5 ypos=1 right-column full-justified aligned-line symbol-dagger headchar-lower tailchar-period
+E-Caption	diff. from Voting, p < 0.01)	page=5 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	SSI as the arbiter since it had the best accuracy on	page=5 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	the WSD task (see Table 2). For each disagreed	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	word w, and for each sense s of w assigned by	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	any of the systems in the ensemble {M <sub>i</sub> } ki=1 , we	page=5 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	calculate the following score:	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-blank-line above-double-space above-line-space
+B-Equation	Score(Arbiter({M <sub>i</sub> } ki=1 ), s) = SSIScore <sup>∗</sup> (s)	page=5 xpos=5 ypos=3 right-column left-indent right-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital above-double-space above-line-space
+I-Body	where SSIScore ∗ (s) is a modified version of the	page=5 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	score introduced in Section 2 which exploits as a	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	context for s the set of agreed senses and the re-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	maining words of each sentence. We exclude from	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	the context used by SSI the senses of w which were	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	not chosen by any of the systems in the ensem-	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ble . This effectively reduces the number of senses	page=5 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	considered by the arbiter and can positively influ-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ence the algorithm’s performance, since it elimi-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nates noise coming from senses which are likely	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	to be wrong.	page=5 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	5 Experiment 2: Ensembles for	page=5 xpos=5 ypos=5 right-column right-indent font-smallest aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+I-SectionHeader	Unsupervised WSD	page=5 xpos=5 ypos=6 right-column left-indent right-indent font-smallest indented-line shorter-tail line-double-space line-space headchar-capital above-blank-line above-double-space above-line-space
+B-SubsectionHeader	5.1 Method and Parameter Settings	page=5 xpos=5 ypos=6 right-column right-indent font-smallest hanged-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-line-space
+B-Body	We assess the performance of the different en-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	semble systems on the same set of SemCor nouns	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	on which the individual methods were tested. For	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	the best ensemble, we also report results on dis-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ambiguating all nouns in the Senseval-3 data set.	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We focus exclusively on nouns to allow com-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	parisons with the results obtained from SemCor.	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	We used the same parameters as in Experiment 1	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	for constructing the ensembles. As discussed ear-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lier, token-based methods can disambiguate target	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	words either in context or using the predominant	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	sense. SSI was employed in the predominant sense	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	setting in our arbiter experiment.	page=5 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	5.2 Results	page=5 xpos=5 ypos=9 right-column right-indent font-smallest aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-line-space
+B-Body	Our results are summarized in Table 4. As can be	page=5 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail line-space headchar-capital
+I-Body	seen, all ensemble methods perform significantly	page=5 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	102	page=5 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 5__	page=6 xpos=0 ypos=-2 left-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 5: Decrease in accuracy as a result of re-	page=6 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+I-Caption	moval of each method from the rank-based ensem-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Caption	ble.	page=6 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	better than the best individual methods, i.e., Simi-	page=6 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	larity and SSI. On the WSD task, the voting, prob-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ability mixture, and rank-based ensembles signif-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	icantly outperform the arbiter-based one. The per-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formances of the probability mixture, and rank-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	based combinations do not differ significantly but	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	both ensembles are significantly better than vot-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing. One of the factors contributing to the arbiter’s	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	worse performance (compared to the other ensem-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bles) is the fact that in many cases (almost 30%),	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	none of the senses suggested by the disagreeing	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	methods is correct. In these cases, there is no way	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	for the arbiter to select the correct sense. We also	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	examined the relative contribution of each compo-	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	nent to overall performance. Table 5 displays the	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	drop in performance by eliminating any particular	page=6 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	component from the rank-based ensemble (indi-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cated by −). The system that contributes the most	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	to the ensemble is SSI. Interestingly, Overlap and	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	Similarity yield similar improvements in WSD ac-	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	curacy (0.6 and 0.9, respectively) when added to	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	the ensemble.	page=6 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Figure 1 shows the WSD accuracy of the best	page=6 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space string-figure headchar-capital
+I-Body	single methods and the ensembles as a function of	page=6 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	the noun frequency in SemCor. We can see that	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	there is at least one ensemble outperforming any	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	single method in every frequency band and that	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the rank-based ensemble consistently outperforms	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	Similarity and SSI in all bands. Although Similar-	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ity has an advantage over SSI for low and medium	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	frequency words, it delivers worse performance	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	for high frequency words. This is possibly due to	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the quality of neighbors obtained for very frequent	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	words, which are not semantically distinct enough	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	to reliably discriminate between different senses.	page=6 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Table 6 lists the performance of the rank-based	page=6 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space string-table headchar-capital
+I-Body	ensemble on the Senseval-3 (noun) corpus. We	page=6 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	also report results for the best individual method,	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	namely SSI, and compare our results with the best	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	unsupervised system that participated in Senseval-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	3. The latter was developed by Strapparava et al.	page=6 xpos=0 ypos=8 left-column full-justified aligned-line itemization tailchar-period
+I-Body	(2004) and performs domain driven disambigua-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	tion (IRST-DDD). Specifically, the approach com-	page=6 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+Figure	__Figure 1__	page=6 xpos=5 ypos=-2 right-column full-justified box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 1: WSD accuracy as a function of noun fre-	page=6 xpos=5 ypos=1 right-column full-justified aligned-line line-double-space line-space string-figure headchar-capital tailchar-hiphen above-line-space
+Table	__Table 6__	page=6 xpos=5 ypos=1 right-column left-over right-indent box shorter-tail line-space table-area above-double-space above-line-space
+B-Caption	Table 6: Results of individual disambiguation al-	page=6 xpos=5 ypos=3 right-column full-justified longer-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+I-Caption	gorithms and rank-based ensemble on Senseval-3	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Caption	nouns	page=6 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+I-Body	pares the domain of the context surrounding the	page=6 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	target word with the domains of its senses and uses	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	a version of WordNet augmented with domain la-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+I-Body	bels (e.g., economy, geography). Our baseline se-	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lects the first sense randomly and uses it to disam-	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguate all instances of a target word. Our upper	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	bound defaults to the first sense from SemCor. We	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	report precision, recall and Fscore. In cases where	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	precision and recall figures coincide, the algorithm	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	has 100% coverage.	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	As can be seen the rank-based, ensemble out-	page=6 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	performs both SSI and the IRST-DDD system.	page=6 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	This is an encouraging result, suggesting that there	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	may be advantages in developing diverse classes	page=6 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of unsupervised WSD algorithms for system com-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bination. The results in Table 6 are higher than	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	those reported for SemCor (see Table 4). This is	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	expected since the Senseval-3 data set contains	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	monosemous nouns as well. Taking solely polyse-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mous nouns into account, SSI’s Fscore is 53.39%	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	and the ranked-based ensemble’s 55.0%. We fur-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ther note that not all of the components in our en-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	semble are optimal. Predominant senses for Lesk	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	and LexChains were estimated from the Senseval-	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	3 data, however a larger corpus would probably	page=6 xpos=5 ypos=9 right-column full-justified aligned-line numbered-heading1
+E-Body	yield more reliable estimates.	page=6 xpos=5 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	103	page=6 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-SectionHeader	6 Conclusions and Discussion	page=7 xpos=0 ypos=0 left-column right-indent font-smallest page-top numbered-heading1 above-double-space above-line-space
+B-Body	In this paper we have presented an evaluation	page=7 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	study of four well-known approaches to unsuper-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vised WSD. Our comparison involved type- and	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	token-based disambiguation algorithms relying on	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	different kinds of WordNet relations and different	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	amounts of corpus data. Our experiments revealed	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	two important findings. First, type-based disam-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	biguation yields results superior to a token-based	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	approach. Using predominant senses is preferable	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	to disambiguating instances individually, even for	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	token-based algorithms. Second, the outputs of	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the different approaches examined here are suffi-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ciently diverse to motivate combination methods	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	for unsupervised WSD. We defined several ensem-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bles on the predominant sense outputs of individ-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ual methods and showed that combination systems	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	outperformed their best components both on the	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	SemCor and Senseval-3 data sets.	page=7 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	The work described here could be usefully em-	page=7 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ployed in two tasks: (a) to create preliminary an-	page=7 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	notations, thus supporting the “annotate automati-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cally, correct manually” methodology used to pro-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vide high volume annotation in the Penn Treebank	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	project; and (b) in combination with supervised	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	WSD methods that take context into account; for	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	instance, such methods could default to an unsu-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pervised system for unseen words or words with	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	uninformative contexts.	page=7 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In the future we plan to integrate more com-	page=7 xpos=0 ypos=5 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	ponents into our ensembles. These include not	page=7 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	only domain driven disambiguation algorithms	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	(Strapparava et al., 2004) but also graph theoretic	page=7 xpos=0 ypos=5 left-column full-justified aligned-line year
+I-Body	ones (Mihalcea, 2005) as well as algorithms that	page=7 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	quantify the degree of association between senses	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	and their co-occurring contexts (Mohammad and	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	Hirst, 2006). Increasing the number of compo-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-capital tailchar-hiphen
+I-Body	nents would allow us to employ more sophisti-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cated combination methods such as unsupervised	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	rank aggregation algorithms (Tan and Jin, 2004).	page=7 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+AcknowledgementHeader	Acknowledgements	page=7 xpos=0 ypos=7 left-column right-indent font-smallest aligned-line shorter-tail line-blank-line line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	We are grateful to Diana McCarthy for her help with this	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Acknowledgement	work and to Michel Galley for making his code available	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower
+I-Acknowledgement	to us. Thanks to John Carroll and Rob Koeling for in-	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Acknowledgement	sightful comments and suggestions. The authors acknowl-	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Acknowledgement	edge the support of EPSRC (Brody and Lapata; grant	page=7 xpos=0 ypos=7 left-column full-justified font-smallest aligned-line headchar-lower
+I-Acknowledgement	EP/C538447/1) and the European Union (Navigli; Interop	page=7 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line headchar-capital
+E-Acknowledgement	NoE (508011)).	page=7 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Banerjee, Satanjeev and Ted Pedersen. 2003. Extended gloss	page=7 xpos=0 ypos=8 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	overlaps as a measure of semantic relatedness. In Proceed-	page=7 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ings of the 18th IJCAI. Acapulco, pages 805–810.	page=7 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Briscoe, Ted and John Carroll. 2002. Robust accurate statis-	page=7 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tical annotation of general text. In Proceedings of the 3rd	page=7 xpos=0 ypos=9 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	LREC. Las Palmas, Gran Canaria, pages 1499–1504.	page=7 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period column-bottom
+B-Reference	Dietterich, T. G. 1997. Machine learning research: Four cur-	page=7 xpos=5 ypos=0 right-column full-justified font-smallest column-top year headchar-capital tailchar-hiphen
+I-Reference	rent directions. AI Magazine 18(4):97–136.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period
+B-Reference	Edmonds, Philip. 2000. Designing a task for SENSEVAL-2.	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-period
+I-Reference	Technical note.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-capital tailchar-period
+B-Reference	Florian, Radu, Silviu Cucerzan, Charles Schafer, and David	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	Yarowsky. 2002. Combining classifiers for word sense dis-	page=7 xpos=5 ypos=0 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	ambiguation. Natural Language Engineering 1(1):1–14.	page=7 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Galley, Michel and Kathleen McKeown. 2003. Improving	page=7 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	word sense disambiguation in lexical chaining. In Pro-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+B-Reference	Hoste, <sup>ceedings</sup> Véronique, of the 18th Iris Hendrickx, IJCAI. Acapulco, Walter pages Daelemans, 1486–1488. and	page=7 xpos=5 ypos=1 right-column full-justified font-largest hanged-line headchar-capital
+I-Reference	Antal van den Bosch. 2002. Parameter optimization for	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	machine-learning of word sense disambiguation. Lan-	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	guage Engineering 8(4):311–325.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Lesk, Michael. 1986. Automatic sense disambiguation us-	page=7 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ing machine readable dictionaries: How to tell a pine cone	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	from an ice cream cone. In Proceedings of the 5th SIG-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	DOC. New York, NY, pages 24–26.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Lin, Dekang. 1998. An information-theoretic definition of	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	similarity. In Proceedings of the 15th ICML. Madison,	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	WI, pages 296–304.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	McCarthy, Diana, Rob Koeling, Julie Weeds, and John Car-	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-hiphen
+I-Reference	roll. 2004. Finding predominant senses in untagged text.	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year headchar-lower tailchar-period
+I-Reference	In Proceedings of the 42th ACL. Barcelona, Spain, pages	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	280–287.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Mihalcea, Rada. 2005. Unsupervised large-vocabulary word	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	sense disambiguation with graph-based algorithms for se-	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	quence data labeling. In Proceedings of the HLT/EMNLP.	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	Vancouver, BC, pages 411–418.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Mihalcea, Rada and Phil Edmonds, editors. 2004. Proceed-	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ings of the SENSEVAL-3. Barcelona, Spain.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period
+B-Reference	Miller, George A., Claudia Leacock, Randee Tengi, and	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	Ross T. Bunker. 1993. A semantic concordance. In Pro-	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	pages <sup>ceedings</sup> 303–308. of the ARPA HLT Workshop. Morgan Kaufman,	page=7 xpos=5 ypos=4 right-column left-indent font-largest aligned-line headchar-lower tailchar-comma
+B-Reference	Mohammad, Saif and Graeme Hirst. 2006. Determining word	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line year headchar-capital
+I-Reference	sense dominance using a thesaurus. In Proceedings of the	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	EACL. Trento, Italy, pages 121–128.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Morris, Jane and Graeme Hirst. 1991. Lexical cohesion com-	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	puted by thesaural relations as an indicator of the structure	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	of text. Computational Linguistics 1(17):21–43.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Navigli, Roberto. 2005. Semi-automatic extension of large-	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	scale linguistic knowledge bases. In Proceedings of the	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	18th FLAIRS. Florida.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period
+B-Reference	Navigli, Roberto and Paola Velardi. 2005. Structural seman-	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	tic interconnections: a knowledge-based approach to word	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	sense disambiguation. PAMI 27(7):1075–1088.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Ng, Tou Hwee. 1997. Getting serious about word sense dis-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital tailchar-hiphen
+I-Reference	ambiguation. In Proceedings of the ACL SIGLEX Work-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen above-line-space
+I-Reference	shop on Tagging Text with Lexical Semantics: Why, What,	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line line-space headchar-lower tailchar-comma
+I-Reference	and How?. Washington, DC, pages 1–7.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Stokoe, Christopher. 2005. Differentiating homonymy and	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	polysemy in information retrieval. In Proceedings of the	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	HLT/EMNLP. Vancouver, BC, pages 403–410.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Strapparava, Carlo, Alfio Gliozzo, and Claudio Giuliano.	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail headchar-capital tailchar-period
+I-Reference	2004. Word-sense disambiguation for machine transla-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	tion. In Proceedings of the SENSEVAL-3. Barcelona,	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	Spain, pages 229–234.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Tan, Pang-Ning and Rong Jin. 2004. Ordering patterns by	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	combining opinions from multiple sources. In Proceed-	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ings of the 10th KDD. Seattle, WA, pages 22–25.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	van Halteren, Hans, Jakub Zavrel, and Walter Daelemans.	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail headchar-lower tailchar-period
+I-Reference	2001. Improving accuracy in word class tagging through	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line year
+I-Reference	combination of machine learning systems. Computational	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Linguistics 27(2):199–230.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Vickrey, David, Luke Biewald, Marc Teyssier, and Daphne	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail headchar-capital
+I-Reference	Koller. 2005. Word-sense disambiguation for machine	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	translation. In Proceedings of the HLT/EMNLP. Vancou-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ver, BC, pages 771–778.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Reference	Yarowsky, David and Radu Florian. 2002. Evaluating sense	page=7 xpos=5 ypos=9 right-column full-justified font-smallest hanged-line longer-tail year headchar-capital
+I-Reference	disambiguation across diverse parameter spaces. Natural	page=7 xpos=5 ypos=9 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Language Engineering 9(4):293–310.	page=7 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	104	page=7 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only

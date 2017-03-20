@@ -1,0 +1,617 @@
+Title	Evaluating Contextual Dependency of Paraphrases	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital
+Title	using a Latent Variable Model	page=0 xpos=2 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+Author	Kiyonroi OHTAKE	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Spoken Language Communication Research Laboratories	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Affiliation	Advanced Telecommunications Research Institute International	page=0 xpos=1 ypos=1 single-column centered left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+Address	Kyoto 619-0288 Japan	page=0 xpos=3 ypos=1 single-column centered left-indent right-indent font-larger indented-line shorter-tail headchar-capital
+Email	kiyonori.ohtake + @atr.jp	page=0 xpos=2 ypos=1 single-column centered left-indent right-indent hanged-line longer-tail symbol-atmark headchar-lower column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-larger column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	This paper presents an evaluation	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	method employing a latent variable	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	model for paraphrases with their con-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	texts. We assume that the context of a	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	sentence is indicated by a latent vari-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	able of the model as a topic and that	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	the likelihood of each variable can be	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	inferred. A paraphrase is evaluated	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	for whether its sentences are used in	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	the same context. Experimental re-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sults showed that the proposed method	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	achieves almost 60% accuracy and that	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	there is not a large performance differ-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ence between the two models. The re-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	sults also revealed an upper bound of	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	accuracy of 77% with the method when	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	using only topic information.	page=0 xpos=0 ypos=5 left-column left-indent right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=6 left-column right-indent font-larger hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	This paper proposes a method to evaluate whether	page=0 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	a paraphrasing pair is contextually independent.	page=0 xpos=0 ypos=6 left-column full-justified aligned-line itemization headchar-lower tailchar-period
+I-Body	Evaluating a paraphrasing pair is important when	page=0 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	we extract paraphrases from a corpus or apply a	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	paraphrase to a sentence, since we must guarantee	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	that the paraphrase carries almost the same mean-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing. However, the meaning carried by a sentence	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	is affected by its context. Thus, we focus on the	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	contextual dependency of paraphrases.	page=0 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	A thing can be expressed by various expres-	page=0 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	sions, and a single idea can be paraphrased in	page=0 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	many ways to enrich its expression or to increase	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	understanding. Paraphrasing plays a very impor-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tant role in natural language expressions. How-	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom
+I-Body	ever, it is very hard for machines to handle differ-	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower tailchar-hiphen
+E-Body	ent expressions that carry the same meaning.	page=0 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	The importance of paraphrasing has been	page=0 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	widely acknowledged, and many paraphrasing	page=0 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	studies have been carried out. Using only sur-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	face similarity is insufficient for evaluating para-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	phrases because there are not only surface dif-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferences but many other kinds of differences be-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tween paraphrased sentences. Thus, it is not easy	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	to evaluate whether two sentences carry almost	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	the same meaning.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Some studies have constructed and evaluated	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	hand-made rules (Takahashi et al., 2001; Ohtake	page=0 xpos=5 ypos=4 right-column full-justified hanged-line year headchar-lower
+I-Body	and Yamamoto, 2001). Others have tried to	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-lower
+I-Body	extract paraphrases from corpora (Barzilay and	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	McKeown, 2001; Lin and Pantel, 2001), which	page=0 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-capital
+I-Body	are very useful because they enable us to con-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	struct paraphrasing rules. In addition, we can con-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	struct an example-based or a Statistical Machine	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	Translation (SMT)-like paraphrasing system that	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	utilizes paraphrasing examples. Thus, collect-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing paraphrased examples must be continued to	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	achieve high-performance paraphrasing systems.	page=0 xpos=5 ypos=6 right-column right-indent aligned-line headchar-lower tailchar-period above-line-space
+B-Body	Several methods of acquiring paraphrases have	page=0 xpos=5 ypos=6 right-column left-indent indented-line line-space headchar-capital
+I-Body	been proposed (Barzilay and McKeown, 2001;	page=0 xpos=5 ypos=6 right-column full-justified hanged-line year headchar-lower tailchar-semicolon
+I-Body	Shimohata and Sumita, 2002; Yamamoto, 2002).	page=0 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-capital tailchar-period
+I-Body	Some use parallel corpora as resources to obtain	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+I-Body	paraphrases, which seems a promising way to ex-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tract high-quality paraphrases.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	However, unlike translation, there is no obvi-	page=0 xpos=5 ypos=7 right-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	ous paraphrasing direction. Given paraphrasing	page=0 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	pair E <sub>1</sub> :E 2 , we have to know the paraphrasing	page=0 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	direction to paraphrase from E <sub>1</sub> to E 2 and vice	page=0 xpos=5 ypos=8 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	versa. When extracting paraphrasing pairs from	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	corpora, whether the paraphrasing pairs are con-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	65	page=0 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	textually dependent paraphrases is a serious prob-	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	lem, and thus there is a specific paraphrase direc-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion for each pair. In addition, it is also important	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	to evaluate a paraphrasing pair not only when ex-	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tracting but also when applying a paraphrase.	page=1 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Consider this example, automatically extracted	page=1 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	from a corpus: Can I pay by traveler’s check?	page=1 xpos=0 ypos=1 left-column full-justified hanged-line headchar-lower
+I-Body	/ Do you take traveler’s checks? This example	page=1 xpos=0 ypos=1 left-column full-justified aligned-line
+I-Body	seems contextually independent. On the other	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	hand, here is another example: I want to buy a	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	pair of sandals. / I’m looking for sandals. This	page=1 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	example seems to be contextually dependent, be-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cause we don’t know whether the speaker is only	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	looking for a single pair of sandals. In some con-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	texts, the latter sentence means that the speaker is	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	seeking or searching for sandals. In other words,	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the former sentence carries specific meaning, but	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the latter carries generic meaning. Thus, the para-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	phrasing sentences are contextually dependent,	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	and although the paraphrasing direction from spe-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cific to generic might be acceptable, the opposite	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	direction may not be.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	We can solve part of this problem by inferring	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	the contexts of the paraphrasing sentences. A text	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	model with latent variables can be used to infer	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the topic of a text, since latent variables corre-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	spond to the topics indicated by texts. We as-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sume that a topic indicated by a latent variable	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	of a text model can be used as an approximation	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	of context. Needless to say, however, such an ap-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	proximation is very rough, and a more complex	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	model or more powerful approach must be devel-	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	oped to achieve performances that match human	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	judgement in evaluating paraphrases.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The final goal of this study is the evaluation	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	of paraphrasing pairs based on the following two	page=1 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	factors: contextual dependency and paraphras-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing direction. In this paper, however, as a first	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	step to evaluate paraphrasing pairs, we focus on	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the evaluation of contextual dependency by us-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing probabilistic Latent Semantic Indexing (pLSI)	page=1 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	(Hofmann, 1999) and Latent Dirichlet Allocation	page=1 xpos=0 ypos=7 left-column full-justified aligned-line year
+I-Body	(LDA) (Blei et al., 2003) as text models with la-	page=1 xpos=0 ypos=7 left-column full-justified aligned-line year tailchar-hiphen
+E-Body	tent variables.	page=1 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Latent Variable Models and Topic	page=1 xpos=0 ypos=8 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1
+I-SectionHeader	Inference	page=1 xpos=0 ypos=8 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	In this section, we introduce two latent variable	page=1 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	models, pLSI and LDA, and also explain how to	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower column-bottom
+E-Body	infer a topic with the models.	page=1 xpos=5 ypos=0 right-column right-indent column-top headchar-lower tailchar-period
+B-Body	In addition to pLSI and LDA, there are other la-	page=1 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tent variable models such as mixture of unigrams.	page=1 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	We used pLSI and LDA because Blei et al. have	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital
+I-Body	already demonstrated that LDA outperforms mix-	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ture of unigrams and pLSI (Blei et al., 2003), and	page=1 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+E-Body	a toolkit has been developed for each model.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail itemization headchar-lower tailchar-period
+B-Body	From a practical viewpoint, we want to deter-	page=1 xpos=5 ypos=1 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	mine how much performance difference exists be-	page=1 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tween pLSI and LDA through evaluations of con-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	textual paraphrase dependency. The time com-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plexity required to infer a topic by LDA is larger	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	than that by pLSI, and thus it is valuable to know	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	the performance difference.	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.1 Probabilistic LSI	page=1 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	PLSI is a latent variable model for general co-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	occurrence data that associates an unobserved	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	topic variable z ∈ Z = {z <sub>1</sub> , · · · , z K } with each	page=1 xpos=5 ypos=3 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	observation, i.e., with each occurrence of word	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	w ∈ W = {w <sub>1</sub> , · · · , w M } in document d ∈ D =	page=1 xpos=5 ypos=3 right-column full-justified font-largest aligned-line itemization headchar-lower
+E-Body	{d <sub>1</sub> , · · · d N }.	page=1 xpos=5 ypos=3 right-column right-indent font-largest aligned-line shorter-tail tailchar-period
+B-Body	PLSI gives joint probability for a word and a	page=1 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	document as follows:	page=1 xpos=5 ypos=4 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	P (d, w) = P (d)P (w|d), (1)	page=1 xpos=6 ypos=4 right-column left-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+I-Body	where	page=1 xpos=5 ypos=4 right-column right-indent hanged-line shorter-tail line-double-space line-space headchar-lower above-double-space above-line-space
+B-Equation	z∈Z X	page=1 xpos=7 ypos=5 right-column left-indent right-indent box indented-line longer-tail line-double-space line-space headchar-lower
+I-Equation	P (w|d) = P (w|z)P (z|d). (2)	page=1 xpos=6 ypos=5 right-column left-indent font-largest hanged-line longer-tail headchar-capital above-blank-line above-double-space above-line-space
+B-Body	However, to infer a topic indicated by a docu-	page=1 xpos=5 ypos=5 right-column left-indent hanged-line line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ment, we have to obtain P (z|d). From (Hofmann,	page=1 xpos=5 ypos=5 right-column full-justified font-largest hanged-line headchar-lower tailchar-comma
+I-Body	1999), we can derive the following formulas:	page=1 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail year tailchar-colon above-double-space above-line-space
+B-Equation	P (z|d, w) ∝ P (z)P (d|z)P (w|z) (3)	page=1 xpos=5 ypos=6 right-column left-indent font-largest indented-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+I-Body	and	page=1 xpos=5 ypos=6 right-column right-indent hanged-line shorter-tail line-double-space line-space headchar-lower above-double-space above-line-space
+B-Equation	P (d|z) ∝ X w n(d, w)P (z|d, w),	page=1 xpos=6 ypos=6 right-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Equation	(4)	page=1 xpos=9 ypos=6 right-column left-indent indented-line longer-tail above-blank-line above-double-space above-line-space
+I-Body	where n(d, w) denotes term frequency, which is	page=1 xpos=5 ypos=7 right-column full-justified font-largest hanged-line line-blank-line line-double-space line-space headchar-lower
+I-Body	the number of times w occurs in d. Assuming	page=1 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	that P (d|z) = <sub>w∈d</sub> P (w|z), the probability of a	page=1 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	topic under document Q (P (z|d)) is proportional to	page=1 xpos=5 ypos=7 right-column full-justified box aligned-line headchar-lower
+I-Body	the following formula:	page=1 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	P (z) <sup>2</sup> P (w|z) X w n(d, w)P (w|z). (5) w∈d Y	page=1 xpos=5 ypos=8 right-column left-indent box indented-line longer-tail line-double-space line-space headchar-capital
+B-Body	After a pLSI model is constructed with a learn-	page=1 xpos=5 ypos=8 right-column left-indent hanged-line headchar-capital tailchar-hiphen
+I-Body	ing corpus, we can infer topic z ∈ Z indicated	page=1 xpos=5 ypos=8 right-column full-justified font-largest hanged-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	66	page=1 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	by given document d = w <sub>1</sub> , · · · , w <sub>M</sub> <sub>(d)</sub> with For-	page=2 xpos=0 ypos=0 left-column full-justified font-largest page-top headchar-lower tailchar-hiphen
+I-Body	mula 5. A topic z that maximizes Formula 5 is	page=2 xpos=0 ypos=0 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	inferred as the topic of document d.	page=2 xpos=0 ypos=0 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	2.2 Latent Dirichlet Allocation	page=2 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Latent Dirichlet Allocation (LDA) is a generative	page=2 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	probabilistic model of a corpus. The basic idea	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	is that documents are represented as random mix-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tures over latent topics, where each topic is char-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	acterized by a distribution over words.	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	LDA gives us the marginal distribution of a	page=2 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	document (p(d|α, β), d = (w <sub>1</sub> , w 2 , · · · w N )) by	page=2 xpos=0 ypos=2 left-column full-justified font-largest hanged-line headchar-lower
+I-Body	the following formula:	page=2 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	Z p(θ|α) n=1 Y <sup>N</sup> X z n p(z n |θ)p(w n |z n , β) ! dθ, (6)	page=2 xpos=0 ypos=2 left-column full-justified box aligned-line longer-tail line-double-space line-space headchar-capital above-line-space
+I-Body	where α parameterizes Dirichlet random vari-	page=2 xpos=0 ypos=3 left-column full-justified font-largest aligned-line line-space headchar-lower tailchar-hiphen
+I-Body	able θ and β parameterizes the word probabili-	page=2 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower tailchar-hiphen
+I-Body	ties, and z <sub>n</sub> indicates a topic variable z n ∈ Z =	page=2 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	{z <sub>1</sub> , z 2 , · · · , z N }. To obtain the probability of a	page=2 xpos=0 ypos=3 left-column full-justified font-largest aligned-line
+I-Body	corpus, we take the product of the marginal prob-	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	abilities of single documents.	page=2 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Here, we omit the details of parameter estima-	page=2 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	tion and the inference of LDA due to space lim-	page=2 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	itations. However, the important point is that the	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	Dirichlet parameters used to infer the probability	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	of a document can be seen as providing a repre-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sentation of the document in the topic simplex.	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In other words, these parameters indicate a point	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital
+I-Body	in the topic simplex. Thus, in this paper, we use	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	the largest elements of the parameters to infer the	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	topic (as an approximation of context) to which a	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	given text belongs.	page=2 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Evaluating Paraphrases with Latent	page=2 xpos=0 ypos=6 left-column right-indent font-larger aligned-line longer-tail line-double-space line-space numbered-heading1
+I-SectionHeader	Variable Models	page=2 xpos=0 ypos=6 left-column left-indent right-indent font-larger indented-line shorter-tail headchar-capital above-double-space above-line-space
+B-Body	To evaluate a paraphrasing pair of sentences, we	page=2 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	must prepare a learning corpus for constructing	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	latent variable models. It must be organized so	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	that it consist of documents, and each document	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	must be implicated in a specific context.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Both latent variable models pLSI and LDA re-	page=2 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-space headchar-capital tailchar-hiphen
+I-Body	quire vector format data for their learning. In this	page=2 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	paper, we follow the bag-of-words approach and	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	prepare vector data that consist of words and their	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	frequency for each document in the learning cor-	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	pus.	page=2 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	After constructing the pLSI and LDA models,	page=2 xpos=5 ypos=0 right-column left-indent column-top headchar-capital tailchar-comma
+I-Body	we can infer a topic by using the models with vec-	page=2 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	tor data that correspond to a target sentence.The	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	vector data for the target sentence are constructed	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	by using the target sentence and the sentences that	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	surround it. From these sentences, the vector data	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	that correspond to the target sentence are con-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	structed. We call the number of sentences used	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	to construct vector data “window size.”	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower
+B-Body	Evaluating a paraphrasing pair (P 1:P 2) is	page=2 xpos=5 ypos=1 right-column left-indent font-largest indented-line longer-tail headchar-capital
+I-Body	simple. Construct vector data (vec(P 1) and	page=2 xpos=5 ypos=1 right-column full-justified font-largest hanged-line headchar-lower
+I-Body	vec(P 2)) and infer contexts (T (P 1) and T (P 2))	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	by using a latent variable model. Using pLSI, the	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	topic that indicates the highest probability is used	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	as the inferred result, and using LDA, the largest	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	parameter that corresponds to the topic is used as	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	the inferred result. If topics T (P 1) and T (P 2)	page=2 xpos=5 ypos=2 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	are different, the sentences might be used in dif-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent contexts, and the paraphrasing pair would	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	be contextually dependent; otherwise, the para-	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	phrasing pair would be contextually independent.	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Experiments	page=2 xpos=5 ypos=3 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We carried out several experiments that automati-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	cally evaluated extracted paraphrases with pLSI	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	and LDA. To carry out these experiments, we	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	used plsi-0.03 1 by Kudo for pLSI and lda-c 2	page=2 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+E-Body	toolkit by Blei (Blei et al., 2003) for LDA.	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.1 Data set	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We used a bilingual corpus of travel conversation	page=2 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	containing Japanese sentences and correspond-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing English translations (Takezawa et al., 2002).	page=2 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	Since the translations were made sentence by sen-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tence, this corpus was sentence-aligned from its	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	origin and consisted of 162,000 sentence pairs.	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	The corpus was manually and roughly anno-	page=2 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tated with topics. Each topic had a two-level	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	hierarchical structure whose first level consisted	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	of 19 topics. Each first-level topic had several	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	subtopics. The second level consisted of 218 top-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ics, after expanding all subtopics of each topic	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	in the first level. A rough annotation example	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	is shown in Table 1; the hierarchical structure of	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	this topic seems unorganized. For example, in the	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	first-level topic, there are topics labeled basic and	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+E-Body	communication, which seem to overlap.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	1 http://chasen.org/˜taku/software/plsi/	page=2 xpos=5 ypos=8 right-column left-indent right-over font-smaller indented-line longer-tail line-double-space line-space numbered-heading1
+B-Footnote	2 http://www.cs.berkeley.edu/˜blei/lda-c/	page=2 xpos=5 ypos=8 right-column left-indent right-over font-smaller aligned-line longer-tail numbered-heading1 column-bottom above-blank-line above-double-space above-line-space
+Page	67	page=2 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 1__	page=3 xpos=1 ypos=-2 single-column centered left-indent right-indent box page-top table-area column-bottom above-blank-line above-double-space above-line-space
+B-Body	In the corpus, however, there is an obvious	page=3 xpos=0 ypos=0 left-column left-indent column-top line-blank-line line-double-space line-space headchar-capital
+I-Body	textual cohesion such that sentences of the same	page=3 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower
+I-Body	topic are locally gathered. Each series of sen-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences can be used as a document for a text model.	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Under the assumption that each series of sen-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tences is a document, the average number of sen-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences included in a document is 18.7, and the av-	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erage number of words included in a document is	page=3 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Body	44.9.	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.2 Extracting paraphrases	page=3 xpos=0 ypos=2 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	A large collection of parallel texts contains many	page=3 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	sentences in one language that correspond to	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	the same expression in the other language for	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	translation. For example, if Japanese sentences	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	J <sub>i1</sub> , ..., J im correspond to English sentence E i ,	page=3 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-capital tailchar-comma
+I-Body	then these Japanese sentences would be para-	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	phrases.	page=3 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	We utilized a very simple method to extract	page=3 xpos=0 ypos=4 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	Japanese paraphrases from the corpus. First, we	page=3 xpos=0 ypos=4 left-column full-justified hanged-line headchar-capital
+I-Body	extracted duplicate English sentences by exact	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	matching. From the learning set, 18,505 sen-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences were extracted. Second, we collected	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	Japanese sentences that correspond to each ex-	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tracted English sentence. Next, we obtained sets	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	of Japanese sentences collected by using English	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	sentences as pivots. In the corpus, one English	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	sentence averaged almost 4.5 Japanese sentences,	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	but this number included duplicate sentences.	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	If duplicate sentences are excluded, the average	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-capital
+I-Body	number of Japanese sentences corresponding to	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	an English sentence becomes 2.4. Finally, we	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	obtained 944,547 Japanese paraphrasing pairs by	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	combining sentences in each group of Japanese	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	sentences.	page=3 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	4.3 Comparing human judgement and	page=3 xpos=0 ypos=7 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2
+I-SubsectionHeader	inference by latent variable models	page=3 xpos=0 ypos=8 left-column left-indent right-indent indented-line headchar-lower above-double-space above-line-space
+B-Body	In this section, we determine the difference be-	page=3 xpos=0 ypos=8 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tween manually annotated topics and inference	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	results using pLSI and LDA. We originally con-	page=3 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	sidered evaluating each paraphrase as a binary	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	classification problem that determines whether	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	both sentences of the paraphrase are used in the	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	same context. We evaluated the inferred results	page=3 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	by comparison with the manually annotated top-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ics, and thus accuracy could be calculated when	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	the manually annotated topics were correct. How-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ever, accuracy is inappropriate for evaluating re-	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults inferred by a latent variable model, since the	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	topics were roughly annotated by humans as men-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tioned in Section 4.1. Accordingly, we employed	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	Kappa statistics as a rough guide for the correct-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ness of the inferred results by latent variable mod-	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	els.	page=3 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Tables 2 and 3 show the comparison results,	page=3 xpos=5 ypos=3 right-column left-indent indented-line longer-tail string-table headchar-capital tailchar-comma
+I-Body	where the window size is 11 (the target sentence	page=3 xpos=5 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	+ the previous five and the following five sen-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line tailchar-hiphen
+I-Body	tences). When constructing pLSI models, the pa-	page=3 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rameter for tempered EM (TEM) is set to 0.9 (we	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	use this value in all of the experiments in this pa-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	per), because it showed the best performance in	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	preliminary experiments. We performed the ex-	page=3 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	periments on several topics.	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Caption	Table 2: Comparing results of first-level topic	page=3 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital
+E-Caption	(19)	page=3 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail
+Table	__Table 2__	page=3 xpos=5 ypos=5 right-column centered left-indent right-indent box indented-line longer-tail table-area above-blank-line above-double-space above-line-space
+B-Body	As mentioned in Sections 2.1 and 2.2, we can	page=3 xpos=5 ypos=7 right-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	treat inference results as vector data. Thus, we	page=3 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower
+I-Body	can use a metric to classify the two vectors that	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	correspond to the inferred results of any two given	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	sentences. We use cosine as a metric and con-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	68	page=3 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-Caption	Table 3: Comparing results of second-level topic	page=4 xpos=0 ypos=0 left-column full-justified page-top string-table headchar-capital above-double-space above-line-space
+Table	__Table 3__	page=4 xpos=0 ypos=0 left-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space table-area above-blank-line above-double-space above-line-space
+I-Body	ducted comparison experiments for the first- and	page=4 xpos=0 ypos=2 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space headchar-lower
+I-Body	second-level topics, as shown in Tables 4 and 5.	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The threshold values used to judge whether topics	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+E-Body	are the same are indicated in the parentheses.	page=4 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Caption	Table 4: Comparing results of first-level topic	page=4 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital above-double-space above-line-space
+Table	__Table 4__	page=4 xpos=0 ypos=3 left-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space table-area above-blank-line above-double-space above-line-space
+B-Caption	Table 5: Comparing results of second-level topic	page=4 xpos=0 ypos=5 left-column full-justified hanged-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital
+Table	__Table 5__	page=4 xpos=-1 ypos=5 left-column left-over right-indent box shorter-tail table-area above-blank-line above-double-space above-line-space
+B-Body	We also performed an experiment to confirm	page=4 xpos=0 ypos=7 left-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	the relationship between Kappa statistics and	page=4 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	window-size context. Experiments were done un-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	der the following conditions: the number of topics	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	was 20 for both pLSI and LDA, Kappa statistics	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	were calculated for the first-level topic, and win-	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dow sizes were 5, 11, 15, 21, 25, and 31. Table 6	page=4 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower column-bottom
+B-Caption	Table 6: Window size and Kappa statistics for	page=4 xpos=5 ypos=0 right-column full-justified column-top string-table headchar-capital above-double-space above-line-space
+Table	__Table 6__	page=4 xpos=5 ypos=0 right-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space table-area above-blank-line above-double-space above-line-space
+E-Body	shows the experimental results.	page=4 xpos=5 ypos=2 right-column right-indent hanged-line shorter-tail line-blank-line line-double-space line-space headchar-lower tailchar-period
+B-Body	The actual computing time needed to evaluate	page=4 xpos=5 ypos=2 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	944,547 paraphrases with a Pentium M 1.4-GHz,	page=4 xpos=5 ypos=2 right-column full-justified hanged-line tailchar-comma
+I-Body	1-GB memory computer is shown in Table 7. It is	page=4 xpos=5 ypos=2 right-column full-justified aligned-line
+I-Body	important to note that the inference program for	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	pLSI was written in Perl, but for LDA it was writ-	page=4 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ten in C.	page=4 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 7__	page=4 xpos=5 ypos=3 right-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-blank-line above-double-space above-line-space
+B-SubsectionHeader	4.4 Experiments from paraphrasing	page=4 xpos=5 ypos=5 right-column right-indent hanged-line shorter-tail line-blank-line line-double-space line-space numbered-heading2
+I-SubsectionHeader	perspectives	page=4 xpos=5 ypos=5 right-column left-indent right-indent indented-line shorter-tail headchar-lower above-double-space above-line-space
+B-Body	To investigate the upper bound of our method, we	page=4 xpos=5 ypos=5 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	carried out several experiments. So far in this pa-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	per, we have discussed topic information as an	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	approximation of contextual information by com-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	paring topics annotated by humans and automati-	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cally inferred by pLSI and LDA. However, since	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	our goal is to evaluate paraphrases, we need to	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	determine whether latent variable models detect a	page=4 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+E-Body	difference of topics for sentences of paraphrases.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line headchar-lower tailchar-period
+B-Body	First, we randomly selected 1% of the English	page=4 xpos=5 ypos=7 right-column left-indent indented-line headchar-capital
+I-Body	seed sentences. Each sentence corresponds to	page=4 xpos=5 ypos=7 right-column full-justified hanged-line headchar-lower
+I-Body	several Japanese sentences, so we could produce	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	Japanese paraphrasing pairs. The number of se-	page=4 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+E-Body	lected English sentences was 185.	page=4 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Second, we generated 9,091 Japanese para-	page=4 xpos=5 ypos=8 right-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	phrasing pairs from the English seed sentences.	page=4 xpos=5 ypos=8 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	However, identical sentences existed in some gen-	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	erated paraphrasing pairs. In other words, these	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	sentences were simply collected from different	page=4 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	69	page=4 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	places in the corpus. From a paraphrasing per-	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	spective, such pairs are useless. Thus we removed	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	them and randomly selected one pair from one	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	English seed sentence.	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	Finally, we sampled 117 paraphrasing pairs	page=5 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	and evaluated them based on a paraphrasing per-	page=5 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	spective: whether a paraphrase is contextually	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	independent. There were 71 contextually inde-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pendent paraphrases and 37 contextually depen-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dent paraphrases. Nine paraphrases had prob-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	lems, all of which were caused by translation er-	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rors. The phrase “contextually independent para-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	phrases” means that the paraphrases can be used	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	in any context and can be applied as two-way	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	paraphrases. On the other hand, “contextually de-	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pendent paraphrases” means that the paraphrases	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	are one-way, and so we have to give consideration	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	to the direction of each paraphrase.	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Caption	Table 8: Evaluation with manually annotated la-	page=5 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital tailchar-hiphen above-double-space above-line-space
+Table	__Table 8__	page=5 xpos=0 ypos=3 left-column centered left-indent right-indent box indented-line shorter-tail line-double-space line-space table-area above-blank-line above-double-space above-line-space
+B-Body	We removed the nine problematic paraphras-	page=5 xpos=0 ypos=4 left-column left-indent longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ing pairs and evaluated the remaining samples	page=5 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	with manually annotated topic labels, as shown	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	in Table 8. According to the basic idea of this	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	method, a contextually independent paraphras-	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing pair should be judged as having the same	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	topic, and a contextually dependent pair should	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	be judged as having a different topic. Thus, we	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	introduced a criterion to evaluate labeling results	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	in terms of an error rate, defined as follows:	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	|D <sub>indep</sub> | + |S dep |	page=5 xpos=2 ypos=6 left-column left-indent right-indent font-largest indented-line shorter-tail line-space
+I-Equation	Error rate = , (7)	page=5 xpos=0 ypos=6 left-column left-indent font-largest hanged-line longer-tail headchar-capital
+I-Equation	# of judged pairs	page=5 xpos=2 ypos=6 left-column left-indent right-indent font-largest indented-line shorter-tail above-line-space
+I-Body	where D <sub>indep</sub> denotes a set that consists of para-	page=5 xpos=0 ypos=7 left-column full-justified font-largest hanged-line longer-tail line-space headchar-lower tailchar-hiphen
+I-Body	phrasing pairs that are judged as having differ-	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ent topics but are contextually independent. On	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the other hand, S <sub>dep</sub> denotes a set that consists of	page=5 xpos=0 ypos=7 left-column full-justified font-largest aligned-line headchar-lower
+I-Body	paraphrasing pairs that are judged as having the	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+E-Body	same topic, but are contextually dependent.	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For example, from the results in Table 8, the	page=5 xpos=0 ypos=8 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	error rate of the results for the first-level topic is	page=5 xpos=0 ypos=8 left-column full-justified hanged-line headchar-lower
+I-Body	0.398 ((25 + 18)/108), and that for the second-	page=5 xpos=0 ypos=8 left-column full-justified font-largest aligned-line numbered-heading2 tailchar-hiphen
+E-Body	level topic is 0.528 ((46 + 11)/108).	page=5 xpos=0 ypos=8 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Body	To estimate the upper bound of this method, we	page=5 xpos=5 ypos=0 right-column left-indent column-top headchar-capital
+I-Body	also investigated potentially unavoidable errors.	page=5 xpos=5 ypos=0 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	Several paraphrasing pairs are used for the exact	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital
+I-Body	same topic, but they seem contextually dependent	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	because several words are different. On the other	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	hand, some paraphrasing pairs seem to be used	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	in obviously different topics but are contextually	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	independent. Table 9 shows the investigation re-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	sults; at least ten paraphrasing pairs seem contex-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tually independent but are actually used in differ-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ent topics. In addition, there are at least 15 para-	page=5 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	phrasing pairs whose topic is obviously the same,	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	but several differences of words make them con-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	textually dependent. Moreover, in this case, the	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	error rate is 0.231 ((15+10)/108), meaning that it	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	is difficult to judge all of the paraphrasing pairs	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	correctly by using only topic (contextual) infor-	page=5 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation. Thus, this method’s upper bound of ac-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	curacy when using only topic information is esti-	page=5 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	mated to be around 77%.	page=5 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 9__	page=5 xpos=5 ypos=4 right-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-blank-line above-double-space above-line-space
+B-Body	We prepared several latent variable models	page=5 xpos=5 ypos=5 right-column left-indent longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	to investigate the performance of the proposed	page=5 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	method and applied it to the sampled paraphras-	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing sentences mentioned above. Table 10 shows	page=5 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	the evaluation results.	page=5 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Discussion	page=5 xpos=5 ypos=6 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	First, there is no major performance difference	page=5 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	between pLSI and LDA in paraphrasing evalu-	page=5 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ation. On average, LDA is slightly better than	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	pLSI. Blei et al. showed that LDA outperforms	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	pLSI in (Blei et al., 2003); however, in some of	page=5 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	the cases shown in Tables 2 and 3, pLSI outper-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	forms LDA. On the contrary, using a cosine met-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ric, LDA has a significant problem: it loses its dis-	page=5 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tinguishing ability when the number of topics (la-	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tent variables) becomes large. With such a large	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	number of topics, LDA always infers a point near	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	the gravity point of the topic simplex. In addition,	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	using a cosine metric also requires a threshold to	page=5 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	70	page=5 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 10__	page=6 xpos=0 ypos=-7 single-column centered left-indent right-indent box page-top table-area column-bottom above-blank-line above-double-space above-line-space
+E-Body	judge a pair of paraphrasing sentences.	page=6 xpos=0 ypos=0 left-column right-indent column-top line-blank-line line-double-space line-space headchar-lower tailchar-period above-line-space
+B-Body	From Table 6, LDA seems robust against the	page=6 xpos=0 ypos=0 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	inclusion of noisy sentences with a large window,	page=6 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	but it is easily affected by a small window. On	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	the other hand, pLSI seems robust against infor-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation shortages due to a small window, but it is	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	not effective with a large window. The best per-	page=6 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	formances were shown at window size 15 for both	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	pLSI and LDA, since the average number of sen-	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences in a document (segment) is 18.7, as shown	page=6 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+E-Body	in Section 4.1.	page=6 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	Table 7 shows that in spite of the difference in	page=6 xpos=0 ypos=3 left-column left-indent indented-line longer-tail line-space string-table headchar-capital
+I-Body	programing language, pLSI is faster than LDA in	page=6 xpos=0 ypos=3 left-column full-justified hanged-line headchar-lower
+I-Body	practice. In addition, Table 8 reveals that judging	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	the contextual dependency of paraphrasing pairs	page=6 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+E-Body	does not require fine-grained topics.	page=6 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Body	From the results shown in Table 10, we can	page=6 xpos=0 ypos=5 left-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	conclude that topic inference by latent variable	page=6 xpos=0 ypos=5 left-column full-justified hanged-line headchar-lower
+I-Body	models resembles context judgement by humans	page=6 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	as recorded in error rate. However, we note that	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	the error rate was not weighted for contextually	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	independent or dependent results. Error rate is	page=6 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	simply a relative index. For example, if there is	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	a result in which all of the inferences reflect the	page=6 xpos=0 ypos=7 left-column full-justified aligned-line itemization headchar-lower
+I-Body	same topic, then the error rate becomes 0.3426.	page=6 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Thus it is important to detect a contextually de-	page=6 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-hiphen column-bottom
+I-Body	pendent paraphrase. Considering these points,	page=6 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-comma
+I-Body	pLSI20 with window size 11 shows very good re-	page=6 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	sults in Table 10.	page=6 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In Section 4.4, we showed the potential upper	page=6 xpos=5 ypos=0 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	bound of this method. The smallest error rate is	page=6 xpos=5 ypos=1 right-column full-justified hanged-line headchar-lower
+I-Body	0.231, and we can estimate a corrected error by	page=6 xpos=5 ypos=1 right-column full-justified aligned-line
+I-Body	the following formula:	page=6 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	|D <sub>indep</sub> | + |S dep | − C	page=6 xpos=6 ypos=2 right-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space
+I-Equation	, (8)	page=6 xpos=8 ypos=2 right-column left-indent font-largest indented-line longer-tail
+I-Equation	# of judged pairs − C	page=6 xpos=6 ypos=2 right-column left-indent right-indent font-largest hanged-line shorter-tail above-double-space above-line-space
+I-Body	where C denotes the correction value that cor-	page=6 xpos=5 ypos=3 right-column full-justified font-largest hanged-line longer-tail line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	responds to the number of paraphrasing pairs	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	judged incorrectly with only contextual informa-	page=6 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. In our experiments, from the results shown	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	in Table 9, C is set to 25. From the results shown	page=6 xpos=5 ypos=4 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	in Table 10, we can conclude that the performance	page=6 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	of our method is almost the same as that by the	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	manually annotated topics, and the accuracy of	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	our method is almost 80% for paraphrasing pairs	page=6 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+E-Body	that can be judged by contextual information.	page=6 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	There are several possibilities for improving	page=6 xpos=5 ypos=6 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	accuracy. One is using a f ixed window to ob-	page=6 xpos=5 ypos=6 right-column full-justified font-largest hanged-line headchar-lower tailchar-hiphen
+I-Body	tain contextual information. Irrelevant sentences	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	are sometimes included in fixed windows, and la-	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tent variable models fail on inference. If we could	page=6 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	infer a boundary of topics with high accuracy,	page=6 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-comma column-bottom above-blank-line above-double-space above-line-space
+Page	71	page=6 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	we would be able to dynamically detect a pre-	page=7 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	cise window using some other reliable text mod-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	els specialized to text segmentation.	page=7 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	So far, we have mainly discussed the contex-	page=7 xpos=0 ypos=0 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	tual dependency of paraphrasing pairs. However,	page=7 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	when a paraphrasing pair is contextually depen-	page=7 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	dent, it is also important to infer its specific para-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	phrasing direction. Unfortunately, we conclude	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	that inferring the paraphrasing direction with con-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	textual information is difficult. In the experimen-	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tal results, however, there were several examples	page=7 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	whose direction could be inferred from their con-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	textual information. Thus, contextual information	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	may benefit the inference of paraphrasing direc-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion. Actually, in the experiments, 11 of 37 con-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	textual dependent pairs had obvious paraphrasing	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	directions. In most of the paraphrasing pairs, dif-	page=7 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ferent words were used or inserted, or some words	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	were deleted. Thus, to infer a paraphrasing direc-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, we need more specific information for words	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	or sentences; for example what words carry spe-	page=7 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	cific or generic meaning and so on.	page=7 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	One might consider a supervised learning	page=7 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	method, such as Support Vector Machine, to in-	page=7 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-hiphen
+I-Body	fer topics (e.g., (Lane et al., 2004)). However, we	page=7 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower
+I-Body	cannot know the best number of topics for an ap-	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	plication in advance. Thus, a supervised learning	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	method is promising only if we already know the	page=7 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	best number of topics for which we can prepare	page=7 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	an appropriate learning set.	page=7 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Conclusion	page=7 xpos=0 ypos=5 left-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We proposed an evaluation method for the contex-	page=7 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	tual dependency of paraphrasing pairs using two	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	latent variable models, pLSI and LDA. To eval-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	uate a paraphrasing pair, we used sentences sur-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	rounding the given sentence as contextual infor-	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	mation and approximated context by topics that	page=7 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	correspond to a latent variable of a text model.	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	The experimental results with paraphrases auto-	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	matically extracted from a corpus showed that the	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	proposed method achieved almost 60% accuracy.	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	In addition, there is no major performance differ-	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	ence between pLSI and LDA. However, they have	page=7 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	slightly different characteristics: LDA is robust	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	against noisy sentences with long context, while	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	pLSI is robust against information shortage due	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	to short context. The results also revealed that	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	any method’s upper bound of accuracy using only	page=7 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower column-bottom
+E-Body	contextual information is almost 77%.	page=7 xpos=5 ypos=0 right-column right-indent column-top headchar-lower tailchar-period
+AcknowledgementHeader	Acknowledgements	page=7 xpos=5 ypos=0 right-column right-indent font-larger aligned-line shorter-tail string-acknowledgement headchar-capital
+B-Acknowledgement	This research was supported in part by the Min-	page=7 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Acknowledgement	istry of Public Management, Home Affairs, Posts	page=7 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+E-Acknowledgement	and Telecommunications.	page=7 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=7 xpos=5 ypos=1 right-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Regina Barzilay and Kathleen R. McKeown. 2001.	page=7 xpos=5 ypos=1 right-column full-justified font-smallest aligned-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Extracting paraphrases from a parallel corpus. In	page=7 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	Proceedings of the 39th Annual Meeting of the ACL,	page=7 xpos=5 ypos=1 right-column left-indent font-smallest aligned-line headchar-capital tailchar-comma
+I-Reference	pages 50–57.	page=7 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	David M. Blei, Andrew Y. Ng, and Michael I. Jordan.	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2003. Latent Dirichlet allocation. Journal of Ma-	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year tailchar-hiphen
+I-Reference	chine Learning Research, 3:993–1022, January.	page=7 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Thomas Hofmann. 1999. Probabilistic Latent Seman-	page=7 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	tic Indexing. In Proceedings of the 22nd Annual	page=7 xpos=5 ypos=2 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	ACM Conference on Research and Development in	page=7 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-capital
+I-Reference	Information Retrieval, pages 50–57.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Ian R. Lane, Tatsuya Kawahara, Tomoko Matsui, and	page=7 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Satoshi Nakamura. 2004. Topic classification and	page=7 xpos=5 ypos=3 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	verification modeling for out-of-domain utterance	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	detection. In Proceedings of ICSLP, pages 2197–	page=7 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	2200.	page=7 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Dekang Lin and Patrick Pantel. 2001. Discovery	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	of inference rule for question-answering. Natural	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Language Engineering, 7(4):343–360.	page=7 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Kiyonori Ohtake and Kazuhide Yamamoto. 2001.	page=7 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	Paraphrasing honorifics. In Workshop Proceedings	page=7 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	of Automatic Paraphrasing: Theories and Appli-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	cations (NLPRS2001 Post-Conference Workshop),	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-comma
+I-Reference	pages 13–20.	page=7 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Mitsuo Shimohata and Eiichiro Sumita. 2002. Auto-	page=7 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	matic paraphrasing based on parallel corpus for nor-	page=7 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	malization. In Proceedings of LREC 2002, pages	page=7 xpos=5 ypos=5 right-column left-indent font-smallest aligned-line year headchar-lower
+I-Reference	453–457.	page=7 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Tetsuro Takahashi, Tomoya Iwakura, Ryu Iida, At-	page=7 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	sushi Fujita, and Kentaro Inui. 2001. KURA:	page=7 xpos=5 ypos=6 right-column left-indent font-smallest indented-line year headchar-lower tailchar-colon
+I-Reference	A transfer-based lexico-structural paraphrasing en-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	gine. In Proceedings of Automatic Paraphras-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	ing: Theories and Applications (NLPRS2001 Work-	page=7 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-hiphen
+I-Reference	shop), pages 37–46.	page=7 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Toshiyuki Takezawa, Eiichiro Sumita, Fumiaki Sug-	page=7 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	aya, Hirofumi Yamamoto, and Seiichi Yamamoto.	page=7 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	2002. Toward a broad-coverage bilingual corpus	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line year
+I-Reference	for speech translation of travel conversations in the	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	real world. In Proceedings of LREC 2002, pages	page=7 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line year headchar-lower
+I-Reference	147–152.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	Kazuhide Yamamoto. 2002. Acquisition of lexical	page=7 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	paraphrases from texts. In Proceedings of the 2nd	page=7 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	International Workshop on Computational Termi-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line headchar-capital tailchar-hiphen
+I-Reference	nology (Computerm 2002, in conjunction with Col-	page=7 xpos=5 ypos=8 right-column left-indent font-smallest aligned-line year headchar-lower tailchar-hiphen
+I-Reference	ing 2002), pages 22–28.	page=7 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail year headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	72	page=7 xpos=4 ypos=9 single-column centered left-indent right-indent font-smallest column-top line-blank-line line-double-space line-space numeric-only

@@ -1,0 +1,445 @@
+Title	Deep Neural Language Models for Machine Translation	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest page-top headchar-capital above-blank-line above-double-space above-line-space
+Author	Minh-Thang Luong Michael Kayser Christopher D. Manning	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+B-Affiliation	Computer Science Department, Stanford University, Stanford, CA, 94305	page=0 xpos=1 ypos=0 single-column centered left-indent right-indent font-largest headchar-capital
+Email	{lmthang, mkayser, manning}@stanford.edu	page=0 xpos=1 ypos=1 single-column centered left-indent right-indent font-largest indented-line shorter-tail symbol-atmark column-bottom above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column centered left-indent right-indent font-largest column-top line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	Neural language models (NLMs) have	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent hanged-line longer-tail line-double-space line-space headchar-capital
+I-Abstract	been able to improve machine translation	page=0 xpos=0 ypos=2 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	(MT) thanks to their ability to generalize	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line
+I-Abstract	well to long contexts. Despite recent suc-	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	cesses of deep neural networks in speech	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	and vision, the general practice in MT	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	is to incorporate NLMs with only one or	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	two hidden layers and there have not been	page=0 xpos=0 ypos=3 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	clear results on whether having more lay-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ers helps. In this paper, we demonstrate	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	that deep NLMs with three or four lay-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	ers outperform those with fewer layers in	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	terms of both the perplexity and the trans-	page=0 xpos=0 ypos=4 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	lation quality. We combine various tech-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	niques to successfully train deep NLMs	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	that jointly condition on both the source	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	and target contexts. When reranking n-	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	best lists of a strong web-forum baseline,	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-comma
+I-Abstract	our deep models yield an average boost	page=0 xpos=0 ypos=5 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	of 0.5 T ER / 0.5 B LEU points compared	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	to using a shallow NLM. Additionally, we	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	adapt our models to a new sms-chat do-	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	main and obtain a similar gain of 1.0 T ER	page=0 xpos=0 ypos=6 left-column centered left-indent right-indent aligned-line headchar-lower
+I-Abstract	/ 0.5 B LEU points. <sup>1</sup>	page=0 xpos=0 ypos=6 left-column left-indent right-indent font-larger aligned-line shorter-tail above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=7 left-column right-indent font-largest hanged-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Deep neural networks (DNNs) have been success-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ful in learning more complex functions than shal-	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	low ones (Bengio, 2009) and exceled in many	page=0 xpos=0 ypos=7 left-column full-justified aligned-line year headchar-lower
+I-Body	challenging tasks such as in speech (Hinton et al.,	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2012) and vision (Krizhevsky et al., 2012). These	page=0 xpos=0 ypos=8 left-column full-justified aligned-line year
+I-Body	results have sparked interest in applying DNNs	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	to natural language processing problems as well.	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Specifically, in machine translation (MT), there	page=0 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital above-double-space above-line-space
+B-Footnote	<sup>1</sup> Our code and related materials are publicly available at	page=0 xpos=0 ypos=8 left-column left-indent font-smallest indented-line line-double-space line-space headchar-super
+I-Footnote	http://stanford.edu/˜lmthang/nlm.	page=0 xpos=0 ypos=9 left-column right-indent font-smaller hanged-line shorter-tail headchar-lower tailchar-period column-bottom
+I-Body	has been an active body of work recently in uti-	page=0 xpos=5 ypos=2 right-column full-justified column-top headchar-lower tailchar-hiphen
+I-Body	lizing neural language models (NLMs) to improve	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	translation quality. However, to the best of our	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	knowledge, work in this direction only makes use	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	of NLMs with either one or two hidden layers. For	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	example, Schwenk (2010, 2012) and Son et al.	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower tailchar-period
+I-Body	(2012) used shallow NLMs with a single hidden	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year
+I-Body	layer for reranking. Vaswani et al. (2013) consid-	page=0 xpos=5 ypos=3 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ered two-layer NLMs for decoding but provided	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	no comparison among models of various depths.	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Devlin et al. (2014) reported only a small gain	page=0 xpos=5 ypos=4 right-column full-justified aligned-line year headchar-capital
+I-Body	when decoding with a two-layer NLM over a sin-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	gle layer one. There have not been clear results on	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+E-Body	whether adding more layers to NLMs helps.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	In this paper, we demonstrate that deep NLMs	page=0 xpos=5 ypos=4 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	with three or four layers are better than those	page=0 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	with fewer layers in terms of the perplexity and	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the translation quality. We detail how we com-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	bine various techniques from past work to suc-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	cessfully train deep NLMs that condition on both	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	the source and target contexts. When reranking n-	page=0 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	best lists of a strong web-forum MT baseline, our	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	deep models achieve an additional improvement	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	of 0.5 T ER / 0.5 B LEU compared to using a shal-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	low NLM. Furthermore, by fine-tuning general in-	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	domain NLMs with out-of-domain data, we obtain	page=0 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	a similar boost of 1.0 T ER / 0.5 B LEU points over	page=0 xpos=5 ypos=7 right-column full-justified aligned-line itemization headchar-lower
+I-Body	a strong domain-adapted sms-chat baseline com-	page=0 xpos=5 ypos=7 right-column full-justified aligned-line itemization headchar-lower tailchar-hiphen
+E-Body	pared to utilizing a shallow NLM.	page=0 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	2 Neural Language Models	page=0 xpos=5 ypos=7 right-column right-indent font-largest aligned-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We briefly describe the NLM architecture and	page=0 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	training objective used in this work as well as com-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	pare our approach to other related work.	page=0 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Architecture. Neural language models are fun-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail headchar-capital tailchar-hiphen
+I-Body	damentally feed-forward networks as described in	page=0 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	(Bengio et al., 2003), but not necessarily lim-	page=0 xpos=5 ypos=8 right-column full-justified aligned-line year tailchar-hiphen
+I-Body	ited to only a single hidden layer. Like any	page=0 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	305	page=0 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only above-double-space above-line-space
+B-Footer	Proceedings of the 19th Conference on Computational Language Learning, pages 305–309,	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Footer	Beijing, China, July 30-31, 2015.  2015 c Association for Computational Linguistics	page=0 xpos=1 ypos=9 single-column left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital page-bottom
+I-Body	other language model, NLMs specify a distribu-	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+I-Body	tion, p(w|c), to predict the next word w given a	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	context c. The first step is to lookup embeddings	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	for words in the context and concatenate them to	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	form an input, h <sup>(0)</sup> , to the first hidden layer. We	page=1 xpos=0 ypos=0 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	then repeatedly build up hidden representations as	page=1 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	follows, for l = 1, . . . , n:	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	 	page=1 xpos=1 ypos=1 left-column left-indent right-indent indented-line longer-tail line-space
+I-Equation	h <sup>(l)</sup> = f W (l) h (l−1) + b (l) (1)	page=1 xpos=0 ypos=1 left-column left-indent font-largest hanged-line longer-tail itemization headchar-lower above-blank-line above-double-space above-line-space
+I-Body	where f is a non-linear fuction such as tanh. The	page=1 xpos=0 ypos=1 left-column full-justified hanged-line line-blank-line line-double-space line-space headchar-lower
+I-Body	predictive distribution, p(w|c), is then derived us-	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing the standard softmax:	page=1 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon above-double-space above-line-space
+B-Equation	s = W <sup>(sm)</sup> h (n) + b (sm)	page=1 xpos=1 ypos=2 left-column left-indent right-indent font-largest indented-line longer-tail line-double-space line-space itemization headchar-lower above-line-space
+I-Equation	(2)	page=1 xpos=4 ypos=2 left-column left-indent indented-line longer-tail line-space
+I-Equation	p(w|c) = P exp(s w )	page=1 xpos=0 ypos=2 left-column left-indent right-indent font-largest hanged-line shorter-tail headchar-lower
+I-Equation	w∈V exp(s w )	page=1 xpos=2 ypos=2 left-column left-indent right-indent font-largest indented-line longer-tail headchar-lower above-double-space above-line-space
+B-Body	Objective. The typical way of training NLMs is	page=1 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	to maximize the training data likelihood, or equiv-	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	alently, to minimize P the cross-entropy objective of	page=1 xpos=0 ypos=3 left-column full-justified font-largest aligned-line headchar-lower
+E-Body	the following form: <sub>(c,w)∈T</sub> − log p(w|c).	page=1 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Training NLMs can be prohibitively slow due	page=1 xpos=0 ypos=4 left-column left-indent indented-line longer-tail headchar-capital
+I-Body	to the computationally expensive softmax layer.	page=1 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	As a result, past works have tried to use a more	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	efficient version of the softmax such as the hi-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	erarchical softmax (Morin, 2005; Mnih and Hin-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	ton, 2007; Mnih and Hinton, 2009) or the class-	page=1 xpos=0 ypos=4 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	based one (Mikolov et al., 2010; Mikolov et al.,	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2011). Recently, the noise-contrastive estimation	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year
+I-Body	(NCE) technique (Gutmann and Hyvärinen, 2012)	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year
+I-Body	has been applied to train NLMs in (Mnih and Teh,	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	2012; Vaswani et al., 2013) to avoid explicitly	page=1 xpos=0 ypos=5 left-column full-justified aligned-line year
+E-Body	computing the normalization factors.	page=1 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Devlin et al. (2014) used a modified version	page=1 xpos=0 ypos=6 left-column left-indent indented-line longer-tail year headchar-capital
+I-Body	of the cross-entropy objective, the self-normalized	page=1 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	one. The idea is to not only improve the predic-	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tion, p(w|c), but also to push the normalization	page=1 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	factor per context, Z <sub>c</sub> , close to 1:	page=1 xpos=0 ypos=7 left-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-colon above-line-space
+B-Equation	X	page=1 xpos=1 ypos=7 left-column left-indent right-indent indented-line shorter-tail line-space headchar-capital
+I-Equation	J = − log p(w|c) + α log <sup>2</sup> (Z <sub>c</sub> ) (3)	page=1 xpos=0 ypos=7 left-column left-indent font-largest hanged-line longer-tail headchar-capital above-line-space
+I-Equation	(c,w)∈T	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-smallest indented-line shorter-tail line-space above-double-space above-line-space
+B-Body	While self-normalization does not lead to speed up	page=1 xpos=0 ypos=7 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	in training, it allows trained models to be applied	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	efficiently at test time without computing the nor-	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	malization factors. This is similar in flavor to NCE	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	but allows for flexibility (through α) in how hard	page=1 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	we want to “squeeze” the normalization factors.	page=1 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Training deep NLMs. We follow (Devlin et al.,	page=1 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail headchar-capital tailchar-comma
+I-Body	2014) to train self-normalized NLMs, condition-	page=1 xpos=0 ypos=9 left-column full-justified aligned-line year tailchar-hiphen
+I-Body	ing on both the source and target contexts. Unlike	page=1 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower column-bottom
+I-Body	(Devlin et al., 2014), we found that using the recti-	page=1 xpos=5 ypos=0 right-column full-justified column-top year tailchar-hiphen
+I-Body	fied linear function, max{0, x}, proposed in (Nair	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	and Hinton, 2010), works better than tanh. The	page=1 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+I-Body	rectified linear function was used in (Vaswani et	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	al., 2013) as well. Furthermore, while these works	page=1 xpos=5 ypos=0 right-column full-justified aligned-line year headchar-lower
+I-Body	use a fixed learning rate throughout, we found that	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	having a simple learning rate schedule is useful	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	in training well-performing deep NLMs. This has	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	also been demonstrated in (Sutskever et al., 2014;	page=1 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-lower tailchar-semicolon
+I-Body	Luong et al., 2015) and is detailed in Section 3.	page=1 xpos=5 ypos=1 right-column full-justified aligned-line year headchar-capital tailchar-period
+I-Body	We do not perform any gradient clipping and no-	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	tice that learning is more stable when short sen-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tences of length less than or equal to 2 are re-	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	moved. Bias terms are used for all hidden layers	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	as well as the softmax layer as described earlier,	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	which is slightly different from other work such as	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	(Vaswani et al., 2013). All these details contribute	page=1 xpos=5 ypos=2 right-column full-justified aligned-line year
+E-Body	to our success in training deep NLMs.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	For simplicity, the same vocabulary is used for	page=1 xpos=5 ypos=3 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	both the embedding and the softmax matrices. <sup>2</sup> In	page=1 xpos=5 ypos=3 right-column full-justified font-larger hanged-line headchar-lower
+I-Body	addition, we adopt the standard softmax to take ad-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	vantage of GPUs in performing large matrix mul-	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tiplications. All hyperparameters are given later.	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	3 Experiments	page=1 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	3.1 Data	page=1 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We use the Chinese-English bitext in the DARPA	page=1 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	BOLT (Broad Operational Language Translation)	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	program, with 11.1M parallel sentences (281M	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	Chinese words and 307M English words). We re-	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	serve 585 sentences for validation, i.e., choosing	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	hyperparameters, and 1124 sentences for testing. <sup>3</sup>	page=1 xpos=5 ypos=5 right-column right-indent font-larger aligned-line headchar-lower above-double-space above-line-space
+B-SubsectionHeader	3.2 NLM Training	page=1 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We train our NLMs described in Section 2 with	page=1 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	SGD, using: (a) a source window of size 5, i.e.,	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	11-gram source context <sup>4</sup> , (b) a 4-word target his-	page=1 xpos=5 ypos=6 right-column full-justified font-larger aligned-line tailchar-hiphen
+I-Body	tory, i.e., 5-gram target LM, (c) a self-normalized	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	weight α = 0.1, (d) a mini-batch of size 128, and	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	(e) a learning rate of 0.1 (training costs are nor-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line itemization tailchar-hiphen
+I-Body	malized by the mini-batch size). All weights are	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	uniformly initialized in [−0.01, 0.01]. We train	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	our models for 4 epochs (after 2 epochs, the learn-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing rate is halved every 0.5 epoch). The vocab-	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ularies are limited to the top 40K frequent words	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	for both Chinese and English. All words not in	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower above-double-space above-line-space
+B-Footnote	<sup>2</sup> Some work (Schwenk, 2010; Schwenk et al., 2012) uti-	page=1 xpos=5 ypos=8 right-column left-indent font-smallest indented-line line-double-space line-space year headchar-super tailchar-hiphen
+I-Footnote	lize a smaller softmax vocabulary, called short-list.	page=1 xpos=5 ypos=8 right-column right-indent font-smallest hanged-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>3</sup> The test set is from BOLT and labeled as p1r6 dev.	page=1 xpos=5 ypos=9 right-column left-indent right-indent font-smallest indented-line longer-tail headchar-super tailchar-period
+B-Footnote	<sup>4</sup> We used an alignment heuristic similar to Devlin et al.	page=1 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line longer-tail headchar-super tailchar-period
+I-Footnote	(2014) but applicable to our phrase-based MT system.	page=1 xpos=5 ypos=9 right-column right-indent font-smallest hanged-line shorter-tail year tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	306	page=1 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 1__	page=2 xpos=0 ypos=-2 left-column centered left-indent right-indent box page-top table-area above-double-space above-line-space
+B-Caption	Table 1: Training NLMs – validation and test	page=2 xpos=0 ypos=0 left-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+I-Caption	perplexities achieved by self-normalized NLMs of	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Caption	various depths. We report the | log Z| value (base	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Caption	e), similar to Devlin et al. (2014), to indicate how	page=2 xpos=0 ypos=0 left-column full-justified aligned-line year headchar-lower
+I-Caption	good each model is in pushing the log normaliza-	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Caption	tion factors towards 0. All perplexities are derived	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+E-Caption	by explicitly computing the normalization factors.	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	these vocabularies are replaced by a universal un-	page=2 xpos=0 ypos=1 left-column full-justified aligned-line line-blank-line line-double-space line-space headchar-lower tailchar-hiphen
+I-Body	known symbol. Embeddings are of size 256 and	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	all hidden layers have 512 units each. Our train-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ing speed on a single Tesla K40 GPU device is	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	about 1000 target words per second and it gener-	page=2 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	ally takes about 10-14 days to fully train a model.	page=2 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower tailchar-period
+B-Body	We present the NLM training results in Table 1.	page=2 xpos=0 ypos=2 left-column left-indent indented-line headchar-capital tailchar-period
+I-Body	With more layers, the model succeeds in learning	page=2 xpos=0 ypos=3 left-column full-justified hanged-line headchar-capital
+I-Body	more complex functions; the prediction, hence,	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	becomes more accurate as evidenced by smaller	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	perplexities for both the validation and test sets.	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Interestingly, we observe that deeper nets can learn	page=2 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	self-normalized NLMs better: the mean log nor-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	malization factor, | log Z| in Eq. (3), is driven to-	page=2 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	wards 0 as the depth increases. <sup>5</sup>	page=2 xpos=0 ypos=4 left-column right-indent font-larger aligned-line shorter-tail headchar-lower above-double-space above-line-space
+B-SubsectionHeader	3.3 MT Reranking with NLMs	page=2 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Our MT models are built using the Phrasal MT	page=2 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	toolkit (Cer et al., 2010). In addition to the stan-	page=2 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	dard dense feature set <sup>6</sup> , we include a variety of	page=2 xpos=0 ypos=5 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	sparse features for rules, word pairs, and word	page=2 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	classes, as described in (Green et al., 2014). Our	page=2 xpos=0 ypos=5 left-column full-justified aligned-line year headchar-lower
+I-Body	decoder uses three language models. <sup>7</sup> We use a	page=2 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	tuning set of 396K words in the newswire and web	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	domains and tune our systems using online ex-	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	pected error rate training as in (Green et al., 2014).	page=2 xpos=0 ypos=6 left-column full-justified aligned-line year headchar-lower tailchar-period
+E-Body	Our tuning metric is (B LEU -T ER )/2.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Body	We run a discriminative reranker on the 1000-	page=2 xpos=0 ypos=7 left-column left-indent indented-line longer-tail headchar-capital tailchar-hiphen
+I-Body	best output of a decoder with MERT. The features	page=2 xpos=0 ypos=7 left-column full-justified hanged-line headchar-lower
+I-Body	used in reranking include all the dense features,	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma above-double-space above-line-space
+B-Footnote	<sup>5</sup> As a reference point, though not directly comparable,	page=2 xpos=0 ypos=7 left-column left-indent font-smallest indented-line line-double-space line-space headchar-super tailchar-comma
+I-Footnote	Devlin et al. (2014) achieved 0.68 for | log Z| on a different	page=2 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line year headchar-capital
+I-Footnote	test set with the same self-normalized constant α = 0.1.	page=2 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>6</sup> Consisting of forward and backward translation mod-	page=2 xpos=0 ypos=8 left-column left-indent font-smallest indented-line longer-tail headchar-super tailchar-hiphen
+I-Footnote	els, lexical weighting, linear distortion, word penalty, phrase	page=2 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	penalty and language model.	page=2 xpos=0 ypos=8 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period
+B-Footnote	<sup>7</sup> One is trained on the English side of the bitext, one	page=2 xpos=0 ypos=8 left-column left-indent font-smallest indented-line longer-tail headchar-super
+I-Footnote	is trained on a 16.3-billion-word monolingual corpus taken	page=2 xpos=0 ypos=9 left-column full-justified font-smallest hanged-line headchar-lower
+I-Footnote	from various domains, and one is a class-based language	page=2 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	model trained on the same large monolingual corpus.	page=2 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+Table	__Table 2__	page=2 xpos=5 ypos=-2 right-column right-over box column-top table-area above-double-space above-line-space
+B-Caption	Table 2: Web-forum Results – T ER (T)	page=2 xpos=5 ypos=0 right-column full-justified aligned-line shorter-tail line-double-space line-space string-table headchar-capital
+I-Caption	and B LEU (B) scores on both the dev set	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Caption	(dev10wb dev), used to tune reranking weights,	page=2 xpos=5 ypos=1 right-column full-justified aligned-line tailchar-comma
+I-Caption	and the test sets (dev10wb syscomtune and	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Caption	p1r6 dev accordingly). Relative improvements	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Caption	between the best system and the baseline as well	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Caption	as the 1-layer model are bolded. † marks improve-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line symbol-dagger headchar-lower tailchar-hiphen
+E-Caption	ments that are statistically significant (p < 0.05).	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	an aggregate decoder score, and an NLM score.	page=2 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-period
+I-Body	We learn the reranker weights on a second tuning	page=2 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	set, different from the decoder tuning set, to make	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	the reranker less biased towards the dense features.	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	This second tuning set consists of 33K words of	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-capital
+I-Body	web-forum text and is important to obtain good	page=2 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	improvements with reranking.	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.4 Results	page=2 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	As shown in Table 2, it is not obvious if the depth-	page=2 xpos=5 ypos=4 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	2 model is better than the single layer one, both	page=2 xpos=5 ypos=4 right-column full-justified aligned-line numbered-heading1
+I-Body	of which are what past work used. In contrast,	page=2 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	reranking with deep NLMs of three or four lay-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ers are clearly better, yielding average improve-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ments of 1.0 T ER / 1.0 B LEU points over the base-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	line and 0.5 T ER / 0.5 B LEU points over the sys-	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	tem reranked with the 1-layer model, all of which	page=2 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	are statisfically significant according to the test de-	page=2 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	scribed in (Riezler and Maxwell, 2005).	page=2 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail year headchar-lower tailchar-period above-line-space
+B-Body	The fact that the improvements in terms of the	page=2 xpos=5 ypos=6 right-column left-indent indented-line longer-tail line-space headchar-capital
+I-Body	intrinsic metrics listed in Table 1 do translate into	page=2 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower
+I-Body	gains in translation quality is interesting. It rein-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	forces the trend reported in (Luong et al., 2015)	page=2 xpos=5 ypos=7 right-column full-justified aligned-line year headchar-lower
+I-Body	that better source-conditioned perplexities lead to	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower
+I-Body	better translation scores. This phenomon is a use-	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	ful result as in the past, many intrinsic metrics,	page=2 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	e.g., alignment error rate, do not necessarily cor-	page=2 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	relate with MT quality metrics.	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SubsectionHeader	3.5 Domain Adaptation	page=2 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	For the sms-chat domain, we use a tune set of	page=2 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	260K words in the newswire, web, and sms-chat	page=2 xpos=5 ypos=9 right-column full-justified aligned-line
+I-Body	domains to tune the decoder weights and a sepa-	page=2 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower tailchar-hiphen column-bottom above-blank-line above-double-space above-line-space
+Page	307	page=2 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+Table	__Table 3__	page=3 xpos=0 ypos=-2 left-column right-over box page-top table-area above-double-space above-line-space
+B-Caption	Table 3: Domain-adaptation Results – transla-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line shorter-tail line-double-space line-space string-table headchar-capital tailchar-hiphen
+I-Caption	tion scores for the sms-chat domain similar to	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Caption	Table 2. We use p2r2smscht dev for dev and	page=3 xpos=0 ypos=0 left-column full-justified aligned-line string-table headchar-capital
+I-Caption	p2r2smscht syscomtune for test. The test perplex-	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Caption	ities and the | log Z| values of our domain-adapted	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Caption	NLMs are shown in italics. ‡ marks improvements	page=3 xpos=0 ypos=1 left-column full-justified aligned-line symbol-dagger headchar-capital
+E-Caption	that are statistically significant (p < 0.01).	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+I-Body	rate small, 8K words set to tune reranking weights.	page=3 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-lower tailchar-period
+I-Body	To train adapted NLMs, we use models previously	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+I-Body	trained on general in-domain data and further fine-	page=3 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	tune with out-domain data for about 4 hours. <sup>8</sup>	page=3 xpos=0 ypos=2 left-column right-indent font-larger aligned-line shorter-tail headchar-lower
+B-Body	Similar to the web-forum domain, for sms-chat,	page=3 xpos=0 ypos=2 left-column left-indent indented-line longer-tail headchar-capital tailchar-comma
+I-Body	Table 3 shows that on the test set, our deep NLM	page=3 xpos=0 ypos=3 left-column full-justified hanged-line string-table headchar-capital
+I-Body	with three layers yields a significant gain of 2.1	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	T ER / 3.1 B LEU points over the baseline and 1.0	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	T ER / 0.5 B LEU points over the 1-layer reranked	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-capital
+I-Body	system. It is worth pointing out that for such a	page=3 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	small amount of out-domain training data, depth	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	becomes less effective as exhibited through the in-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	significant BLEU gain in test and a drop in dev	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	when comparing between the 1- and 3-layer mod-	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els. We exclude the 4-layer NLM as it seems to	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	have overfitted the training data. Nevertheless, we	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	still achieve decent gains in using NLMs for MT	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	domain adaptation.	page=3 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Analysis	page=3 xpos=0 ypos=6 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-SubsectionHeader	4.1 NLM Training	page=3 xpos=0 ypos=6 left-column right-indent aligned-line longer-tail line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	We show in Figure 1 the learning curves for vari-	page=3 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	ous NLMs, demonstrating that deep nets are better	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	than the shallow NLM with a single hidden layer.	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Starting from minibatch 20K, the ranking is gen-	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital tailchar-hiphen
+I-Body	erally maintained that deeper NLMs have better	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	cross-entropies. The gaps become less discernible	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	from minibatch 30K onwards, but numerically, as	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	the model becomes deeper, the average gaps, in	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	perplexities, are consistently 40.1, 1.1, and 2.0.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Footnote	<sup>8</sup> Our sms-chat corpus consists of 146K sentences (1.6M	page=3 xpos=0 ypos=8 left-column left-indent font-smallest indented-line longer-tail line-double-space line-space headchar-super
+I-Footnote	Chinese and 1.9M English words). We randomly select 3000	page=3 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line headchar-capital
+I-Footnote	sentences for validation and 3000 sentences for test. Models	page=3 xpos=0 ypos=9 left-column full-justified font-smallest aligned-line headchar-lower
+I-Footnote	are trained for 8 iterations with the same hyperparameters.	page=3 xpos=0 ypos=9 left-column right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+Figure	__Figure 1__	page=3 xpos=5 ypos=-2 right-column left-indent right-indent box column-top figure-area above-double-space above-line-space
+B-Caption	Figure 1: NLM Learning Curve – test cross-	page=3 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-double-space line-space string-figure headchar-capital tailchar-hiphen
+E-Caption	entropies (log <sub>e</sub> perplexities) for various NLMs.	page=3 xpos=5 ypos=0 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	4.2 Reranking Settings	page=3 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In Table 4, we compare reranking using all dense	page=3 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	features (All) to conditions which use only dense	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	LM features (LM) and optionally, include a word	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	penalty (WP) feature. All these settings include	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	an NLM score and an aggregate decoder score. As	page=3 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	shown, it is best to include all dense features at	page=3 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	reranking time.	page=3 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 4__	page=3 xpos=5 ypos=2 right-column centered left-indent right-indent box indented-line longer-tail line-double-space line-space table-area above-double-space above-line-space
+B-Caption	Table 4: Reranking Conditions – (T ER -B LEU )/2	page=3 xpos=5 ypos=3 right-column full-justified hanged-line longer-tail line-double-space line-space string-table headchar-capital
+E-Caption	scores when reranking the web-forum baseline.	page=3 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	5 Related Work	page=3 xpos=5 ypos=4 right-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	It is worth mentioning another active line of re-	page=3 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	search in building end-to-end neural MT systems	page=3 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	(Kalchbrenner and Blunsom, 2013; Sutskever et	page=3 xpos=5 ypos=5 right-column full-justified aligned-line year
+I-Body	al., 2014; Bahdanau et al., 2015; Luong et al.,	page=3 xpos=5 ypos=5 right-column full-justified aligned-line year headchar-lower tailchar-comma
+I-Body	2015; Jean et al., 2015). These methods have	page=3 xpos=5 ypos=5 right-column full-justified aligned-line year
+I-Body	not yet demonstrated success on challenging lan-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	guage pairs such as English-Chinese. Arsoy et al.	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	(2012) have preliminarily examined deep NLMs	page=3 xpos=5 ypos=6 right-column full-justified aligned-line year
+I-Body	for speech recognition, however, we believe, this	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower
+I-Body	is the first work that puts deep NLMs into the con-	page=3 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	text of MT.	page=3 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	6 Conclusion	page=3 xpos=5 ypos=7 right-column right-indent font-largest aligned-line longer-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	In this paper, we have bridged the gap that past	page=3 xpos=5 ypos=7 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	work did not show, that is, neural language mod-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	els with more than two layers can help improve	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	translation quality. Our results confirm the trend	page=3 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	reported in (Luong et al., 2015) that source-	page=3 xpos=5 ypos=8 right-column full-justified aligned-line year headchar-lower tailchar-hiphen
+I-Body	conditioned perplexity strongly correlates with	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	MT performance. We have also demonstrated the	page=3 xpos=5 ypos=9 right-column full-justified aligned-line headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	308	page=3 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	use of deep NLMs to obtain decent gains in out-	page=4 xpos=0 ypos=0 left-column full-justified page-top headchar-lower tailchar-hiphen
+E-Body	of-domain conditions.	page=4 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+AcknowledgementHeader	Acknowledgment	page=4 xpos=0 ypos=0 left-column right-indent font-largest aligned-line shorter-tail line-double-space line-space string-acknowledgement headchar-capital above-double-space above-line-space
+B-Acknowledgement	We gratefully acknowledge support from a gift	page=4 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Acknowledgement	from Bloomberg L.P. and from the Defense	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	Advanced Research Projects Agency (DARPA)	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Acknowledgement	Broad Operational Language Translation (BOLT)	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-capital
+I-Acknowledgement	program under contract HR0011-12-C-0015	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	through IBM. Any opinions, findings, and con-	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Acknowledgement	clusions or recommendations expressed in this	page=4 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	material are those of the author(s) and do not	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	necessarily reflect the view of DARPA, or the US	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	government. We thank members of the Stanford	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Acknowledgement	NLP Group as well as the annonymous reviewers	page=4 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital
+E-Acknowledgement	for their valuable comments and feedbacks.	page=4 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=4 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital above-double-space above-line-space
+B-Reference	Ebru Arsoy, Tara N. Sainath, Brian Kingsbury, and	page=4 xpos=0 ypos=3 left-column full-justified font-smallest aligned-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Bhuvana Ramabhadran. 2012. Deep neural network	page=4 xpos=0 ypos=3 left-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	language models. In NAACL WLM Workshop.	page=4 xpos=0 ypos=3 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	D. Bahdanau, K. Cho, and Y. Bengio. 2015. Neural	page=4 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	machine translation by jointly learning to align and	page=4 xpos=0 ypos=4 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	translate. In ICLR.	page=4 xpos=0 ypos=4 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Y. Bengio, R. Ducharme, P. Vincent, and C. Jan-	page=4 xpos=0 ypos=4 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Reference	vin. 2003. A neural probabilistic language model.	page=4 xpos=0 ypos=4 left-column left-indent font-smallest indented-line year headchar-lower tailchar-period
+I-Reference	JMLR, 3:1137–1155.	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Yoshua Bengio. 2009. Learning deep architectures for	page=4 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	ai. Foundations and Trends in Machine Learning,	page=4 xpos=0 ypos=5 left-column left-indent font-smallest indented-line headchar-lower tailchar-comma
+I-Reference	2(1):1–127, January.	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-smallest aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Reference	D. Cer, M. Galley, D. Jurafsky, and C. D. Manning.	page=4 xpos=0 ypos=5 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Reference	2010. Phrasal: A statistical machine translation	page=4 xpos=0 ypos=6 left-column left-indent font-smallest indented-line year
+I-Reference	toolkit for exploring new model features. In ACL,	page=4 xpos=0 ypos=6 left-column left-indent font-smallest aligned-line headchar-lower tailchar-comma
+I-Reference	Demonstration Session.	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	J. Devlin, R. Zbib, Z. Huang, T. Lamar, R. Schwartz,	page=4 xpos=0 ypos=6 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	and J. Makhoul. 2014. Fast and robust neural net-	page=4 xpos=0 ypos=6 left-column left-indent font-smallest indented-line year headchar-lower tailchar-hiphen
+I-Reference	work joint models for statistical machine translation.	page=4 xpos=0 ypos=7 left-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	In ACL.	page=4 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	S. Green, D. Cer, and C. D. Manning. 2014. An em-	page=4 xpos=0 ypos=7 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	pirical comparison of features and tuning for phrase-	page=4 xpos=0 ypos=7 left-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	based machine translation. In WMT.	page=4 xpos=0 ypos=7 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Michael Gutmann and Aapo Hyvärinen. 2012. Noise-	page=4 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	contrastive estimation of unnormalized statistical	page=4 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-lower
+I-Reference	models, with applications to natural image statistics.	page=4 xpos=0 ypos=8 left-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	JMLR, 13:307–361.	page=4 xpos=0 ypos=8 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	G. Hinton, L. Deng, D. Yu, G. Dahl, A. Mohamed,	page=4 xpos=0 ypos=8 left-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Reference	N. Jaitly, A. Senior, V. Vanhoucke, P. Nguyen,	page=4 xpos=0 ypos=8 left-column left-indent font-smallest indented-line headchar-capital tailchar-comma
+I-Reference	T. Sainath, and B. Kingsbury. 2012. Deep neural	page=4 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line year headchar-capital
+I-Reference	networks for acoustic modeling in speech recogni-	page=4 xpos=0 ypos=9 left-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	tion. IEEE Signal Processing Magazine.	page=4 xpos=0 ypos=9 left-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Reference	Sébastien Jean, Kyunghyun Cho, Roland Memisevic,	page=4 xpos=5 ypos=0 right-column full-justified font-smallest column-top headchar-capital tailchar-comma
+I-Reference	and Yoshua Bengio. 2015. On using very large tar-	page=4 xpos=5 ypos=0 right-column left-indent font-smallest indented-line year headchar-lower tailchar-hiphen
+I-Reference	get vocabulary for neural machine translation. In	page=4 xpos=5 ypos=0 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	ACL.	page=4 xpos=5 ypos=0 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	N. Kalchbrenner and P. Blunsom. 2013. Recurrent	page=4 xpos=5 ypos=0 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	continuous translation models. In EMNLP.	page=4 xpos=5 ypos=0 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	A. Krizhevsky, I. Sutskever, and G. E. Hinton. 2012.	page=4 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-period
+I-Reference	ImageNet classification with deep convolutional	page=4 xpos=5 ypos=1 right-column left-indent font-smallest indented-line headchar-capital
+I-Reference	neural networks. In NIPS.	page=4 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	M.-T. Luong, I. Sutskever, Q. V. Le, O. Vinyals, and	page=4 xpos=5 ypos=1 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	W. Zaremba. 2015. Addressing the rare word prob-	page=4 xpos=5 ypos=1 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	lem in neural machine translation. In ACL.	page=4 xpos=5 ypos=1 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Tomas Mikolov, Martin Karafiát, Lukas Burget, Jan	page=4 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Cernocký, and Sanjeev Khudanpur. 2010. Recur-	page=4 xpos=5 ypos=2 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	rent neural network based language model. In Inter-	page=4 xpos=5 ypos=2 right-column left-indent font-smallest aligned-line headchar-lower tailchar-hiphen
+I-Reference	speech.	page=4 xpos=5 ypos=2 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Tomas Mikolov, Stefan Kombrink, Lukas Burget, Jan	page=4 xpos=5 ypos=2 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space headchar-capital
+I-Reference	Cernocký, and Sanjeev Khudanpur. 2011. Exten-	page=4 xpos=5 ypos=3 right-column left-indent font-smallest indented-line year headchar-capital tailchar-hiphen
+I-Reference	sions of recurrent neural network language model.	page=4 xpos=5 ypos=3 right-column left-indent font-smallest aligned-line headchar-lower tailchar-period
+I-Reference	In ICASSP.	page=4 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Andriy Mnih and Geoffrey Hinton. 2007. Three new	page=4 xpos=5 ypos=3 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	graphical models for statistical language modelling.	page=4 xpos=5 ypos=3 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In ICML.	page=4 xpos=5 ypos=3 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Andriy Mnih and Geoffrey Hinton. 2009. A scalable	page=4 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	hierarchical distributed language model. In NIPS.	page=4 xpos=5 ypos=4 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Andriy Mnih and Yee Whye Teh. 2012. A fast and	page=4 xpos=5 ypos=4 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	simple algorithm for training neural probabilistic	page=4 xpos=5 ypos=4 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	language models. In ICML.	page=4 xpos=5 ypos=4 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Frederic Morin. 2005. Hierarchical probabilistic neu-	page=4 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	ral network language model. In AISTATS.	page=4 xpos=5 ypos=5 right-column left-indent right-indent font-smallest indented-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Vinod Nair and Geoffrey E. Hinton. 2010. Rectified	page=4 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	linear units improve restricted boltzmann machines.	page=4 xpos=5 ypos=5 right-column left-indent font-smallest indented-line headchar-lower tailchar-period
+I-Reference	In ICML.	page=4 xpos=5 ypos=5 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Stefan Riezler and T. John Maxwell. 2005. On some	page=4 xpos=5 ypos=5 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	pitfalls in automatic evaluation and significance test-	page=4 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower tailchar-hiphen
+I-Reference	ing for MT. In ACL Workshop, Intrinsic/Extrinsic	page=4 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	Evaluation Measures for MT and Summarization.	page=4 xpos=5 ypos=6 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	H. Schwenk, A. Rousseau, and M. Attik. 2012. Large,	page=4 xpos=5 ypos=6 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-comma
+I-Reference	pruned or continuous space language models on a	page=4 xpos=5 ypos=6 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	gpu for statistical machine translation. In NAACL	page=4 xpos=5 ypos=6 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	WLM workshop.	page=4 xpos=5 ypos=7 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	H. Schwenk. 2010. Continuous space language mod-	page=4 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-hiphen
+I-Reference	els for statistical machine translation. The Prague	page=4 xpos=5 ypos=7 right-column left-indent font-smallest indented-line headchar-lower
+I-Reference	Bulletin of Mathematical Linguistics, (93):137–146.	page=4 xpos=5 ypos=7 right-column left-indent font-smallest aligned-line headchar-capital tailchar-period above-double-space above-line-space
+B-Reference	Le Hai Son, Alexandre Allauzen, and François Yvon.	page=4 xpos=5 ypos=7 right-column full-justified font-smallest hanged-line line-double-space line-space headchar-capital tailchar-period
+I-Reference	2012. Continuous space translation models with	page=4 xpos=5 ypos=8 right-column left-indent font-smallest indented-line year
+I-Reference	neural networks. In NAACL-HLT.	page=4 xpos=5 ypos=8 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	I. Sutskever, O. Vinyals, and Q. V. Le. 2014. Sequence	page=4 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital
+I-Reference	to sequence learning with neural networks. In NIPS.	page=4 xpos=5 ypos=8 right-column left-indent font-smallest indented-line headchar-lower tailchar-period above-double-space above-line-space
+B-Reference	Ashish Vaswani, Yinggong Zhao, Victoria Fossum, and	page=4 xpos=5 ypos=8 right-column full-justified font-smallest hanged-line line-double-space line-space headchar-capital
+I-Reference	David Chiang. 2013. Decoding with large-scale	page=4 xpos=5 ypos=8 right-column left-indent font-smallest indented-line year headchar-capital
+I-Reference	neural language models improves translation. In	page=4 xpos=5 ypos=9 right-column left-indent font-smallest aligned-line headchar-lower
+I-Reference	EMNLP.	page=4 xpos=5 ypos=9 right-column left-indent right-indent font-smallest aligned-line shorter-tail headchar-capital tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	309	page=4 xpos=4 ypos=9 single-column centered left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only

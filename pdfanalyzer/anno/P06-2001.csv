@@ -1,0 +1,491 @@
+Title	An HMM-Based Approach to Automatic Phrasing for Mandarin Text-	page=0 xpos=0 ypos=0 single-column full-justified font-largest page-top headchar-capital tailchar-hiphen above-line-space
+Title	to-Speech Synthesis	page=0 xpos=3 ypos=0 single-column centered left-indent right-indent font-largest indented-line shorter-tail line-space headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Author	Jing Zhu	page=0 xpos=1 ypos=0 left-column left-indent right-indent font-larger column-top line-blank-line line-double-space line-space headchar-capital column-bottom
+B-Affiliation	Department of Electronic Engineering	page=0 xpos=0 ypos=0 single-column left-indent right-indent font-larger column-top headchar-capital column-bottom
+Author	Jian-Hua Li	page=0 xpos=6 ypos=0 right-column left-indent right-indent font-larger column-top headchar-capital column-bottom
+B-Affiliation	Department of Electronic Engineering	page=0 xpos=4 ypos=0 single-column left-indent right-indent font-larger column-top headchar-capital column-bottom
+I-Affiliation	Shanghai Jiao Tong University	page=0 xpos=0 ypos=1 left-column left-indent right-indent font-larger column-top headchar-capital above-line-space
+Email	zhujing@sjtu.edu.cn	page=0 xpos=0 ypos=1 left-column left-indent right-indent font-smaller indented-line shorter-tail line-space symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+AbstractHeader	Abstract	page=0 xpos=1 ypos=2 left-column left-indent right-indent font-larger indented-line shorter-tail line-blank-line line-double-space line-space string-abstract headchar-capital above-double-space above-line-space
+B-Abstract	Automatic phrasing is essential to Mandarin text-	page=0 xpos=0 ypos=2 left-column right-indent hanged-line longer-tail line-double-space line-space headchar-capital tailchar-hiphen
+I-Abstract	to-speech synthesis. We select word format as	page=0 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Abstract	target linguistic feature and propose an HMM-	page=0 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	based approach to this issue. Then we define four	page=0 xpos=0 ypos=2 left-column right-indent aligned-line headchar-lower
+I-Abstract	states of prosodic positions for each word when	page=0 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+I-Abstract	employing a discrete hidden Markov model. The	page=0 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower
+I-Abstract	approach achieves high accuracy of roughly 82%,	page=0 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Abstract	which is very close to that from manual labeling.	page=0 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower tailchar-period
+I-Abstract	Our experimental results also demonstrate that	page=0 xpos=0 ypos=3 left-column right-indent aligned-line headchar-capital
+I-Abstract	this approach has advantages over those part-of-	page=0 xpos=0 ypos=3 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Abstract	speech-based ones.	page=0 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	1 Introduction	page=0 xpos=0 ypos=4 left-column right-indent font-larger aligned-line line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Owing to the limitation of vital capacity and	page=0 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	contextual information, breaks or pauses are	page=0 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	always an important ingredient of human speech.	page=0 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower tailchar-period
+I-Body	They play a great role in signaling structural	page=0 xpos=0 ypos=5 left-column right-indent aligned-line headchar-capital
+I-Body	boundaries. Similarly, in the area of text-to-	page=0 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower tailchar-hiphen
+I-Body	speech (TTS) synthesis, assigning breaks is very	page=0 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower
+I-Body	crucial to naturalness and intelligibility,	page=0 xpos=0 ypos=5 left-column right-indent aligned-line headchar-lower tailchar-comma
+E-Body	particularly in long sentences.	page=0 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	The challenge in achieving naturalness mainly	page=0 xpos=0 ypos=6 left-column left-indent right-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	results from prosody generation in TTS synthesis.	page=0 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	Generally speaking, prosody deals with phrasing,	page=0 xpos=0 ypos=6 left-column right-indent aligned-line headchar-capital tailchar-comma
+I-Body	loudness, duration and speech intonation. Among	page=0 xpos=0 ypos=6 left-column right-indent aligned-line headchar-lower
+I-Body	these prosodic features, phrasing divides	page=0 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower
+I-Body	utterances into meaningful chunks of information,	page=0 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	called hierarchic breaks. However, there is no	page=0 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower
+I-Body	unique solution to prosodic phrasing in most	page=0 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower
+I-Body	cases. Different solution in phrasing can result in	page=0 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower
+I-Body	different meaning that a listener could perceive.	page=0 xpos=0 ypos=7 left-column right-indent aligned-line headchar-lower tailchar-period
+I-Body	Considering its importance, recent TTS research	page=0 xpos=0 ypos=8 left-column right-indent aligned-line headchar-capital
+I-Body	has focused on automatic prediction of prosodic	page=0 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	phrase based on the part-of-speech (POS) feature	page=0 xpos=0 ypos=8 left-column right-indent aligned-line headchar-lower
+I-Body	or syntactic structure(Black and Taylor, 1994;	page=0 xpos=0 ypos=8 left-column right-indent aligned-line year headchar-lower tailchar-semicolon
+I-Body	Klatt, 1987; Wightman, 1992; Hirschberg 1996;	page=0 xpos=0 ypos=8 left-column right-indent aligned-line year headchar-capital tailchar-semicolon
+E-Body	Wang, 1995; Taylor and Black, 1998).	page=0 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail year headchar-capital tailchar-period column-bottom
+Address	Shanghai Jiao Tong University	page=0 xpos=5 ypos=1 right-column left-over right-indent font-larger column-top headchar-capital
+Email	lijh888@sjtu.edu.cn	page=0 xpos=5 ypos=1 right-column left-indent right-indent font-smaller indented-line shorter-tail symbol-atmark headchar-lower above-blank-line above-double-space above-line-space
+B-Body	To our understanding, POS is a grammar-	page=0 xpos=5 ypos=2 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital tailchar-hiphen
+I-Body	based structure that can be extracted from text.	page=0 xpos=5 ypos=2 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	There is no explicit relationship between POS	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital
+I-Body	and the prosodic structure. At least, in Mandarin	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	speech synthesis, we cannot derive the prosodic	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	structure from POS sequence directly. By	page=0 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	contrast, a word carries rich information related	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	to phonetic feature. For example, in Mandarin, a	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	word can reveal many phonetic features such as	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	pronunciation, syllable number, stress pattern,	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	tone, light tone (if available) and retroflexion (if	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	available) etc. So we begin to explore the role of	page=0 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	word in predicting prosodic phrase and propose a	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	word-based statistical method for prosodic-	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+I-Body	phrase grouping. This method chooses Hidden	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	Markov Model (HMM) as the training and	page=0 xpos=5 ypos=4 right-column full-justified aligned-line headchar-capital
+E-Body	predicting model.	page=0 xpos=5 ypos=4 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	2 Related Work	page=0 xpos=5 ypos=5 right-column right-indent font-larger aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Automatic prediction of prosodic phrase is a	page=0 xpos=5 ypos=5 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital above-line-space
+I-Body	complex task. There are two reasons for this	page=0 xpos=5 ypos=5 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	conclusion. One is that there is no explicit	page=0 xpos=5 ypos=5 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	relationship between text and phonetic features.	page=0 xpos=5 ypos=6 right-column full-justified aligned-line line-space headchar-lower tailchar-period above-line-space
+I-Body	The other lies in the ambiguity of word	page=0 xpos=5 ypos=6 right-column full-justified aligned-line line-space headchar-capital above-line-space
+I-Body	segmentation, POS tagging and parsing in the	page=0 xpos=5 ypos=6 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	Chinese natural language processing. As a result,	page=0 xpos=5 ypos=6 right-column full-justified aligned-line line-space headchar-capital tailchar-comma above-line-space
+I-Body	the input information for the prediction of	page=0 xpos=5 ypos=6 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	prosodic phrase is quite “noisy”. We can find	page=0 xpos=5 ypos=7 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	that most of published methods, including (Chen	page=0 xpos=5 ypos=7 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	et al., 1996; Chen et al., 2000; Chou et al., 1996;	page=0 xpos=5 ypos=7 right-column full-justified aligned-line line-space year headchar-lower tailchar-semicolon above-line-space
+I-Body	Chou et al., 1997; Gu et al., 2000; Hu et al., 2000;	page=0 xpos=5 ypos=7 right-column right-over aligned-line line-space year headchar-capital tailchar-semicolon above-line-space
+I-Body	Lv et al., 2001; Qian et al., 2001; Ying and Shi,	page=0 xpos=5 ypos=7 right-column full-justified aligned-line line-space year headchar-capital tailchar-comma above-line-space
+I-Body	2001) do not make use of high-level syntactic	page=0 xpos=5 ypos=8 right-column full-justified aligned-line line-space year above-line-space
+I-Body	features due to two reasons. Firstly, it is very	page=0 xpos=5 ypos=8 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	challenging to parse Chinese sentence because	page=0 xpos=5 ypos=8 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	no grammar is formal enough to be applied to	page=0 xpos=5 ypos=8 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	Chinese parsing. In addition, lack of	page=0 xpos=5 ypos=8 right-column full-justified aligned-line line-space headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	977	page=0 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only above-double-space above-line-space
+B-Footer	Proceedings of the COLING/ACL 2006 Main Conference Poster Sessions, pages 977–982,	page=0 xpos=1 ypos=9 single-column centered left-indent right-indent font-smallest hanged-line longer-tail line-double-space line-space year headchar-capital tailchar-comma
+I-Footer	Sydney, July 2006.  2006 c Association for Computational Linguistics	page=0 xpos=2 ypos=9 single-column centered left-indent right-indent font-smallest indented-line shorter-tail year headchar-capital page-bottom
+I-Body	morphologies also causes many problems in	page=1 xpos=0 ypos=0 left-column full-justified page-top headchar-lower above-line-space
+I-Body	parsing. Secondly, the syntactic structure is not	page=1 xpos=0 ypos=0 left-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	isomorphic to the prosodic phrase structure.	page=1 xpos=0 ypos=0 left-column full-justified aligned-line line-space headchar-lower tailchar-period above-line-space
+I-Body	Prosodic phrasing remains an open task in the	page=1 xpos=0 ypos=0 left-column full-justified aligned-line line-space headchar-capital above-line-space
+I-Body	Chinese speech generation. In summary, all the	page=1 xpos=0 ypos=0 left-column full-justified aligned-line line-space headchar-capital above-line-space
+I-Body	known methods depend on POS features more or	page=1 xpos=0 ypos=1 left-column full-justified aligned-line line-space headchar-lower above-line-space
+E-Body	less.	page=1 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail line-space headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SectionHeader	3 Word-based Prediction	page=1 xpos=0 ypos=1 left-column right-indent font-larger aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	As noted previously, the prosodic phrasing is	page=1 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	associated with words to some extent in	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	Mandarin TTS synthesis. We observe that some	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-capital above-line-space
+I-Body	function words (such as “ ”) never occur in	page=1 xpos=0 ypos=2 left-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	phrase-initial position. Some prepositions seldom	page=1 xpos=0 ypos=2 left-column full-justified aligned-line line-space headchar-lower
+I-Body	act as phrase-finals. These observations lead to	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	investigating the role of words in prediction of	page=1 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Body	prosodic phrase. In addition, large-scale training	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	data is readily available, which enables us to	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Body	apply data-driven models more conveniently	page=1 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+E-Body	than before.	page=1 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.1 The Model	page=1 xpos=0 ypos=4 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The sentence length in real text can vary	page=1 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	significantly. A model with a fixed-dimension	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	input does not fit the issue in prosodic breaking.	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Alternatively, the breaking prediction can be	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital
+I-Body	converted into an optimization problem that	page=1 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Body	allows us to adopt the hidden Markov model	page=1 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+E-Body	(HMM).	page=1 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail tailchar-period above-double-space above-line-space
+B-Body	An HMM for discrete symbol observations is	page=1 xpos=0 ypos=5 left-column left-indent longer-tail line-double-space line-space headchar-capital
+I-Body	characterized by the following:	page=1 xpos=0 ypos=5 left-column right-indent shorter-tail headchar-lower tailchar-colon
+B-Listitem	- the state set Q ={q <sub>i</sub> }, where 1 ≤ i ≤ N, N is the	page=1 xpos=0 ypos=5 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Listitem	number of states	page=1 xpos=0 ypos=6 left-column right-indent hanged-line shorter-tail headchar-lower
+B-Listitem	- the number of distinct observation symbol per	page=1 xpos=0 ypos=6 left-column left-indent right-indent indented-line longer-tail
+I-Listitem	state M	page=1 xpos=0 ypos=6 left-column right-indent hanged-line shorter-tail headchar-lower
+B-Listitem	-the state-transition probability distribution	page=1 xpos=0 ypos=6 left-column left-indent right-indent indented-line longer-tail
+I-Listitem	A={a <sub>ij</sub> }, where	page=1 xpos=0 ypos=6 left-column right-indent font-larger hanged-line shorter-tail headchar-capital
+B-Equation	a <sub>ij</sub> =P[q t+1 =j|q t =i], 1 ≤ i,j ≤	page=1 xpos=1 ypos=6 left-column left-indent right-indent font-largest indented-line longer-tail itemization headchar-lower
+I-Equation	N	page=1 xpos=0 ypos=7 left-column left-indent right-indent hanged-line shorter-tail headchar-capital
+B-Listitem	-the observation symbol probability	page=1 xpos=0 ypos=7 left-column left-indent right-indent aligned-line longer-tail
+I-Listitem	distribution B={b <sub>j</sub> (k)}, where	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-larger aligned-line shorter-tail headchar-lower
+B-Equation	b j ( k ) = P [ o t = v k | q t = j ] ,	page=1 xpos=1 ypos=7 left-column left-indent right-indent font-largest indented-line longer-tail itemization headchar-lower tailchar-comma
+I-Equation	1 ≤ i,j ≤ N	page=1 xpos=0 ypos=7 left-column left-indent right-indent font-largest hanged-line shorter-tail numbered-heading1
+B-Listitem	- the initial state distribution π={π i }, where π i	page=1 xpos=0 ypos=8 left-column centered left-indent right-indent font-largest longer-tail
+I-Listitem	=P[o <sub>t</sub> =v k |q t =j] , 1 ≤ i,j ≤ M .	page=1 xpos=0 ypos=8 left-column right-indent font-largest hanged-line shorter-tail tailchar-period above-double-space above-line-space
+B-Body	The complete parameter set of the model is	page=1 xpos=0 ypos=8 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+E-Body	denoted as a compact notation λ =(A,B, π ).	page=1 xpos=0 ypos=8 left-column right-indent font-largest hanged-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Here, we define our prosodic positions for a	page=1 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+E-Body	word to apply the HMM as follows.	page=1 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Listitem	0 phrase-initial	page=1 xpos=5 ypos=0 right-column left-indent right-indent column-top numbered-heading1
+B-Listitem	1 phrase-medial	page=1 xpos=5 ypos=0 right-column left-indent right-indent aligned-line numbered-heading1
+B-Listitem	2 phrase-final	page=1 xpos=5 ypos=0 right-column left-indent right-indent aligned-line shorter-tail numbered-heading1
+B-Listitem	3 separate	page=1 xpos=5 ypos=0 right-column left-indent right-indent aligned-line shorter-tail numbered-heading1 above-double-space above-line-space
+B-Body	This means that Q can be represented as	page=1 xpos=5 ypos=0 right-column full-justified hanged-line longer-tail line-double-space line-space headchar-capital
+I-Body	Q={0,1,2,3}, corresponding to the four prosodic	page=1 xpos=5 ypos=0 right-column full-justified aligned-line headchar-capital
+I-Body	positions. The word itself is defined as a discrete	page=1 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+E-Body	symbol observation.	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.2 The Corpus	page=1 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	The text corpus is divided into two parts. One	page=1 xpos=5 ypos=1 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	serves as training data. This part contains 17,535	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	sentences, among which, 9,535 sentences have	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	corresponding utterances. The other is a test set,	page=1 xpos=5 ypos=2 right-column right-over aligned-line headchar-lower tailchar-comma
+I-Body	which includes 1,174 sentences selected from the	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+I-Body	Chinese People’s Daily. The sentence length,	page=1 xpos=5 ypos=2 right-column full-justified aligned-line headchar-capital tailchar-comma
+I-Body	namely the number of words in a sentence varies	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	from 1 to 30. The distribution of word length,	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	phrase length and sentence length(all in character	page=1 xpos=5 ypos=3 right-column full-justified aligned-line headchar-lower
+E-Body	number) is shown in Figure 1.	page=1 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Figure	__Figure 1__	page=1 xpos=5 ypos=3 right-column left-over right-over box longer-tail line-double-space line-space figure-area above-double-space above-line-space
+B-Caption	Figure 1. Statistical results from the corpus	page=1 xpos=5 ypos=5 right-column left-indent right-over indented-line shorter-tail line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-Body	In a real text, there may exist words that are	page=1 xpos=5 ypos=5 right-column left-indent hanged-line line-blank-line line-double-space line-space headchar-capital
+I-Body	difficult to enumerate in the system lexicon,	page=1 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower tailchar-comma
+I-Body	called “non-standard” words (NSW). Examples	page=1 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	of NSW are proper names, digit strings,	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+E-Body	derivative words by adding prefix or suffix.	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-period above-double-space above-line-space
+B-Body	Proper names include person name, place name,	page=1 xpos=5 ypos=6 right-column left-indent right-over indented-line line-double-space line-space headchar-capital tailchar-comma
+I-Body	institution name and abbreviations, etc.	page=1 xpos=5 ypos=6 right-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	Alternatively, some characters are usually	page=1 xpos=5 ypos=6 right-column full-justified aligned-line headchar-capital
+I-Body	viewed as prefix and suffix in Chinese text. For	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-lower above-line-space
+I-Body	instance, the character  (pseudo-) always	page=1 xpos=5 ypos=7 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	serves as a prefix, while another character  (-	page=1 xpos=5 ypos=7 right-column full-justified aligned-line line-space headchar-lower tailchar-hiphen above-line-space
+I-Body	like) serves as a suffix. There are 130 analogous	page=1 xpos=5 ypos=7 right-column full-justified aligned-line line-space headchar-lower
+I-Body	Chinese characters have been collected roundly.	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital tailchar-period
+I-Body	A word segmentation module is designed to	page=1 xpos=5 ypos=7 right-column full-justified aligned-line headchar-capital
+E-Body	identify these non-standard words.	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.3 Parameter estimation	page=1 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Parameter estimation of the model can be treated	page=1 xpos=5 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	as an optimization problem. The parametric	page=1 xpos=5 ypos=8 right-column full-justified aligned-line headchar-lower
+I-Body	methods will be optimal if distribution derived	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	from the training data is in the class of	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower
+I-Body	distributions being considered. But there is no	page=1 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	978	page=1 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Body	known way so far for maximizing the probability	page=2 xpos=0 ypos=0 left-column full-justified page-top headchar-lower
+I-Body	of the observation sequence in a closed form. In	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	the present approach, a straightforward,	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	reasonable yet, method to re-estimate parameters	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	of the HMM is applied. Firstly, statistics for the	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	occurring times of word, prosodic position,	page=2 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	prosodic-position pair are conducted. Secondly,	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	the simple ratio of occurring times is used to	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	calculate the probability distribution. The	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	following expressions are used to implement	page=2 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower
+I-Body	calculations,	page=2 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-comma above-blank-line above-double-space above-line-space
+B-Body	State probability distribution	page=2 xpos=0 ypos=2 left-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital above-line-space
+B-Equation	P [ q <sub>i</sub> ] ≈ <sub>N</sub> <sup>F</sup> i	page=2 xpos=0 ypos=2 left-column left-indent right-indent font-largest indented-line shorter-tail line-space headchar-capital
+I-Equation	, 1 ≤ i ≤ N	page=2 xpos=2 ypos=2 left-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	F <sub>j</sub>	page=2 xpos=1 ypos=2 left-column left-indent right-indent font-larger hanged-line shorter-tail headchar-capital
+I-Equation	j = 1	page=2 xpos=1 ypos=2 left-column left-indent right-indent font-smallest hanged-line shorter-tail itemization headchar-lower above-double-space above-line-space
+I-Equation	F <sub>i</sub> is the occurring times of state q i	page=2 xpos=0 ypos=3 left-column left-indent right-indent font-larger hanged-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	the state-transition probability	page=2 xpos=0 ypos=3 left-column full-justified hanged-line longer-tail line-double-space line-space headchar-lower
+I-Body	distribution A = { a <sub>i</sub> <sub>j</sub> } ,	page=2 xpos=0 ypos=3 left-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-comma above-line-space
+B-Equation	a ij ≈ <sup>F</sup> <sub>F</sub> ij <sub>i</sub> , 1 ≤ i , j ≤ N , F ij is the occurring	page=2 xpos=0 ypos=3 left-column left-indent font-largest indented-line longer-tail line-space itemization headchar-lower
+I-Equation	times of state pair (q <sub>i</sub> ,q j ).	page=2 xpos=0 ypos=4 left-column right-indent font-larger hanged-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Body	Observation probability distribution	page=2 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail line-blank-line line-double-space line-space headchar-capital
+B-Equation	B = { b <sub>j</sub> ( k )} ,	page=2 xpos=0 ypos=4 left-column left-indent right-indent font-largest shorter-tail headchar-capital tailchar-comma above-line-space
+I-Equation	b <sub>j</sub> ( k ) ≈ <sup>F</sup> ( q = <sub>F</sub> j , <sub>j</sub> o = v k )	page=2 xpos=0 ypos=4 left-column left-indent right-indent font-largest longer-tail line-space itemization headchar-lower above-double-space above-line-space
+I-Equation	b j ( k ) ∝ <sup>F</sup> ( q <sup>=</sup> <sub>P</sub> [ j q , o <sub>j</sub> ] = v k )	page=2 xpos=0 ypos=5 left-column left-indent right-indent font-largest aligned-line longer-tail line-double-space line-space itemization headchar-lower above-line-space
+I-Body	where F ( q = j , o = v <sub>k</sub> ) = <sub>t</sub> F ( q t = j , o = v k )	page=2 xpos=0 ypos=5 left-column right-indent font-largest longer-tail line-space headchar-lower
+I-Body	is the concurring times of state q <sub>j</sub> and observation	page=2 xpos=0 ypos=6 left-column full-justified font-larger aligned-line headchar-lower
+E-Body	v <sub>k</sub> .	page=2 xpos=0 ypos=6 left-column right-indent font-larger aligned-line shorter-tail itemization headchar-lower tailchar-period above-double-space above-line-space
+B-Body	With respect to the proper names, all the person	page=2 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	names are dealt with identically. This is based on	page=2 xpos=0 ypos=6 left-column full-justified hanged-line headchar-lower
+I-Body	an assumption that the proper names of	page=2 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	individual category have the same usage.	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.4 Parameter adjustment	page=2 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	Note that the training corpus is discrete, finite set.	page=2 xpos=0 ypos=7 left-column right-over aligned-line longer-tail line-double-space line-space headchar-capital tailchar-period
+I-Body	The parameter set resulting from the limited	page=2 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	samples cannot converge to the “true” values	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	with probability. In particular, some words may	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	not be included in the corpus. In this case, the	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	above expressions for training may result in zero	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	valued observation-probability. This, of course,	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	is unexpected. The parameters should be adjusted	page=2 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	after the automatic model training. The way is to	page=2 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower
+I-Body	use a sufficiently small positive constant ε to	page=2 xpos=0 ypos=9 left-column full-justified font-largest aligned-line headchar-lower column-bottom
+I-Body	represent the zero valued observation-	page=2 xpos=5 ypos=0 right-column full-justified column-top headchar-lower tailchar-hiphen
+E-Body	probabilities.	page=2 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	3.5 The search procedure	page=2 xpos=5 ypos=0 right-column right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	In this stage, an optimal state sequence that	page=2 xpos=5 ypos=0 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	explains the given observations by the model is	page=2 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	searched. That is to say, for the input sentence,	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	an optimal prosodic-position sequence is	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	predicted with the HHM. Instead of using the	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	popular Viterbi algorithm, which is	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	asymptotically optimal, we apply the Forward-	page=2 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	Backward procedure to conduct searching.	page=2 xpos=5 ypos=1 right-column right-indent aligned-line shorter-tail headchar-capital tailchar-period above-blank-line above-double-space above-line-space
+B-BlockHeader	Backward and forward search	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	All the definitions described in (Rabiner, 1999)	page=2 xpos=5 ypos=2 right-column full-justified aligned-line longer-tail line-double-space line-space year headchar-capital
+E-Body	are followed in the present approach.	page=2 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-BlockHeader	The forward procedure	page=2 xpos=5 ypos=3 right-column right-indent aligned-line shorter-tail line-double-space line-space headchar-capital
+B-Listitem	forward variable: α <sub>t</sub> ( i ) = P ( o 1 o 2 o t , q t = i | λ )	page=2 xpos=5 ypos=3 right-column centered left-indent right-indent font-largest indented-line longer-tail headchar-lower
+B-Listitem	initialization: α <sub>1</sub> ( i ) = π <sub>i</sub> b i ( o 1 ), 1 ≤ i ≤ N.	page=2 xpos=5 ypos=3 right-column left-indent right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period above-line-space
+B-Listitem	induction:	page=2 xpos=5 ypos=3 right-column left-indent right-indent aligned-line shorter-tail line-space headchar-lower tailchar-colon
+B-Equation	α <sub>t</sub> <sub>+</sub> 1 ( j ) = <sup>N</sup> α t ( i ) a ij b j ( o t + 1 ), 1 ≤ t ≤ T - 1, 1 ≤ j ≤ N <sup>.</sup>	page=2 xpos=5 ypos=3 right-column left-indent right-indent font-largest hanged-line longer-tail
+I-Equation	i = 1	page=2 xpos=6 ypos=4 right-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower above-line-space
+I-Equation	N	page=2 xpos=7 ypos=4 right-column left-indent right-indent font-smallest indented-line longer-tail line-space headchar-capital
+B-Listitem	termination: P ( O | λ ) = α <sub>T</sub> ( i )	page=2 xpos=5 ypos=4 right-column left-indent right-indent font-largest hanged-line longer-tail headchar-lower
+I-Equation	i = 1	page=2 xpos=7 ypos=4 right-column left-indent right-indent font-smaller indented-line shorter-tail itemization headchar-lower
+E-Body	where T is the number of observations.	page=2 xpos=5 ypos=4 right-column right-indent hanged-line longer-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-BlockHeader	The backward procedure	page=2 xpos=5 ypos=5 right-column right-indent aligned-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+B-Listitem	backward variable:	page=2 xpos=5 ypos=5 right-column left-indent right-indent indented-line shorter-tail headchar-lower tailchar-colon
+B-Equation	β <sub>t</sub> ( i ) = P ( o t <sub>+</sub> 1 o t + 2 o T | q t = i , λ )	page=2 xpos=5 ypos=5 right-column left-indent right-indent font-largest hanged-line longer-tail
+B-Listitem	initialization β <sub>T</sub> ( i ) = 1 , 1 ≤ i ≤ N	page=2 xpos=6 ypos=5 right-column left-indent right-indent font-largest indented-line longer-tail headchar-lower above-line-space
+B-Listitem	induction:	page=2 xpos=6 ypos=5 right-column left-indent right-indent aligned-line shorter-tail line-space headchar-lower tailchar-colon
+I-Equation	N	page=2 xpos=5 ypos=6 right-column left-indent right-indent font-smallest hanged-line shorter-tail headchar-capital
+I-Equation	β <sub>t</sub> ( i ) = a i <sub>j</sub> b j ( o t + 1 ) β t + 1 ( j ) t = T - 1, T - 2, 1, 1 ≤ i ≤ N	page=2 xpos=5 ypos=6 right-column left-indent right-indent font-largest hanged-line longer-tail
+I-Equation	j = 1	page=2 xpos=5 ypos=6 right-column left-indent right-indent font-smallest indented-line shorter-tail itemization headchar-lower above-double-space above-line-space
+B-BlockHeader	The “optimal” state sequence	page=2 xpos=5 ypos=6 right-column right-indent hanged-line longer-tail line-double-space line-space headchar-capital above-double-space above-line-space
+B-Body	posteriori probability variable: γ <sub>t</sub> (i ) , this is	page=2 xpos=5 ypos=6 right-column left-indent font-largest indented-line longer-tail line-double-space line-space headchar-lower above-line-space
+I-Body	the probability of being in state i at time t given	page=2 xpos=5 ypos=6 right-column full-justified hanged-line line-space headchar-lower
+I-Body	the observation sequence O and the model λ. It	page=2 xpos=5 ypos=7 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	can be expressed as follows:	page=2 xpos=5 ypos=7 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-colon
+B-Equation	γ <sub>t</sub> ( i ) = P ( q t = i | O , λ ) = <sub>N</sub> α t ( i ) β t ( i )	page=2 xpos=5 ypos=7 right-column left-indent right-indent font-largest indented-line longer-tail
+I-Equation	α <sub>t</sub> ( i ) β t ( i )	page=2 xpos=8 ypos=7 right-column left-indent right-indent indented-line longer-tail
+I-Equation	i = 1	page=2 xpos=7 ypos=7 right-column left-indent right-indent font-smallest hanged-line shorter-tail itemization headchar-lower above-line-space
+I-Equation	most likely state q <sub>t</sub> <sup>*</sup> at time t:	page=2 xpos=5 ypos=7 right-column left-indent right-indent font-largest hanged-line longer-tail line-space headchar-lower tailchar-colon above-line-space
+I-Equation	q t <sup>*</sup> = arg <sub>1</sub> max <sub>≤</sub> i ≤ N [ γ t ( i )] 1 ≤ t ≤ T .	page=2 xpos=5 ypos=8 right-column left-indent right-indent font-largest indented-line line-space itemization headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Body	Here comes a question. It is, whether the	page=2 xpos=5 ypos=8 right-column full-justified font-larger hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	optimal state sequence means the optimal	page=2 xpos=5 ypos=8 right-column full-justified font-larger aligned-line headchar-lower
+E-Body	path.	page=2 xpos=5 ypos=9 right-column right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	979	page=2 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-BlockHeader	Search based on dynamic programming	page=3 xpos=0 ypos=0 left-column right-indent page-top headchar-capital above-double-space above-line-space
+B-Body	The preceding search procedure targets the	page=3 xpos=0 ypos=0 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	optimal state sequence satisfying one criterion.	page=3 xpos=0 ypos=0 left-column full-justified hanged-line headchar-lower tailchar-period
+I-Body	But it does not reflect the probability of	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-capital
+I-Body	occurrence of sequences of states. This issue is	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Body	explored based on a dynamic programming (DP)	page=3 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+E-Body	like approach, as described below.	page=3 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	For convenience, we illustrate the problem as	page=3 xpos=0 ypos=1 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+E-Body	shown in Figure 2.	page=3 xpos=0 ypos=1 left-column right-indent hanged-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Caption	Figure 2. Illustration of search procedure in trellis	page=3 xpos=0 ypos=3 left-column left-over right-over longer-tail line-blank-line line-double-space line-space string-figure headchar-capital
+E-Caption	(quoted from [Rabiner, 1999])	page=3 xpos=0 ypos=3 left-column left-indent right-indent indented-line shorter-tail year above-blank-line above-double-space above-line-space
+B-Body	From Figure 2, it can be seen that the transition	page=3 xpos=0 ypos=4 left-column left-indent hanged-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	from state i to state j only occurs in the two	page=3 xpos=0 ypos=4 left-column full-justified hanged-line headchar-lower
+I-Body	consecutive stages, namely time synchronous.	page=3 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower tailchar-period above-line-space
+I-Body	Totally, there are T stages, N <sup>2</sup> T arcs. Therefore,	page=3 xpos=0 ypos=4 left-column full-justified font-largest aligned-line line-space headchar-capital tailchar-comma
+I-Body	the optimal-path issue is a multi-stage	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	optimization problem, which is similar to the DP	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	problem. The slight difference lies in that a node	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	in the conventional DP problem does not contain	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	any additional attribute, while a node in HMM	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	carries the attribute of observation probability	page=3 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Body	distribution. Considering this difference, we	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+I-Body	modify the conventional DP approach in the	page=3 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower
+E-Body	following way.	page=3 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-Body	In the trellis above, we add a virtual node	page=3 xpos=0 ypos=6 left-column left-indent indented-line longer-tail line-double-space line-space headchar-capital
+I-Body	(state), where the start node q <sub>s</sub> corresponding to	page=3 xpos=0 ypos=6 left-column full-justified font-larger hanged-line
+I-Body	time 0 before time 1. All the transitions from q <sub>s</sub>	page=3 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower
+I-Body	to nodes in the first stage (time 1) equal to 1/N.	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Furthermore, all the observation probability	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Body	distributions equal to 1/M. Denoting the optimal	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower
+I-Body	path from q <sub>s</sub> to the node q i of time t as path(t,i),	page=3 xpos=0 ypos=7 left-column full-justified font-larger aligned-line headchar-lower tailchar-comma
+I-Body	path(t,i) is a set of sequential states. Accordingly,	page=3 xpos=0 ypos=7 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we denote the score of path(t,i) as s(t,i). Then,	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	s(t,i) is associated with the state-transition	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	probability distribution and observation	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+I-Body	probability distribution. We describe the	page=3 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower
+E-Body	induction process as follows.	page=3 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom
+B-Listitem	initialization:	page=3 xpos=5 ypos=0 right-column left-indent right-indent column-top headchar-lower tailchar-colon above-line-space
+B-Equation	s ( 0 , i ) = <sup>1</sup> , 1 ≤ i ≤ N	page=3 xpos=6 ypos=0 right-column left-indent right-indent font-largest indented-line longer-tail line-space itemization headchar-lower
+I-Equation	M × N	page=3 xpos=7 ypos=0 right-column left-indent right-indent font-largest indented-line shorter-tail headchar-capital
+I-Equation	path ( 0 , i ) = { q <sub>s</sub> }.	page=3 xpos=6 ypos=0 right-column left-indent right-indent font-largest hanged-line longer-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Listitem	induction:	page=3 xpos=5 ypos=0 right-column left-indent right-indent hanged-line shorter-tail line-blank-line line-double-space line-space headchar-lower tailchar-colon
+B-Equation	given	page=3 xpos=6 ypos=1 right-column left-indent right-indent indented-line longer-tail headchar-lower
+I-Equation	j , s ( t , j ) = max [ s ( t − 1 , i ) × b <sub>i</sub> ( o t ) × a ij ], 1 ≤ t ≤ T ,	page=3 xpos=5 ypos=1 right-column left-indent right-indent font-largest hanged-line longer-tail itemization headchar-lower tailchar-comma
+I-Equation	1 ≤ i ≤ N	page=3 xpos=5 ypos=1 right-column left-indent right-indent font-smaller indented-line shorter-tail numbered-heading1 above-line-space
+I-Equation	denotes	page=3 xpos=6 ypos=1 right-column left-indent right-indent indented-line longer-tail line-space headchar-lower
+I-Equation	k = arg max [ s ( t − 1 , i ) × b <sub>i</sub> ( o t ) × a ij ] , then	page=3 xpos=4 ypos=1 right-column left-indent font-largest hanged-line longer-tail itemization headchar-lower
+I-Equation	1 ≤ i ≤ N	page=3 xpos=5 ypos=1 right-column left-indent right-indent font-smaller indented-line shorter-tail numbered-heading1
+I-Equation	path(t,j)=path(t-1,k) ∪ {k}.	page=3 xpos=4 ypos=1 right-column right-indent font-largest hanged-line longer-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Listitem	termination:	page=3 xpos=5 ypos=2 right-column left-indent right-indent indented-line shorter-tail line-blank-line line-double-space line-space headchar-lower tailchar-colon
+B-Equation	at time T , k = arg max s ( T , i ) .	page=3 xpos=6 ypos=2 right-column left-indent right-over font-largest indented-line longer-tail headchar-lower tailchar-period
+I-Equation	1 ≤ i ≤ N	page=3 xpos=8 ypos=2 right-column left-indent right-indent font-smallest indented-line shorter-tail numbered-heading1 above-line-space
+I-Equation	then path(T,k) - {q <sub>s</sub> } is the	page=3 xpos=6 ypos=2 right-column left-indent font-larger hanged-line longer-tail line-space headchar-lower
+I-Equation	optimal path.	page=3 xpos=4 ypos=3 right-column right-indent hanged-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Body	Basically, the main idea of our approach lies in	page=3 xpos=5 ypos=3 right-column left-indent indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	that if the final optimal path passes a node j at	page=3 xpos=4 ypos=3 right-column full-justified hanged-line headchar-lower
+I-Body	time t, it passes all the nodes in path(t,j)	page=3 xpos=4 ypos=3 right-column full-justified aligned-line headchar-lower
+I-Body	sequentially. This idea is similar to the forward	page=3 xpos=4 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	procedure of DP. We can begin with the	page=3 xpos=4 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	termination T and derive an alternative approach.	page=3 xpos=4 ypos=4 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	As for time complexity, the above trellis can be	page=3 xpos=4 ypos=4 right-column full-justified aligned-line headchar-capital
+I-Body	viewed as a special DAG. The state transition	page=3 xpos=4 ypos=4 right-column full-justified aligned-line headchar-lower
+I-Body	from time t to time t+1 requires 2N <sup>2</sup> calculations,	page=3 xpos=4 ypos=4 right-column full-justified font-largest aligned-line headchar-lower tailchar-comma
+E-Body	resulting in the time complexity O(TN <sup>2</sup> ).	page=3 xpos=4 ypos=5 right-column right-indent font-largest aligned-line shorter-tail headchar-lower tailchar-period
+B-Body	Intuitively, the optimal path differs from the	page=3 xpos=5 ypos=5 right-column left-indent indented-line longer-tail headchar-capital
+I-Body	optimal state sequence generated by the	page=3 xpos=4 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	Forward-Backward procedure. The underlying	page=3 xpos=4 ypos=5 right-column full-justified aligned-line headchar-capital
+I-Body	idea of Forward-Backward procedure is that the	page=3 xpos=4 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	target state sequence can explain the	page=3 xpos=4 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	observations optimally. To support our claim,	page=3 xpos=4 ypos=6 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we can give a simple example (T=2, N=2, π	page=3 xpos=4 ypos=6 right-column full-justified font-largest aligned-line headchar-lower
+I-Body	=[0.5,0.5] <sup>T</sup> ) as follows:	page=3 xpos=4 ypos=6 right-column right-indent font-largest aligned-line shorter-tail tailchar-colon
+Figure	__Figure 3__	page=3 xpos=6 ypos=6 right-column left-indent right-indent box indented-line longer-tail figure-area above-double-space above-line-space
+B-Caption	Figure 3. Optimal state sequence vs. optimal path	page=3 xpos=5 ypos=7 right-column left-indent right-over hanged-line longer-tail line-double-space line-space string-figure headchar-capital above-blank-line above-double-space above-line-space
+B-Body	Apparently, the optimal state sequence is (1,1),	page=3 xpos=5 ypos=8 right-column left-indent hanged-line shorter-tail line-blank-line line-double-space line-space headchar-capital tailchar-comma
+E-Body	while the optimal path is {1,2}.	page=3 xpos=4 ypos=8 right-column right-indent shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	4 Experimental Results	page=3 xpos=4 ypos=8 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	Before reporting the experimental results, we	page=3 xpos=4 ypos=8 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	first define the criterion of evaluation and the	page=3 xpos=4 ypos=9 right-column full-justified aligned-line headchar-lower
+E-Body	related issues.	page=3 xpos=4 ypos=9 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period column-bottom above-blank-line above-double-space above-line-space
+Page	980	page=3 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+B-SubsectionHeader	4.1 The evaluation method	page=4 xpos=0 ypos=0 left-column left-indent right-indent page-top numbered-heading2 above-double-space above-line-space
+B-Body	After analyzing the existing evaluation methods,	page=4 xpos=0 ypos=0 left-column centered left-indent aligned-line longer-tail line-double-space line-space headchar-capital tailchar-comma
+I-Body	we feel that the method proposed in (Taylor and	page=4 xpos=0 ypos=0 left-column centered left-indent aligned-line headchar-lower
+I-Body	Black, 1998) is appropriate for our application.	page=4 xpos=0 ypos=0 left-column centered left-indent aligned-line year headchar-capital tailchar-period
+I-Body	By employing this method, we can examine each	page=4 xpos=0 ypos=1 left-column centered left-indent aligned-line headchar-capital
+I-Body	word pair in the test set. If the algorithm	page=4 xpos=0 ypos=1 left-column centered left-indent aligned-line headchar-lower
+I-Body	generated break fully matches the manually	page=4 xpos=0 ypos=1 left-column centered left-indent aligned-line headchar-lower
+I-Body	labeled break, it marks correct. Similarly, if there	page=4 xpos=0 ypos=1 left-column centered left-indent aligned-line headchar-lower
+I-Body	is no labeled break and the algorithm does not	page=4 xpos=0 ypos=1 left-column centered left-indent aligned-line headchar-lower
+I-Body	place a break, it also marks correct. Otherwise,	page=4 xpos=0 ypos=1 left-column centered left-indent aligned-line headchar-lower tailchar-comma
+I-Body	an error arises. To emphasize the effectiveness	page=4 xpos=0 ypos=2 left-column centered left-indent aligned-line headchar-lower
+I-Body	of break prediction, we define the adjusted score,	page=4 xpos=0 ypos=2 left-column centered left-indent aligned-line headchar-lower tailchar-comma
+E-Body	S <sub>a</sub> , as follows.	page=4 xpos=0 ypos=2 left-column left-indent right-indent font-larger aligned-line shorter-tail headchar-capital tailchar-period
+B-Equation	S a = <sup>S</sup> <sub>1</sub> − − B B	page=4 xpos=1 ypos=2 left-column centered left-indent right-indent font-largest indented-line longer-tail headchar-capital
+I-Equation	where	page=4 xpos=0 ypos=2 left-column left-indent right-indent hanged-line shorter-tail headchar-lower
+I-Equation	S is the ratio of the number of correct word	page=4 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Equation	pairs to the total number of word pairs;	page=4 xpos=0 ypos=3 left-column left-indent right-indent hanged-line shorter-tail headchar-lower tailchar-semicolon
+I-Equation	B is the ratio of non-breaks to the number	page=4 xpos=0 ypos=3 left-column left-indent indented-line longer-tail headchar-capital
+I-Equation	of word-pairs.	page=4 xpos=0 ypos=3 left-column left-indent right-indent hanged-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	4.2 The test corpora	page=4 xpos=0 ypos=3 left-column left-indent right-indent aligned-line longer-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	From the perspective of perception, multiple	page=4 xpos=0 ypos=4 left-column centered left-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	predictions of prosodic phrasing may be	page=4 xpos=0 ypos=4 left-column centered left-indent aligned-line headchar-lower
+I-Body	acceptable in many cases. At the labeling stage,	page=4 xpos=0 ypos=4 left-column centered left-indent aligned-line headchar-lower tailchar-comma
+I-Body	three experts (E1, E2, E3) were requested to	page=4 xpos=0 ypos=4 left-column centered left-indent aligned-line headchar-lower
+I-Body	label 1,174 sentences independently. Experts	page=4 xpos=0 ypos=4 left-column centered left-indent aligned-line headchar-lower
+I-Body	first read the sentences silently. Then, they	page=4 xpos=0 ypos=5 left-column centered left-indent aligned-line headchar-lower
+I-Body	marked the breaks in sentences independently.	page=4 xpos=0 ypos=5 left-column centered left-indent aligned-line headchar-lower tailchar-period
+I-Body	Table 1 and 2 show their labeling differences in	page=4 xpos=0 ypos=5 left-column centered left-indent aligned-line string-table headchar-capital
+E-Body	terms of S and S <sub>a</sub> , respectively.	page=4 xpos=0 ypos=5 left-column left-indent right-indent font-larger aligned-line shorter-tail headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-Table	E1 E2 E3 E1 E2 E3	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-smallest indented-line longer-tail line-blank-line line-double-space line-space headchar-capital
+I-Table	E1 1.00 0.87 0.87 E1 1.00 0.74 0.67	page=4 xpos=0 ypos=6 left-column right-indent font-smallest hanged-line headchar-capital
+I-Table	E2 0.87 1.00 0.86 E2 0.74 1.00 0.66	page=4 xpos=0 ypos=6 left-column right-indent font-smallest aligned-line headchar-capital
+E-Table	E3 0.87 0.86 1.00 E3 0.72 0.72 1.00	page=4 xpos=0 ypos=6 left-column right-indent font-smallest aligned-line headchar-capital
+B-Caption	Table 1. Table 2.	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-larger indented-line shorter-tail string-table headchar-capital tailchar-period
+I-Caption	Three experts’ Three experts’	page=4 xpos=0 ypos=6 left-column left-indent right-indent font-larger hanged-line longer-tail headchar-capital
+I-Caption	matching scores adjusted matching	page=4 xpos=0 ypos=7 left-column left-indent right-indent font-larger hanged-line longer-tail headchar-lower
+E-Caption	scores	page=4 xpos=3 ypos=7 left-column left-indent right-indent indented-line shorter-tail headchar-lower above-blank-line above-double-space above-line-space
+B-Body	Table 1 indicates that any two can achieve a	page=4 xpos=0 ypos=7 left-column centered left-indent hanged-line longer-tail line-blank-line line-double-space line-space string-table headchar-capital
+E-Body	consistency of roughly 87% among three experts.	page=4 xpos=0 ypos=7 left-column centered left-indent aligned-line headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+B-SubsectionHeader	4.3 The results	page=4 xpos=0 ypos=8 left-column left-indent right-indent aligned-line shorter-tail line-blank-line line-double-space line-space numbered-heading2 above-double-space above-line-space
+B-Body	To evaluate the approaches mentioned above, we	page=4 xpos=0 ypos=8 left-column centered left-indent aligned-line longer-tail line-double-space line-space headchar-capital
+I-Body	conducted a series of experiments. In all our	page=4 xpos=0 ypos=8 left-column centered left-indent aligned-line headchar-lower
+I-Body	experiments, we assume that no breaking is	page=4 xpos=0 ypos=8 left-column centered left-indent aligned-line headchar-lower
+I-Body	necessary for those sentences that are shorter	page=4 xpos=0 ypos=9 left-column centered left-indent aligned-line headchar-lower
+I-Body	than the average phrase length and remove them	page=4 xpos=0 ypos=9 left-column centered left-indent aligned-line headchar-lower
+I-Body	in the statistic computation. For the approaches	page=4 xpos=0 ypos=9 left-column centered left-indent aligned-line headchar-lower column-bottom
+I-Body	based on HMM path, we further define that the	page=4 xpos=5 ypos=0 right-column full-justified column-top headchar-lower
+I-Body	initial and final words of a sentence can only	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	assume two state values, namely, (phrase initial,	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	separate) and (phrase final, separate),	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	respectively. With this definition, we modify the	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Body	approach HMM-Path to HMM-Path-I.	page=4 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower tailchar-period
+I-Body	Alternatively, to investigate acceptance, we also	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-capital
+I-Body	calculate the matching score between the	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	approaches and any expert (We assume the	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	prediction is acceptable if the predicted phrase	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	sequence matches any of three phrase sequences	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	labeled by the experts). By employing the	page=4 xpos=5 ypos=1 right-column full-justified aligned-line headchar-lower
+I-Body	preceding criterion, we achieve the results as	page=4 xpos=5 ypos=2 right-column full-justified aligned-line headchar-lower
+E-Body	shown in Table 3 and 4.	page=4 xpos=5 ypos=2 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+Table	__Table 3__	page=4 xpos=5 ypos=2 right-column left-indent box longer-tail line-double-space line-space table-area
+B-Caption	Table 3. Matching scores of 3 approaches	page=4 xpos=5 ypos=3 right-column centered left-indent right-indent indented-line shorter-tail string-table headchar-capital above-double-space above-line-space
+Table	__Table 4__	page=4 xpos=5 ypos=3 right-column left-indent box hanged-line longer-tail line-double-space line-space table-area
+B-Caption	Table 4. Adjusted matching scores of 3 approaches	page=4 xpos=5 ypos=4 right-column left-over right-over hanged-line longer-tail string-table headchar-capital above-blank-line above-double-space above-line-space
+B-Body	A sentence consumes less than 0.3 ms on	page=4 xpos=5 ypos=5 right-column left-indent indented-line shorter-tail line-blank-line line-double-space line-space headchar-capital
+I-Body	average for all the evaluated methods. So they	page=4 xpos=5 ypos=5 right-column full-justified hanged-line headchar-lower
+I-Body	are all computationally efficient. Alternatively,	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-comma
+I-Body	we compared the HMM-based approach base on	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	word format and some POS-based ones on the	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower
+I-Body	same training set and test set. Overall, HMM-	page=4 xpos=5 ypos=5 right-column full-justified aligned-line headchar-lower tailchar-hiphen
+E-Body	path-I can achieve high accuracy by about 10%.	page=4 xpos=5 ypos=6 right-column right-indent aligned-line shorter-tail headchar-lower tailchar-period above-double-space above-line-space
+B-SectionHeader	5 Conclusions/Discussions	page=4 xpos=5 ypos=6 right-column right-indent font-larger aligned-line shorter-tail line-double-space line-space numbered-heading1 above-double-space above-line-space
+B-Body	We described an approach to automatic prosodic	page=4 xpos=5 ypos=6 right-column full-justified aligned-line longer-tail line-double-space line-space headchar-capital above-line-space
+I-Body	phrasing for Mandarin TTS synthesis based on	page=4 xpos=5 ypos=6 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	word format and HMM and its variants. We also	page=4 xpos=5 ypos=7 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	evaluated these methods through experiments	page=4 xpos=5 ypos=7 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	and demonstrated promising results. According	page=4 xpos=5 ypos=7 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	to the experimental results, we can conclude that	page=4 xpos=5 ypos=7 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	word-based prediction is an effective approach	page=4 xpos=5 ypos=7 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	and has advantages over the POS-based ones. It	page=4 xpos=5 ypos=8 right-column full-justified aligned-line line-space headchar-lower above-line-space
+I-Body	confirms that the syllable number of a word has	page=4 xpos=5 ypos=8 right-column full-justified aligned-line line-space headchar-lower above-line-space
+E-Body	substantial impact on prosodic phrasing.	page=4 xpos=5 ypos=8 right-column right-indent aligned-line shorter-tail line-space headchar-lower tailchar-period above-blank-line above-double-space above-line-space
+ReferenceHeader	References	page=4 xpos=5 ypos=8 right-column right-indent font-larger aligned-line shorter-tail line-blank-line line-double-space line-space string-reference headchar-capital
+B-Reference	Black, A.W., Taylor, P., 1994. “Assigning	page=4 xpos=5 ypos=9 right-column full-justified aligned-line longer-tail year headchar-capital
+I-Reference	intonational elements and prosodic phrasing for	page=4 xpos=5 ypos=9 right-column full-justified aligned-line headchar-lower column-bottom above-blank-line above-double-space above-line-space
+Page	981	page=4 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only page-bottom
+I-Reference	English speech synthesis from high level	page=5 xpos=0 ypos=0 left-column full-justified page-top headchar-capital
+I-Reference	linguistic input”, Proc. ICSLIP	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Reference	Chen, S.H., Hwang, S.H., Wang, Y.R., 1998.	page=5 xpos=0 ypos=0 left-column full-justified aligned-line longer-tail year headchar-capital tailchar-period
+I-Reference	“An RNN-based prosodic information	page=5 xpos=0 ypos=0 left-column full-justified aligned-line
+I-Reference	synthesizer for Mandarin text-to-speech”, IEEE	page=5 xpos=0 ypos=0 left-column full-justified aligned-line headchar-lower
+I-Reference	Trans. Speech Audio Processing, 6: 226-239.	page=5 xpos=0 ypos=0 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Chen, Y.Q., Gao, W., , Zhu, T.S., Ma, J.Y., 2000.	page=5 xpos=0 ypos=1 left-column right-over aligned-line longer-tail year headchar-capital tailchar-period
+I-Reference	“Multi-strategy data mining on Mandarin	page=5 xpos=0 ypos=1 left-column full-justified aligned-line
+I-Reference	prosodic patterns”, Proc. ISCLIP	page=5 xpos=0 ypos=1 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Reference	Chou, F.C., Tseng, C.Y., Lee, L.S. 1996.	page=5 xpos=0 ypos=1 left-column full-justified aligned-line longer-tail year headchar-capital tailchar-period
+I-Reference	“Automatic generation of prosodic structure for	page=5 xpos=0 ypos=1 left-column full-justified aligned-line
+I-Reference	high quality Mandarin speech synthesis”, Proc.	page=5 xpos=0 ypos=1 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Reference	ICSLP	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-capital
+B-Reference	Chou, F.C, Tseng, C.Y, Chen, K.J., Lee, L.S,	page=5 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail headchar-capital tailchar-comma
+I-Reference	1997. “A Chinese text-to-speech system based	page=5 xpos=0 ypos=2 left-column full-justified aligned-line year
+I-Reference	on part-of-speech analysis, prosodic modeling	page=5 xpos=0 ypos=2 left-column full-justified aligned-line headchar-lower
+I-Reference	and non-uniform units”, ICASSP’97	page=5 xpos=0 ypos=2 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Reference	Klatt, D.H., 1987, “Review of text-to-speech	page=5 xpos=0 ypos=2 left-column full-justified aligned-line longer-tail year headchar-capital
+I-Reference	conversion for English”, J. Acoust. Soc. Am.,	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Reference	182: 737-79	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail
+B-Reference	Gu, Z.L, Mori, H., Kasuya, H. 2000. “Prosodic	page=5 xpos=0 ypos=3 left-column full-justified aligned-line longer-tail year headchar-capital
+I-Reference	variation of focused syllables of disyllabic word	page=5 xpos=0 ypos=3 left-column full-justified aligned-line headchar-lower
+I-Reference	in Mandarin Chinese”, Proc. ICSLP,	page=5 xpos=0 ypos=3 left-column right-indent aligned-line shorter-tail headchar-lower tailchar-comma
+B-Reference	Hirschberg, J., 1996. “Training intonational	page=5 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail year headchar-capital
+I-Reference	phrasing rules automatically for English and	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Reference	Spanish text-to-speech”, Speech Communication,	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Reference	18:281-290	page=5 xpos=0 ypos=4 left-column right-indent aligned-line shorter-tail
+B-Reference	Hu, Y., Liu, Q.F., Wang, R.H., 2000, “Prosody	page=5 xpos=0 ypos=4 left-column full-justified aligned-line longer-tail year headchar-capital
+I-Reference	generation in Chinese synthesis using the	page=5 xpos=0 ypos=4 left-column full-justified aligned-line headchar-lower
+I-Reference	template of quantified prosodic unit and base	page=5 xpos=0 ypos=5 left-column full-justified aligned-line headchar-lower
+I-Reference	intonation contour”, Proc. ICSLIP	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-lower
+B-Reference	Lu, S.N., He, L., Yang, Y.F., Cao, J.F., 2000,	page=5 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail year headchar-capital tailchar-comma
+I-Reference	“Prosodic control in Chinese TTS system”, Proc.	page=5 xpos=0 ypos=5 left-column full-justified aligned-line tailchar-period
+I-Reference	ICSLP,	page=5 xpos=0 ypos=5 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-comma
+B-Reference	Lv, X., Zhao, T.J., Liu, Z.Y., Yang M.Y., 2001,	page=5 xpos=0 ypos=5 left-column full-justified aligned-line longer-tail year headchar-capital tailchar-comma
+I-Reference	“Automatic detection of prosody phrase	page=5 xpos=0 ypos=6 left-column full-justified aligned-line
+I-Reference	boundaries for text-to-speech system”, Proc.	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Reference	IWPT	page=5 xpos=0 ypos=6 left-column right-indent aligned-line shorter-tail headchar-capital
+B-Reference	Qian, Y., Chu, M., Peng, H., 2001,	page=5 xpos=0 ypos=6 left-column full-justified aligned-line longer-tail year headchar-capital tailchar-comma
+I-Reference	“Segmenting unrestricted Chinese text into	page=5 xpos=0 ypos=6 left-column full-justified aligned-line
+I-Reference	prosodic words instead of lexical words”, Proc.	page=5 xpos=0 ypos=6 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Reference	ICASSP.	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-period
+B-Reference	Rabiner, L., 1999, Fundamentals of Speech	page=5 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail year headchar-capital
+I-Reference	Recognition, pp.336, Prentice-Hall and Tsinghua	page=5 xpos=0 ypos=7 left-column full-justified aligned-line headchar-capital
+I-Reference	Univ. Press, Beijing	page=5 xpos=0 ypos=7 left-column right-indent aligned-line shorter-tail headchar-capital
+B-Reference	Taylor P., Black A.W., 1998, “Assigning phrase	page=5 xpos=0 ypos=7 left-column full-justified aligned-line longer-tail year headchar-capital
+I-Reference	breaks from part-of-speech sequences”,	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Reference	Computer Speech and Language, 12: 99-117,	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-comma
+B-Reference	Wang, M.Q., Hirschberg, J., 1995, “Automatic	page=5 xpos=0 ypos=8 left-column full-justified aligned-line longer-tail year headchar-capital
+I-Reference	classification of intonational phrase boundaries”,	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-lower tailchar-comma
+I-Reference	Computer Speech and Language, pp.175-196,	page=5 xpos=0 ypos=8 left-column full-justified aligned-line headchar-capital tailchar-comma
+I-Reference	Vol. 6,	page=5 xpos=0 ypos=8 left-column right-indent aligned-line shorter-tail headchar-capital tailchar-comma
+B-Reference	Wightman, C.W., 1992, “Segmental durations in	page=5 xpos=0 ypos=9 left-column full-justified aligned-line longer-tail year headchar-capital
+I-Reference	the vicinity of prosodic phrase boundaries”, J.	page=5 xpos=0 ypos=9 left-column full-justified aligned-line headchar-lower tailchar-period
+I-Reference	Acoust. Soc. Am., 91:1707-1717	page=5 xpos=0 ypos=9 left-column right-indent aligned-line shorter-tail headchar-capital column-bottom
+B-Reference	Ying, Z.W., Shi, X.H., 2001, “An RNN-based	page=5 xpos=5 ypos=0 right-column full-justified column-top year headchar-capital
+I-Reference	algorithm to detect prosodic phrase for Chinese	page=5 xpos=5 ypos=0 right-column full-justified aligned-line headchar-lower
+I-Reference	TTS”, Proc. ICASSP	page=5 xpos=5 ypos=0 right-column right-indent aligned-line shorter-tail headchar-capital column-bottom above-blank-line above-double-space above-line-space
+Page	982	page=5 xpos=4 ypos=9 single-column left-indent right-indent column-top line-blank-line line-double-space line-space numeric-only
