@@ -1,8 +1,8 @@
 <?php
 
 if (!isset($argv)) {
-  echo "This program must be executed from command line.\n";
-  die();
+    echo "This program must be executed from command line.\n";
+    die();
 }
 
 require_once(dirname(__FILE__).'/lib/PdfAnalyzer.php');
@@ -11,20 +11,20 @@ require_once(dirname(__FILE__) . '/lib/getopts.php');
 ini_set('memory_limit', -1);
 
 $opts = getopts(array(
-  'c' => array('switch' => array('c', 'command'), 'type' => GETOPT_VAL),
-  'h' => array('switch' => array('h', 'help'), 'type' => GETOPT_SWITCH),
-  'm' => array('switch' => array('m', 'model'), 'type' => GETOPT_VAL),
-  'p' => array('switch' => array('p', 'pdf-dir'), 'type' => GETOPT_VAL),
-  'f' => array('switch' => array('f', 'figure-dir'), 'type' => GETOPT_VAL),
-  'a' => array('switch' => array('a', 'annotation-dir'), 'type' => GETOPT_VAL),
-  't' => array('switch' => array('t', 'training-dir'), 'type' => GETOPT_VAL),
-  'x' => array('switch' => array('x', 'xhtml-dir'), 'type' => GETOPT_VAL),
-  'i' => array('switch' => array('i', 'with-image'), 'type' => GETOPT_SWITCH),
-  'A' => array('switch' => array('A', 'all'), 'type' => GETOPT_SWITCH),
+    'c' => array('switch' => array('c', 'command'), 'type' => GETOPT_VAL),
+    'h' => array('switch' => array('h', 'help'), 'type' => GETOPT_SWITCH),
+    'm' => array('switch' => array('m', 'model'), 'type' => GETOPT_VAL),
+    'p' => array('switch' => array('p', 'pdf-dir'), 'type' => GETOPT_VAL),
+    'f' => array('switch' => array('f', 'figure-dir'), 'type' => GETOPT_VAL),
+    'a' => array('switch' => array('a', 'annotation-dir'), 'type' => GETOPT_VAL),
+    't' => array('switch' => array('t', 'training-dir'), 'type' => GETOPT_VAL),
+    'x' => array('switch' => array('x', 'xhtml-dir'), 'type' => GETOPT_VAL),
+    'i' => array('switch' => array('i', 'with-image'), 'type' => GETOPT_SWITCH),
+    'A' => array('switch' => array('A', 'all'), 'type' => GETOPT_SWITCH),
 ));
 
 if ($opts['h'] || !$opts['c']) { //count($opts['cmdline']) == 0) {
-  echo <<<_USAGE_
+    echo <<<_USAGE_
 Usage: php {$argv[0]} [options] -c <command> [file 1] [...]
 
 Options:
@@ -72,7 +72,7 @@ Command:
      XHTML file(s) will be generated under the 'xhtml-dir'.
 _USAGE_;
 
-  die();
+    die();
 }
 
 // デフォルト値とオプションパラメータ
@@ -94,32 +94,32 @@ $p->setXhtmlDir($xhtml_dir);
 // 対象ファイル
 $files = $opts['cmdline'];
 if (count($opts['cmdline']) == 0 && $opts['A']) {
-  $files = array('*');
+    $files = array('*');
 }
 
 // ディスパッチ
 switch ($opts['c']) {
 case 'generate_annotation':
-  if (count($files) == 0) {
-    echo "Note: Please specify target PDF(s), or set '--all' option.\n";
-  }
-  $p->pdf2anno($files);
-  break;
+    if (count($files) == 0) {
+        echo "Note: Please specify target PDF(s), or set '--all' option.\n";
+    }
+    $p->pdf2anno($files);
+    break;
 case 'update_training':
-  if (count($files) == 0) {
-    echo "Note: Please specify target PDF(s), or set '--all' option.\n";
-  }
-  $p->updateTrain($files);
-  break;
+    if (count($files) == 0) {
+        echo "Note: Please specify target PDF(s), or set '--all' option.\n";
+    }
+    $p->updateTrain($files);
+    break;
 case 'update_model':
-  $p->updateModel();
-  break;
+    $p->updateModel();
+    break;
 case 'generate_xhtml':
-  if (count($files) == 0) {
-    echo "Note: Please specify target PDF(s), or set '--all' option.\n";
-  }
-  $p->pdf2xhtml($files);
-  break;
+    if (count($files) == 0) {
+        echo "Note: Please specify target PDF(s), or set '--all' option.\n";
+    }
+    $p->pdf2xhtml($files);
+    break;
 default:
-  echo "Unknown command '", $opts['c'], "'\n";
+    echo "Unknown command '", $opts['c'], "'\n";
 }

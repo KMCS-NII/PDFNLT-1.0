@@ -89,17 +89,29 @@ $ sudo make install
 
 5. pdfanalyzer のセットアップ
 
-$ tar xfz pdfanalyzer-20170312.tgz
-$ tar xfz pdfanalyzer-sampledata.tgz
+pdfanalyze.php が実行できることを確認してください。
+
+$ php pdfanalyze.php
 
 
 6. サンプルデータでモデル作成
 
+sampledata.tgz を展開し、 anno/ pdf/ train/ を
+pdfanalyze.php と同じディレクトリに配置してください。
+
+$ tar xfz dist/sampledata.tgz
+$ mv sampledata/* .
+
+-- アノテーションデータからトレーニングデータを更新
 $ php pdfanalyze.php --command update_training --all  (*1)
+
+-- トレーニングデータからモデルを更新
 $ php pdfanalyze.php --command update_model
+
+-- モデルから XHTML を生成
 $ php pdfanalyze.php --coomand generate_xhtml --all
 
-xtml/*.xhtml に xhtml ファイルが生成される
+xtml/*.xhtml に xhtml ファイルが生成されます。
 
 
 (*1) Call to undefined function pspell_new() エラーが出たら
