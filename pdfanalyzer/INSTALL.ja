@@ -9,7 +9,11 @@ PDF を画像に変換する pdftoppm, テキストに変換する pdftotext な
 pdfanalyzer では、pdftotext の出力にフォント情報を含めるための
 パッチを適用した上で利用します。
 
+-- CentOS の場合
 $ sudo yum install fontconfig-devel libjpeg-devel libcurl-devel libpng-devel libtiff-devel xorg-x11-fonts-Type1
+-- Ubuntu の場合
+$ sudo apt install libfontconfig1-dev libjpeg-dev libopenjpeg-dev xfonts-scalable
+-- 共通
 $ wget https://poppler.freedesktop.org/poppler-0.52.0.tar.xz
 $ tar xJf poppler-0.52.0.tar.xz
 $ cd poppler-0.52.0
@@ -25,6 +29,7 @@ pdffigures は PDF に含まれる図表を抽出するコマンドライン
 ユーティリティプログラムです。 pdfanalyzer では図表領域を
 テキスト解析の対象から除外するために利用します。
 
+-- CentOS の場合
 (GCC4.9が必要)
 ref. https://superuser.com/questions/834862/how-to-install-g-4-9-2-in-cent-os-6-5
 $ sudo yum install centos-release-scl-rh
@@ -32,9 +37,10 @@ $ sudo yum install devtoolset-3-gcc devtoolset-3-gcc-c++
 $ scl enable devtoolset-3 bash
 $ g++ --version
 g++ (GCC) 4.9.2 20150212 (Red Hat 4.9.2-6) <-- 4.9 以上
-
-
 $ sudo yum install leptonica-devel
+-- Ubuntu の場合
+$ sudo apt install libleptonica-dev
+-- 共通
 $ unzip pdffigures-20160622.zip
 $ cd pdffigures-master
 $ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
@@ -49,6 +55,7 @@ crfsuite は CRF 学習を行うコマンドラインユーティリティ
 プログラムです。 pdfanalyzer では PDF から生成した
 行単位のデータにラベル付けを行うために利用します。
 
+-- CentOS の場合
 $ wget https://github.com/downloads/chokkan/liblbfgs/liblbfgs-1.10.tar.gz
 $ tar xvfz liblbfgs-1.10.tar.gz
 $ cd liblbfgs-1.10
@@ -56,6 +63,9 @@ $ ./configure
 $ make
 $ sudo make install
 $ cd ..
+-- Ubuntu の場合
+$ sudo apt install liblbfgs-dev
+-- 共通
 $ wget https://github.com/downloads/chokkan/crfsuite/crfsuite-0.12.tar.gz
 $ tar xvfz crfsuite-0.12.tar.gz
 $ cd crfsuite-0.12
@@ -74,10 +84,13 @@ xhtml ファイルを生成する際に「語」の情報（座標情報など�
 単語の単位にまとめます（インストールされていない場合には
 「文字」単位で出力されます）。
 
+-- CentOSの場合
 （MeCab のダウンロード、インストールは以下を参照）
   https://taku910.github.io/mecab/#download
   ※辞書の文字コードは UTF-8 で作成してください。
-
+-- Ubuntuの場合
+$ sudo apt install mecab-ipadic-utf8
+-- 共通
 （php-mecab のインストール）
 $ git clone https://github.com/rsky/php-mecab.git
 $ cd php-mecab/mecab
@@ -85,6 +98,12 @@ $ phpize
 $ ./configure
 $ make
 $ sudo make install
+-- Ubuntu の場合
+$ sudo vi /etc/php/7.0/cli/conf.d/mecab.ini
+（以下のテキストを mecab.ini として入力）
+; configuration for php xml module
+; priority=20
+extension=mecab.so
 
 
 5. pdfanalyzer のセットアップ
@@ -115,5 +134,7 @@ xtml/*.xhtml に xhtml ファイルが生成されます。
 
 
 (*1) Call to undefined function pspell_new() エラーが出たら
-sudo yum install php-pspell aspell aspell-en
-
+-- CentOS の場合
+$ sudo yum install php-pspell aspell aspell-en
+-- Ubuntu の場合
+$ sudo apt install php-pspell aspell aspell-en

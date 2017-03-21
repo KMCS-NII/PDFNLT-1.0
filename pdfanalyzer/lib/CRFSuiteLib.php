@@ -90,7 +90,8 @@ class CRFSuiteLib
         fclose($fh);
 
         $cmd = sprintf("crfsuite learn -m %s %s", $this->modelfile, $tmp);
-        exec($cmd);
+	echo "Executing command;\n{$cmd} ...\n";
+        system($cmd);
         unlink($tmp);
     }
 
