@@ -1,0 +1,130 @@
+Installation procedure
+
+1. Install poppler
+
+Poppler is a library that analyzes PDF.
+It also includes some command line utility programs such as 'pdftoppm', 'pdftotext', etc., which can convert PDF to image or text.
+
+In pdfanalyzer, to include font information in the output of pdftotext,
+We will use it after applying the patch.
+
+-- For CentOS
+$ sudo yum install fontconfig-devel libjpeg-devel libcurl-devel libpng-devel libtiff-devel xorg-x11-fonts-Type1
+-- For Ubuntu
+$ sudo apt install libfontconfig1-dev libjpeg-dev libopenjpeg-dev xfonts-scalable
+-- Common
+$ wget https://poppler.freedesktop.org/poppler-0.52.0.tar.xz
+$ tar xJf poppler-0.52.0.tar.xz
+$ cd poppler-0.52.0
+$ gzip -dc ../poppler-0.52.0.patch.gz | patch -p1
+$ ./configure --enable-xpdf-headers
+$ make
+$ sudo make install
+
+
+2. Install pdffigures
+
+Pdffigures is a command line utility program that extracts figures and tables included in PDF. In pdfanalyzer, it is used to exclude those area from subjects of text analysis.
+
+-- For CentOS
+(To complie, GCC4.9 or later is required)
+ref. https://superuser.com/questions/834862/how-to-install-g-4-9-2-in-cent-os-6-5
+$ sudo yum install centos-release-scl-rh
+$ sudo yum install devtoolset-3-gcc devtoolset-3-gcc-c++
+$ scl enable devtoolset-3 bash
+$ g++ --version
+g++ (GCC) 4.9.2 20150212 (Red Hat 4.9.2-6) <-- 4.9 or later
+$ sudo yum install leptonica-devel
+-- For Ubuntu
+$ sudo apt install libleptonica-dev
+-- Common
+$ unzip pdffigures-20160622.zip
+$ cd pdffigures-master
+$ export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig
+$ make DEBUG=0
+(Since there is no installer, copy it manually)
+$ sudo cp pdffigures /usr/local/bin/
+
+
+3. Install crfsuite
+
+Crfsuite is a command line utility program that performs CRF learning. In pdfanalyzer, we use this to label line-by-line data generated from PDF.
+
+-- For CentOS
+$ wget https://github.com/downloads/chokkan/liblbfgs/liblbfgs-1.10.tar.gz
+$ tar xvfz liblbfgs-1.10.tar.gz
+$ cd liblbfgs-1.10
+$ ./configure
+$ make
+$ sudo make install
+$ cd ..
+-- For Ubuntu
+$ sudo apt install liblbfgs-dev
+-- Common
+$ wget https://github.com/downloads/chokkan/crfsuite/crfsuite-0.12.tar.gz
+$ tar xvfz crfsuite-0.12.tar.gz
+$ cd crfsuite-0.12
+$ ./configure
+$ make
+$ sudo make install
+
+
+4. Install MeCab, php-mecab (optional, for Japanese text)
+
+MeCab is a morphological analysis library and command line utility, php - mecab is an extension module for using MeCab from PHP.
+When both MeCab and php-mecab are installed, and the target PDF is written in Japanese, information of "word" (coordinate information etc.) in the generated xhtml file is grouped into words. (If not installed, information of "word" is splitted by "caracter" units.)
+
+-- For CentOS
+（For downloading and installing MeCab, see below)
+  https://taku910.github.io/mecab/#download
+  * Please set the character code of the dictionary to UTF-8.
+-- For Ubuntu
+$ sudo apt install mecab-ipadic-utf8
+-- Common
+（Install php-mecab)
+$ git clone https://github.com/rsky/php-mecab.git
+$ cd php-mecab/mecab
+$ phpize
+$ ./configure
+$ make
+$ sudo make install
+-- For Ubuntu only
+$ sudo vi /etc/php/7.0/cli/conf.d/mecab.ini
+(Please enter the following text as 'mecab.ini'.)
+
+; configuration for php xml module
+; priority=20
+extension=mecab.so
+
+
+5. Set up pdfanalyzer
+
+Please confirm that 'pdfanalyze.php' can be executed.
+
+$ php pdfanalyze.php
+
+
+6. Model creation with sample data
+
+Extract sampledata.tgz and place anno/ pdf/ train/ in the same directory as pdfanalyze.php.
+
+$ tar xfz dist/sampledata.tgz
+$ mv sampledata/* .
+
+-- Update training data from annotation data
+$ php pdfanalyze.php --command update_training --all  (*1)
+
+-- Update model from the training data
+$ php pdfanalyze.php --command update_model
+
+-- Generate XHTML from the model
+$ php pdfanalyze.php --coomand generate_xhtml --all
+
+Xhtml files will be generated in xtml/*.xhtml.
+
+
+(*1) If 'Call to undefined function pspell_new()' error occurs,
+-- For CentOS
+$ sudo yum install php-pspell aspell aspell-en
+-- For Ubuntu
+$ sudo apt install php-pspell aspell aspell-en
