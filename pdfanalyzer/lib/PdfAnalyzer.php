@@ -571,8 +571,8 @@ class PdfAnalyzer
             case 'Affiliation':
             case 'Address':
             case 'Email':
-            case 'Header':
-            case 'Footer':
+                //case 'Header':
+                //case 'Footer':
                 $sections[0]['boxes'] []= $box;
                 break;
             default:
