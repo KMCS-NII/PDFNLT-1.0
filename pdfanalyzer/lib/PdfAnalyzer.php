@@ -583,6 +583,8 @@ class PdfAnalyzer
                         = array('title' => $m[1], 'boxes' => array());
                 } else if ($last_section == 0) {
                     // セクションヘッダがないまま本文が始まった場合
+                    ;
+                } else {
                     $last_section++;
                     $sections[$last_section]
                         = array('title' => '(no title)', 'boxes' => array());
@@ -1153,7 +1155,8 @@ class PdfAnalyzer
         if (count($pdfs) == 1 && $pdfs[0] == '*') {
             $pdfs = glob($this->pdf_dir . '*.pdf');
         }
-    
+        @mkdir($this->training_dir, 0755, true);
+        
         // アノテーションデータからトレーニングデータを作成する
         foreach ($pdfs as $pdf) {
             $basename = basename($pdf, ".pdf");
@@ -1193,10 +1196,9 @@ class PdfAnalyzer
             $fanno = fopen($annofname, "r");
             while ($line = fgets($fanno)) {
                 $args = explode("\t", trim($line));
-                if (count($args == 3)) {
+                if (count($args) == 3) {
                     $lines['anno']['label'] []= $args[0];
                     $lines['anno']['text'] []= $args[1];
-                    $lines['anno']['feature'] []= $args[2];
                 }
             }
             fclose($fanno);
@@ -1364,9 +1366,8 @@ class PdfAnalyzer
      * @param $pdfs   PDF のリスト
      */
     public function pdf2anno($pdfs) {
-        if (!file_exists($this->modelfile)) {
-            echo "Model file '" . $this->modelfile . "' is not exists.(abort)\n";
-            return;
+        if (!is_readable($this->modelfile)) {
+            echo "Warning: Model file '" . $this->modelfile . "' is not readable.\nGenerate annotation files with label='O'.\n";
         }
 
         // --all 対応
@@ -1417,13 +1418,24 @@ class PdfAnalyzer
             $features = $this->getCRFfeatures();
             $infile = $basename.'_in.txt';
             file_put_contents($infile, implode("\n", $features));
-  
+
             // Tagging
-            echo "Tagging, ";
-            $tagged = $this->crf->tagging($infile);
-            // アノテーションファイル出力
-            foreach ($tagged as $l) {
-                fprintf($fha, "%s\n", implode("\t", $l));
+            if (is_readable($this->modelfile)) {
+                echo "Tagging, ";
+                $tagged = $this->crf->tagging($infile);
+                // アノテーションファイル出力
+                foreach ($tagged as $l) {
+                    unset($l[2]);
+                    fprintf($fha, "%s\n", implode("\t", $l));
+                }
+            } else {
+                // モデルファイルがないので空ラベルを付ける
+                foreach ($features as $l) {
+                    $args = explode("\t", $l);
+                    $args[0] = 'O';
+                    unset($args[2]);
+                    fprintf($fha, "%s\n", implode("\t", $args));
+                }
             }
             fclose($fha);
             echo "done.\n";

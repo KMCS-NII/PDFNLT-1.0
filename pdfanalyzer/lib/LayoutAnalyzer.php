@@ -1181,7 +1181,7 @@ class LayoutAnalyzer
 
         // 行情報出力（デバッグ用）
         $article = array('pages'=>$this->pages, 'line height'=>$this->line_height, 'line space'=>$this->line_space, 'lines'=>$this->lines, 'font_classes'=>$this->font_classes);
-        if (true) {
+        if (false) {
             @file_put_contents('this_lines_debug.json', json_encode($article, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_NUMERIC_CHECK));
         }
     }
