@@ -1109,6 +1109,38 @@ class LayoutAnalyzer
             'line_space'  => $max_breaks['gap']
         );
     }
+
+    /**
+     * pdftotext -bbox の出力する HTML から
+     * ページの情報を抽出して配列として返す
+     * @param $html   HTML テキスト
+     * @return  [ [<ページ最初の行>, <width>, <height>, <page の innerHtml>] ]
+     */
+    private function __getPageContents($html) {
+      $page_info = array();
+      $pp = array();
+      $inner = false;
+      foreach (explode("\n", $html) as $line) {
+	if ($inner == false) {
+	  if (preg_match('/<page width="([\d\.]+)" height="([\d\.]+)">(.*)/', $line, $m)) {
+	    $pp = array($m[0], $m[1], $m[2]);
+	    $inner = true;
+	    $page_content = $m[3];
+	  }
+	} else {
+	  if (preg_match('/(.*)<\/page>/', $line, $m)) {
+	    $page_content .= $m[1];
+	    $pp[3] = $page_content;
+	    $page_info []= $pp;
+	    unset($pp);
+	    $inner = false;
+	  } else {
+	    $page_content .= $line . "\n";
+	  }
+	}
+      }
+      return $page_info;
+    }
   
     /**
      * PDF をレイアウト解析し、単語情報と行単位の構造情報を生成する
@@ -1153,7 +1185,10 @@ class LayoutAnalyzer
         }
 
         // bbox ファイルを解析して単語情報を得る
-        preg_match_all('/<page width="(.*?)" height="(.*?)">(.*?)<\/page>/us', $this->bbox, $p, PREG_SET_ORDER);
+	// 2017-03-26
+	// preg_match_all('/<page width="([\d\.]+)" height="([\d\.]+)">(.*?)<\/page>/us', $this->bbox, $p, PREG_SET_ORDER);
+	//でいいはずが古い PHP では正しい結果が得られないので関数化
+	$p = $this->__getPageContents($this->bbox);
         $this->indents = $this->__getStructure($p);
     
         for ($npage = 0; $npage < count($p); $npage++) {

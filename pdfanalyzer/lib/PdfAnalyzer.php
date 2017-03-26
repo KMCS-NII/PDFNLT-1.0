@@ -1196,7 +1196,7 @@ class PdfAnalyzer
             $fanno = fopen($annofname, "r");
             while ($line = fgets($fanno)) {
                 $args = explode("\t", trim($line));
-                if (count($args) == 3) {
+                if (count($args) == 2 || count($args) == 3) {
                     $lines['anno']['label'] []= $args[0];
                     $lines['anno']['text'] []= $args[1];
                 }
