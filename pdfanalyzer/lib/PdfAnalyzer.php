@@ -576,7 +576,7 @@ class PdfAnalyzer
                 $sections[0]['boxes'] []= $box;
                 break;
             default:
-                if (preg_match('/(.*)Header$/', $box['boxType'], $m)) {
+                if (preg_match('/(.+)Header$/', $box['boxType'], $m)) {
                     $last_section++;
                     // 新しいセクション
                     $sections[$last_section]
