@@ -258,7 +258,6 @@ class LayoutAnalyzer
         }
         $ll0 = $page_indents[$n0][2];
         $ll1 = $page_indents[$n1][2];
-        $margin = 0.05 * $this->dpi;
         if (is_null($ll0[1]) && is_null($ll1[1])) {
             // どちらもシングルカラムの場合
             return true;
@@ -268,16 +267,11 @@ class LayoutAnalyzer
             return false;
         }
         // どちらもダブルカラムの場合
-        if ((abs($ll0[0] - $ll1[0]) < $margin
-             && abs($ll0[1] - $ll1[1]) < $margin)
-            || (abs($ll0[2] - $ll1[2]) < $margin
-                && abs($ll0[3] - $ll1[3]) < $margin)) {
-            // 左段または右段がほぼ一致している
-            // どちらかが抄録や引用の場合に起こる
+        if ($ll0[1] < $ll1[2] && $ll0[2] > $ll1[1]) {
+            // 段落間の空白が交差していなければ OK
             return true;
         }
         // それ以外は続かない
-        echo "false.\n";
         return false;
     }
 
@@ -666,7 +660,7 @@ class LayoutAnalyzer
             $line = $lines[$i];
 
             /*
-            if ($i == 90) {//$line[1] == 442.479167 && $line[2] == 173.381913) {
+            if ($i == 50) {//$line[1] == 442.479167 && $line[2] == 173.381913) {
                 $debug = true;
             }
             */
@@ -724,8 +718,8 @@ class LayoutAnalyzer
                 }
                 if ($debug) {
                     printf("indents: %f,%f,%f,%f\n", $l0, $r0, $l1, $r1);
-                    echo json_encode($line), "\n";
-                    var_dump($line);
+                    // echo json_encode($line), "\n";
+                    // var_dump($line);
                     printf("is_continued: %s, is_clinging: %s, is_fig: %s, is_left: %s, is_right: %s\n", var_export($is_continued, 1), var_export($is_clinging, 1), var_export($is_fig, 1), var_export($is_left, 1), var_export($is_right, 1));
                     die();
                 }
@@ -984,7 +978,7 @@ class LayoutAnalyzer
         unset($arr);
 
         // ページの一部だけ段組みが違うパターンに対応
-        if (false && isset($this->indents) && is_null($yrange)) {
+        if (isset($this->indents) && is_null($yrange)) {
             // ページ内レイアウトの計算
             $tabs = array();
             // 左右端が揃っている部分をチェック
@@ -1126,7 +1120,7 @@ class LayoutAnalyzer
             $x0 = $page_indent[1] * 10;
             $x1 = $page_indent[2] * 10;
             $k = ($x0 + 1).','.$x1;
-            $matches[$k] = 1;
+            $matches[$k] = 5; // 5行一致していると下駄をはかせる
             $crosses[$k] = 0;
             foreach ($blocks as $bl) {
                 // 交差する行数を数える
@@ -1146,8 +1140,10 @@ class LayoutAnalyzer
                 if ($x1 <= $x0 + 10 * $this->column_gap * $this->dpi || $x1 > $width * 30 / 4) continue; // 段落間には最低 0.15inch の間隔が必要
                 $range = array($x0 + 1, $x1); // +1は切り捨て誤差
                 $k = ($x0 + 1).','.$x1;
-                $crosses[$k] = 0;
-                $matches[$k] = 0;
+                if (!isset($crosses[$k])) {
+                    $crosses[$k] = 0;
+                    $matches[$k] = 0;
+                }
                 foreach ($baselines as $by => $bl) {
                     if (!is_null($yrange) && ($by < $yrange[0] || $by > $yrange[1])) {
                         continue;
@@ -1177,7 +1173,7 @@ class LayoutAnalyzer
         foreach ($matches as $k => $freq) {
             $score = $freq - $crosses[$k] * 2; // 交差があると-2点
             /*
-            if (!is_null($this->indents) && is_null($yrange)) {
+            if (!is_null($this->indents) && isset($yrange[0]) && $yrange[0] > 770) {
                 printf("%s : %d (freq:%d, cross:%d)\n", $k, $score, $freq, $crosses[$k]);
             }
             */
@@ -1200,7 +1196,7 @@ class LayoutAnalyzer
             $l1 = $l1 / 10.0;
         }
 
-        if (!true && !is_null($this->indents) && $yrange[0] == 634) {
+        if (!true && !is_null($this->indents) && $yrange[0] > 770) {
             print_r($this->indents);
             echo "\nleft = "; print_r($lefts);
             echo "\nright = "; print_r($rights);
@@ -1499,8 +1495,8 @@ if (isset($argv) && basename($argv[0]) == basename(__FILE__)) {
     }
 
     $p = new LayoutAnalyzer();
-    $p->setTargetPageFrom(0); // 1 が最初のページ
-    $p->setTargetPageTo(0);
+    $p->setTargetPageFrom(7); // 1 が最初のページ
+    $p->setTargetPageTo(7);
     $p->analyze($target, $pdffigures);
     echo "--- indents ---\n";
     print_r($p->getIndents());
