@@ -44,32 +44,37 @@ $options = implode('', array_values($options));
     var default_paper = "<?php echo $code; ?>";
   </script>
 </head>
+
 <body>
+  <div class="fullheight">  
+  <table id="content">
+    <thead>
+      <tr>
+	<div class="paper_select">
+          <select id="paper_select" size="1">
+            <?php echo $options; ?>
+          </select>
+	  <input type="text" id="paper_select_input" placeholder="Paper Code" />
+	  <input type="button" id="paper_select_input_button" value="Submit" />
+	</div>
+      </tr>
+    </thead>
 
-  <div class="paper_select">
-    <select id="paper_select" size="1">
-      <?php echo $options; ?>
-    </select>
-
-    <input type="text" id="paper_select_input" placeholder="Paper Code" />
-    <input type="button" id="paper_select_input_button" value="Submit" />
-  </div>
-
-  <table>
     <tbody>
       <tr>
 	<td class="vtop">
-	  <div class="paper" id="paper">
-	    <img id="paper_image" src="xhtml/images/<?php echo $code . '/' . $code . '-01.png'; ?>" alt="p1" />
-	    <div class="box" id="box" />
-	  </div>
+	  <iframe id="iframe_xhtml"></iframe>
 	</td>
-	<td style="vtop">
-	  <iframe id="iframe_xhtml" style="width: 960px; height: 1170px;" src="xhtml/<?php echo $code . '.xhtml'; ?>"></iframe>
+	<td id="slider"></td>
+	<td class="vtop">
+	  <div id="paper">
+	    <img id="paper_image"></img>
+	  </div>
 	</td>
       </tr>
     </tbody>
   </table>
+  </div>
 
 </body>
 </html>

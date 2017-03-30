@@ -196,7 +196,7 @@ class PdfAnalyzer
         for ($i = 0; $i < count($lines); $i++) {
             $line = $lines[$i];
             $page = $line[6]; // ページ番号、最初は0
-            $indent = $pages[$page]['indent'];
+            $indent = $this->la->getIndentOfLine($line); // pages[$page]['indent'];
             $xpos = floor(($line[1] - $pages[$page]['text_area'][0]) * 10 / ($pages[$page]['text_area'][2] - $pages[$page]['text_area'][0]));
             $ypos = floor(($line[2] - $pages[$page]['text_area'][1]) * 10 / ($pages[$page]['text_area'][3] - $pages[$page]['text_area'][1]));
             $features = array("page"=>$page, "xpos"=>$xpos, "ypos"=>$ypos);
@@ -581,10 +581,9 @@ class PdfAnalyzer
                     // 新しいセクション
                     $sections[$last_section]
                         = array('title' => $m[1], 'boxes' => array());
-                } else if ($last_section == 0) {
-                    // セクションヘッダがないまま本文が始まった場合
-                    ;
-                } else {
+                } else if ($last_section == 0 && !preg_match('/_$/', $box['boxType'])) {
+                    // セクションヘッダがないまま、
+                    // 上記の要素以外が出現した場合
                     $last_section++;
                     $sections[$last_section]
                         = array('title' => '(no title)', 'boxes' => array());
@@ -737,7 +736,12 @@ class PdfAnalyzer
 			foreach ($section['boxes'] as $box) {
                 $div_box = $dom->createElement('div');
                 $attr = $dom->createAttribute('class');
-                $attr->value = 'box';
+                if (preg_match('/_$/', $box['boxType'])) {
+                    // ラベルが '_' で終わる場合不可視属性を付与する
+                    $attr->value = 'box template';
+                } else {
+                    $attr->value = 'box';
+                }
                 $div_box->appendChild($attr);
                 $attr = $dom->createAttribute('data-name');
                 $attr->value = $box['boxType'];
@@ -886,6 +890,7 @@ class PdfAnalyzer
                                 break;
                             case 'ss':
                                 $attr->value = 'subsequence';
+				$j--; // 前の語と同じIDにする
                                 break;
                             case 'sp':
                                 $attr->value = 'space';

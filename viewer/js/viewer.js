@@ -1,16 +1,31 @@
-var current_page = 0;
-// var default_paper = "95760_1_1";
+// 最初に表示するページ
+// var default_paper = "C02-1045"; index.php で指定する
+
+// 表示中の論文とページ
 var current_paper = null;
+var current_page = 0;
+
+// 起動時の初期設定
 $(document).ready(function() {
-    readPaper(default_paper);
-    showPage(default_paper, 1);
+
+    // 画面レイアウトをブラウザの大きさに合わせて変更
+    resetLayout();
+
+    // 論文 XHTML を表示
+    showPaperXhtml(default_paper);
+
+    // 論文 PDF 画像 を表示
+    showPaperImage(default_paper, 1);
+    
     current_paper = default_paper;
     current_page = 1;
+
+    // 論文セレクタの操作
     $("#paper_select").change(function() {
 	var new_paper = $(this).val();
 	if (new_paper != current_paper) {
-	    readPaper(new_paper);
-	    showPage(new_paper, 1);
+	    showPaperXhtml(new_paper);
+	    showPaperImage(new_paper, 1);
 	    current_paper = new_paper;
 	    current_page = 1;
 	}
@@ -18,16 +33,44 @@ $(document).ready(function() {
     $("#paper_select_input_button").click(function() {
 	var new_paper = $("#paper_select_input").val();
 	if (new_paper != current_paper) {
-	    readPaper(new_paper);
-	    showPage(new_paper, 1);
+	    showPaperXhtml(new_paper);
+	    showPaperImage(new_paper, 1);
 	    current_paper = new_paper;
 	    current_page = 1;
 	}
     });
+
+    // ブラウザサイズを変更した場合のイベントハンドラ
+    var resizeTimer = false;
+    $(window).resize(function() {
+	if (resizeTimer !== false) {
+	    clearTimeout(resizeTimer);
+	}
+	resizeTimer = setTimeout(function() {
+	    resetLayout();
+	}, 200);
+    });
+
 });
 
-// Read XHTML content into the iframe
-function readPaper(code) {
+// 画面レイアウトを画面サイズに合わせて変更
+function resetLayout() {
+    var w = $(window).width();
+    var h = $(window).height();
+
+    // 高さを決定
+    var content_height = h - 35; // セレクタの分を引く
+    $("#iframe_xhtml").height(content_height);
+    $("#paper").height(content_height);
+
+    // 幅を決定
+    var content_width = (w - 10) / 2;
+    $("#iframe_xhtml").width(content_width);
+    $("#paper").width(content_width);
+}
+
+// XHTML を iframe に読み込む
+function showPaperXhtml(code) {
     // XHTML を表示
     var url = "xhtml/" + code + ".xhtml";
     var jo = $("#iframe_xhtml")[0];
@@ -38,12 +81,13 @@ function readPaper(code) {
 	});
 	jo.contentDocument.location.replace(url);
     }
+
     return;
 }
 
 // ページ画像を表示する
 // 先頭ページは 1
-function showPage(code, page) {
+function showPaperImage(code, page) {
     if (code != current_paper || page != current_page) {
 	var image_url = "xhtml/images/" + code + "/" + code + "-" + ('0' + page).slice(-2) + '.png';
 	$("#paper_image").attr("src", image_url);
@@ -64,6 +108,7 @@ function getPageInfo(n) {
 
 // イベントアクションをセット
 function assignActions() {
+    // マウスオーバー時にボックスを表示
     $("#iframe_xhtml").contents().find("p").hover(
 	function() {
 	    var p_text = $(this).attr('id');
@@ -76,7 +121,7 @@ function assignActions() {
 	    var str_bdr = $(this).attr("data-bdr");
 	    var bdr = str_bdr.split(',');
 	    if (bdr.length != 4) return false;
-	    showPage(current_paper, page + 1);
+	    showPaperImage(current_paper, page + 1);
 
 	    var pageInfo = getPageInfo(page);
 	    var l = parseFloat(bdr[0]) * pageInfo.width - 4; // 8.2677 inch * 100dpi
@@ -89,6 +134,7 @@ function assignActions() {
 	    $("#paper").remove("#div.box, #div.boxlabel");
 	    $("#paper").append(box);
 	    $("#paper div.box").show();
+
 	},
 	function() {
 	    // $(this).parents("div.section").css("border", "1px solid #FFFFFF");
@@ -118,62 +164,27 @@ function assignActions() {
 	    $("#paper div.wordbox").remove();
 	}
     );
-}
 
-function renderParagraph(json) {
-    var html = '';
-    var paragraphs = [];
-    $("div.box").remove();
-    for (box of json) {
-	html += '<div class="boxtext"><div class="boxtype">' + box['boxType'] + '</div>';
-	for (paragraph of box['paragraphs']) {
-	    var n = paragraph['n'];
-	    var idx = n;
-	    if ('continued_from' in paragraph) {
-		idx = paragraph['continued_from'];
-		while (true) {
-		    idx = paragraphs[idx];
-		    if (paragraphs[idx] == idx) break;
-		}
-	    }
-	    paragraphs[n] = idx;
-	    var page = paragraph['page'];
-	    if (paragraph['bdr'] != null) {
-		var l = parseInt(paragraph['bdr'][0]);
-		var t = parseInt(paragraph['bdr'][1]);
-		var w = parseInt(paragraph['bdr'][2]) - l;
-		var h = parseInt(paragraph['bdr'][3]) - t;
-		var box = '<div class="box" data-n="' + n + '" data-index="' + idx + '" data-page="' + (page + 1).toString() + '" style="left:' + l.toString() + 'px;top:' + t.toString() + 'px;width:' + w.toString() + 'px;height:' + h.toString() + 'px;" />';
-		$("#paper").append(box);
-	    }
-	    if (paragraph['bdr'] == null || page == null) {
-		html += '<p class="paragraph nobox" data-index="' + idx + '">' + paragraph['text'] + '</p>';
-	    } else {
-		html += '<p class="paragraph" data-index="' + idx + '" data-page="' + (page + 1).toString() + '">' + paragraph['text'] + '</p>';
-	    }
-	}
-	html += '</div>';
-    }
-    $("#note").html(html);
-
-    $("p.paragraph").hover(
-	function () {
-	    var index = $(this).attr('data-index');
-	    var page = $(this).attr('data-page');
-	    if (page != null) {
-		showPage(current_paper, page);
-		current_page = page;
-	    }
-	    var box = $("div.box[data-index=" + index + "][data-page=" + page + "]");
-	    box.removeClass("box_on_other_page");
-	    box.show();
-	    var box = $("div.box[data-index=" + index + "][data-page!=" + page + "]");
-	    box.addClass("box_on_other_page");
-	    box.show();
-	},
-	function () {
-	    var index = $(this).attr('data-index');
-	    $("div.box[data-index=" + index + "]").hide();
-	}
-    );
+    // マウスクリック時にそこまでスクロール
+    $("#iframe_xhtml").contents().find("p").click(function() {
+	// その位置までスクロール
+	var paper = $("#paper");
+	var paper_x = paper.offset().left;
+	var paper_y = paper.offset().top;
+	var box = $("#paper div.box");
+	var box_x = box.offset().left - paper_x; // offset は絶対位置
+	var box_y = box.offset().top - paper_y;
+	/*
+        var l = $("#paper").scrollLeft();
+	var w = $("#paper").width();
+	var t = $("#paper").scrollTop();
+	var h = $("#paper").height();
+	console.debug(box_x, box_y, l, t);
+        */
+	$("#paper").animate({
+	    scrollLeft: box_x - 50,
+	    scrollTop: box_y - 50
+	}, 500, 'swing');
+    });
+    
 }
