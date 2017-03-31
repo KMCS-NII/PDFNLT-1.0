@@ -46,34 +46,27 @@ $options = implode('', array_values($options));
 </head>
 
 <body>
-  <div class="fullheight">  
-  <table id="content">
-    <thead>
-      <tr>
-	<div class="paper_select">
-          <select id="paper_select" size="1">
-            <?php echo $options; ?>
-          </select>
-	  <input type="text" id="paper_select_input" placeholder="Paper Code" />
-	  <input type="button" id="paper_select_input_button" value="Submit" />
-	</div>
-      </tr>
-    </thead>
+  <div class="fullheight">
+    <div id="menu">
+      <select id="paper_select" size="1">
+        <?php echo $options; ?>
+      </select>
+      <input type="text" id="paper_select_input" size="10" placeholder="Paper Code" />
+      <input type="button" id="paper_select_input_button" value="Go" />
+      &nbsp;&nbsp;
+      <input type="button" id="layout_select_button" value="L" />
+    </div>
 
-    <tbody>
-      <tr>
-	<td class="vtop">
-	  <iframe id="iframe_xhtml"></iframe>
-	</td>
-	<td id="slider"></td>
-	<td class="vtop">
-	  <div id="paper">
-	    <img id="paper_image"></img>
-	  </div>
-	</td>
-      </tr>
-    </tbody>
-  </table>
+    <div id="container">
+    <div class="vtop xhtml">
+      <iframe id="iframe_xhtml"></iframe>
+    </div>
+    <div class="vtop pdf">
+      <div id="paper">
+	<img id="paper_image"></img>
+      </div>
+    </div>
+    </div>
   </div>
 
 </body>
