@@ -78,6 +78,7 @@ function resetLayout() {
     var w = $(window).width();
     var h = $(window).height();
     h -= $("div#menu").height();
+    $("#iframe_xhtml").contents().find("p").removeClass('hovered');
 
     switch (current_layout) {
     case 0: // 横２分割
@@ -161,6 +162,7 @@ function showPaperXhtml(code) {
     if (jo) {
 	$("#iframe_xhtml").on('load', function() {
 	    $('#iframe_xhtml').contents().find('head').append('<style>p.selected { background: #FFC; }</style>');
+	    $('#iframe_xhtml').contents().find('head').append('<style>p.hovered { background: #FCC; }</style>');
 	    // var o = $("#iframe_xhtml").contents().find("div.box[data-name='Title']>p");
 	    assignActions();
 	});
@@ -200,9 +202,9 @@ function assignActions() {
     $("#iframe_xhtml").contents().find("p").hover(
 	function() {
 	    
-	    //$(this).addClass('selected');
+	    $(this).addClass('hovered');
 	    var pid = $(this).attr('id');
-	    selectParagraphInXhtml(pid);
+	    // selectParagraphInXhtml(pid);
 	    
 	    // $(this).parents("div.section").css("border", "1px solid #FF0000");
 	    var section_label = $(this).parents("div.section").attr("data-name");
@@ -231,10 +233,11 @@ function assignActions() {
 	    });
 	},
 	function() {
-	    $(this).removeClass('selected');
-	    // $(this).parents("div.section").css("border", "1px solid #FFFFFF");
-	    $("#paper div.box").remove();
-	    $("#paper div.boxlabel").remove();
+	    $(this).removeClass('hovered');
+	    if (current_layout != 3) {
+		$("#paper div.box").remove();
+		$("#paper div.boxlabel").remove();
+	    }
 	}
     );
     $("#iframe_xhtml").contents().find("span.word").hover(
@@ -291,7 +294,7 @@ function assignActions() {
 
     // PDF 表示エリアのイベント
     $("#paper_image").click(function(e) {
-	$("#iframe_xhtml").contents().find("p").removeClass('selected');
+	// $("#iframe_xhtml").contents().find("p").removeClass('selected');
 	var paper_x = e.offsetX / $("#paper_image").width();
 	var paper_y = e.offsetY / $("#paper_image").height();;
 
@@ -318,6 +321,7 @@ function assignActions() {
 // XHTML 内の id で指定したパラグラフを選択する
 var selectedParagraph = null;
 function selectParagraphInXhtml(id) {
+    $("#iframe_xhtml").contents().find("p").removeClass('selected');
     if (!id) {
 	return false;
     }
@@ -331,11 +335,11 @@ function selectParagraphInXhtml(id) {
 
     var c = $("#iframe_xhtml").contents();
     var p = c.find("p#" + id);
-    p.addClass('selected');
     if (selectedParagraph) {
 	selectedParagraph.removeClass('selected');
 	selectedParagraph = p;
     }
+    p.addClass('selected');
 
     var paper_y = $("#iframe_xhtml").offset().top;
     var target_y = p.eq(0).offset().top;
