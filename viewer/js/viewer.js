@@ -24,22 +24,23 @@ $(document).ready(function() {
     // 論文セレクタの操作
     $("#paper_select").change(function() {
 	var new_paper = $(this).val();
-	if (new_paper != current_paper) {
-	    showPaperXhtml(new_paper);
-	    showPaperImage(new_paper, 1);
-	    current_paper = new_paper;
-	    current_page = 1;
-	}
+	readNewPaper(new_paper);
+    });
+
+    $("#paper_select_input").change(function() {
+	var input = $(this).val();
+	$("#paper_select option").each(function() {
+	    if ($(this).value == input
+		|| $(this).html() == input) {
+		console.debug("match:" + $(this).value);
+		readNewPaper(input);
+	    }
+	});
     });
 
     $("#paper_select_input_button").click(function() {
 	var new_paper = $("#paper_select_input").val();
-	if (new_paper != current_paper) {
-	    showPaperXhtml(new_paper);
-	    showPaperImage(new_paper, 1);
-	    current_paper = new_paper;
-	    current_page = 1;
-	}
+	readNewPaper(new_paper);
     });
 
     $("#layout_select_button").click(function() {
@@ -60,6 +61,18 @@ $(document).ready(function() {
 
 });
 
+// 新しい XHTML ファイルを開く
+function readNewPaper(new_paper) {
+    if (new_paper != current_paper) {
+	showPaperXhtml(new_paper);
+	showPaperImage(new_paper, 1);
+	current_paper = new_paper;
+	current_page = 1;
+	resetLayout();
+	$("#paper_select").val(new_paper);
+    }
+}
+
 // 画面レイアウトを画面サイズに合わせて変更
 function resetLayout() {
     var w = $(window).width();
@@ -68,9 +81,10 @@ function resetLayout() {
 
     switch (current_layout) {
     case 0: // 横２分割
-	var content_width = (w - 10) / 2;
+	var content_width = (w - 4) / 2;
 	var content_height = h - 5;
-	$("#container").css("display", "block");
+	// $("#container").css("display", "block");
+	$("#container").css("flex-direction", "row");
 	$(".xhtml").css("display", "inline-block");
 	$(".pdf").css("display", "inline-block");
 	$("#iframe_xhtml").show();
@@ -87,7 +101,8 @@ function resetLayout() {
     case 1: // 縦２分割
 	var content_width = w - 4;
 	var content_height = (h - 5) / 2;
-	$("#container").css("display", "block");
+	//$("#container").css("display", "block");
+	$("#container").css("flex-direction", "column");
 	$(".xhtml").css("display", "block");
 	$(".pdf").css("display", "block");
 	$("#iframe_xhtml").show();
@@ -104,7 +119,7 @@ function resetLayout() {
     case 2: // XHTML のみ
 	var content_width = w - 4;
 	var content_height = h - 5;
-	$("#container").css("display", "block");
+	// $("#container").css("display", "block");
 	$(".xhtml").css("display", "block");
 	$(".pdf").css("display", "none");
 	$("#iframe_xhtml").show();
@@ -121,7 +136,7 @@ function resetLayout() {
     case 3: // PDF のみ
 	var content_width = w - 4;
 	var content_height = h - 5;
-	$("#container").css("display", "block");
+	// $("#container").css("display", "block");
 	$(".xhtml").css("display", "none");
 	$(".pdf").css("display", "block");
 	$("#iframe_xhtml").hide();

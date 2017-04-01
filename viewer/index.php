@@ -52,9 +52,9 @@ $options = implode('', array_values($options));
         <?php echo $options; ?>
       </select>
       <input type="text" id="paper_select_input" size="10" placeholder="Paper Code" />
-      <input type="button" id="paper_select_input_button" value="Go" />
-      &nbsp;&nbsp;
-      <input type="button" id="layout_select_button" value="L" />
+      <!--input type="button" id="paper_select_input_button" value="Go" /-->
+      &nbsp;
+      <input type="button" id="layout_select_button" value="Layout" />
     </div>
 
     <div id="container">
