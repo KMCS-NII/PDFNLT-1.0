@@ -1481,9 +1481,8 @@ class LayoutAnalyzer
  */
 if (isset($argv) && basename($argv[0]) == basename(__FILE__)) {
     $pdffigures = null;
-    if (count($argv) > 1) {
-        $target = $argv[1];
-    } else {
+    $page = 0;
+    if (count($argv) == 0) {
         // For IPSJ
         $target = 'pdf/103097_1_1.pdf';
         // require_once('AbekawaPdffigures.php');
@@ -1492,11 +1491,21 @@ if (isset($argv) && basename($argv[0]) == basename(__FILE__)) {
         // For ACL Anthology
         // $target = "pdf/E06-1035.pdf";
         // $pdffigures = null;
+    } else {
+        for ($i = 1; $i < count($argv); $i++) {
+            if (preg_match('/^\d+$/', $argv[$i])) {
+                $page = $argv[$i];
+            } else if (preg_match('/pdf$/i', $argv[$i])) {
+                $target = $argv[$i];
+            } else {
+                echo "Unrecognized parameter '", $argv[$i], "'. (skipped)";
+            }
+        }
     }
 
     $p = new LayoutAnalyzer();
-    $p->setTargetPageFrom(7); // 1 が最初のページ
-    $p->setTargetPageTo(7);
+    $p->setTargetPageFrom($page); // 1 が最初のページ
+    $p->setTargetPageTo($page);
     $p->analyze($target, $pdffigures);
     echo "--- indents ---\n";
     print_r($p->getIndents());

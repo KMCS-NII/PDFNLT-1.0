@@ -19,8 +19,10 @@ $opts = getopts(array(
     'a' => array('switch' => array('a', 'annotation-dir'), 'type' => GETOPT_VAL),
     't' => array('switch' => array('t', 'training-dir'), 'type' => GETOPT_VAL),
     'x' => array('switch' => array('x', 'xhtml-dir'), 'type' => GETOPT_VAL),
-    'i' => array('switch' => array('i', 'with-image'), 'type' => GETOPT_SWITCH),
     'A' => array('switch' => array('A', 'all'), 'type' => GETOPT_SWITCH),
+    'i' => array('switch' => array('i', 'with-image'), 'type' => GETOPT_SWITCH),
+    'M' => array('switch' => array('M', 'with-mecab'), 'type' => GETOPT_SWITCH),
+    'w' => array('switch' => array('w', 'with-wordtag'), 'type' => GETOPT_SWITCH),
 ));
 
 if ($opts['h'] || !$opts['c']) { //count($opts['cmdline']) == 0) {
@@ -41,13 +43,20 @@ Options:
 
   --xhtml-dir=<XHTML directory> (default: 'xhtml/')
 
-  -i, --with-image (effective with 'generate_xhtml' command)
-     Generate figure images under the 'xhtml-dir'.
-
   -A, --all
      Instead of specifying PDFs, use all files under the directory.
 
   --help  Show this help
+
+  (Options for 'generate_xhtml' command only)
+  --with-image (default:0)
+     Generate figure images under the 'xhtml-dir'.
+
+  --with-mecab (default:0)
+     Use MeCab to extract Japanese words instead of characters.
+
+  --with-wordtag (default:0)
+     Add '<span class="word"...>' tag for each word.
 
 Command:
 
@@ -84,12 +93,14 @@ $training_dir   = $opts['t'] ? $opts['t'] : 'train/';
 $xhtml_dir      = $opts['x'] ? $opts['x'] : 'xhtml/';
 
 $p = new PdfAnalyzer($modelfile);
-$p->setCutImage($opts['i']);
 $p->setPdfDir($pdf_dir);
 $p->setFigureDir($figure_dir);
 $p->setAnnotationDir($annotation_dir);
 $p->setTrainingDir($training_dir);
 $p->setXhtmlDir($xhtml_dir);
+$p->setCutImage($opts['i']);
+$p->setUseMecab($opts['M']);
+$p->setUseWordtag($opts['w']);
 
 // 対象ファイル
 $files = $opts['cmdline'];

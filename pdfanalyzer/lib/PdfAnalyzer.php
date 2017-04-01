@@ -56,13 +56,17 @@ class PdfAnalyzer
         );
         $this->la = new LayoutAnalyzer();
         $this->crf = new CRFSuiteLib($modelfile);
-        $this->cutimage = false;
         $this->pdf_dir = 'pdf/';
         $this->annotation_dir = 'anno/';
         $this->training_dir = 'train/';
         $this->xhtml_dir = 'xhtml/';
+        
         // 日本語の場合、分かち書きに MeCab を利用する
         $this->have_mecab = class_exists("MeCab_Tagger");
+        // スイッチ
+        $this->cutimage = false;
+        $this->use_mecab = $this->have_mecab;
+        $this->use_wordtag = true;
         $this->__reset();
     }
 
@@ -84,6 +88,25 @@ class PdfAnalyzer
         $this->cutimage = $f;
     }
 
+    /**
+     * XHTML 作成の際に MeCab で単語にまとめるかどうかのフラグをセット
+     * @param $f  true の場合、単語にまとめる
+     */
+    public function setUseMecab($f = true) {
+        if ($f && !$this->have_mecab) {
+            echo "UseMecab flag cannot be set.\nPlease check the MeCab (or php-mecab module) is installed.\n";
+        }
+        $this->use_mecab = $f && $this->have_mecab;
+    }
+    
+    /**
+     * XHTML 作成の際に <span class="word"> を付与するかどうかのフラグをセット
+     * @param $f  true の場合、付与する
+     */
+    public function setUseWordtag($f = true) {
+        $this->use_wordtag = $f;
+    }
+    
     /**
      * 各種ディレクトリの setter, getter
      */
@@ -833,7 +856,7 @@ class PdfAnalyzer
                     break;
                 }
             } else { // 文字列の場合
-                if ($this->have_mecab && preg_match('/[一-龠]+|[ぁ-ん]+|[ァ-ヴー]+|[ａ-ｚＡ-Ｚ０-９]+/u', $paragraph['text'] )) {
+                if ($this->use_mecab && preg_match('/[一-龠]+|[ぁ-ん]+|[ァ-ヴー]+|[ａ-ｚＡ-Ｚ０-９]+/u', $paragraph['text'] )) {
                     // 日本語文字列のマージ
                     $this->__mergeJapaneseWords($paragraph);
                     if (!isset($paragraph)) {
@@ -846,63 +869,69 @@ class PdfAnalyzer
                     foreach ($line as $word) {
 
                         // 前の語との間に空白を挟む
-                        if (!isset($word[8]) || !in_array($word[8], array('ns', 'ss'))) {
+                        if ($j > 0 && (!isset($word[8]) || !in_array($word[8], array('ns', 'ss')))) {
                             $w = $dom->createTextNode(' ');
                             $p->appendChild($w);
                         }
             
                         // $w = $dom->createElement('span', htmlspecialchars($word[0]));
-                        $w = $dom->createElement('span', $word[0]);
-                        $attr = $dom->createAttribute('class');
-                        $attr->value="word";
-                        $w->appendChild($attr);
-                        $word_id = "w-{$section_no}-{$box_no}-{$i}-{$j}";
-                        $attr = $dom->createAttribute('id');
-                        $attr->value = $word_id;
-                        $w->appendChild($attr);
-                        $w->setIdAttribute('id', true);
-
-                        // bdr
-                        $attr = $dom->createAttribute('data-bdr');
-                        $bdr = $this->la->getRelativeBdr($word[1], $word[2], $word[3], $word[4], $paragraph['page']);
-                        // $bdr = array($word[1], $word[2], $word[3], $word[4]);
-                        $attr->value = sprintf("%6.5f,%6.5f,%6.5f,%6.5f", $bdr[0], $bdr[1], $bdr[2], $bdr[3]);
-                        $w->appendChild($attr);
-
-                        // フォント情報
-                        if (count($word) > 5) {
-                            $attr = $dom->createAttribute('data-ftype');
-                            if (!isset($word[7])) {
-                                var_dump($line); echo "\n";
-                                var_dump($word); echo "\n";
-                                die();
-                            }
-                            $attr->value = sprintf("%d", $word[7]);
+                        if ($this->use_wordtag) {
+                            $w = $dom->createElement('span', $word[0]);
+                            $attr = $dom->createAttribute('class');
+                            $attr->value="word";
                             $w->appendChild($attr);
-                        }
-
-                        // 前の語との空白
-                        if (isset($word[8])) {
-                            $attr = $dom->createAttribute('data-space');
-                            switch ($word[8]) {
-                            case 'ns':
-                                $attr->value = 'nospace';
-                                break;
-                            case 'ss':
-                                $attr->value = 'subsequence';
-				$j--; // 前の語と同じIDにする
-                                break;
-                            case 'sp':
-                                $attr->value = 'space';
-                                break;
-                            case 'hd':
-                                $attr->value = 'bol';
-                                break;
-                            }
+                            $word_id = "w-{$section_no}-{$box_no}-{$i}-{$j}";
+                            $attr = $dom->createAttribute('id');
+                            $attr->value = $word_id;
                             $w->appendChild($attr);
-                        }
+                            $w->setIdAttribute('id', true);
 
-                        $p->appendChild($w);
+                            // bdr
+                            $attr = $dom->createAttribute('data-bdr');
+                            $bdr = $this->la->getRelativeBdr($word[1], $word[2], $word[3], $word[4], $paragraph['page']);
+                            // $bdr = array($word[1], $word[2], $word[3], $word[4]);
+                            $attr->value = sprintf("%6.5f,%6.5f,%6.5f,%6.5f", $bdr[0], $bdr[1], $bdr[2], $bdr[3]);
+                            $w->appendChild($attr);
+
+                            // フォント情報
+                            if (count($word) > 5) {
+                                $attr = $dom->createAttribute('data-ftype');
+                                if (!isset($word[7])) {
+                                    var_dump($line); echo "\n";
+                                    var_dump($word); echo "\n";
+                                    die();
+                                }
+                                $attr->value = sprintf("%d", $word[7]);
+                                $w->appendChild($attr);
+                            }
+
+                            // 前の語との空白
+                            if (isset($word[8])) {
+                                $attr = $dom->createAttribute('data-space');
+                                switch ($word[8]) {
+                                case 'ns':
+                                    $attr->value = 'nospace';
+                                    break;
+                                case 'ss':
+                                    $attr->value = 'subsequence';
+                                    $j--; // 前の語と同じIDにする
+                                    break;
+                                case 'sp':
+                                    $attr->value = 'space';
+                                    break;
+                                case 'hd':
+                                    $attr->value = 'bol';
+                                    break;
+                                }
+                                $w->appendChild($attr);
+                            }
+
+                            $p->appendChild($w);
+                        } else {
+                            // word タグをつけない
+                            $w = $dom->createTextNode($word[0]);
+                            $p->appendChild($w);
+                        }
                         $j++;
                     }
                 }
@@ -913,9 +942,12 @@ class PdfAnalyzer
             $attr->value = $id;
             $p->appendChild($attr);
             $p->setIdAttribute('id', true);
-            $attr = $dom->createAttribute('data-text');
-            $attr->value = htmlspecialchars($paragraph['text']);
-            $p->appendChild($attr);
+            if ($this->use_wordtag) {
+                // word タグをつけない場合、この属性も不要
+                $attr = $dom->createAttribute('data-text');
+                $attr->value = htmlspecialchars($paragraph['text']);
+                $p->appendChild($attr);
+            }
             $attr = $dom->createAttribute('data-page');
             $attr->value = $paragraph['page'];
             $p->appendChild($attr);
