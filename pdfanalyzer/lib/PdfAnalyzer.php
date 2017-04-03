@@ -466,6 +466,7 @@ class PdfAnalyzer
         // 出力先
         $content_img = sprintf("%s%s-%s.png", $imgdir, $doc_id, $image_id);
         $cmd = sprintf("convert -crop %sx%s+%s+%s %s %s", $abs_bdr[2] - $abs_bdr[0], $abs_bdr[3] - $abs_bdr[1], $abs_bdr[0], $abs_bdr[1], $page_img, $content_img);
+        echo "executing: '", $cmd, "'...\n";
         // 実行
         exec($cmd);
     }
@@ -1222,7 +1223,7 @@ class PdfAnalyzer
             printf("Updating training data '%s'...", $trainfname, $pdf);
 
             $this->la->analyze($pdf, $fig_json);
-            $structure = $this->la->getLines();
+            $la_lines = $this->la->getLines();
             $features = $this->getCRFfeatures();
 
             // ロジック変更で解析結果が変わってしまうことがあるため、
@@ -1233,7 +1234,7 @@ class PdfAnalyzer
             $fanno = fopen($annofname, "r");
             while ($line = fgets($fanno)) {
                 $args = explode("\t", trim($line));
-                if (count($args) == 2 || count($args) == 3) {
+                if (count($args) > 1) { //== 2 || count($args) == 3) {
                     $lines['anno']['label'] []= $args[0];
                     $lines['anno']['text'] []= $args[1];
                 }
@@ -1241,13 +1242,24 @@ class PdfAnalyzer
             fclose($fanno);
 
             // 解析結果を展開
-            $lines['analyzed'] = array('label' => array(), 'text' => array(), 'feature' => array());
-            foreach ($features as $line) {
-                $args = explode("\t", trim($line));
+            $lines['analyzed'] = array('label' => array(), 'text' => array(), 'feature' => array(), 'bdr' => array());
+            $rate = 100 / $this->la->getDpi();
+            for ($i = 0; $i < count($features); $i++) {
+                $l = $la_lines[$i];
+                $bdr = sprintf("%d %.4f %.4f %.4f %.4f",
+                               $l[6], // page
+                               $l[1] * $rate, // 座標は 100 dpi でのピクセル単位
+                               $l[2] * $rate,
+                               $l[3] * $rate,
+                               $l[4] * $rate
+                );
+                $f = $features[$i];
+                $args = explode("\t", trim($f));
                 if (count($args == 3)) {
                     $lines['analyzed']['label'] []= $args[0];
                     $lines['analyzed']['text'] []= $args[1];
                     $lines['analyzed']['feature'] []= $args[2];
+                    $lines['analyzed']['bdr'] []= $bdr;
                 }
             }
 
@@ -1302,10 +1314,11 @@ class PdfAnalyzer
                     }
                     fprintf(
                         $fh,
-                        "%s\t%s\t%s\n",
+                        "%s\t%s\t%s\t%s\n",
                         $lines['anno']['label'][$im],
                         $lines['analyzed']['text'][$ia],
-                        $lines['analyzed']['feature'][$ia]
+                        $lines['analyzed']['feature'][$ia],
+                        $lines['analyzed']['bdr'][$ia]
                     );
                     fprintf($fh_log, "--\n%03d:%s\n%03d:%s\n", $im, $lines['anno']['text'][$im], $ia, $lines['analyzed']['text'][$ia]);
                     $im++;
@@ -1349,10 +1362,11 @@ class PdfAnalyzer
                     }
                     fprintf(
                         $fh,
-                        "%s\t%s\t%s\n",
+                        "%s\t%s\t%s\t%s\n",
                         $label,
                         $lines['analyzed']['text'][$ia],
-                        $lines['analyzed']['feature'][$ia]
+                        $lines['analyzed']['feature'][$ia],
+                        $lines['analyzed']['bdr'][$ia]
                     );
                     fprintf($fh_log, "--\n%03d:%s\n", $ia, $lines['analyzed']['text'][$ia]);
                     $ia++;
