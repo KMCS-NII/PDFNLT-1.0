@@ -86,8 +86,8 @@ function resetLayout() {
 	var content_height = h - 5;
 	// $("#container").css("display", "block");
 	$("#container").css("flex-direction", "row");
-	$(".xhtml").css("display", "inline-block");
-	$(".pdf").css("display", "inline-block");
+	$("div.xhtml").css("display", "inline-block");
+	$("div.pdf").css("display", "inline-block");
 	$("#iframe_xhtml").show();
 	$("#paper").show();
 	$("#iframe_xhtml").width(content_width);
@@ -104,8 +104,8 @@ function resetLayout() {
 	var content_height = (h - 5) / 2;
 	//$("#container").css("display", "block");
 	$("#container").css("flex-direction", "column");
-	$(".xhtml").css("display", "block");
-	$(".pdf").css("display", "block");
+	$("div.xhtml").css("display", "block");
+	$("div.pdf").css("display", "block");
 	$("#iframe_xhtml").show();
 	$("#paper").show();
 	$("#iframe_xhtml").width(content_width);
@@ -121,8 +121,8 @@ function resetLayout() {
 	var content_width = w - 4;
 	var content_height = h - 5;
 	// $("#container").css("display", "block");
-	$(".xhtml").css("display", "block");
-	$(".pdf").css("display", "none");
+	$("div.xhtml").css("display", "block");
+	$("div.pdf").css("display", "none");
 	$("#iframe_xhtml").show();
 	$("#paper").hide();
 	$("#iframe_xhtml").width(content_width);
@@ -138,8 +138,8 @@ function resetLayout() {
 	var content_width = w - 4;
 	var content_height = h - 5;
 	// $("#container").css("display", "block");
-	$(".xhtml").css("display", "none");
-	$(".pdf").css("display", "block");
+	$("div.xhtml").css("display", "none");
+	$("div.pdf").css("display", "block");
 	$("#iframe_xhtml").hide();
 	$("#paper").show();
 	//$("#iframe_xhtml").width(0);
@@ -224,7 +224,7 @@ function assignActions() {
 	    var pid = $(this).attr("id");
 	    var box = '<div class="boxlabel" style="left:' + l.toString() + 'px;top:' + (t - 18).toString() + 'px;">' + section_label + ':' + box_label + ' [' + pid + ']</div>';
 	    box = box + '<div class="box" data-page="' + (page + 1).toString() + '" style="left:' + l.toString() + 'px;top:' + t.toString() + 'px;width:' + w.toString() + 'px;height:' + h.toString() + 'px;" data-pid="' + pid + '"/>';
-	    $("#paper").remove("#div.box, #div.boxlabel");
+	    $("#paper").remove("div.box, div.boxlabel");
 	    $("#paper").append(box);
 	    $("#paper div.box").show();
 	    $("#paper div.box").click(function() {
@@ -279,17 +279,19 @@ function assignActions() {
 	var box = $("#paper div.box");
 	var box_x = box.offset().left - paper_x; // offset は絶対位置
 	var box_y = box.offset().top - paper_y;
-	/*
         var l = $("#paper").scrollLeft();
 	var w = $("#paper").width();
 	var t = $("#paper").scrollTop();
 	var h = $("#paper").height();
-	console.debug(box_x, box_y, l, t);
-        */
-	$("#paper").animate({
-	    scrollLeft: box_x - 50,
-	    scrollTop: box_y - 50
-	}, 500);
+	// console.debug("box_x:" + box_x + ", box_y:" + box_y);
+	// console.debug("l:" + l + ", w:" + w + ", t:" + t + ", h:" + h);
+	if (box_x < 10 || box_y < 10
+	    || box_x > w - 10 || box_y > h - 10) {
+	    $("#paper").animate({
+		scrollLeft: box_x - 10,
+		scrollTop: box_y - 10
+	    }, 500);
+	}
     });
 
     // PDF 表示エリアのイベント
@@ -342,9 +344,9 @@ function selectParagraphInXhtml(id) {
     p.addClass('selected');
 
     var paper_y = $("#iframe_xhtml").offset().top;
-    var target_y = p.eq(0).offset().top;
     var t = c.scrollTop();
-    var h = $("#iframe_xhtml").height();
+    var target_y = p.eq(0).offset().top - paper_y;
+    var h = $("div.xhtml").height();
     if (target_y < t + 10 || target_y > t + h - 10) {
 	$("#iframe_xhtml").contents().scrollTop(target_y - 50);
     }
