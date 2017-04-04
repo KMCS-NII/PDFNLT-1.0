@@ -238,9 +238,10 @@ class LayoutAnalyzer
         if (is_null($l0) || is_null($l1)) {
             return false;
         }
-        if (abs($l0[4] - $l1[2]) > 0.5 * $this->dpi
-            && abs($l0[2] - $l1[4]) > 0.5 * $this->dpi) { // ベースラインでチェック
-            // y 方向に 0.5in 以上離れている
+        // printf("l0:'%s' <-> l1:'%s' = %f\n", implode(' ', $l0[5]), implode(' ', $l1[5]), min(abs($l0[4] - $l1[2]), abs($l0[2] - $l1[4])));
+        if (abs($l0[4] - $l1[2]) > 0.3 * $this->dpi
+            && abs($l0[2] - $l1[4]) > 0.3 * $this->dpi) { // ベースラインでチェック
+            // y 方向に 0.3in 以上離れている
             return false;
         }
         $n0 = $this->__get_indent_number_by_y($page_indents, $l0[4]);
@@ -312,37 +313,44 @@ class LayoutAnalyzer
             && $line[3] + 2 * $this->wgap * $this->dpi > $w[1]) { // 語が行の右端から離れすぎていない
                 // 段組みチェック、右段落ならこの行に接続しない
                 list($l0, $r0, $l1, $r1) = $this->__get_indent_by_y($page_indents, $line[4]);
+                $cond1 = (!is_null($r0));
+                $cond2 = ($line[3] <= $l1 + $this->wgap * $this->dpi);
+                $cond3 = ($w[1] >= $l1 - $this->wgap * $this->dpi);
+                $cond4 = ($w[1] - $line[3] > $this->wgap * $this->dpi);
+                $cond5 = (abs($w[1] - $l1) <= 0.01 * $this->dpi);
                 if ($this->debug) {
                     echo "Checking if this word is in the right column.\n";
                     echo "  r0(right x of the left column):", var_export($r0, 1), "\n";
                     echo "  line[3](right x of the line):", var_export($line[3], 1), "\n";
                     echo "  w[1](left x of the word):", var_export($w[1], 1), "\n";
                     echo "  l1(left x of the right column):", var_export($l1, 1), "\n";
-                    if (!is_null($r0)) {
-                        echo "yes: right column exists in this page.\n";
+                    if ($cond1) {
+                        echo "cond1=true:  right column exists in this page.\n";
                     } else {
-                        echo "no:  right column is not exist.\n";
+                        echo "cond1=false: right column is not exist.\n";
                     }
-                    if ($line[3] <= $r0 + $this->wgap * $this->dpi) {
-                        echo "yes: the line is in the left column.\n";
+                    if ($cond2) {
+                        echo "cond2=true:  the line is in the left column.\n";
                     } else {
-                        echo "no:  the line is not in the left column.\n";
+                        echo "cond2=false: the line is not in the left column.\n";
                     }
-                    if ($w[1] >= $l1 - $this->wgap * $this->dpi) {
-                        echo "yes: the word is in the right column.\n";
+                    if ($cond3) {
+                        echo "cond3=true:  the word is in the right column.\n";
                     } else {
-                        echo "no:  the word is not in the right column.\n";
+                        echo "cond3=false: the word is not in the right column.\n";
                     }
-                    if ($w[1] - $line[3] > $this->wgap * $this->dpi) {
-                        echo "yes: the line and the word have enough space.\n";
+                    if ($cond4) {
+                        echo "cond4=true:  the line and the word have enough space.\n";
                     } else {
-                        echo "no:  the line and the word doesn't have enough space.\n";
+                        echo "cond4=false: the line and the word doesn't have enough space.\n";
+                    }
+                    if ($cond5) {
+                        echo "cond5=true:  the word is just on the left edge of the right column.\n";
+                    } else {
+                        echo "cond5=false: the word is not just on the left edge of the right column.\n";
                     }
                 }
-                if (!is_null($r0)
-                && $line[3] <= $r0 + $this->wgap * $this->dpi
-                && $w[1] >= $l1 - $this->wgap * $this->dpi
-                && $w[1] - $line[3] > $this->wgap * $this->dpi) {
+                if ($cond1 && $cond2 && $cond3 && ($cond4 || $cond5)) {
                     if ($this->debug) {
                         echo "-> The word is in the right column.\n";
                     }
@@ -371,7 +379,7 @@ class LayoutAnalyzer
     // ボックス２がボックス１の上付き文字の場合は 3、
     // ボックス２がボックス１の下付き文字の場合は -3
     // をそれぞれ返す
-    private function __is_same_line_alt($y00, $y01, $y10, $y11) {
+    private function __is_same_line($y00, $y01, $y10, $y11) {
         $h0 = $y01 - $y00;
         $h1 = $y11 - $y10;
         $h = min($y01, $y11) - max($y00, $y10); // 交差している部分の高さ
@@ -379,12 +387,18 @@ class LayoutAnalyzer
         if ($rate > 0.3) return 1;
         return 0;
     }
-    private function __is_same_line($y00, $y01, $y10, $y11) {
+    private function __is_same_line_alt($y00, $y01, $y10, $y11) {
+        // y は10倍されている点に注意
         $h0 = ($y01 - $y00) / 2.0;
         $h1 = ($y11 - $y10) / 2.0;
+        if ($this->debug) {
+            printf("h0:%.3f, h1:%.3f\n",
+                   $h0, $h1);
+            die();
+        }
         if ($h0 > $h1) {
-            if ($h0 > 0.1 * $this->dpi) { // 図表の場合ボックスが大きいことがあるが
-                $h0 = 0.1 * $this->dpi;     // 最大でも上下 0.2inch まで
+            if ($h0 > $this->dpi) { // 図表の場合ボックスが大きいことがあるが
+                $h0 = $this->dpi;     // 最大でも上下 0.1inch まで
             }
       
             // ボックス１が基本ボックス
@@ -392,8 +406,8 @@ class LayoutAnalyzer
             if ($y00 > $y10 && $y01 > $y11 && $h0 > $h1 * 1.3) return 3; // 3;
             if ($y00 < $y10 && $y01 < $y11 && $h0 > $h1 * 1.3) return -3; // -3;
         } else {
-            if ($h1 > 0.1 * $this->dpi) { // 最大でも上下 0.1inch まで
-                $h1 = 0.1 * $this->dpi;
+            if ($h1 > $this->dpi) { // 最大でも上下 0.1inch まで
+                $h1 = $this->dpi;
             }
             // ボックス２が基本ボックス
             if ($y10 - $h1 > $y00 || $y11 + $h1 < $y01) return 0;
@@ -548,11 +562,12 @@ class LayoutAnalyzer
             if (preg_match('/^[\x00-\x1f]$/', $w[0])) continue;
 
             /*
-              if ($w[0] == "【" && $w[1] == 422.778598) {
-              $this->debug = true;
-              } else {
-              $this->debug = false;
-              }
+            if ($w[0] == "P" && $w[1] == 440.000000) {
+                // print_r($w); echo "\n";
+                $this->debug = true;
+            } else {
+                $this->debug = false;
+            }
             */
 
             $min = $this->__get_best_line($lines, $w, $page_indents);
@@ -654,10 +669,14 @@ class LayoutAnalyzer
         $layout_lines = array();
         $last_single_line = null;
         $line = null;
+        $no_break_until_y = 0; // ここまでは左右どちらかに文字か図がある
         for ($i = 0; $i < count($lines); $i++) {
             $debug = false;
             $last_line = $line;
             $line = $lines[$i];
+            if ($line[4] > $no_break_until_y) {
+                $no_break_until_y = $line[4];
+            }
 
             /*
             if ($i == 50) {//$line[1] == 442.479167 && $line[2] == 173.381913) {
@@ -665,9 +684,11 @@ class LayoutAnalyzer
             }
             */
 
-            if (!$this->__is_continuable_lines($page_indents, $last_line, $line)) {
+            // インデントレイアウト変更のチェック
+            if ($line[4] > $no_break_until_y
+                && !$this->__is_continuable_lines($page_indents, $last_line, $line)) {
                 // printf("%d: y:%.2f, '%s'\n", $i, $line[4], implode(' ', $line[5]));
-                // インデントレイアウト変更
+                // 変更
                 if (count($blocks['left']) + count($blocks['right']) > 0) {
                     foreach ($blocks['left'] as $l) $layout_lines []= $l;
                     foreach ($blocks['right'] as $l) $layout_lines []= $l;

@@ -160,6 +160,7 @@ function resetLayout() {
 // トレーニングデータを読み込む
 function showPaperLine(code) {
     var url = "train/" + code + ".csv";
+    var reErr = /^#/;
     $.get(url).success(function(data) {
 	var lines = data.split("\n");
 	var html = "";
@@ -170,7 +171,11 @@ function showPaperLine(code) {
 	    }
 	    var args = line.split("\t");
 	    var params = args[3].split(" ");
-	    html += '<tr class="line" data-page="' + params[0] + '" data-line="' + i + '" data-bdr="' + args[3] + '"><td>' + i.toString() + "</td><td>" + args[0] + "</td><td>" + args[1] + "</td></tr>\n";
+	    var tr_class = "line";
+	    if (reErr.test(args[0])) {
+		tr_class += " err";
+	    }
+	    html += '<tr class="' + tr_class + '" data-page="' + params[0] + '" data-line="' + i + '" data-bdr="' + args[3] + '"><td>' + i.toString() + "</td><td>" + args[0] + "</td><td>" + args[1] + "</td></tr>\n";
 	}
 	$("table#table_line tbody").html(html);
 	assignActions();
