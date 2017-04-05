@@ -26,7 +26,7 @@ foreach ($files as $xhtml) {
         $options[$basename] = '<option value="' . $basename . '">' . $basename . '</option>';
     }
 }
-ksort($options, SORT_NUMERIC);
+ksort($options, SORT_REGULAR);
 $options = implode('', array_values($options));
 ?>
  
@@ -55,6 +55,8 @@ $options = implode('', array_values($options));
       <!--input type="button" id="paper_select_input_button" value="Go" /-->
       &nbsp;
       <input type="button" id="layout_select_button" value="Layout" />
+      <input type="button" id="prev_page_button" value="&lt;" />
+      <input type="button" id="next_page_button" value="&gt;" />
     </div>
 
     <div id="container">
@@ -66,6 +68,7 @@ $options = implode('', array_values($options));
 	<img id="paper_image"></img>
       </div>
     </div>
+	<div id="page_number">p.1</div>
     </div>
   </div>
 

@@ -1192,7 +1192,7 @@ class LayoutAnalyzer
         $max_score = -999;
         $max_gap = 0;
         foreach ($matches as $k => $freq) {
-            $score = $freq - $crosses[$k] * 2; // 交差があると-2点
+            $score = $freq - $crosses[$k] * 5; // 交差があると-5点
             /*
             if (!is_null($this->indents) && isset($yrange[0]) && $yrange[0] > 770) {
                 printf("%s : %d (freq:%d, cross:%d)\n", $k, $score, $freq, $crosses[$k]);

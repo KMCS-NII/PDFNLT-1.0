@@ -4,11 +4,14 @@
 // 表示中の論文とページ
 var current_paper = null;
 var current_page = 0; // 最初のページが 1 なので注意
+var npages = 0;     // 表示中の論文のページ数
 var current_layout = 0; // レイアウト
 
 // 起動時の初期設定
 $(document).ready(function() {
 
+    readNewPaper(default_paper);
+    /*
     // 画面レイアウトをブラウザの大きさに合わせて変更
     resetLayout();
 
@@ -20,6 +23,7 @@ $(document).ready(function() {
     
     current_paper = default_paper;
     current_page = 1;
+     */
 
     // 論文セレクタの操作
     $("#paper_select").change(function() {
@@ -46,6 +50,21 @@ $(document).ready(function() {
     $("#layout_select_button").click(function() {
 	current_layout = (current_layout + 1) % 4;
 	resetLayout();
+    });
+
+    $("#prev_page_button").click(function() {
+	if (current_page > 1) {
+	    showPaperImage(current_paper, current_page - 1);
+	    resetLayout();
+	}
+    });
+
+    $("#next_page_button").click(function() {
+	console.debug(current_page, npages);
+	if (current_page < npages) {
+	    showPaperImage(current_paper, current_page + 1);
+	    resetLayout();
+	}
     });
 
     // ブラウザサイズを変更した場合のイベントハンドラ
@@ -90,6 +109,7 @@ function resetLayout() {
 	$("div.pdf").css("display", "inline-block");
 	$("#iframe_xhtml").show();
 	$("#paper").show();
+	$("#page_number").show();
 	$("#iframe_xhtml").width(content_width);
 	$("#iframe_xhtml").height(content_height);
 	$("#paper").width(content_width);
@@ -108,6 +128,7 @@ function resetLayout() {
 	$("div.pdf").css("display", "block");
 	$("#iframe_xhtml").show();
 	$("#paper").show();
+	$("#page_number").show();
 	$("#iframe_xhtml").width(content_width);
 	$("#iframe_xhtml").height(content_height);
 	$("#paper").width(content_width);
@@ -125,6 +146,7 @@ function resetLayout() {
 	$("div.pdf").css("display", "none");
 	$("#iframe_xhtml").show();
 	$("#paper").hide();
+	$("#page_number").hide();
 	$("#iframe_xhtml").width(content_width);
 	$("#iframe_xhtml").height(content_height);
 	//$("#paper").width(0);
@@ -142,6 +164,7 @@ function resetLayout() {
 	$("div.pdf").css("display", "block");
 	$("#iframe_xhtml").hide();
 	$("#paper").show();
+	$("#page_number").show();
 	//$("#iframe_xhtml").width(0);
 	//$("#iframe_xhtml").height(0);
 	$("#paper").width(content_width);
@@ -152,6 +175,9 @@ function resetLayout() {
 	//$(".pdf").height(content_height);
 	break;
     }
+    var paper_offset = $("#paper").offset();
+    $("div#page_number").css("top", paper_offset.top + 3);
+    $("div#page_number").css("left", paper_offset.left + 3);
 }
 
 // XHTML を iframe に読み込む
@@ -165,6 +191,8 @@ function showPaperXhtml(code) {
 	    $('#iframe_xhtml').contents().find('head').append('<style>p.hovered { background: #FCC; }</style>');
 	    // var o = $("#iframe_xhtml").contents().find("div.box[data-name='Title']>p");
 	    assignActions();
+	    // ページ数を取得
+	    npages = $("#iframe_xhtml").contents().find("pages>page").length;
 	});
 	jo.contentDocument.location.replace(url);
     }
@@ -179,6 +207,7 @@ function showPaperImage(code, page) {
 	var image_url = "xhtml/images/" + code + "/" + code + "-" + ('0' + page).slice(-2) + '.png';
 	$("#paper_image").attr("src", image_url);
 	current_page = page;
+	$("div#page_number").html("p." + current_page.toString());
     }
 }
 

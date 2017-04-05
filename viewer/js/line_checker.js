@@ -4,6 +4,7 @@
 // 表示中の論文とページ
 var current_paper = null;
 var current_page = 0; // 最初のページが 1 なので注意
+var npages = 0; // 表示中の論文のページ数
 var current_layout = 0; // レイアウト
 
 // 起動時の初期設定
@@ -35,7 +36,7 @@ $(document).ready(function() {
 	$("#paper_select option").each(function() {
 	    if ($(this).value == input
 		|| $(this).html() == input) {
-		console.debug("match:" + $(this).value);
+		// console.debug("match:" + $(this).value);
 		readNewPaper(input);
 	    }
 	});
@@ -49,6 +50,20 @@ $(document).ready(function() {
     $("#layout_select_button").click(function() {
 	current_layout = (current_layout + 1) % 4;
 	resetLayout();
+    });
+
+    $("#prev_page_button").click(function() {
+	if (current_page > 1) {
+	    showPaperImage(current_paper, current_page - 1);
+	    resetLayout();
+	}
+    });
+
+    $("#next_page_button").click(function() {
+	if (current_page < npages) {
+	    showPaperImage(current_paper, current_page + 1);
+	    resetLayout();
+	}
     });
 
     // ブラウザサイズを変更した場合のイベントハンドラ
@@ -93,6 +108,7 @@ function resetLayout() {
 	$("div.pdf").css("display", "inline-block");
 	$("#paper_line").show();
 	$("#paper").show();
+	$("#page_number").show();
 	$("#paper_line").width(content_width);
 	$("#paper_line").height(content_height);
 	$("#paper").width(content_width);
@@ -111,6 +127,7 @@ function resetLayout() {
 	$("div.pdf").css("display", "block");
 	$("#paper_line").show();
 	$("#paper").show();
+	$("#page_number").show();
 	$("#paper_line").width(content_width);
 	$("#paper_line").height(content_height);
 	$("#paper").width(content_width);
@@ -128,6 +145,7 @@ function resetLayout() {
 	$("div.pdf").css("display", "none");
 	$("#paper_line").show();
 	$("#paper").hide();
+	$("#page_number").hide();
 	$("#paper_line").width(content_width);
 	$("#paper_line").height(content_height);
 	//$("#paper").width(0);
@@ -145,6 +163,7 @@ function resetLayout() {
 	$("div.pdf").css("display", "block");
 	$("#paper_line").hide();
 	$("#paper").show();
+	$("#page_number").show();
 	//$("#paper_line").width(0);
 	//$("#paper_line").height(0);
 	$("#paper").width(content_width);
@@ -155,30 +174,39 @@ function resetLayout() {
 	//$(".pdf").height(content_height);
 	break;
     }
+    var paper_offset = $("#paper").offset();
+    $("div#page_number").css("top", paper_offset.top + 3);
+    $("div#page_number").css("left", paper_offset.left + 3);
 }
 
 // トレーニングデータを読み込む
 function showPaperLine(code) {
     var url = "train/" + code + ".csv";
     var reErr = /^#/;
-    $.get(url).success(function(data) {
-	var lines = data.split("\n");
-	var html = "";
-	for (i = 0; i < lines.length; i++) {
-	    var line = lines[i];
-	    if (line == "") {
-		break; // 最後の行は "\n" で終わっている
+    $.ajax({
+	url: url,
+	dataType: "html",
+	cache: false,
+	success: function(data) {
+	    var lines = data.split("\n");
+	    var html = "";
+	    for (i = 0; i < lines.length; i++) {
+		var line = lines[i];
+		if (line == "") {
+		    break; // 最後の行は "\n" で終わっている
+		}
+		var args = line.split("\t");
+		var params = args[3].split(" ");
+		var tr_class = "line";
+		if (reErr.test(args[0])) {
+		    tr_class += " err";
+		}
+		html += '<tr class="' + tr_class + '" data-page="' + params[0] + '" data-line="' + i + '" data-bdr="' + args[3] + '"><td>' + i.toString() + "</td><td>" + args[0] + "</td><td>" + args[1] + "</td></tr>\n";
+		npages = parseInt(params[0], 10) + 1; // ページ数
 	    }
-	    var args = line.split("\t");
-	    var params = args[3].split(" ");
-	    var tr_class = "line";
-	    if (reErr.test(args[0])) {
-		tr_class += " err";
-	    }
-	    html += '<tr class="' + tr_class + '" data-page="' + params[0] + '" data-line="' + i + '" data-bdr="' + args[3] + '"><td>' + i.toString() + "</td><td>" + args[0] + "</td><td>" + args[1] + "</td></tr>\n";
+	    $("table#table_line tbody").html(html);
+	    assignActions();
 	}
-	$("table#table_line tbody").html(html);
-	assignActions();
     });
     return;
 }
@@ -190,6 +218,7 @@ function showPaperImage(code, page) {
 	var image_url = "xhtml/images/" + code + "/" + code + "-" + ('0' + page).slice(-2) + '.png';
 	$("#paper_image").attr("src", image_url);
 	current_page = page;
+	$("div#page_number").html("p." + current_page.toString());
     }
 }
 
