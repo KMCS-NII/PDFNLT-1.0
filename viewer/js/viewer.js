@@ -207,7 +207,7 @@ function showPaperImage(code, page) {
 	var image_url = "xhtml/images/" + code + "/" + code + "-" + ('0' + page).slice(-2) + '.png';
 	$("#paper_image").attr("src", image_url);
 	current_page = page;
-	$("div#page_number").html("p." + current_page.toString());
+	$("div#page_number span#page").html("p." + current_page.toString());
     }
 }
 
