@@ -56,7 +56,11 @@ $options = implode('', array_values($options));
       <!--input type="button" id="paper_select_input_button" value="Go" /-->
       &nbsp;
       <input type="button" id="layout_select_button" value="Layout" />
-      <input type="button" id="line_download_button" value="Download" /></a>
+      <span>|
+	  <input type="button" id="line_download_button" value="Download" />
+	  <input type="button" id="line_save_button" value="Save" style="display:none;" />
+	  <input type="button" id="line_load_button" value="Load" style="display:none;" />
+      </span>
     </div>
 
     <div id="container">

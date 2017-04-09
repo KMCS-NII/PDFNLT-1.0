@@ -1,6 +1,8 @@
 // 最初に表示するページ
 // var default_paper = "C02-1045"; index.php で指定する
 
+var keyprefix = "pdfanalyzer.line_checker.linedata";
+
 // 表示中の論文とページ
 var current_paper = null;
 var current_page = 0; // 最初のページが 1 なので注意
@@ -76,6 +78,12 @@ $(document).ready(function() {
 	    resetLayout();
 	}, 200);
     });
+
+    // ウェブストレージ
+    if (window.localStorage) {
+	$("#line_save_button").show();
+	$("#line_load_button").show();
+    }
 
 });
 
@@ -183,36 +191,67 @@ function resetLayout() {
 var csv_data = [];
 function showPaperLine(code) {
     var url = "train/" + code + ".csv";
-    var reErr = /^#/;
     $.ajax({
 	url: url,
 	dataType: "html",
 	cache: false,
 	success: function(data) {
-	    var lines = data.split("\n");
-	    var html = "";
-	    csv_data = [];
-	    for (i = 0; i < lines.length; i++) {
-		var line = lines[i];
-		if (line == "") {
-		    break; // 最後の行は "\n" で終わっている
-		}
-		var args = line.split("\t");
-		args.push("0"); // サーバ上のデータは 0
-		csv_data.push(args);
-		var params = args[3].split(" ");
-		var tr_class = "line";
-		if (reErr.test(args[0])) {
-		    tr_class += " err";
-		}
-		html += '<tr class="' + tr_class + '" data-page="' + params[0] + '" data-line="' + i + '" data-bdr="' + args[3] + '"><td>' + i.toString() + "</td><td>" + args[0] + "</td><td>" + args[1] + "</td></tr>\n";
-		npages = parseInt(params[0], 10) + 1; // ページ数
-	    }
-	    $("table#table_line tbody").html(html);
-	    assignActions();
+	    updatePaperLineFromText(data, false);
 	}
     });
     return;
+}
+
+// テキストデータから Line データを更新する
+// サーバから読み込んだ時
+// ファイルドロップ時
+function updatePaperLineFromText(text, docheck = false) {
+    var lines = text.split("\n");
+    new_data = [];
+    for (i = 0; i < lines.length; i++) {
+	var line = lines[i];
+	if (line == "") {
+	    break; // 最後の行は "\n" で終わっている
+	}
+	var args = line.split("\t");
+	if (args.length == 4) {
+	    args.push("0");
+	}
+	if (!docheck) {
+	    args[4] = 0;
+	} else {
+	    if (args[1] != csv_data[i][1]) {
+		alert("Line text does not match, line:" + (i + 1));
+		return false;
+	    }
+	}
+	new_data.push(args);
+    }
+    updatePaperLine(new_data);
+}
+
+// Line データを更新する
+function updatePaperLine(data) {
+    var reErr = /^#/;
+    var html = "";
+    for (var i = 0; i < data.length; i++) {
+	var args = data[i];
+	var params = args[3].split(" ");
+	var tr_class = "line";
+	var td_class = "";
+	if (reErr.test(args[0])) {
+	    tr_class += " err";
+	}
+	if (args[4] == 1) {
+	    td_class += ' class="edited"';
+	}
+	html += '<tr class="' + tr_class + '" data-page="' + params[0] + '" data-line="' + i + '" data-bdr="' + args[3] + '"><td>' + i.toString() + '</td><td' + td_class + '>' + args[0] + '</td><td>' + args[1] + "</td></tr>\n";
+	npages = parseInt(params[0], 10) + 1; // ページ数
+    }
+    $("table#table_line tbody").html(html);
+
+    csv_data = data;
+    assignActions();
 }
 
 // ページ画像を表示する
@@ -245,6 +284,11 @@ function assignActions() {
     $("tr.line").unbind('dblclick');
     $("#paper_image").unbind('click');
     $("#line_download_button").unbind('click');
+    $("#line_save_button").unbind('click');
+    $("#line_load_button").unbind('click');
+    $("#line_save_button").attr('disabled', 'disabled');
+    $("#line_load_button").attr('disabled', 'disabled');
+    $("#paper_line").unbind('dragover').unbind('drop');
     
     // マウスオーバー時にボックスを表示
     $("tr.line").hover(
@@ -343,29 +387,34 @@ function assignActions() {
 	if (val.substr(0, 2) == '# ') {
 	    val = val.substr(2);
 	}
-	var input = '<input class="labelinput" style="position:absolute;left:' + l.toString() + 'px;top:' + t.toString() + 'px;width:' + w.toString() + 'px;height:' + h.toString() + 'px;" value="' + val + '"/>';
+	var input = '<input class="labelinput" data-lineno="' + lineno + '" style="position:absolute;left:' + l.toString() + 'px;top:' + t.toString() + 'px;width:' + w.toString() + 'px;height:' + h.toString() + 'px;" value="' + val + '"/>';
 	td.append(input);
-	$(".labelinput").keypress(function(e) {
+	$("body").keypress(function(e) {
 	    if (e.which == 13) { // enter
-		var val = $(this).val();
-		if (csv_data[lineno][0] != val) {
-		    // ラベルが変更された
-		    csv_data[lineno][4] = 1;
-		    csv_data[lineno][0] = val;
-		    td.html(val);
-		    td.addClass("edited");
-		    // 他の画面に移動する前に確認する
-		    $(window).on('beforeunload', function() {
-			return "The modified data will be lost. Is it OK?";
-		    });
-		}
-		$(this).remove();
-		return;
+		$(".labelinput").each(function() {
+		    var val = $(this).val();
+		    var lineno = $(this).attr('data-lineno');
+		    if (csv_data[lineno][0] != val) {
+			var td = $(this).parent("td").eq(0);
+			// ラベルが変更された
+			csv_data[lineno][4] = 1;
+			csv_data[lineno][0] = val;
+			td.html(val);
+			td.addClass("edited");
+			$("#line_save_button").removeAttr("disabled");
+			// 他の画面に移動する前に確認する
+			$(window).on('beforeunload', function() {
+			    return "The modified data will be lost. Is it OK?";
+			});
+		    }
+		});
+		$(".labelinput").remove();
+		$("body").unbind('keypress');
+		return false;
 	    } else if (e.which == 0) { // escape
-		$(this).remove();
-		return;
-	    } else if (e.which < 32) {
-		console.debug(e.which);
+		$(".labelinput").remove();
+		$("body").unbind('keypress');
+		return false;
 	    }
 	});
 	$(".labelinput").show();
@@ -376,7 +425,7 @@ function assignActions() {
 	// タブ区切りテキストを用意
 	var text = "";
 	for (var i = 0; i < csv_data.length; i++) {
-	    line = csv_data[i];
+	    var line = csv_data[i];
 	    for (var j = 0; j < line.length; j++) {
 		if (j > 0) {
 		   text += "\t";
@@ -423,6 +472,61 @@ function assignActions() {
 	}
 	return false;
     });
+
+    if (window.localStorage) {
+	var itemkey = keyprefix + "." + current_paper;
+	// Save ボタン -> Web local storage に保存
+	$("#line_save_button").click(function() {
+	    var json_text = JSON.stringify(csv_data);
+	    window.localStorage.setItem(itemkey, json_text);
+	    $("#line_load_button").removeAttr("disabled");
+	    alert("Saved to the browser storage.");
+	    $(window).off('beforeunload');
+	});
+
+	// Load ボタン
+	if (window.localStorage.getItem(itemkey) != null) {
+	    $("#line_load_button").removeAttr("disabled");
+	}	    
+	$("#line_load_button").click(function() {
+	    var json_text = window.localStorage.getItem(itemkey);
+	    var csv_data = JSON.parse(json_text);
+	    updatePaperLine(csv_data);
+	    $("#line_save_button").attr("disabled", "disabled");
+	    alert("Loaded from browser storage.");
+	});
+    }
+
+    // ファイルドロップ
+    var dragto = $("#paper_line");
+    dragto.bind("dragover", function(e) {
+	e.preventDefault();
+	dragto.css("border", "1px solid #FF8888");
+    });
+    dragto.bind("drop", function(e) {
+	dragto.css("border", "1px solid black");
+	e.preventDefault();
+	var data_transfer = e.originalEvent.dataTransfer;
+	var file_list = data_transfer.files;
+	if (!file_list) return false;
+	for (var i = 0; i < file_list.length; i++) {
+	    var file = file_list[i];
+	    if (file.name == current_paper + ".csv") {
+		var reader = new FileReader();
+		reader.onload = function(e2) {
+		    var data = e2.target.result;
+		    updatePaperLineFromText(data, true);
+		    $("#line_save_button").removeAttr("disabled");
+		    alert("Loaded from the dropped file.");
+		};
+		reader.readAsText(file);
+		return false;
+	    }
+	}
+	alert("The file is not for the current paper.");
+	return false;
+    });
+
 }
 
 // 指定したlineを選択する
