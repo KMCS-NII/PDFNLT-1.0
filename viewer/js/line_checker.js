@@ -180,6 +180,7 @@ function resetLayout() {
 }
 
 // トレーニングデータを読み込む
+var csv_data = [];
 function showPaperLine(code) {
     var url = "train/" + code + ".csv";
     var reErr = /^#/;
@@ -190,12 +191,15 @@ function showPaperLine(code) {
 	success: function(data) {
 	    var lines = data.split("\n");
 	    var html = "";
+	    csv_data = [];
 	    for (i = 0; i < lines.length; i++) {
 		var line = lines[i];
 		if (line == "") {
 		    break; // 最後の行は "\n" で終わっている
 		}
 		var args = line.split("\t");
+		args.push("0"); // サーバ上のデータは 0
+		csv_data.push(args);
 		var params = args[3].split(" ");
 		var tr_class = "line";
 		if (reErr.test(args[0])) {
@@ -235,7 +239,6 @@ function getPageInfo(n) {
 
 // イベントアクションをセット
 function assignActions() {
-
     // マウスオーバー時にボックスを表示
     $("tr.line").hover(
 	function() {
@@ -253,11 +256,11 @@ function assignActions() {
 	    var box = '<div class="box" data-page="' + (page + 1).toString() + '" style="left:' + l.toString() + 'px;top:' + t.toString() + 'px;width:' + w.toString() + 'px;height:' + h.toString() + 'px;"/>';
 	    $("#paper").remove("#div.box");
 	    $("#paper").append(box);
-	    $("#paper div.box").show();
 	    $("#paper div.box").click(function() {
 		var line = $(this).attr("data-line");
 		selectLine(line);
 	    });
+	    $("#paper div.box").show();
 	},
 	function() {
 	    $(this).removeClass('hovered');
@@ -319,6 +322,98 @@ function assignActions() {
 	});
 
 	selectLine(line);
+    });
+
+    // マウスダブルクリック時にクリックした位置までスクロール
+    $("tr.line").dblclick(function() {
+	var lineno = $(this).attr("data-line");
+	var td = $(this).children("td").eq(1);
+	var l = td.offset().left;
+	var t = td.offset().top;
+	var w = td.width() + 2; // padding の分
+	var h = td.height() + 2;
+	var val = csv_data[lineno][0];
+	if (val.substr(0, 2) == '# ') {
+	    val = val.substr(2);
+	}
+	var input = '<input class="labelinput" style="position:absolute;left:' + l.toString() + 'px;top:' + t.toString() + 'px;width:' + w.toString() + 'px;height:' + h.toString() + 'px;" value="' + val + '"/>';
+	td.append(input);
+	$(".labelinput").keypress(function(e) {
+	    if (e.which == 13) { // enter
+		var val = $(this).val();
+		if (csv_data[lineno][0] != val) {
+		    // ラベルが変更された
+		    csv_data[lineno][4] = 1;
+		    csv_data[lineno][0] = val;
+		    td.html(val);
+		    td.addClass("edited");
+		    // 他の画面に移動する前に確認する
+		    $(window).on('beforeunload', function() {
+			return "The modified data will be lost. Is it OK?";
+		    });
+		}
+		$(this).remove();
+		return;
+	    } else if (e.which == 0) { // escape
+		$(this).remove();
+		return;
+	    } else if (e.which < 32) {
+		console.debug(e.which);
+	    }
+	});
+	$(".labelinput").show();
+    });
+	
+    //  Download ボタン
+    $("#line_download_button").click(function() {
+	// タブ区切りテキストを用意
+	var text = "";
+	for (var i = 0; i < csv_data.length; i++) {
+	    line = csv_data[i];
+	    for (var j = 0; j < line.length; j++) {
+		if (j > 0) {
+		   text += "\t";
+		}
+		text += line[j];
+	    }
+	    text += "\n";
+	}
+	/*
+	// Unicode コード配列に変換
+	var unicode_code_array = [];
+	for (i = 0; i < csv.length; i++) {
+	    unicode_code_array.push(csv.charCodeAt(i));
+	}
+	// ShiftJIS コード配列に変換 for MS-Excel
+	var sjis_code_array = Encoding.convert(
+	    unicode_code_array,
+	    'SJIS',
+	    'UNICODE'
+	);
+	// 文字コード配列をTypedArrayに変換する
+	var uint8_array = new Uint8Array(sjis_code_array);
+	 */
+	
+	// 指定されたデータを保持するBlobを作成する
+	// var blob = new Blob([uint8_array], {type: 'text/csv'});
+	var blob = new Blob([text], {type: 'application/octet-stream'});
+	var filename = current_paper + ".csv";
+
+	if (window.navigator.msSaveBlob) {
+	    window.navigator.msSaveOrOpenBlob(blob, filename);
+	} else {
+	    var aobj = document.createElement("a");
+	    if (aobj.download === undefined) {
+		alert("Please use modern browsers ;(");
+	    } else {
+		aobj.href = window.URL.createObjectURL(blob);
+		aobj.download = filename;
+		aobj.style = "visibility:hidden";
+		document.body.appendChild(aobj);
+		aobj.click();
+		document.body.removeChild(aobj);
+	    }
+	}
     });
 }
 

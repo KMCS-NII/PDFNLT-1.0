@@ -40,6 +40,7 @@ $options = implode('', array_values($options));
   <link href="css/viewer.css" rel="stylesheet">
   <script src="js/jquery-1.11.3.min.js"></script>
   <script src="js/line_checker.js"></script>
+  <script src="js/encoding.js"></script>
   <script type="text/javascript">
     var default_paper = "<?php echo $code; ?>";
   </script>
@@ -55,6 +56,7 @@ $options = implode('', array_values($options));
       <!--input type="button" id="paper_select_input_button" value="Go" /-->
       &nbsp;
       <input type="button" id="layout_select_button" value="Layout" />
+      <input type="button" id="line_download_button" value="Download" /></a>
     </div>
 
     <div id="container">
