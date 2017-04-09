@@ -239,6 +239,13 @@ function getPageInfo(n) {
 
 // イベントアクションをセット
 function assignActions() {
+    // バインド済みの処理を多重定義しないように削除
+    $("tr.line").unbind('hover');
+    $("tr.line").unbind('click');
+    $("tr.line").unbind('dblclick');
+    $("#paper_image").unbind('click');
+    $("#line_download_button").unbind('click');
+    
     // マウスオーバー時にボックスを表示
     $("tr.line").hover(
 	function() {
@@ -414,6 +421,7 @@ function assignActions() {
 		document.body.removeChild(aobj);
 	    }
 	}
+	return false;
     });
 }
 
