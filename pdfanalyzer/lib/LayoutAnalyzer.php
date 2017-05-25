@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * Debug info
+ * ページ内のレイアウトを修正する -> __getIndentsFromBaselines
+ * 行の接続関係を修正する -> __getLineInfo
+ */
+
+/**
  * @file LayoutAnalyzer.php
  * PDF のレイアウト構造解析を行い
  * 行単位の構造データを出力する
@@ -15,6 +21,7 @@ class LayoutAnalyzer
         $this->column_gap  = 0.15; // 段落間に必要な隙間 0.15 inch(3.81mm)
         $this->wgap = 0.1; // 単語間に必要な隙間 0.1 inch
         $this->mingap = 0.02; // 単語間の空白と認めない最大間隔 0.02 inch
+        $this->sectionGap = 0.3; // 段組み変更を表すｙ方向の隙間 0.3 inch
         $this->debug = false;
         $this->__reset();
     }
@@ -232,47 +239,77 @@ class LayoutAnalyzer
      *             [1]=>[ymin, ymax, [左段左端, 左段右端, 右段左端, 右段右端]]
      *             [2]=>...
      * @param $l0, $l1  判定する行
-     * @return 連続する場合 true, 連続しない場合 false
+     * @return 連続する場合 1, 連続しない場合 -1, 不確実な場合 0
      */
     private function __is_continuable_lines($page_indents, $l0, $l1) {
         if (is_null($l0) || is_null($l1)) {
-            return false;
+            return -1;
         }
-        // printf("l0:'%s' <-> l1:'%s' = %f\n", implode(' ', $l0[5]), implode(' ', $l1[5]), min(abs($l0[4] - $l1[2]), abs($l0[2] - $l1[4])));
-        if (abs($l0[4] - $l1[2]) > 0.3 * $this->dpi
-            && abs($l0[2] - $l1[4]) > 0.3 * $this->dpi) { // ベースラインでチェック
-            // y 方向に 0.3in 以上離れている
-            return false;
+        $separated = false;
+        $gap = min(max($l1[4] - $l0[2], 0), max($l1[2] - $l0[4], 0));
+        // printf("l0:'%s' <-> l1:'%s' = %f\n", implode(' ', $l0[5]), implode(' ', $l1[5]), $gap);
+        if ($gap > $this->sectionGap * $this->dpi) {
+            // y 方向に十分以上離れている
+            $separated = true;
+        }
+        if ($this->debug) {
+            echo "separated: " . var_export($separated, true) . "\n";
         }
         $n0 = $this->__get_indent_number_by_y($page_indents, $l0[4]);
         $n1 = $this->__get_indent_number_by_y($page_indents, $l1[4]);
+        if ($this->debug) {
+            printf("separated:%s, n0:%s, n1:%s\n", var_export($separated, true), var_export($n0, true), var_export($n1, true));
+        }
         if ($n0 == $n1) {
             // 同じレイアウトに属している
-            return true;
+            return $separated ? 0 : 1;
         }
+
+        // 以下、段組みレイアウトが変化した場合
+
         if ($n0 < 0 || $n1 < 0
             || $n0 >= count($page_indents)
             || $n1 >= count($page_indents)
             || abs($n0 - $n1) > 1) {
             // 隣り合わないレイアウト
-            return false;
+            return -1;
         }
         $ll0 = $page_indents[$n0][2];
         $ll1 = $page_indents[$n1][2];
         if (is_null($ll0[1]) && is_null($ll1[1])) {
             // どちらもシングルカラムの場合
-            return true;
+            return $separated ? 0 : 1;
         }
         if (is_null($ll0[1]) || is_null($ll1[1])) {
             // 片方がシングルカラムの場合
-            return false;
+            return -1;
         }
         // どちらもダブルカラムの場合
         if ($ll0[1] < $ll1[2] && $ll0[2] > $ll1[1]) {
             // 段落間の空白が交差していなければ OK
-            return true;
+            return $separated ? 0 : 1;
         }
         // それ以外は続かない
+        return $separated ? -1 : 0;
+    }
+
+    /**
+     * 左右の行の下端が揃っているかチェックする
+     * @param $lefts  左段の行情報の配列
+     * @param $rights 右段の行情報の配列
+     * @return 揃っている場合 true, 揃っていない場合 false
+     */
+    private function __is_aligned_lines($lefts, $rights) {
+        if (count($lefts) == 0 || count($rights) == 0) {
+            return false;
+        }
+        $l0 = $lefts[count($lefts) - 1];
+        $l1 = $rights[count($rights) - 1];
+        $gap = abs($l1[4] - $l0[4]);
+        if ($gap < $this->sectionGap * $this->dpi) {
+            // y 方向に揃っている
+            return true;
+        }
         return false;
     }
 
@@ -674,27 +711,36 @@ class LayoutAnalyzer
             $debug = false;
             $last_line = $line;
             $line = $lines[$i];
-            if ($line[4] > $no_break_until_y) {
-                $no_break_until_y = $line[4];
-            }
 
             /*
-            if ($i == 50) {//$line[1] == 442.479167 && $line[2] == 173.381913) {
-                $debug = true;
+            if ($i == 37) {//$line[1] == 442.479167 && $line[2] == 173.381913) {
+                $this->debug = $debug = true;
             }
             */
 
+            $gap = min(max($line[4] - $last_line[2], 0), max($line[2] - $last_line[4], 0));
+            $con = $this->__is_continuable_lines($page_indents, $last_line, $line);
             // インデントレイアウト変更のチェック
+            // Todo: C04-1112:588 にどう対応するか？
             if ($line[4] > $no_break_until_y
-                && !$this->__is_continuable_lines($page_indents, $last_line, $line)) {
-                // printf("%d: y:%.2f, '%s'\n", $i, $line[4], implode(' ', $line[5]));
-                // 変更
+                && ($con == -1
+                    || ($con == 0
+                        && $this->__is_aligned_lines($blocks['left'], $blocks['right']))  // 直前の左右段落の下端が揃っている
+                )) {
+                // echo "-- session --\n";
+                // ここで段組み変更
                 if (count($blocks['left']) + count($blocks['right']) > 0) {
                     foreach ($blocks['left'] as $l) $layout_lines []= $l;
                     foreach ($blocks['right'] as $l) $layout_lines []= $l;
                 }
                 $blocks = array('left' => array(), 'right' => array());
             }
+            if ($line[4] > $no_break_until_y) {
+                $no_break_until_y = $line[4];
+            }
+            
+            // printf("%d:'%s'=%d, y:(%.2f,%.2f), l:(%.2f,%.2f), gap:%.2f, until:%.2f\n", $i, substr(implode(' ', $line[5]), 0, 10),$con, $line[2], $line[4], $last_line[2], $last_line[4], $gap, $no_break_until_y);
+            
             list($l0, $r0, $l1, $r1) = $this->__get_indent_by_y($page_indents, $line[4]);
 
             if (is_null($r0)) {
@@ -727,7 +773,7 @@ class LayoutAnalyzer
                                 if ($debug) printf(" y:%d is larger than baseline:%d.\n", $lines[$j][2], $line[4]);
                                 break;
                             }
-                            if ($lines[$j][1] > $line[3] && $this->__is_same_line($line[2], $line[4], $lines[$j][2], $lines[$j][4])) {
+                            if ($lines[$j][1] > $line[3] + $this->column_gap * $this->dpi && $this->__is_same_line($line[2], $line[4], $lines[$j][2], $lines[$j][4])) {
                                 // 同じ行の右側に別の行が存在しているので
                                 // 左ブロック確定
                                 if ($debug) printf(" clinging turned off.\n");
@@ -934,6 +980,26 @@ class LayoutAnalyzer
     }
 
     /**
+     * 配列中のブロックが指定されたインデント範囲に
+     * 含まれるかどうかをチェックする
+     * @param $bl        ブロック情報の配列（x座標は10倍されている）
+     * @param $positions [左段左端, 左段右端, 右段左端, 右段右端] x座標
+     * @return 全て含まれる場合 true, 一つでも含まれない場合 false
+     */
+    private function ___is_inside($bl, $positions) {
+        foreach ($bl as $b) {
+            if ($b['x0'] >= $positions[0] * 10 && $b['x1'] <= $positions[1] * 10
+                || $b['x0'] >= $positions[2] * 10 && $b['x1'] <= $positions[3] * 10) {
+                ;
+            } else {
+                return false;
+                        }
+        }
+        return true;
+    }
+
+
+    /**
      * 粗くまとめられた単語集合の座標から
      * 左段左端、左段右端、右段左端、右段右端の座標を推測する
      * @param $baselines
@@ -1009,17 +1075,17 @@ class LayoutAnalyzer
                 foreach ($blocks as $b) {
                     if ($k == $b['x0']) {
                         if (!isset($tabs[$k])) {
-                            $tabs[$k] = array($b['y1'] - $h, $b['y1']);
+                            $tabs[$k] = array($b['y1'], $b['y1'] + 1);
                         }
-                        $tabs[$k] = array(min($b['y1'] - $h, $tabs[$k][0]),
-                                          max($b['y1'], $tabs[$k][1]));
+                        $tabs[$k] = array(min($b['y1'], $tabs[$k][0]),
+                                          max($b['y1'] + 1, $tabs[$k][1]));
                     }
                 }
             }
-
+            
             if (count($tabs) > 2) { // 2カラムなら2つ存在する
-                // ページ内にインデント位置が異なる箇所がある
                 $regions = array(0);
+                // ページ内にインデント位置が異なる箇所がある
                 foreach ($tabs as $t) {
                     $regions []= $t[0];
                     $regions []= $t[1];
@@ -1031,10 +1097,10 @@ class LayoutAnalyzer
                 $y0 = $regions[0];
                 for ($i = 0; $i < count($regions) - 1; $i++) {
                     $y1 = $regions[$i + 1];
-                    if ($y1 - $y0 < 2.0 * $this->dpi) {
+                    /*if ($y1 - $y0 < 2.0 * $this->dpi) {
                         // 2in 以下の高さしかない場合は無視
                         continue;
-                    }
+                        }*/
                     $c = 0; // その行のカラム数
                     foreach ($tabs as $t) {
                         if ($t[1] > $y0 && $t[0] < $y1) {
@@ -1047,25 +1113,134 @@ class LayoutAnalyzer
                     $y0 = $y1 + 1;
                 }
 
+                // 主要な2段組みのレイアウトを決める
                 for ($i = 0; $i < count($regions2); $i++) {
                     list($y0, $y1, $c) = $regions2[$i];
-                    if ($c < 2) {
+                    if ($c < 2 || $y1 - $y0 < 1.0 * $this->dpi) {
+                        // 1カラムまたは 1in 未満の高さしかない場合は後で処理
+                        $indents[$i + 1] = array($y0, $y1);
                         continue;
                     }
+                    /*
+                    // 2カラム領域の前後に1カラム領域がある場合、
+                    // 0.5 in 分拡げる
                     if ($i > 0 && $regions2[$i - 1][2] < 2) {
                         $y0 -= 0.5 * $this->dpi; // 0.5in マージン
                     }
                     if ($i < count($regions2) - 1 && $regions[$i + 1][2] < 2) {
                         $y1 += 0.5 * $this->dpi;
                     }
+                    */
+                    // その領域のインデント位置を計算する
                     $partial_indents = $this->__getIndentsFromBaselines($baselines, $width, $height, array($y0, $y1));
-                    $indents []= array(
+                    $indents[$i + 1] = array(
                         $y0, // 開始 y 座標
                         $y1, // 終了 y 座標
                         $partial_indents[0][2],
                     );
                 }
 
+                // それ以外の部分のレイアウトに含まれる行を
+                // 前後の領域に割り振る
+                for ($i = 1; $i < count($indents); $i++) {
+                    if (isset($indents[$i][2])) {
+                        continue; // 既に計算済みの領域
+                    }
+                    $y0 = $indents[$i][0];
+                    $y1 = $indents[$i][1];
+                    // echo "Checking {$i} section...\n";
+
+                    $before_indent = null;
+                    $after_indent  = null;
+                    for ($j = $i - 1; $j > 0; $j--) {
+                        if (isset($indents[$j][2])) {
+                            $before_indent = $j;
+                            $before_layout = $indents[$j][2];
+                            break;
+                        }
+                    }
+                    for ($j = $i + 1; $j < count($indents); $j++) {
+                        if (isset($indents[$j][2])) {
+                            $after_indent = $j;
+                            $after_layout = $indents[$j][2];
+                            break;
+                        }
+                    }
+
+                    $lines = array();
+                    foreach ($baselines as $by => $bl) {
+                        if ($by < $y0 || $by > $y1) continue;
+                        $lines[$by] = $bl;
+                    }
+
+                    $modified = true;
+                    while ($modified) {
+                        $modified = false;
+                        if (!is_null($before_indent)) {
+                            ksort($lines);
+                            foreach ($lines as $by => $bl) {
+                                if ($by < $y0 || $by > $y1) continue;
+                                // echo "   y = {$by}, '{$bl[0]['w']}'\n";
+                                if ($by - $indents[$before_indent][1] < $this->sectionGap * $this->dpi
+                                    && $this->___is_inside($bl, $before_layout)) {
+                                    // この行は直前の領域の続き
+                                    $indents[$before_indent][1] = max($by, $indents[$before_indent][1]);
+                                    $y0 = max($y0, $by + 1);
+                                    $modified = true;
+                                    // echo "    -> bind to {$before_indent}\n";
+                                } else {
+                                    break;
+                                }
+                            }
+                        }
+                        if (!is_null($after_indent)) {
+                            krsort($lines);
+                            foreach ($lines as $by => $bl) {
+                                if ($by < $y0 || $by > $y1) continue;
+                                // echo "   y = {$by}, '{$bl[0]['w']}'\n";
+                                if ($indents[$after_indent][0] - $by < $this->sectionGap * $this->dpi
+                                    && $this->___is_inside($bl, $after_layout)) {
+                                    // この行は直後の領域の先行部分
+                                    $indents[$after_indent][0] = min($by, $indents[$after_indent][0]);
+                                    $y1 = min($y1, $by - 1);
+                                    $modified = true;
+                                    // echo "    -> bind to {$after_indent}\n";
+                                } else {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    $indents[$i] = array($y0, $y1);
+                }
+                // $indents = array_values(array_filter($indents));
+                if (isset($indents[count($indents) - 1][2])) {
+                    // 末尾に1カラムの領域を追加
+                    $indents []= array($indents[count($indents) - 1][1], $indents[0][1]);
+                }
+                // print_r($indents); die();
+
+                // インデントが決まらなかった領域を整理
+                for ($i = 1; $i < count($indents); $i++) {
+                    $indent = $indents[$i];
+                    if (!isset($indent[2])) {
+                        /*
+                        $y = ($indent[0] + $indent[1]) / 2.0;
+                        // 誤差対応のため前後の領域を少し広げる
+                        if ($i > 1 && isset($indents[$i - 1][2])) {
+                            $indents[$i - 1][1] = min($indents[$i - 1][1] + 0.1 * $this->dpi, $y);
+                        }
+                        if ($i < count($indents) - 1 && isset($indents[$i + 1][2])) {
+                            $indents[$i + 1][0] = max($indents[$i + 1][0] - 0.1 * $this->dpi, $y);
+                        }
+                        */
+                        $indents[$i] = null;
+                    }
+                }
+                $indents = array_values(array_filter($indents));
+                // print_r($indents); die();
+
+                /*
                 // 0.5in マージンが重複している区間があれば調整
                 for ($i = 1; $i < count($indents) - 1; $i++) {
                     if ($indents[$i][1] > $indents[$i + 1][0]) {
@@ -1074,6 +1249,7 @@ class LayoutAnalyzer
                         $indents[$i + 1][0] = $border + 1;
                     }
                 }
+                */
             }
         }
         
@@ -1136,29 +1312,75 @@ class LayoutAnalyzer
         $r0 = null;
         $crosses = array();
         $matches = array();
-        if (!is_null($page_indent)) {
+        if (!is_null($page_indent) && $page_indent[2] > 0) {
             // 全ページから計算した左段右端と右段左端
             $x0 = $page_indent[1] * 10;
             $x1 = $page_indent[2] * 10;
             $k = ($x0 + 1).','.$x1;
-            $matches[$k] = 5; // 5行一致していると下駄をはかせる
-            $crosses[$k] = 0;
+            $cross = 0;
             foreach ($blocks as $bl) {
                 // 交差する行数を数える
-                if ($bl['x1'] < $x0 || $bl['x0'] > $x1) continue;
-                $crosses[$k]++;
+                if (!is_null($yrange) && ($bl['y1'] < $yrange[0] || $bl['y1'] > $yrange)) {
+                    continue;
+                }
+                if ($bl['x1'] <= $x0 || $bl['x0'] >= $x1) continue;
+                $cross++;
             }
+            if ($cross == 0) {
+                // 1行も交差しないので、ページ全体のインデントを
+                // そのまま採用する
+                $matches[$k] = 100;
+            } else {
+                $matches[$k] = 5; // 5行一致していると下駄をはかせる
+            }
+            $crosses[$k] = $cross;
         }
         foreach ($rights as $x0 => $freq_r) {
-            if ($x0 < $width * 10 / 4 || $x0 > $width * 30 / 4) continue;
-            if (!is_null($page_indent) && is_null($yrange) && abs($x0 / 10 - $page_indent[1]) > $margin) {
-                continue; // ずれすぎ
+            // 中央空白部の左端の条件判定
+            if (is_null($page_indent)) {
+                // 全ページの段組みを計算
+                if ($x0 < $width * 10 / 3 || $x0 > $width * 20 / 3) {
+                    continue;
+                }
+            } else if (is_null($yrange)) {
+                // このページ全体の段組みを計算
+                if ($x0 < $width * 10 / 4
+                    || $x0 > $width * 30 / 4
+                    || abs($x0 / 10 - $page_indent[1]) > $margin) {
+                    // 全ページから計算した段組みとずれすぎている
+                    continue;
+                }
+            } else {
+                // ページ内の指定領域の段組みを計算
+                if ($x0 < $width * 10 / 5 || $x0 > $width * 40 / 5) {
+                    continue;
+                }
             }
             foreach ($lefts as $x1 => $freq_l) {
-                if (!is_null($page_indent) && is_null($yrange) && abs($x1 / 10 - $page_indent[2]) > $margin) {
-                    continue; // ずれすぎ
+                // 中央空白部の右端の条件判定
+                if (is_null($page_indent)) {
+                    // 全ページの段組みを計算
+                    if ($x1 < $width * 10 / 3 || $x1 > $width * 20 / 3) {
+                        continue;
+                    }
+                } else if (is_null($yrange)) {
+                    // このページ全体の段組みを計算
+                    if ($x1 < $width * 10 / 4
+                    || $x1 > $width * 30 / 4
+                    || abs($x1 / 10 - $page_indent[1]) > $margin) {
+                        // 全ページから計算した段組みとずれすぎている
+                        continue;
+                    }
+                } else {
+                    // ページ内の指定領域の段組みを計算
+                    if ($x1 < $width * 10 / 5 || $x1 > $width * 40 / 5) {
+                        continue;
+                    }
                 }
-                if ($x1 <= $x0 + 10 * $this->column_gap * $this->dpi || $x1 > $width * 30 / 4) continue; // 段落間には最低 0.15inch の間隔が必要
+                // 左端との距離が十分空いているか
+                if ($x1 <= $x0 + 10 * $this->column_gap * $this->dpi) {
+                    continue;
+                }
                 $range = array($x0 + 1, $x1); // +1は切り捨て誤差
                 $k = ($x0 + 1).','.$x1;
                 if (!isset($crosses[$k])) {
@@ -1193,11 +1415,6 @@ class LayoutAnalyzer
         $max_gap = 0;
         foreach ($matches as $k => $freq) {
             $score = $freq - $crosses[$k] * 5; // 交差があると-5点
-            /*
-            if (!is_null($this->indents) && isset($yrange[0]) && $yrange[0] > 770) {
-                printf("%s : %d (freq:%d, cross:%d)\n", $k, $score, $freq, $crosses[$k]);
-            }
-            */
             if ($score >= $max_score) {
                 // 同点の場合は頻度が低い＝交差が少ない方を選ぶ
                 list($r0, $l1) = explode(',', $k);
@@ -1217,7 +1434,7 @@ class LayoutAnalyzer
             $l1 = $l1 / 10.0;
         }
 
-        if (!true && !is_null($this->indents) && $yrange[0] > 770) {
+        if (!true && !is_null($this->indents) && $yrange[0] > 500) {
             print_r($this->indents);
             echo "\nleft = "; print_r($lefts);
             echo "\nright = "; print_r($rights);
@@ -1231,26 +1448,27 @@ class LayoutAnalyzer
         $indents[0][2] = array($l0, $r0, $l1, $r1);
 
         // 部分インデントでページ全体と一致するものは削除
-        for ($i = 1; $i < count($indents); $i++) {
-            $ident = true;
-            for ($j = 0; $j < count($indents[0][2]); $j++) {
-                // プラスマイナス0.5in以内であれば同じインデント位置とみなす
-                if (abs($indents[0][2][$j] - $indents[$i][2][$j]) > 0.5 * $this->dpi) {
-                    $ident = false;
-                    break;
+        if (!isset($yrange)) {
+            for ($i = 1; $i < count($indents); $i++) {
+                $ident = true;
+                for ($j = 0; $j < count($indents[0][2]); $j++) {
+                    // プラスマイナス0.5in以内であれば同じインデント位置とみなす
+                    if (abs($indents[0][2][$j] - $indents[$i][2][$j]) > 0.5 * $this->dpi) {
+                        $ident = false;
+                        break;
+                    }
+                }
+                /*
+                  printf("i:%d => %s\n", $i, var_export($ident, true));
+                  print_r($indents[0][2]);
+                  print_r($indents[$i][2]);
+                */
+                if ($ident) {
+                    $indents[$i] = null;
                 }
             }
-            /*
-            printf("i:%d => %s\n", $i, var_export($ident, true));
-            print_r($indents[0][2]);
-            print_r($indents[$i][2]);
-            */
-            if ($ident) {
-                $indents[$i] = null;
-            }
+            $indents = array_values(array_filter($indents));
         }
-        $indents = array_values(array_filter($indents));
-        
         return $indents;
     }
 

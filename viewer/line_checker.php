@@ -56,11 +56,12 @@ $options = implode('', array_values($options));
       <!--input type="button" id="paper_select_input_button" value="Go" /-->
       &nbsp;
       <input type="button" id="layout_select_button" value="Layout" />
-      <span>|
+      |<span>
 	  <input type="button" id="line_download_button" value="Download" />
 	  <input type="button" id="line_save_button" value="Save" style="display:none;" />
 	  <input type="button" id="line_load_button" value="Load" style="display:none;" />
       </span>
+      |<span id="disp_error">Error:0</span>
     </div>
 
     <div id="container">
@@ -68,7 +69,7 @@ $options = implode('', array_values($options));
       <div id="paper_line">
 	<table id="table_line">
 	  <thead>
-	    <tr><th>#</th><th>ラベル</th><th>テキスト</th></tr>
+	    <tr><th>#</th><th>Label</th><th>Text</th></tr>
 	  </thead>
 	  <tbody>
 	    <tr><td>1</td><td></td><td></td></tr>

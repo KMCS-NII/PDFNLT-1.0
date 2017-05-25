@@ -249,9 +249,16 @@ function updatePaperLine(data) {
 	npages = parseInt(params[0], 10) + 1; // ページ数
     }
     $("table#table_line tbody").html(html);
-
+    
     csv_data = data;
     assignActions();
+    updateErrorCount();
+}
+
+// エラー行数を更新する
+function updateErrorCount() {
+    var n = $("tr.err:not(tr:has(td.edited))").size();
+    $("span#disp_error").text("Error:" + n.toString());
 }
 
 // ページ画像を表示する
@@ -283,6 +290,7 @@ function assignActions() {
     $("tr.line").unbind('click');
     $("tr.line").unbind('dblclick');
     $("#paper_image").unbind('click');
+    $("#line_correct_button").unbind('click');
     $("#line_download_button").unbind('click');
     $("#line_save_button").unbind('click');
     $("#line_load_button").unbind('click');
@@ -406,6 +414,7 @@ function assignActions() {
 			$(window).on('beforeunload', function() {
 			    return "The modified data will be lost. Is it OK?";
 			});
+			updateErrorCount();
 		    }
 		});
 		$(".labelinput").remove();
