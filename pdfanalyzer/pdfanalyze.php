@@ -21,6 +21,7 @@ $opts = getopts(array(
     'x' => array('switch' => array('x', 'xhtml-dir'), 'type' => GETOPT_VAL),
     'A' => array('switch' => array('A', 'all'), 'type' => GETOPT_SWITCH),
     'i' => array('switch' => array('i', 'with-image'), 'type' => GETOPT_SWITCH),
+    'u' => array('switch' => array('u', 'use-alter-image'), 'type' => GETOPT_VAL),
     'M' => array('switch' => array('M', 'with-mecab'), 'type' => GETOPT_SWITCH),
     'w' => array('switch' => array('w', 'with-wordtag'), 'type' => GETOPT_SWITCH),
 ));
@@ -31,17 +32,17 @@ Usage: php {$argv[0]} [options] -c <command> [file 1] [...]
 
 Options:
 
-  --model=<model file> (default: 'paper.model')
+  --model <model file> (default: 'paper.model')
 
-  --pdf-dir=<PDF directory> (default: 'pdf/')
+  --pdf-dir <PDF directory> (default: 'pdf/')
 
-  --figure-dir=<pdffigure-json directory> (default: null)
+  --figure-dir <pdffigure-json directory> (default: null)
 
-  --annotation-dir=<annotation directory> (default: 'anno/')
+  --annotation-dir <annotation directory> (default: 'anno/')
 
-  --training-dir=<training directory> (default: 'train/')
+  --training-dir <training directory> (default: 'train/')
 
-  --xhtml-dir=<XHTML directory> (default: 'xhtml/')
+  --xhtml-dir <XHTML directory> (default: 'xhtml/')
 
   -A, --all
      Instead of specifying PDFs, use all files under the directory.
@@ -50,7 +51,13 @@ Options:
 
   (Options for 'generate_xhtml' command only)
   --with-image (default:0)
-     Generate figure images under the 'xhtml-dir'.
+     Generate image under the 'xhtml-dir'/image/ for figures and tables
+
+  --use-alter-image (default:'')
+     Generate alternate image for sections.
+
+     ex. '--use-alter-image Equation,Theorem'
+       The sections titled 'Equation' and 'Theorem' are shown as images.
 
   --with-mecab (default:0)
      Use MeCab to extract Japanese words instead of characters.
@@ -99,6 +106,7 @@ $p->setAnnotationDir($annotation_dir);
 $p->setTrainingDir($training_dir);
 $p->setXhtmlDir($xhtml_dir);
 $p->setCutImage($opts['i']);
+$p->setUseAltImage($opts['u']);
 $p->setUseMecab($opts['M']);
 $p->setUseWordtag($opts['w']);
 

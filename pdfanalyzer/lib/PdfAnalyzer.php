@@ -65,6 +65,7 @@ class PdfAnalyzer
         $this->have_mecab = class_exists("MeCab_Tagger");
         // スイッチ
         $this->cutimage = false;
+        $this->altimage = array();
         $this->use_mecab = $this->have_mecab;
         $this->use_wordtag = true;
         $this->__reset();
@@ -82,10 +83,24 @@ class PdfAnalyzer
 
     /**
      * XHTML 作成の際に画像も生成するかどうかのフラグをセット
-     * @param $f  true の場合、画像を生成する
+     * @param $f  1 の場合、図表のみ画像を生成する
+     *            2 の場合、全てのパラグラフの画像を生成する
      */
     public function setCutImage($f = true) {
+        if ($f) {
+            $f = true;
+        } else {
+            $f = false;
+        }
         $this->cutimage = $f;
+    }
+
+    /**
+     * XHTML 作成の際に代替画像を生成するセクション名をセット
+     * @param $sections  セクション名をカンマでつないだ文字列
+     */
+    public function setUseAltImage($sections = '') {
+        $this->altimage = explode(',', $sections);
     }
 
     /**
@@ -111,6 +126,9 @@ class PdfAnalyzer
      * 各種ディレクトリの setter, getter
      */
     public function setPdfDir($d) {
+        if (substr($d, -1) != '/') {
+            $d .= '/';
+        }
         $this->pdf_dir = $d;
     }
     public function getPdfDir() {
@@ -118,6 +136,13 @@ class PdfAnalyzer
     }
 
     public function setFigureDir($d) {
+        if (!$d || !is_string($d)) {
+            $this->figure_dir = null;
+            return;
+        }
+        if (substr($d, -1) != '/') {
+            $d .= '/';
+        }
         $this->figure_dir = $d;
     }
     public function getFigureDir() {
@@ -125,6 +150,9 @@ class PdfAnalyzer
     }
 
     public function setAnnotationDir($d) {
+        if (substr($d, -1) != '/') {
+            $d .= '/';
+        }
         $this->annotation_dir = $d;
     }
     public function getAnnotationDir() {
@@ -132,6 +160,9 @@ class PdfAnalyzer
     }
 
     public function setTrainingDir($d) {
+        if (substr($d, -1) != '/') {
+            $d .= '/';
+        }
         $this->training_dir = $d;
     }
     public function getTrainingDir() {
@@ -139,6 +170,9 @@ class PdfAnalyzer
     }
 
     public function setXhtmlDir($d) {
+        if (substr($d, -1) != '/') {
+            $d .= '/';
+        }
         $this->xhtml_dir = $d;
     }
     public function getXhtmlDir() {
@@ -463,10 +497,17 @@ class PdfAnalyzer
             throw new RuntimeException("Page image '{$page_img}' is not exists");
         }
         $abs_bdr = $this->la->getAbsoluteBdr($bdr[0], $bdr[1], $bdr[2], $bdr[3], $page);
+        $cutmargin = 0.05 * $this->la->getDpi();
+        $abs_bdr = array(
+            $abs_bdr[0] - $cutmargin,
+            $abs_bdr[1] - $cutmargin,
+            $abs_bdr[2],
+            $abs_bdr[3],
+        );
         // 出力先
         $content_img = sprintf("%s%s-%s.png", $imgdir, $doc_id, $image_id);
         $cmd = sprintf("convert -crop %sx%s+%s+%s %s %s", $abs_bdr[2] - $abs_bdr[0], $abs_bdr[3] - $abs_bdr[1], $abs_bdr[0], $abs_bdr[1], $page_img, $content_img);
-        echo "executing: '", $cmd, "'...\n";
+        // echo "executing: '", $cmd, "'...\n";
         // 実行
         exec($cmd);
     }
@@ -776,7 +817,7 @@ class PdfAnalyzer
                 $div_box->setIdAttribute('id', true);
 
 
-                $this->__toXhtmlParagraphs($dom, $div_box, $box['paragraphs'], $doc_id, $i, $j);
+                $this->__toXhtmlParagraphs($dom, $div_box, $box['paragraphs'], $doc_id, $i, $box['boxType'], $j);
                 $div_section->appendChild($div_box);
 				$j++;
 			}
@@ -812,15 +853,18 @@ class PdfAnalyzer
      * @param $paragraphs  追加すべきパラグラフのデータ
      * @param $doc_id      文書ID
      * @param $section_no  セクションナンバー
+     * @param $box_type    ボックスタイプ
      * @param $box_no      ボックスナンバー
      * @return 無し, $div_box に追加する（参照渡し）
      */
-	private function __toXhtmlParagraphs($dom, &$div_box, $paragraphs, $doc_id, $section_no, $box_no) {
+	private function __toXhtmlParagraphs($dom, &$div_box, $paragraphs, $doc_id, $section_no, $box_type, $box_no) {
 
 		$i = 0;
 		foreach ($paragraphs as $paragraph) {
             $p = $dom->createElement('p'); //htmlspecialchars($paragraph['text']));
             $id = "p-{$section_no}-{$box_no}-{$i}";
+
+            $use_alt_image = ($this->cutimage && in_array($box_type, $this->altimage));
       
             // 単語列を中に格納する
             if (isset($paragraph['fig'])) { // 画像の場合
@@ -879,14 +923,18 @@ class PdfAnalyzer
                         if ($this->use_wordtag) {
                             $w = $dom->createElement('span', $word[0]);
                             $attr = $dom->createAttribute('class');
-                            $attr->value="word";
+                            if ($use_alt_image) {
+                                $attr->value="word alt-text";
+                            } else {
+                                $attr->value="word";
+                            }
                             $w->appendChild($attr);
                             $word_id = "w-{$section_no}-{$box_no}-{$i}-{$j}";
                             $attr = $dom->createAttribute('id');
                             $attr->value = $word_id;
                             $w->appendChild($attr);
                             $w->setIdAttribute('id', true);
-
+                            
                             // bdr
                             $attr = $dom->createAttribute('data-bdr');
                             $bdr = $this->la->getRelativeBdr($word[1], $word[2], $word[3], $word[4], $paragraph['page']);
@@ -930,8 +978,12 @@ class PdfAnalyzer
                             $p->appendChild($w);
                         } else {
                             // word タグをつけない
-                            $w = $dom->createTextNode($word[0]);
-                            $p->appendChild($w);
+                            if ($use_alt_image) {
+                                ;
+                            } else {
+                                $w = $dom->createTextNode($word[0]);
+                                $p->appendChild($w);
+                            }
                         }
                         $j++;
                     }
@@ -957,6 +1009,31 @@ class PdfAnalyzer
             $attr->value = sprintf("%6.5f,%6.5f,%6.5f,%6.5f", $bdr[0], $bdr[1], $bdr[2], $bdr[3]);
             // $attr->value = implode(',', $paragraph['bdr']);
             $p->appendChild($attr);
+
+            // パラグラフ画像
+            if ($use_alt_image) {
+                $this->cutImage($doc_id, $paragraph['page'], $bdr, $id);
+                $w = $dom->createElement('span');
+                $attr = $dom->createAttribute('class');
+                $attr->value="alt-image";
+                $w->appendChild($attr);
+                $word_id = "w-{$section_no}-{$box_no}-{$i}-{$j}";
+                $attr = $dom->createAttribute('id');
+                $attr->value = $word_id;
+                $w->appendChild($attr);
+                $w->setIdAttribute('id', true);
+                $attr = $dom->createAttribute('data-bdr');
+                $attr->value = sprintf("%6.5f,%6.5f,%6.5f,%6.5f", $bdr[0], $bdr[1], $bdr[2], $bdr[3]);
+                $w->appendChild($attr);
+                            
+                $img = $dom->createElement('img');
+                $attr = $dom->createAttribute('src');
+                $attr->value = $this->getImageDir($doc_id, true).$doc_id.'-'.$id.'.png';
+                $img->appendChild($attr);
+                $w->appendChild($img);
+                $p->appendChild($w);
+            }
+
             // 継続パラグラフ
             if (isset($paragraph['continued_from'])) {
                 $attr = $dom->createAttribute('data-continued-from');
