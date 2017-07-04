@@ -76,6 +76,7 @@ class PdfAnalyzer
 		$this->sections = array();
         $this->line_space = 0;
         $this->font_classes = array();
+        $this->word_id_list = array();
     }
 
     function __destruct() {
@@ -512,6 +513,33 @@ class PdfAnalyzer
         exec($cmd);
     }
 
+    /*
+     * 連続する2行がつながるかどうかをチェックする
+     * @param $line0   1行目の最後の単語（日本語の場合は行でも良い）
+     * @param $line1   2行目の最初の単語（日本語の場合は行でも良い）
+     * @return   false  つながらない場合
+     *           string 結合した単語（ハイフン除去済み）
+     */
+    private function __isContinuedLine($line0, $line1) {
+        if (is_array($line0) || is_array($line1)) {
+            throw new RuntimeException("lines must be string.");
+        }
+        if ($this->use_mecab && preg_match('/[一-龠]+|[ぁ-ん]+|[ァ-ヴー]+|[ａ-ｚＡ-Ｚ０-９]+/u', $line0)) {
+            // 日本語の場合
+            
+        } else {
+            // 英語の場合
+            if (preg_match('/^([A-Za-z]+)\-$/u', $line0, $m)
+                && preg_match('/(^[A-Za-z0-9]+)[\.\,]?$/u', $line1, $m2)) {
+                $candidate = $m[1].$m2[1];
+                if (pspell_check($this->pspell_link, $candidate)) {
+                    return $candidate; // つながる
+                }
+            }
+        }
+        return false; // つながらない
+    }
+
     // CRFSuite でタグ付けされた結果を付与する
     private function __mergeTags($la_lines, &$tags) {
         $line_info = array();
@@ -524,7 +552,9 @@ class PdfAnalyzer
             $label = $tags[$i];
             $continued = false;
             if (preg_match('/^([BIE])-(.*)/', $label, $m)) {
-                if ($m[1] !== 'B') $continued = true; // 継続ブロック
+                if ($m[1] !== 'B') {
+                    $continued = true; // 継続ブロック
+                }
                 $label = $m[2];
             }
             for ($t = $i + 1; $t < count($la_lines); $t++) {
@@ -544,20 +574,18 @@ class PdfAnalyzer
                 $li = $la_lines[$j];
                 if ($p['text'] != '') $p['text'] .= "\n";
                 $p['text'] .= $li[5];
+
                 // 行末のハイフネーション処理
                 if ($j < $t - 1) {
-                    if (preg_match('/^([A-Za-z]+)\-$/u', $li[0][count($li[0]) - 1][0], $m)
-                    && preg_match('/(^[A-Za-z0-9]+)[\.\,]?$/u', $la_lines[$j + 1][0][0][0], $m2)) {
-                        $candidate = $m[1].$m2[1];
-                        if (pspell_check($this->pspell_link, $candidate)) {
-                            $li[0][count($li[0]) - 1][0] = $m[1].$la_lines[$j + 1][0][0][0];
-                            $la_lines[$j + 1][0][0][0] = '';
-                            // $la_lines[$j + 1][0][0][8] = 'ss';
-                        } else {
-                            $p['text'] .= '-';
-                        }
+                    $full_form = $this->__isContinuedLine($li[0][count($li[0]) - 1][0], $la_lines[$j + 1][0][0][0]);
+                    if ($full_form === false) {
+                        $p['text'] = preg_replace('/\-$/', '--', $p['text']);
+                    } else {
+                        $li[0][count($li[0]) - 1][9] = 'h:'.$full_form;
+                        $la_lines[$j + 1][0][0][9] = 't:'.$full_form;
                     }
                 }
+
                 $p['line'][]= $li[0];
                 // 領域の計算
                 if (is_null($p['bdr'])) {
@@ -602,11 +630,22 @@ class PdfAnalyzer
             if ($continued && isset($last_boxes[$label])) {
                 // 継続ボックスなので継続元を見つける
                 $p['continued_from'] = $last_boxes[$label];
+                $line1 = $p['line'][0];
                 // 継続元に継続先の情報を追加する
                 for ($i2 = count($textboxes) - 1; $i2 >= 0; $i2--) {
                     for ($j2 = count($textboxes[$i2]['paragraphs']) - 1; $j2 >= 0; $j2--) {
                         if ($textboxes[$i2]['paragraphs'][$j2]['n'] == $last_boxes[$label]) {
                             $textboxes[$i2]['paragraphs'][$j2]['continue_to'] = $n;
+                            $l = $textboxes[$i2]['paragraphs'][$j2]['line'];
+                            $i_line = count($l) - 1;
+                            $line0 = $l[$i_line];
+                            $i_word = count($line0) - 1;
+                            $full_form = $this->__isContinuedLine($line0[$i_word][0], $line1[0][0]);
+                            if ($full_form !== false) {
+                                $textboxes[$i2]['paragraphs'][$j2]['line'][$i_line][$i_word][9] = 'h:'.$full_form;
+                                $p['line'][0][0][9] = 't:'.$full_form;
+                            }
+                            break;
                         }
                     }
                 }
@@ -921,7 +960,22 @@ class PdfAnalyzer
             
                         // $w = $dom->createElement('span', htmlspecialchars($word[0]));
                         if ($this->use_wordtag) {
-                            $w = $dom->createElement('span', $word[0]);
+                            $part = '';
+                            if (!isset($word[9])) {
+                                $word_label = $word[0];
+                            } else {
+                                $part = substr($word[9], 0, 2);
+                                $word[9] = substr($word[9], 2);
+                                if ($part == 'h:') {
+                                    // 切断された単語の先頭部分
+                                    $word_label = $word[9];
+                                    $part = 'head';
+                                } else {
+                                    $word_label = '';
+                                    $part = 'rest';
+                                }
+                            }
+                            $w = $dom->createElement('span', $word_label);
                             $attr = $dom->createAttribute('class');
                             if ($use_alt_image) {
                                 $attr->value="word alt-text";
@@ -934,6 +988,27 @@ class PdfAnalyzer
                             $attr->value = $word_id;
                             $w->appendChild($attr);
                             $w->setIdAttribute('id', true);
+                            // 単語が切断されている場合には以下の属性を付与する
+                            // data-refid: 単語の参照ID（先頭文字列の id）
+                            // data-originalform: 元の文字列（単語の一部）
+                            // data-fullform: 単語全体の文字列
+                            if ($part) {
+                                if ($part == 'head') {
+                                    $this->word_id_list[$word[9]] = $word_id;
+                                    $ref_id = $word_id;
+                                } else {
+                                    $ref_id = $this->word_id_list[$word[9]];
+                                }
+                                $attr = $dom->createAttribute('data-refid');
+                                $attr->value = $ref_id;
+                                $w->appendChild($attr);
+                                $attr = $dom->createAttribute('data-originalform');
+                                $attr->value = $word[0];
+                                $w->appendChild($attr);
+                                $attr = $dom->createAttribute('data-fullform');
+                                $attr->value = $word[9];
+                                $w->appendChild($attr);
+                            }
                             
                             // bdr
                             $attr = $dom->createAttribute('data-bdr');

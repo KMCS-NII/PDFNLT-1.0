@@ -534,7 +534,7 @@ class LayoutAnalyzer
             unset($word_info[$i][7]);
         }
         /*
-          $word_info[i] には以下の情報が格納されている
+          $word_info[i] には以下の単語情報が格納されている
           0: 単語テキスト（ligature 変換済み）
           1: xmin
           2: ymin
@@ -542,6 +542,9 @@ class LayoutAnalyzer
           4: ymax
           5: font-name
           6: font-size
+          7: フォントID（後で追加される）
+          8: 単語前スペース情報（後で追加される）
+          9: 単語が改行等で切れている場合、完全な表記（後で追加される）
         */
       
         // 図表領域に交差する文字列を除去

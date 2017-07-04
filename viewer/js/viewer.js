@@ -271,20 +271,24 @@ function assignActions() {
     );
     $("#iframe_xhtml").contents().find("span.word").hover(
 	function() {
-	    var str_bdr = $(this).attr("data-bdr");
-	    var bdr = str_bdr.split(',');
-	    if (bdr.length != 4) return false;
-	    var page = parseInt($(this).parents("p").attr("data-page"));
-	    var pageInfo = getPageInfo(page);
-	    var l = parseFloat(bdr[0]) * pageInfo.width - 4; // 8.2677 inch * 100dpi
-	    var t = parseFloat(bdr[1]) * pageInfo.height - 4;// 11.6929 inch * 100dpi
-	    var w = parseFloat(bdr[2]) * pageInfo.width - l;
-	    var h = parseFloat(bdr[3]) * pageInfo.height - t;
-	    var wid = $(this).attr("id");
-	    var box = '<div class="wordbox" style="left:' + l.toString() + 'px;top:' + t.toString() + 'px;width:' + w.toString() + 'px;height:' + h.toString() + 'px;" />';
+	    var word_id = $(this).attr("id");
 	    $("#paper").remove("#div.wordbox");
-	    $("#paper").append(box);
-	    $("#paper div.wordbox").show();
+	    $("#iframe_xhtml").contents().find("span.word[id=" + word_id + "],span.word[data-refid=" + word_id + "]")
+		.each(function() {
+		    var str_bdr = $(this).attr("data-bdr");
+		    var bdr = str_bdr.split(',');
+		    if (bdr.length != 4) return false;
+		    var page = parseInt($(this).parents("p").attr("data-page"));
+		    var pageInfo = getPageInfo(page);
+		    var l = parseFloat(bdr[0]) * pageInfo.width - 4; // 8.2677 inch * 100dpi
+		    var t = parseFloat(bdr[1]) * pageInfo.height - 4;// 11.6929 inch * 100dpi
+		    var w = parseFloat(bdr[2]) * pageInfo.width - l;
+		    var h = parseFloat(bdr[3]) * pageInfo.height - t;
+		    var wid = $(this).attr("id");
+		    var box = '<div class="wordbox" style="left:' + l.toString() + 'px;top:' + t.toString() + 'px;width:' + w.toString() + 'px;height:' + h.toString() + 'px;" />';
+		    $("#paper").append(box);
+		    $("#paper div.wordbox").show();
+		});
 	},
 	function() {
 	    // $(this).parents("div.section").css("border", "1px solid #FFFFFF");
