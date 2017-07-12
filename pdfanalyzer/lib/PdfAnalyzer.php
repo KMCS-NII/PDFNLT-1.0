@@ -949,32 +949,50 @@ class PdfAnalyzer
                     }
                 }
                 $j = 0;
+                $is_last_word_finished_by_hyphen = false;
                 foreach ($paragraph['line'] as $line) {
                     foreach ($line as $word) {
 
+                        // 語が途中で切れているか確認
+                        $part = '';
+                        if (!isset($word[9])) {
+                            $word_label = $word[0];
+                        } else {
+                            $part = substr($word[9], 0, 2);
+                            $word[9] = substr($word[9], 2);
+                            if ($part == 'h:') {
+                                // 切断された単語の先頭部分
+                                $word_label = $word[9];
+                                $part = 'head';
+                            } else {
+                                $word_label = '';
+                                $part = 'rest';
+                            }
+                        }
+
                         // 前の語との間に空白を挟む
-                        if ($j > 0 && (!isset($word[8]) || !in_array($word[8], array('ns', 'ss')))) {
-                            $w = $dom->createTextNode(' ');
-                            $p->appendChild($w);
+                        // 条件１：
+                        //   パラグラフの先頭の場合は除く
+                        //   ジオメトリから語の前に空白がない場合は除く
+                        //   語の途中の場合は除く
+                        // 条件２：
+                        //   前の行がハイフンで終わっていて、
+                        //   行の先頭の語で、かつ a-z から始まる場合は除く
+                        $sp_type = isset($word[8]) ? $word[8] : 'na';
+                        if ($j > 0
+                            && (!in_array($sp_type, array('ns', 'ss')))
+                            && ($part != 'rest')
+                        ) {
+                            if ($sp_type != 'hd'
+                                || !preg_match('/^[a-z]/', $word_label)
+                                || !$is_last_word_finished_by_hyphen) {
+                                $w = $dom->createTextNode(' ');
+                                $p->appendChild($w);
+                            }
                         }
             
                         // $w = $dom->createElement('span', htmlspecialchars($word[0]));
                         if ($this->use_wordtag) {
-                            $part = '';
-                            if (!isset($word[9])) {
-                                $word_label = $word[0];
-                            } else {
-                                $part = substr($word[9], 0, 2);
-                                $word[9] = substr($word[9], 2);
-                                if ($part == 'h:') {
-                                    // 切断された単語の先頭部分
-                                    $word_label = $word[9];
-                                    $part = 'head';
-                                } else {
-                                    $word_label = '';
-                                    $part = 'rest';
-                                }
-                            }
                             $w = $dom->createElement('span', $word_label);
                             $attr = $dom->createAttribute('class');
                             if ($use_alt_image) {
@@ -1061,6 +1079,12 @@ class PdfAnalyzer
                             }
                         }
                         $j++;
+
+                        if (substr($word[0], -1, 1) == '-') {
+                            $is_last_word_finished_by_hyphen = true;
+                        } else {
+                            $is_last_word_finished_by_hyphen = false;
+                        }
                     }
                 }
             }
