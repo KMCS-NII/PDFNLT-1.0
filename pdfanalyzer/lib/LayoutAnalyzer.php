@@ -211,7 +211,7 @@ class LayoutAnalyzer
     private function __get_indent_number_by_y($page_indents, $y) {
         // 部分的にインデント位置が違う領域をチェック
         for ($i = 1; $i < count($page_indents); $i++) {
-            if ($page_indents[$i][0] < $y && $page_indents[$i][1] > $y) {
+            if ($page_indents[$i][0] < $y && $page_indents[$i][1] + 1 > $y) {
                 return $i;
             }
         }
@@ -266,16 +266,18 @@ class LayoutAnalyzer
         }
 
         // 以下、段組みレイアウトが変化した場合
-
+        $ll0 = $page_indents[$n0][2];
+        $ll1 = $page_indents[$n1][2];
+        if ($this->debug) {
+            printf("layout changed, ll0:%s, ll1:%s\n", var_export($ll0, true), var_export($ll1, true));
+        }
         if ($n0 < 0 || $n1 < 0
             || $n0 >= count($page_indents)
             || $n1 >= count($page_indents)
-            || abs($n0 - $n1) > 1) {
+            || (abs($n0 - $n1) > 1 && $n0 > 0 && $n1 > 0)) {
             // 隣り合わないレイアウト
             return -1;
         }
-        $ll0 = $page_indents[$n0][2];
-        $ll1 = $page_indents[$n1][2];
         if (is_null($ll0[1]) && is_null($ll1[1])) {
             // どちらもシングルカラムの場合
             return $separated ? 0 : 1;
@@ -696,7 +698,6 @@ class LayoutAnalyzer
             return $dx;
         });
 
-
         /*
         foreach ($lines as $key => $line) {
           printf("%s:%s\n", $key, implode(' ', $line[5]));
@@ -716,7 +717,7 @@ class LayoutAnalyzer
             $line = $lines[$i];
 
             /*
-            if ($i == 37) {//$line[1] == 442.479167 && $line[2] == 173.381913) {
+            if ($i == 62) {//$line[1] == 442.479167 && $line[2] == 173.381913) {
                 $this->debug = $debug = true;
             }
             */
