@@ -33,10 +33,22 @@ Downloader> q   # qで終了
 
 ### 1. 前処理
 
-/PDFNLT/preprocess/で、以下のようにスクリプトを走らせます。
+/PDFNLT/preprocess/で、以下のようにスクリプトを走らせると、
+
+`/works/csisv12/akiko/acl_anthology/SENT.tsv.out.selected/`以下にある全てのファイルについて前処理を行います。
+
+出力先は`/works/csisv12/akiko/acl_anthology/SENT.tsv.out.selected.preprocess/`にしました。
 
 ```
-python preprocess.py
+# 全てのファイルを処理
+python Main.py
+```
+
+もしも少ないファイル数で試したい場合は、-lオプションで処理するファイル数を指定します。
+
+```
+# 5ファイルだけ処理
+python Main.py　-l 5
 ```
 
 #### Tag対応表
