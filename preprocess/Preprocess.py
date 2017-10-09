@@ -51,7 +51,7 @@ class PathFiles(object):
     
     def pos_tag(self, df):
         df["pos"] = df[7].apply(lambda x: self.tupple2str(
-            pos_tag(word_tokenize(x), tagset='universal')))
+            pos_tag(word_tokenize(x))))
         return df
     
     def tupple2str(self, x):
