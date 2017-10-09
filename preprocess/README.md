@@ -4,6 +4,12 @@
 
 * POS tagging(篠田)
 
+## パスなど
+
+入力元：`/works/csisv12/akiko/acl_anthology/SENT.tsv.out.selected/`
+
+出力先：`/works/csisv12/akiko/acl_anthology/SENT.tsv.out.selected.preprocess/`
+
 ## 手順
 
 ### 0. NLTK
