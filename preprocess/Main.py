@@ -9,7 +9,7 @@ def main():
     args = parser.parse_args()
     
     files = PathFiles(PATH_TO_SOURCE, limit=args.limit)
-    files.app_preprocess()
+    files.all_preprocess()
     
 if __name__=='__main__':
     
