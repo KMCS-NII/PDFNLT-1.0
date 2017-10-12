@@ -1,14 +1,16 @@
+$prefix=$ARGV[0] if $ARGV[0] ne '';
 use Lingua::LanguageGuesser;
 $path='/works/csisv12/akiko/acl_anthology';
-for(glob("$path/SENT.tsv.out/*.tsv")){
+for(glob("$path/SENT.tsv.out/$prefix*.tsv")){
     $_=~m#$path/SENT\.tsv\.out/(\w\d+-\d+)\.sent\.tsv#;
     $file=$1;
     if(open(F, '<:utf8', "$path/SENT.work/yoshida/eachfile/$file.sent_GarbledCount.tsv")){
-	%nonEnglishChar=();
+	%nonEnglishChar=();%nonEnglishCharRatio=();
 	while(<F>){
 	    chomp;
 	    ($section, $box, $line, $sentence, $num, $ratio)=split /\t/, $_;
-	    $nonEnglishChar{$section}=$ratio unless $ratio eq '';
+	    $nonEnglishChar{$section}=$num unless $num eq '';
+	    $nonEnglishCharRatio{$section}=$ratio/100 unless $ratio eq '';
 	}
 	close F;
     }
@@ -17,7 +19,8 @@ for(glob("$path/SENT.tsv.out/*.tsv")){
     while(<G>){
 	chomp;
 	@line=split /\t/, $_;
-	$ratio=0;$ratio=$nonEnglishChar{$line[0]} if exists($nonEnglishChar{$line[0]});
+	$ratio='';$ratio=$nonEnglishChar{$line[0]} if exists($nonEnglishChar{$line[0]});
+	$num='';$num=$nonEnglishCharRatio{$line[0]} if exists($nonEnglishCharRatio{$line[0]});
 	$guess=Lingua::LanguageGuesser->new({utf8, 'auto'}, $line[7]);
 	$language=$guess->best_scoring();
 	$output=join("\t", (@line[0..6], $ratio, $language, $line[7]));
