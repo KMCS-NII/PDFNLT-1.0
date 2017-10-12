@@ -23,7 +23,7 @@ for(glob("$path/SENT.tsv.out/$prefix*.tsv")){
 	$num='';$num=$nonEnglishCharRatio{$line[0]} if exists($nonEnglishCharRatio{$line[0]});
 	$guess=Lingua::LanguageGuesser->new({utf8, 'auto'}, $line[7]);
 	$language=$guess->best_scoring();
-	$output=join("\t", (@line[0..6], $ratio, $language, $line[7]));
+	$output=join("\t", (@line[0..6], $num, $ratio, $language, $line[7]));
 	print H $output, "\n";
     }
     close G;
