@@ -4,7 +4,7 @@ $path='/works/csisv12/akiko/acl_anthology';
 for(glob("$path/SENT.tsv.out/$prefix*.tsv")){
     $_=~m#$path/SENT\.tsv\.out/(\w\d+-\d+)\.sent\.tsv#;
     $file=$1;
-    next if (glob("$path/SENT.tsv.out.integrated/$file*"));
+    next if (-f "$path/SENT.tsv.out.integrated/$file.tsv");
     if(open(F, '<:utf8', "$path/SENT.work/yoshida/eachfile/$file.sent_GarbledCount.tsv")){
 	%nonEnglishChar=();%nonEnglishCharRatio=();
 	while(<F>){
