@@ -472,12 +472,15 @@ class LayoutAnalyzer
         if (!is_readable($tmpfname.'.json')) {
             unlink($tmpfname);
             $reason = implode("\n", $output);
-            throw new RuntimeException("File '{$pdfpath}' cannot be processed by pdffigures. 'pdffigures' returned message:{$reason}");
+            // throw new RuntimeException("File '{$pdfpath}' cannot be processed by pdffigures. 'pdffigures' returned message:{$reason}");
+            echo "File '{$pdfpath}' cannot be processed by pdffigures. 'pdffigures' returned message:{$reason} (skipped).";
+            $pdffigures = array();
+        } else {
+            $content = file_get_contents($tmpfname.'.json');
+            $pdffigures = json_decode($content, true);
+            unlink($tmpfname);
+            unlink($tmpfname.'.json');
         }
-        $content = file_get_contents($tmpfname.'.json');
-        $pdffigures = json_decode($content, true);
-        unlink($tmpfname);
-        unlink($tmpfname.'.json');
         if (isset($this->debug) && $this->debug) {
             file_put_contents("pdffigures_output.txt", $output);
         }
