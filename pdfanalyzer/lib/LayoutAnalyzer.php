@@ -498,7 +498,7 @@ class LayoutAnalyzer
         if (isset($this->debug) && $this->debug) {
             echo "Executing '${cmd}'\n";
         }
-        $ouput = array();
+        $output = array();
         exec($cmd, $output);
         $bbox = implode("\n", $output);
 
@@ -1658,7 +1658,7 @@ class LayoutAnalyzer
 
         // pdffigures を実行して図表領域を取得する
         if (is_null($pdffigures)) {
-            $this->pdffigures = $this->pdfFigures($pdfpath);
+            $pdffigures = $this->pdffigures = $this->pdfFigures($pdfpath);
         } else {
             $this->pdffigures = $pdffigures;
         }

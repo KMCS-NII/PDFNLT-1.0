@@ -13,6 +13,8 @@ pdfanalyzer では、pdftotext の出力にフォント情報を含めるため�
 $ sudo yum install fontconfig-devel libjpeg-devel libcurl-devel libpng-devel libtiff-devel xorg-x11-fonts-Type1
 -- Ubuntu の場合
 $ sudo apt install libfontconfig1-dev libjpeg-dev libopenjpeg-dev xfonts-scalable
+-- MacOSX (with Homebrew https://brew.sh/) の場合
+$ brew install php72 --with-httpd
 -- 共通
 $ wget https://poppler.freedesktop.org/poppler-0.52.0.tar.xz
 $ tar xJf poppler-0.52.0.tar.xz
@@ -65,13 +67,15 @@ $ sudo make install
 $ cd ..
 -- Ubuntu の場合
 $ sudo apt install liblbfgs-dev
--- 共通
+-- CentOS Ubuntu 共通
 $ wget https://github.com/downloads/chokkan/crfsuite/crfsuite-0.12.tar.gz
 $ tar xvfz crfsuite-0.12.tar.gz
 $ cd crfsuite-0.12
 $ ./configure
 $ make
 $ sudo make install
+-- MacOSX の場合
+$ brew install leptonica homebrew/science/crfsuite imagemagick
 
 
 4. MeCab, php-mecab のインストール（オプション）
@@ -88,9 +92,6 @@ xhtml ファイルを生成する際に「語」の情報（座標情報など�
 （MeCab のダウンロード、インストールは以下を参照）
   https://taku910.github.io/mecab/#download
   ※辞書の文字コードは UTF-8 で作成してください。
--- Ubuntu の場合
-$ sudo apt install mecab-ipadic-utf8
--- 共通
 （php-mecab のインストール）
 $ git clone https://github.com/rsky/php-mecab.git
 $ cd php-mecab/mecab
@@ -99,11 +100,21 @@ $ ./configure
 $ make
 $ sudo make install
 -- Ubuntu の場合
+$ sudo apt install mecab-ipadic-utf8
+（php-mecab のインストール）
+$ git clone https://github.com/rsky/php-mecab.git
+$ cd php-mecab/mecab
+$ phpize
+$ ./configure
+$ make
+$ sudo make install
 $ sudo vi /etc/php/7.0/cli/conf.d/mecab.ini
 （以下のテキストを mecab.ini として入力）
 ; configuration for php mecab module
 ; priority=20
 extension=mecab.so
+-- MacOSX の場合
+$ brew install mecab mecab-ipadic homebrew/php/php72-mecab
 
 
 5. pdfanalyzer のセットアップ
@@ -153,4 +164,4 @@ $ sudo yum install ImageMagick
 -- Ubuntu の場合
 $ sudo apt-get install imagemagick
 -- 共通
-$ php pdfanalyze.php --coomand generate_xhtml --all --with-image
+$ php pdfanalyze.php --comand generate_xhtml --all --with-image

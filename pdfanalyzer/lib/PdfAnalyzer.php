@@ -709,11 +709,12 @@ class PdfAnalyzer
         $doc_id = self::getCode($pdfpath);
         $this->n2id = array();
     
-        $doctype = DOMImplementation::createDocumentType("html",
+        $domimpl = new DOMImplementation();
+        $doctype = $domimpl->createDocumentType("html",
         "-//W3C//DTD XHTML 1.0 Strict//EN",
         "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd");
 
-        $dom = DOMImplementation::createDocument(null, null, $doctype);
+        $dom = $domimpl->createDocument(null, null, $doctype);
         // $dom = new DOMDocument('1.0', 'utf-8');
         $dom->preserveWhiteSpace = false;
         $dom->formatOutput = true;
@@ -1431,7 +1432,7 @@ class PdfAnalyzer
                 );
                 $f = $features[$i];
                 $args = explode("\t", trim($f));
-                if (count($args == 3)) {
+                if (count($args) == 3) {
                     $lines['analyzed']['label'] []= $args[0];
                     $lines['analyzed']['text'] []= $args[1];
                     $lines['analyzed']['feature'] []= $args[2];

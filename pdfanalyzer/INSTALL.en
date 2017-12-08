@@ -12,6 +12,8 @@ We will use it after applying the patch.
 $ sudo yum install fontconfig-devel libjpeg-devel libcurl-devel libpng-devel libtiff-devel xorg-x11-fonts-Type1
 -- For Ubuntu
 $ sudo apt install libfontconfig1-dev libjpeg-dev libopenjpeg-dev xfonts-scalable
+-- For MacOSX (with Homebrew https://brew.sh/)
+$ brew install php72 --with-httpd
 -- Common
 $ wget https://poppler.freedesktop.org/poppler-0.52.0.tar.xz
 $ tar xJf poppler-0.52.0.tar.xz
@@ -60,13 +62,15 @@ $ sudo make install
 $ cd ..
 -- For Ubuntu
 $ sudo apt install liblbfgs-dev
--- Common
+-- For CentOS | Ubuntu
 $ wget https://github.com/downloads/chokkan/crfsuite/crfsuite-0.12.tar.gz
 $ tar xvfz crfsuite-0.12.tar.gz
 $ cd crfsuite-0.12
 $ ./configure
 $ make
 $ sudo make install
+-- For MacOS
+$ brew install leptonica homebrew/science/crfsuite imagemagick
 
 
 4. Install MeCab, php-mecab (optional, for Japanese text)
@@ -78,9 +82,6 @@ When both MeCab and php-mecab are installed, and the target PDF is written in Ja
 （For downloading and installing MeCab, see below)
   https://taku910.github.io/mecab/#download
   * Please set the character code of the dictionary to UTF-8.
--- For Ubuntu
-$ sudo apt install mecab-ipadic-utf8
--- Common
 （Install php-mecab)
 $ git clone https://github.com/rsky/php-mecab.git
 $ cd php-mecab/mecab
@@ -88,13 +89,22 @@ $ phpize
 $ ./configure
 $ make
 $ sudo make install
--- For Ubuntu only
+-- For Ubuntu
+$ sudo apt install mecab-ipadic-utf8
+（Install php-mecab)
+$ git clone https://github.com/rsky/php-mecab.git
+$ cd php-mecab/mecab
+$ phpize
+$ ./configure
+$ make
+$ sudo make install
 $ sudo vi /etc/php/7.0/cli/conf.d/mecab.ini
 (Please enter the following text as 'mecab.ini'.)
-
 ; configuration for php mecab module
 ; priority=20
 extension=mecab.so
+-- For MacOSX
+$ brew install mecab mecab-ipadic homebrew/php/php72-mecab
 
 
 5. Set up pdfanalyzer
@@ -143,4 +153,4 @@ $ sudo yum install ImageMagick
 -- For Ubuntu
 $ sudo apt-get install imagemagick
 -- Common
-$ php pdfanalyze.php --coomand generate_xhtml --all --with-image
+$ php pdfanalyze.php --comand generate_xhtml --all --with-image
