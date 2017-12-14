@@ -27,16 +27,16 @@ then
     files=("$@")
   else
     # Whole directory, non-forced
-    dir=$(cd $(dirname "$1") && pwd)
-    files=($dir/pdf/*.pdf)
+    dir="$(cd $(dirname "$1") && pwd)"
+    files=("$dir"/pdf/*.pdf)
   fi
 
   pdfs=()
   for i in "${files[@]}"
   do
     # If not forced, then only pick the files that are not up-to-date
-    file=$(basename "$i" .xhtml)
-    file=${file%.pdf}
+    file="$(basename "$i" .xhtml)"
+    file="${file%.pdf}"
     if [ -n "$force" -o ! -f "$dir/xhtml/$file.xhtml" -o "$dir/train/$file.csv" -nt "$dir/xhtml/$file.xhtml" ]
     then
       pdfs+=("$dir/pdf/$file.pdf")
@@ -45,7 +45,7 @@ then
   done
 else
   # Whole directory, forced
-  dir=$(cd $(dirname "$1") && pwd)
+  dir="$(cd $(dirname "$1") && pwd)"
   pdfs=(--all)
 fi
 
@@ -55,23 +55,24 @@ then
   exit
 fi
 
-cd $dir
+cd "$dir"
+mkdir -p "$dir/text"
 
 
 
 # Propagate changes to training files
-php $script/../pdfanalyzer/pdfanalyze.php -c update_model
+php "$script/../pdfanalyzer/pdfanalyze.php" -c update_model
 
 # Generate xhtml
-php $script/../pdfanalyzer/pdfanalyze.php -c generate_xhtml --with-image --with-wordtag "${pdfs[@]}"
+php "$script/../pdfanalyzer/pdfanalyze.php" -c generate_xhtml --with-image --with-wordtag "${pdfs[@]}"
 
 if [ ${#xhtmls[@]} -eq 0 ]
 then
-  xhtmls=($dir/xhtml/*.xhtml)
+  xhtmls=("$dir"/xhtml/*.xhtml)
 fi
 
 # Extract text, references; identify words
-ruby $script/textualize.rb -i -o text -l en "${xhtmls[@]}"
+ruby "$script/textualize.rb" -i -o text -l en "${xhtmls[@]}"
 
 # Extract sentences, math, citations
-jruby -J-Xmx256g $script/sentence_splitter.rb -i -o text "${xhtmls[@]}"
+jruby -J-Xmx256g "$script/sentence_splitter.rb" -i -o text "${xhtmls[@]}"
