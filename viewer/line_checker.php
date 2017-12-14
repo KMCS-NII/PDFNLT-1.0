@@ -1,4 +1,21 @@
 <?php
+if (isset($_POST['labels'])) {
+  // Update
+  $labels = json_decode($_POST['labels']);
+  $paper = $_POST['paper'];
+
+  $text = trim(file_get_contents("train/$paper.csv"));
+  $lines = array_map(function($row) { return explode("\t", $row); }, explode("\n", $text));
+  foreach ($labels as $index => $label) {
+    $lines[$index][0] = $label;
+  }
+  $text = implode("", array_map(function($row) { return implode("\t", $row) . "\n"; }, $lines));
+  file_put_contents("train/$paper.csv", $text);
+
+  //system("php $pdfanalyze -c generate_xhtml --with-image --with-wordtag pdf/$paper.pdf");
+  exit();
+}
+
 $code = "";
 if (isset($_GET['code'])) {
     $code = $_GET['code'];
@@ -29,7 +46,6 @@ foreach ($files as $csv) {
 ksort($options, SORT_REGULAR);
 $options = implode('', array_values($options));
 ?>
- 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
 <head>
@@ -60,6 +76,7 @@ $options = implode('', array_values($options));
 	  <input type="button" id="line_download_button" value="Download" />
 	  <input type="button" id="line_save_button" value="Save" style="display:none;" />
 	  <input type="button" id="line_load_button" value="Load" style="display:none;" />
+	  <input type="button" id="line_update_button" value="Update" />
       </span>
       |<span id="disp_error">Error:0</span>
     </div>

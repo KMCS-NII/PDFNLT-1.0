@@ -189,7 +189,7 @@ function resetLayout() {
 
 // トレーニングデータを読み込む
 var csv_data = [];
-function showPaperLine(code) {
+function showPaperLine(code, dir) {
     var url = "train/" + code + ".csv";
     $.ajax({
 	url: url,
@@ -292,6 +292,7 @@ function assignActions() {
     $("#paper_image").unbind('click');
     $("#line_correct_button").unbind('click');
     $("#line_download_button").unbind('click');
+    $("#line_update_button").unbind('click');
     $("#line_save_button").unbind('click');
     $("#line_load_button").unbind('click');
     $("#line_save_button").attr('disabled', 'disabled');
@@ -428,7 +429,7 @@ function assignActions() {
 	});
 	$(".labelinput").show();
     });
-	
+
     //  Download ボタン
     $("#line_download_button").click(function() {
 	// タブ区切りテキストを用意
@@ -458,7 +459,7 @@ function assignActions() {
 	// 文字コード配列をTypedArrayに変換する
 	var uint8_array = new Uint8Array(sjis_code_array);
 	 */
-	
+
 	// 指定されたデータを保持するBlobを作成する
 	// var blob = new Blob([uint8_array], {type: 'text/csv'});
 	var blob = new Blob([text], {type: 'application/octet-stream'});
@@ -482,6 +483,17 @@ function assignActions() {
 	return false;
     });
 
+    $("#line_update_button").click(function() {
+        var labels = [];
+	for (var i = 0; i < csv_data.length; i++) {
+	    labels.push(csv_data[i][0]);
+	}
+	$.post(location.href, {
+	    paper: current_paper,
+	    labels: JSON.stringify(labels),
+	});
+    });
+
     if (window.localStorage) {
 	var itemkey = keyprefix + "." + current_paper;
 	// Save ボタン -> Web local storage に保存
@@ -496,7 +508,7 @@ function assignActions() {
 	// Load ボタン
 	if (window.localStorage.getItem(itemkey) != null) {
 	    $("#line_load_button").removeAttr("disabled");
-	}	    
+	}
 	$("#line_load_button").click(function() {
 	    var json_text = window.localStorage.getItem(itemkey);
 	    var csv_data = JSON.parse(json_text);
