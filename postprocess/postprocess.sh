@@ -76,3 +76,6 @@ ruby "$script/textualize.rb" -i -o text -l en "${xhtmls[@]}"
 
 # Extract sentences, math, citations
 jruby -J-Xmx256g "$script/sentence_splitter.rb" -i -o text "${xhtmls[@]}"
+
+# Extract area information
+ruby "$script/iconifier.rb" -o text "${xhtmls[@]}"
