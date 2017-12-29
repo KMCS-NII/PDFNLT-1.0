@@ -1859,9 +1859,9 @@ class PdfAnalyzer
             file_put_contents($xhtmlpath, $xhtml);
             chmod($xhtmlpath, 0666); // can be overwritten via web browser
             echo "done.\n";
-            //unlink($infile);
-            //unlink($outfile);
-            //unlink($jsonfile);
+            unlink($infile);
+            unlink($outfile);
+            unlink($jsonfile);
         }
 
     }
