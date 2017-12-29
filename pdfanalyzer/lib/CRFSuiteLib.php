@@ -93,6 +93,7 @@ class CRFSuiteLib
 	echo "Executing command;\n{$cmd} ...\n";
         system($cmd);
         unlink($tmp);
+        chmod($this->modelfile, 0666);
     }
 
     /**

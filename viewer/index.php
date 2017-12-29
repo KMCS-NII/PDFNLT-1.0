@@ -1,33 +1,14 @@
 <?php
-$code = "";
-if (isset($_GET['code'])) {
-    $code = $_GET['code'];
-}
-$files = glob("xhtml/${code}*.xhtml");
-if (count($files) > 0) {
-    preg_match("/xhtml\/(.*)\.xhtml/", $files[0], $m);
-    $code = $m[1];
-} else {
-    $files = glob("xhtml/*.xhtml");
-    if (count($files) > 0) {
-        preg_match("/xhtml\/(.*)\.xhtml/", $files[0], $m);
-        $code = $m[1];
-    } else {
-        $code = "";
-    }
-}
-$options = array();
-$files = glob("xhtml/*.xhtml");
-foreach ($files as $xhtml) {
-    $basename = basename($xhtml, ".xhtml");
-    if ($basename == $code) {
-        $options[$basename] = '<option value="' . $basename . '" selected="selected">' . $basename . '</option>';
-    } else {
-        $options[$basename] = '<option value="' . $basename . '">' . $basename . '</option>';
-    }
-}
-ksort($options, SORT_REGULAR);
-$options = implode('', array_values($options));
+require_once(dirname(__FILE__) . "/lib.php");
+
+// Read "config.txt"
+$config = read_config();
+$basedir = get_base_dir($config);
+
+debug_log("index.php: ${basedir}");
+
+$code = get_xhtml_code($config);
+$options = get_xhtml_options($code, $config);
 ?>
  
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
