@@ -18,8 +18,13 @@ script=$(cd $(dirname $0) && pwd)
 xhtmls=()
 shopt -s nullglob
 
-if [ -f "$1" -o -z "$force" ]
+if [ -d "$1" -a -n "$force" ]
 then
+  # Whole directory, forced
+  dir="$(cd $(dirname "$1") && pwd)"
+  pdfs=(--all)
+  tsvs=(--all)
+else
   if [ -f "$1" ]
   then
     # Individual files
@@ -32,6 +37,7 @@ then
   fi
 
   pdfs=()
+  tsvs=()
   for i in "${files[@]}"
   do
     # If not forced, then only pick the files that are not up-to-date
@@ -40,13 +46,10 @@ then
     if [ -n "$force" -o ! -f "$dir/xhtml/$file.xhtml" -o "$dir/train/$file.csv" -nt "$dir/xhtml/$file.xhtml" ]
     then
       pdfs+=("$dir/pdf/$file.pdf")
+      tsvs+=("$file.csv")
       xhtmls+=("$dir/xhtml/$file.xhtml")
     fi
   done
-else
-  # Whole directory, forced
-  dir="$(cd $(dirname "$1") && pwd)"
-  pdfs=(--all)
 fi
 
 if [ ${#pdfs[@]} -eq 0 ]
@@ -58,13 +61,17 @@ fi
 cd "$dir"
 mkdir -p "$dir/text"
 
+if [ -f paper.model ]
+then
+  # Model exists; update the xhtml files
+  php "$script/../pdfanalyzer/pdfanalyze.php" -c update_xhtml --with-image --with-wordtag "${tsvs[@]}"
+else
+  # Model does not exist; update the model
+  php "$script/../pdfanalyzer/pdfanalyze.php" -c update_model "${pdfs[@]}"
 
-
-# Propagate changes to training files
-php "$script/../pdfanalyzer/pdfanalyze.php" -c update_model
-
-# Generate xhtml
-php "$script/../pdfanalyzer/pdfanalyze.php" -c generate_xhtml --with-image --with-wordtag "${pdfs[@]}"
+  # Generate the xhtml files
+  php "$script/../pdfanalyzer/pdfanalyze.php" -c generate_xhtml --with-image --with-wordtag "${pdfs[@]}"
+fi
 
 if [ ${#xhtmls[@]} -eq 0 ]
 then
@@ -72,10 +79,10 @@ then
 fi
 
 # Extract text, references; identify words
-ruby "$script/textualize.rb" -i -o text -l en "${xhtmls[@]}"
+jruby -J-Xmx256g "$script/textualize.rb" -i -o text -l en "${xhtmls[@]}"
 
 # Extract sentences, math, citations
 jruby -J-Xmx256g "$script/sentence_splitter.rb" -i -o text "${xhtmls[@]}"
 
 # Extract area information
-ruby "$script/iconifier.rb" -o text "${xhtmls[@]}"
+jruby -J-Xmx256g "$script/iconifier.rb" -o text "${xhtmls[@]}"
