@@ -1,50 +1,19 @@
 <?php
+require_once(dirname(__FILE__) . "/lib.php");
+
+// Read "config.txt"
+$config = read_config();
+$basedir = get_base_dir($config);
+
+debug_log("line_checker.php: ${basedir}");
+
 if (isset($_POST['labels'])) {
-  // Update
-  $labels = json_decode($_POST['labels']);
-  $paper = $_POST['paper'];
-
-  $text = trim(file_get_contents("train/$paper.csv"));
-  $lines = array_map(function($row) { return explode("\t", $row); }, explode("\n", $text));
-  foreach ($labels as $index => $label) {
-    $lines[$index][0] = $label;
-  }
-  $text = implode("", array_map(function($row) { return implode("\t", $row) . "\n"; }, $lines));
-  file_put_contents("train/$paper.csv", $text);
-
-  //system("php $pdfanalyze -c generate_xhtml --with-image --with-wordtag pdf/$paper.pdf");
-  exit();
+    debug_log(sprintf("calling update_xhtml(), paper: %s", $_POST['paper']));
+    update_xhtml($_POST['paper'], $_POST['labels'], $config);
+    exit(0);
 }
-
-$code = "";
-if (isset($_GET['code'])) {
-    $code = $_GET['code'];
-}
-$files = glob("train/${code}*.csv");
-if (count($files) > 0) {
-    preg_match("/train\/(.*)\.csv/", $files[0], $m);
-    $code = $m[1];
-} else {
-    $files = glob("train/*.csv");
-    if (count($files) > 0) {
-        preg_match("/train\/(.*)\.csv/", $files[0], $m);
-        $code = $m[1];
-    } else {
-        $code = "";
-    }
-}
-$options = array();
-$files = glob("train/*.csv");
-foreach ($files as $csv) {
-    $basename = basename($csv, ".csv");
-    if ($basename == $code) {
-        $options[$basename] = '<option value="' . $basename . '" selected="selected">' . $basename . '</option>';
-    } else {
-        $options[$basename] = '<option value="' . $basename . '">' . $basename . '</option>';
-    }
-}
-ksort($options, SORT_REGULAR);
-$options = implode('', array_values($options));
+$code = get_training_code($config);
+$options = get_training_options($code, $config);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
@@ -58,6 +27,7 @@ $options = implode('', array_values($options));
   <script src="js/line_checker.js"></script>
   <script src="js/encoding.js"></script>
   <script type="text/javascript">
+    var basedir = "<?php echo $basedir; ?>";
     var default_paper = "<?php echo $code; ?>";
   </script>
 </head>
