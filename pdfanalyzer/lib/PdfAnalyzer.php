@@ -11,8 +11,7 @@ class PdfAnalyzer
 {
     const UNLABELLED_LINE = '#';
   
-    function __construct($modelfile = 'paper.model') {
-        $this->modelfile = $modelfile;
+    function __construct($basedir = null) {
         $this->pspell_link = pspell_new("en");
         $this->keyreps = array(
             "/@/"=>'symbol-atmark',
@@ -54,13 +53,17 @@ class PdfAnalyzer
             "/,$/u"=>'tailchar-comma',
             "/^\[\d+\]/"=>'reference-number',
         );
+        $this->setBaseDir($basedir);
+        $this->setPdfDir($this->basedir . 'pdf/');
+        $this->setFigureDir(null);
+        $this->setAnnotationDir($this->basedir . 'anno/');
+        $this->setTrainingDir($this->basedir . 'train/');
+        $this->setXhtmlDir($this->basedir . 'xhtml/');
+        $this->setModelFile($this->basedir . 'paper.model');
+
         $this->la = new LayoutAnalyzer();
-        $this->crf = new CRFSuiteLib($modelfile);
-        $this->pdf_dir = 'pdf/';
-        $this->annotation_dir = 'anno/';
-        $this->training_dir = 'train/';
-        $this->xhtml_dir = 'xhtml/';
-        
+        // $this->crf = new CRFSuiteLib($modelfile); //  setModelFile() でセット
+
         // 日本語の場合、分かち書きに MeCab を利用する
         $this->have_mecab = class_exists("MeCab_Tagger");
         // スイッチ
@@ -122,10 +125,34 @@ class PdfAnalyzer
     public function setUseWordtag($f = true) {
         $this->use_wordtag = $f;
     }
-    
+
+    /**
+     * CRF 学習で生成されるモデルファイルの setter, getter
+     */
+    public function setModelFile($modelfile) {
+        $this->modelfile = $modelfile;
+        $this->crf = new CRFSuiteLib($modelfile);
+    }
+    public function getModelFile($modelfile) {
+        return $this->modelfile;
+    }
+
     /**
      * 各種ディレクトリの setter, getter
      */
+    public function setBaseDir($basedir) {
+        if (!$basedir) {
+            $this->basedir = dirname(__FILE__) . '/';
+        } else if (!preg_match('/\/$/', $basedir)) {
+            $this->basedir = $basedir . '/';
+        } else {
+            $this->basedir = $basedir;
+        }
+    }
+    public function getBaseDir() {
+        return $this->basedir;
+    }
+    
     public function setPdfDir($d) {
         if (substr($d, -1) != '/') {
             $d .= '/';
@@ -230,7 +257,7 @@ class PdfAnalyzer
         } else {
             // 画像ファイルパスを生成する場合は xhtml directory を含むパス
             $imgdir = sprintf("%simages/%s/", $this->xhtml_dir, $doc_id);
-            @mkdir($imgdir, 0755, true);
+            @mkdir($imgdir, 0777, true);
         }
         return $imgdir;
     }
@@ -1370,7 +1397,8 @@ class PdfAnalyzer
         if (count($pdfs) == 1 && $pdfs[0] == '*') {
             $pdfs = glob($this->pdf_dir . '*.pdf');
         }
-        @mkdir($this->training_dir, 0755, true);
+        @mkdir($this->training_dir, 0777, true);
+        chmod($this->training_dir, 0777);
         
         // アノテーションデータからトレーニングデータを作成する
         foreach ($pdfs as $pdf) {
@@ -1551,6 +1579,7 @@ class PdfAnalyzer
                 }
             }
             fclose($fh);
+            chmod($trainfname, 0666); // can be overwritten via webbrowser
             fclose($fh_err);
             fclose($fh_log);
             echo "done.\n";
@@ -1623,7 +1652,7 @@ class PdfAnalyzer
                 copy($annofname, $backupdir . $basename . '.csv');
             }
             if (!file_exists($this->annotation_dir)) {
-                @mkdir($this->annotation_dir, 0755, true);
+                @mkdir($this->annotation_dir, 0777, true);
             }
             $fha = fopen($annofname, "w");
             if (!$fha) {
@@ -1699,8 +1728,9 @@ class PdfAnalyzer
 
             // ディレクトリの準備
             if (!file_exists($this->xhtml_dir)) {
-                @mkdir($this->xhtml_dir, 0755, true);
+                @mkdir($this->xhtml_dir, 0777, true);
             }
+            chmod($this->xhtml_dir, 0777);
             if (!file_exists($this->xhtml_dir . 'css/')) {
                 @mkdir($this->xhtml_dir . 'css/', 0755, true);
             }
@@ -1747,7 +1777,9 @@ class PdfAnalyzer
             $sections = $this->__assignSections($textboxes);
             echo "toXhtml, ";
             $xhtml = $this->__toXhtml($pdfpath, $sections);
-            file_put_contents($this->xhtml_dir . $basename.'.xhtml', $xhtml);
+            $xhtmlpath = $this->xhtml_dir . $basename.'.xhtml';
+            file_put_contents($xhtmlpath, $xhtml);
+            chmod($xhtmlpath, 0666); // can be overwritten via web browser
             echo "done.\n";
             unlink($infile);
             unlink($outfile);
@@ -1755,5 +1787,81 @@ class PdfAnalyzer
         }
 
     }
-  
+
+    /**
+     * train/*.csv を XHTML に変換する
+     * @param $csvs   トレーニングデータ csv ファイルのリスト
+     */
+    public function csv2xhtml($csvs) {
+        // --all 対応
+        if (count($csvs) == 1 && $csvs[0] == '*') {
+            $csvs = glob($this->training_dir . '*.csv');
+        }
+    
+        foreach ($csvs as $csvpath) {
+            if (!is_readable($csvpath)) {
+                $csvpath = $this->training_dir . $csvpath;
+                if (!is_readable($csvpath)) {
+                    echo "Cannot read file '{$csvpath}'. (skipped)\n";
+                    continue;
+                }
+            }
+            $basename = basename($csvpath, ".csv");
+            $pdfpath = $this->pdf_dir . $basename . ".pdf";
+            
+            // フォントと画像を取得するために pdf も確認する
+            if (!is_readable($pdfpath)) {
+                echo "Cannot read file '{$pdfpath}'. (skipped)\n";
+                continue;
+            }
+
+            // ディレクトリの準備
+            if (!file_exists($this->xhtml_dir)) {
+                @mkdir($this->xhtml_dir, 0777, true);
+            }
+            chmod($this->xhtml_dir, 0777);
+            if (!file_exists($this->xhtml_dir . 'css/')) {
+                @mkdir($this->xhtml_dir . 'css/', 0777, true);
+            }
+            // CSS をコピー
+            if (!file_exists($this->xhtml_dir . 'css/pdf2xhtml.css')) {
+                @copy(dirname(__FILE__) . '/pdf2xhtml.css', $this->xhtml_dir . 'css/pdf2xhtml.css');
+            }
+      
+            echo "Reading '{$csvpath}'... ";
+
+            // レイアウト解析
+            $this->la->analyze($pdfpath);
+            $lines = $this->la->getLines();
+
+            // CSV の最初の項目を行ラベルとする
+            $tags = array();
+            $fp = fopen($csvpath, "r");
+            while ($line = fgets($fp)) {
+                $line = explode("\t", trim($line));
+                if (count($line) > 3) {
+                    $tags []= $line[0];
+                }
+            }
+            fclose($fp);
+
+            echo "mergeTags, ";
+            $this->__reset();
+            $textboxes = $this->__mergeTags($lines, $tags);
+            $jsonfile = $basename.'.json';
+            file_put_contents($jsonfile, json_encode($textboxes));
+
+            echo "AssignSections, ";
+            $sections = $this->__assignSections($textboxes);
+            echo "toXhtml, ";
+            $xhtml = $this->__toXhtml($pdfpath, $sections);
+            $xhtmlpath = $this->xhtml_dir . $basename.'.xhtml';
+            file_put_contents($xhtmlpath, $xhtml);
+            chmod($xhtmlpath, 0666); // can be overwritten via web browser
+            echo "done.\n";
+            unlink($jsonfile);
+        }
+
+    }
+
 }
