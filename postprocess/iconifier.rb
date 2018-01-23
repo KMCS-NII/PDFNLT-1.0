@@ -49,6 +49,10 @@ class Iconifier
     COLORS[name] || DEFAULT_COLOR
   end
 
+  private def remove_eol(str)
+    str.gsub(/\n/, " ")
+  end
+
   def column(areas, margin, x, y, width, right)
     areas.each_with_index do |(name, area, colour), i|
       height = area * @ratio
@@ -100,9 +104,9 @@ class Iconifier
         end
         unless %w(meta Page Header Footer).include?(box_type)
           if box_type == "Body"
-            @sections[section_title] += area
+            @sections[remove_eol(section_title)] += area
           else
-            @areas[box_type] += area
+            @areas[remove_eol(box_type)] += area
           end
         end
       end
@@ -219,16 +223,21 @@ if __FILE__ == $0
     end
   end.parse!
 
-  ARGV.each do |filename|
+  svg_dest = options[:svg] || options[:output]
+  props_dest = options[:proportions] || options[:output]
+  files = ARGV
+  first = ARGV.first
+  files = (first && File.directory?(first)) ? Dir[File.join(first, "*.xhtml")] : ARGV
+  files.each do |filename|
     puts filename if options[:verbose]
     base = File.basename(filename, '.xhtml')
     iconifier = Iconifier.new(filename)
-    if ((svg_file = options[:svg] || options[:output]))
-      svg_file = File.join(svg_file, base + ".area.svg") if File.directory?(svg_file)
+    if svg_dest
+      svg_file = File.directory?(svg_dest) ? File.join(svg_dest, base + ".area.svg") : svg_dest
       File.write(svg_file, iconifier.to_s)
     end
-    if ((proportions_file = options[:proportions] || options[:output]))
-      proportions_file = File.join(proportions_file, base + ".area.tsv") if File.directory?(proportions_file)
+    if props_dest
+      proportions_file = File.directory?(props_dest) ? File.join(props_dest, base + ".area.tsv") : props_dest
       File.write(proportions_file, iconifier.to_tsv)
     end
   end
