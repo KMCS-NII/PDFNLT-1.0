@@ -138,6 +138,18 @@ class PdfAnalyzer
     }
 
     /**
+     * Training に利用可能なラベルの setter, getter
+     * @params $labels  ラベル文字列のリスト
+     *         null の場合はチェックしない
+     */
+    public function setAvailableLabels($labels) {
+        $this->available_labels = $labels;
+    }
+    public function getAvailableLabels() {
+        return $this->available_labels;
+    }
+
+    /**
      * 各種ディレクトリの setter, getter
      */
     public function setBaseDir($basedir) {
@@ -192,6 +204,17 @@ class PdfAnalyzer
             $d .= '/';
         }
         $this->training_dir = $d;
+        if (file_exists($d . 'labels.json')) {
+            $json = file_get_contents($d . 'labels.json');
+            $labels = json_decode($json, true);
+            $available_labels = array();
+            foreach ($labels as $label) {
+                $available_lables []= $label;
+            }
+            $this->setAvailableLabels($available_labels);
+        } else {
+            $this->setAvailableLabels(null);
+        }
     }
     public function getTrainingDir() {
         return $this->training_dir;
@@ -1428,18 +1451,26 @@ class PdfAnalyzer
                     continue;
                 }
             }
+            /* 2018-01-24 annotation ファイルが無い場合は
+             * PDF から一時的に annotation ファイルを生成する
+             */
+            $original_annotation_dir = null;
             if (!is_readable($annofname)) {
-                printf("Annotation file '%s' is not readable. (skipped)\n", $annofname);
-                continue;
+                // printf("Annotation file '%s' is not readable. (skipped)\n", $annofname);
+                // continue;
+                $original_annotation_dir = $this->annotation_dir;
+                $this->annotation_dir = $this->training_dir;
+                $this->pdf2anno(array($pdf));
+                $annofname  = $this->annotation_dir . $basename . ".csv";
             }
-
+            
             $fig_json = null;
             if ($this->figure_dir) {
                 // pdffigures の出力を取得する
                 $fig_json = AbekawaPdffigures::get($pdf, $this->figure_dir);
             }
         
-            printf("Updating training data '%s'...", $trainfname, $pdf);
+            printf("Analyzing pdf '%s'...", $pdf);
 
             $this->la->analyze($pdf, $fig_json);
             $la_lines = $this->la->getLines();
@@ -1449,16 +1480,28 @@ class PdfAnalyzer
             // アノテーションデータと解析結果の diff を作成する
 
             // アノテーションデータを読み込み
+            $lines['anno'] = null;
+            printf(" Reading annotation '%s'...", $annofname);
             $lines['anno'] = array('label' => array(), 'text' => array(), 'feature' => array());
             $fanno = fopen($annofname, "r");
             while ($line = fgets($fanno)) {
                 $args = explode("\t", trim($line));
                 if (count($args) > 1) { //== 2 || count($args) == 3) {
-                    $lines['anno']['label'] []= $args[0];
+                    if ($this->available_labels && !in_array($args[0], $this->available_labels)) {
+                        // 利用できないラベル
+                        $lines['anno']['label'] []= self::UNLABELLED_LINE . ' ' . $args[0];
+                    } else {
+                        $lines['anno']['label'] []= $args[0];
+                    }
                     $lines['anno']['text'] []= $args[1];
                 }
             }
             fclose($fanno);
+            if ($original_annotation_dir) {
+                // 一時的に作成した annotation ファイルを削除する
+                unlink($annofname);
+                $this->annotation_dir = $original_annotation_dir;
+            }
 
             // 解析結果を展開
             $lines['analyzed'] = array('label' => array(), 'text' => array(), 'feature' => array(), 'bdr' => array());
@@ -1490,6 +1533,7 @@ class PdfAnalyzer
             );
 
             // 結果を出力
+            printf(" Updating training '%s'...", $trainfname);
             $stack = array();
             $fh = fopen($trainfname, "w");
             if (!$fh) {
@@ -1876,6 +1920,34 @@ class PdfAnalyzer
             unlink($jsonfile);
         }
 
+    }
+
+    /**
+     * トレーニングデータから {$training_dir}/labels.json を作成する
+     */
+    public function generateLabels() {
+        $available_labels = array();
+        foreach (glob($this->training_dir . '*.csv') as $trainfname) {
+            printf("Reading training '%s'...\n", $trainfname);
+            $fh = fopen($trainfname, "r");
+            if (!$fh) {
+                throw new RuntimeException("Train file '{$trainfname}' cannot open.");
+            }
+            while ($line = fgets($fh)) {
+                $args = explode("\t", trim($line));
+                if (count($args) > 2) {
+                    if (!preg_match('/^#/', $args[0])) {
+                        $available_labels[$args[0]] = true;
+                    }
+                }
+            }
+            fclose($fh);
+        }
+        $available_labels = array_keys($available_labels);
+        sort($available_labels);
+        $json = json_encode($available_labels, JSON_PRETTY_PRINT);
+        file_put_contents($this->training_dir . 'labels.json', $json);
+        echo "done.\n";
     }
 
 }
