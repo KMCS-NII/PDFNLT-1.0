@@ -1,5 +1,7 @@
 <?php
 
+class MathTaggerException extends Exception {}
+
 class MathTagger {
 
     function __constructor() {
@@ -44,14 +46,19 @@ class MathTagger {
     return false;
     }
 
-    // xhtml に直接埋め込む
+    // タグ付けした xhtml を標準出力に送る
     // ToDo: 正規表現で置き換えるのではなく
     //       XML 階層に埋め込む
-    // 元のファイルを *.orig ファイルにコピーした後
-    // 埋め込んだデータで上書き
-    public function writeToXhtml($xhtml, $model) {
+    public function outputTaggedXhtml($xhtml, $model) {
         $xml = simplexml_load_file($xhtml);
-        $this->fromXml($xml);
+        try {
+            $this->fromXml($xml);
+        } catch (MathTaggerException $e) {
+            // MathTagged XHTML なのでそのまま出力する
+            $content = file_get_contents($xhtml);
+            echo $content;
+            return;
+        }
         $labels = $this->tag($model);
         $xhtml_text = file_get_contents($xhtml);
         for ($i = 0; $i < count($labels); $i++) {
@@ -62,8 +69,9 @@ class MathTagger {
                 $xhtml_text = preg_replace($keypattern, '$0'.' data-math="'.$val.'"', $xhtml_text, 1);
             }
         }
-        copy($xhtml, $xhtml . '.orig');
-        file_put_contents($xhtml, $xhtml_text);
+        echo $xhtml_text;
+        // copy($xhtml, $xhtml . '.orig');
+        // file_put_contents($xhtml, $xhtml_text);
     }
 
     // crfsuite でタグ付けする
@@ -91,7 +99,9 @@ class MathTagger {
         $fh = fopen("{$tmp_out}", "r");
         $taggs = array();
         while ($line = fgets($fh)) {
-            $taggs[] = trim($line);
+            if ($line != '') {
+                $taggs[] = trim($line);
+            }
         }
         fclose($fh);
         unlink($tmp_in);
@@ -142,6 +152,9 @@ class MathTagger {
                 $boxtype= (string)$box['data-name'];
                 foreach ($box->p as $paragraph) {
                     foreach ($paragraph->span as $word) {
+                        if (isset($word['data-math'])) {
+                            throw new MathTaggerException("Math tagged xhtml");
+                        }
                         if (!isset($word['data-ftype'])) continue;
                         $ftype = (int) $word['data-ftype'];
                         $w = (string) $word[0];
@@ -304,7 +317,7 @@ class MathTagger {
 function usage() {
     $cmd = isset($argv[0]) ? $argv[0] : '<cmd>';
     echo "Usage: php {$cmd} <xml-filepath>\n";
-    echo "\tOutput math-tagged XML will be overwritten.\n";
+    echo "\tThe math-tagged XML will be output to stdout.\n";
     die();
 }
   
@@ -315,5 +328,5 @@ if (isset($argv) && basename($argv[0]) == basename(__FILE__)) {
     }
 
     $mt = new MathTagger();
-    $mt->writeToXhtml($argv[1], dirname(__FILE__).'/inline_math.model');
+    $mt->outputTaggedXhtml($argv[1], dirname(__FILE__).'/inline_math.model');
 }
