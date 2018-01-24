@@ -219,6 +219,10 @@ class PdfAnalyzer
         if (count($words) == 0) return $sentence;
     
         for ($i = 0; $i < count($words) - 1; $i++) {
+            if (preg_match('/(.*)\x1a$/u', $words[$i], $m)) {
+                $sentence .= $m[1];
+                continue;
+            }
             $sentence .= $words[$i];
             if (preg_match('/[a-zA-Z0-9]$/', $words[$i]) 
             && preg_match('/^[a-zA-Z0-9]/', $words[$i + 1])) {
@@ -556,11 +560,20 @@ class PdfAnalyzer
             
         } else {
             // 英語の場合
+            /* 2018-01-11 "‘doc--uments’" のパターンのため条件見直し
             if (preg_match('/^([A-Za-z]+)\-$/u', $line0, $m)
                 && preg_match('/(^[A-Za-z0-9]+)[\.\,]?$/u', $line1, $m2)) {
                 $candidate = $m[1].$m2[1];
                 if (pspell_check($this->pspell_link, $candidate)) {
                     return $candidate; // つながる
+                }
+            */
+            if (preg_match('/^(.*?)([A-Za-z]+)\-$/u', $line0, $m)
+                && preg_match('/(^[A-Za-z0-9]+)(.*)$/u', $line1, $m2)) {
+                $candidate = $m[2].$m2[1];
+                if (preg_match('/^[A-Z]/', $candidate)
+                || pspell_check($this->pspell_link, $candidate)) {
+                    return $m[1] . $candidate . $m2[2]; // つながる
                 }
             }
         }
@@ -608,6 +621,7 @@ class PdfAnalyzer
                     if ($full_form === false) {
                         $p['text'] = preg_replace('/\-$/', '--', $p['text']);
                     } else {
+                        $p['text'] = preg_replace('/\-$/', "\x1a", $p['text']); // 次の行を空白を空けずに結合する
                         $li[0][count($li[0]) - 1][9] = 'h:'.$full_form;
                         $la_lines[$j + 1][0][0][9] = 't:'.$full_form;
                     }
