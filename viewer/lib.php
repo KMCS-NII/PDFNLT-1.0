@@ -166,27 +166,22 @@ function get_code($dir, $ext) {
 /**
  * Get filelist options (HTML style)
  */
-function get_xhtml_options($code, $config) {
-    return get_file_options($code, get_xhtml_dir($config), ".xhtml");
+function get_xhtml_options($config) {
+    return get_file_options(get_xhtml_dir($config), ".xhtml");
 }
 
-function get_training_options($code, $config) {
-    return get_file_options($code, get_training_dir($config), ".csv");
+function get_training_options($config) {
+    return get_file_options(get_training_dir($config), ".csv");
 }
 
-function get_file_options($code, $dir, $ext) {
+function get_file_options($dir, $ext) {
     $options = array();
     $files = glob($dir . "*" . $ext);
     foreach ($files as $file) {
         $basename = basename($file, $ext);
-        if ($basename == $code) {
-            $options[$basename] = '<option value="' . $basename . '" selected="selected">' . $basename . '</option>';
-        } else {
-            $options[$basename] = '<option value="' . $basename . '">' . $basename . '</option>';
-        }
+        $options[] = $basename;
     }
-    ksort($options, SORT_REGULAR);
-    $options = implode('', array_values($options));
+    sort($options);
     return $options;
 }
 

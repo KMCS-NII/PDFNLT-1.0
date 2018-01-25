@@ -6,9 +6,26 @@ var current_paper = null;
 var current_page = 0; // 最初のページが 1 なので注意
 var npages = 0;     // 表示中の論文のページ数
 var current_layout = 0; // レイアウト
+var papers;
+
 
 // 起動時の初期設定
 $(document).ready(function() {
+    var papersPromise = (function getPapers() {
+	var papersJSON = sessionStorage.getItem('papers');
+	if (papersJSON) {
+	    return Promise.resolve(JSON.parse(papersJSON))
+	} else {
+	    return $.get('ajax.php?directory');
+	}
+    })();
+    papersPromise.then(function(data) {
+	papers = data;
+	sessionStorage.setItem('papers', JSON.stringify(papers));
+	$('#paper_list').html(papers.map(function(paper) {
+	    return '<option>' + paper + '</option>';
+	}).join(''));
+    });
 
     readNewPaper(default_paper);
     /*
@@ -28,22 +45,6 @@ $(document).ready(function() {
     // 論文セレクタの操作
     $("#paper_select").change(function() {
 	var new_paper = $(this).val();
-	readNewPaper(new_paper);
-    });
-
-    $("#paper_select_input").change(function() {
-	var input = $(this).val();
-	$("#paper_select option").each(function() {
-	    if ($(this).value == input
-		|| $(this).html() == input) {
-		console.debug("match:" + $(this).value);
-		readNewPaper(input);
-	    }
-	});
-    });
-
-    $("#paper_select_input_button").click(function() {
-	var new_paper = $("#paper_select_input").val();
 	readNewPaper(new_paper);
     });
 

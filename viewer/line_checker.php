@@ -13,7 +13,6 @@ if (isset($_POST['labels'])) {
     exit(0);
 }
 $code = get_training_code($config);
-$options = get_training_options($code, $config);
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
@@ -35,12 +34,9 @@ $options = get_training_options($code, $config);
 <body>
   <div class="fullheight">
     <div id="menu">
-      <select id="paper_select" size="1">
-        <?php echo $options; ?>
-      </select>
-      <input type="text" id="paper_select_input" size="10" placeholder="Paper Code" />
-      <!--input type="button" id="paper_select_input_button" value="Go" /-->
-      &nbsp;
+      <input type="text" id="paper_select" list="paper_list" placeholder="Paper Code" />
+      <datalist id="paper_list">
+      </datalist>
       <input type="button" id="layout_select_button" value="Layout" />
       |<span>
 	  <input type="button" id="line_download_button" value="Download" />
