@@ -7,6 +7,8 @@ The script assumes the default directory layout of the data directory.
 `textualize.rb` can be run under MRI Ruby or JRuby; it requires the gems `ffi-aspell` and `nokogiri`.
 
 `sentence_splitter.rb` requires JRuby, and the presence of `stanford-corenlp-X.X.X.jar` library (or a link to it) in this directory.
+It can be downloaded from [Stanford CoreNLP Download](https://stanfordnlp.github.io/CoreNLP/#download).
+
 It also requires the `nokogiri` gem.
 
 

@@ -8,7 +8,7 @@ require 'csv'
 require 'ffi/aspell'
 
 require 'pp'
-require 'pry'
+#require 'pry'
 
 # Requirements:
 #

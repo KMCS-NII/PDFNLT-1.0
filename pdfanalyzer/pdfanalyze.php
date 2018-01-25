@@ -81,6 +81,8 @@ Command:
      Training file(s) will be generated under the 'training-dir'.
      When 'figure-dir' is set, use json files under it instead of
      calling 'pdffigures' program.
+     When annotation file(s) are not available, this command 
+     generates annotation file(s) from the model file temporary.
      
   update_model
      Update the model file from training files.
@@ -93,6 +95,14 @@ Command:
   update_xhtml
      Generate XHTML file(s) from PDF(s) using the training file.
      XHTML file(s) will be generated under the 'xhtml-dir'.
+
+  generate_labels
+     Generate 'labels.json' file from the all training files
+     under the 'training-dir'.
+     If the "labels.json" file exists in the directory,
+     labels not included in that file will not be used for
+     'update training'.
+     
 _USAGE_;
 
     die();
@@ -153,6 +163,9 @@ case 'update_xhtml':
         echo "Note: Please specify target CSV(s), or set '--all' option.\n";
     }
     $p->csv2xhtml($files);
+    break;
+case 'generate_labels':
+    $p->generateLabels();
     break;
 default:
     echo "Unknown command '", $opts['c'], "'\n";
