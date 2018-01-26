@@ -13,6 +13,8 @@ if (isset($_POST['labels'])) {
     exit(0);
 }
 $code = get_training_code($config);
+$loc = $_GET['loc'];
+$loc = $loc ? array_map('floatval', explode(',', $loc)) : null;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
@@ -28,6 +30,7 @@ $code = get_training_code($config);
   <script type="text/javascript">
     var basedir = "<?php echo $basedir; ?>";
     var default_paper = "<?php echo $code; ?>";
+    var loc = <?php echo json_encode($loc); ?>;
   </script>
 </head>
 

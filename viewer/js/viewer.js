@@ -227,7 +227,15 @@ function getPageInfo(n) {
 function assignActions() {
 
     // XHTML 表示エリアのイベント
-    
+
+    $("#iframe_xhtml").contents().on('dblclick', 'span.word', function(evt) {
+	var $word = $(evt.target);
+	var page = parseInt($word.closest('p').data('page'));
+	var bdr = $word.data('bdr');
+	var base = location.href.replace(/\/[^/]*$/, '/');
+	location.href = base + "line_checker.php?code=" + current_paper + "&loc=" + page + "," + bdr;
+    });
+
     // マウスオーバー時にボックスを表示
     $("#iframe_xhtml").contents().find("p").hover(
 	function() {

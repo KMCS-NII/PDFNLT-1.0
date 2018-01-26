@@ -203,6 +203,19 @@ function resetLayout() {
     $("div#page_number").css("left", paper_offset.left + 3);
 }
 
+function scrollToLoc() {
+    [page, x1, y1, x2, y2] = loc;
+    console.log(loc);
+    $('#table_line tr[data-page="' + page + '"]').each(function(i, tr) {
+	[_, tr_x1, tr_y1, tr_x2, tr_y2] = $(tr).data('bdr').split(' ').map(parseFloat);
+	console.log($(tr).data('bdr'), $(tr).children('td').last().text());
+	if (tr_x1 <= x1 && tr_x2 >= x2 && tr_y1 <= y1 && tr_y2 >= y2) {
+	    console.log(tr);
+	    return false;
+	}
+    });
+}
+
 // トレーニングデータを読み込む
 var csv_data = [];
 function showPaperLine(code, dir) {
@@ -213,6 +226,9 @@ function showPaperLine(code, dir) {
 	cache: false,
 	success: function(data) {
 	    updatePaperLineFromText(data, false);
+	    if (loc) {
+		scrollToLoc();
+	    }
 	}
     });
     return;
