@@ -231,9 +231,14 @@ function assignActions() {
     $("#iframe_xhtml").contents().on('dblclick', 'span.word', function(evt) {
 	var $word = $(evt.target);
 	var page = parseInt($word.closest('p').data('page'));
-	var bdr = $word.data('bdr');
+	var [x1, y1, x2, y2] = $word.data('bdr').split(',').map(parseFloat);
 	var base = location.href.replace(/\/[^/]*$/, '/');
-	location.href = base + "line_checker.php?code=" + current_paper + "&loc=" + page + "," + bdr;
+	var $page = $("#iframe_xhtml").contents().find('pages page:nth-child(' + (page + 1) + ')');
+	// assumption: inches ("##.## in")
+	var height = parseFloat($page.attr('height'));
+	var width = parseFloat($page.attr('width'));
+	location.href = base + "line_checker.php?code=" + current_paper + "&loc=" + page + "," +
+	  ((x1 + x2) * width * 100 / 2).toFixed(2) + "," + ((y1 + y2) * height * 100 / 2).toFixed(2);
     });
 
     // マウスオーバー時にボックスを表示

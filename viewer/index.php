@@ -28,7 +28,7 @@ $code = get_xhtml_code($config);
 <body>
   <div class="fullheight">
     <div id="menu">
-      <input type="text" id="paper_select" list="paper_list" placeholder="Paper Code" />
+      <input type="text" id="paper_select" list="paper_list" autocomplete="off" placeholder="Paper Code" />
       <datalist id="paper_list">
       </datalist>
       <input type="button" id="layout_select_button" value="Layout" />

@@ -204,13 +204,12 @@ function resetLayout() {
 }
 
 function scrollToLoc() {
-    [page, x1, y1, x2, y2] = loc;
-    console.log(loc);
+    var [page, x, y] = loc;
     $('#table_line tr[data-page="' + page + '"]').each(function(i, tr) {
-	[_, tr_x1, tr_y1, tr_x2, tr_y2] = $(tr).data('bdr').split(' ').map(parseFloat);
-	console.log($(tr).data('bdr'), $(tr).children('td').last().text());
-	if (tr_x1 <= x1 && tr_x2 >= x2 && tr_y1 <= y1 && tr_y2 >= y2) {
-	    console.log(tr);
+	var [_, x1, y1, x2, y2] = $(tr).data('bdr').split(' ').map(parseFloat);
+	if (x1 < x && x < x2 && y1 < y && y < y2) {
+	    selectLine($(tr).attr('data-line'))
+	    showPaperImage(current_paper, page + 1);
 	    return false;
 	}
     });
