@@ -59,6 +59,7 @@ class PdfAnalyzer
         $this->setAnnotationDir($this->basedir . 'anno/');
         $this->setTrainingDir($this->basedir . 'train/');
         $this->setXhtmlDir($this->basedir . 'xhtml/');
+        $this->setTempDir($this->basedir . 'tmp/');
         $this->setModelFile($this->basedir . 'paper.model');
 
         $this->la = new LayoutAnalyzer();
@@ -228,6 +229,20 @@ class PdfAnalyzer
     }
     public function getXhtmlDir() {
         return $this->xhtml_dir;
+    }
+
+    public function setTempDir($d) {
+        if (substr($d, -1) != '/') {
+            $d .= '/';
+        }
+        $this->temp_dir = $d;
+        if (!file_exists($this->temp_dir)) {
+            @mkdir($this->temp_dir);
+            @chmod($this->temp_dir, 0777);
+        }
+    }
+    public function getTempDir() {
+        return $this->temp_dir;
     }
 
     /**
@@ -1435,7 +1450,7 @@ class PdfAnalyzer
             $pdfs = glob($this->pdf_dir . '*.pdf');
         }
         @mkdir($this->training_dir, 0777, true);
-        chmod($this->training_dir, 0777);
+        @chmod($this->training_dir, 0777);
         
         // アノテーションデータからトレーニングデータを作成する
         foreach ($pdfs as $pdf) {
@@ -1540,9 +1555,12 @@ class PdfAnalyzer
                 throw new RuntimeException("Train file '{$trainfname}' cannot open.");
             }
             $fh_err = fopen($errfname, "w");
-            $fh_log = fopen($logfname, "w");
             if (!$fh_err) {
-                throw new RuntimeException("Error file '{$errffname}' cannot open.");
+                throw new RuntimeException("Error file '{$errfname}' cannot open.");
+            }
+            $fh_log = fopen($logfname, "w");
+            if (!$fh_log) {
+                printf(" Cannot open logfile '%s', use stdout instead.\n", $logfname);
             }
             $im = 0;
             $ia = 0;
@@ -1569,7 +1587,9 @@ class PdfAnalyzer
                     }
                     if ($im >= count($lines['anno']['label'])
                     || $ia >= count($lines['analyzed']['label'])) {
-                        $this->__outputUpdateModelLog($fh_log, $im, $ia, $lines);
+                        if ($fh_log) {
+                            $this->__outputUpdateModelLog($fh_log, $im, $ia, $lines);
+                        }
                         print_r($diff);
                         printf("Error on Diff:UNMODIFIED, target csv: '%s'\n", $f);
                         throw new RuntimeException('Number of lines mismatch, see "update_training.log"');
@@ -1583,7 +1603,11 @@ class PdfAnalyzer
                         $lines['analyzed']['feature'][$ia],
                         $lines['analyzed']['bdr'][$ia]
                     );
-                    fprintf($fh_log, "--\n%03d:%s\n%03d:%s\n", $im, $lines['anno']['text'][$im], $ia, $lines['analyzed']['text'][$ia]);
+                    if ($fh_log) {
+                        fprintf($fh_log, "--\n%03d:%s\n%03d:%s\n", $im, $lines['anno']['text'][$im], $ia, $lines['analyzed']['text'][$ia]);
+                    } else {
+                        printf("--\n%03d:%s\n%03d:%s\n", $im, $lines['anno']['text'][$im], $ia, $lines['analyzed']['text'][$ia]);
+                    }
                     $im++;
                     $ia++;
                     unset($stack);
@@ -1591,19 +1615,27 @@ class PdfAnalyzer
                     break;
                 case Diff::DELETED:  // 該当行は解析結果にはない
                     if ($im >= count($lines['anno']['label'])) {
-                        $this->__outputUpdateModelLog($fh_log, $im, $ia, $lines);
+                        if ($fh_log) {
+                            $this->__outputUpdateModelLog($fh_log, $im, $ia, $lines);
+                        }
                         print_r($diff);
                         printf("Error on Diff:DELETED, target csv: '%s'\n", $f);
                         throw new RuntimeException('Number of lines mismatch, see "update_training.log"');
                         die();
                     }
                     array_push($stack, array($lines['anno']['label'][$im], $lines['anno']['text'][$im]));
-                    fprintf($fh_log, "--\n%03d:%s\n", $im, $lines['anno']['text'][$im]);
+                    if ($fh_log) {
+                        fprintf($fh_log, "--\n%03d:%s\n", $im, $lines['anno']['text'][$im]);
+                    } else {
+                        printf("--\n%03d:%s\n", $im, $lines['anno']['text'][$im]);
+                    }
                     $im++;
                     break;
                 case Diff::INSERTED: // 該当行はマスターにはない
                     if ($ia >= count($lines['analyzed']['label'])) {
-                        $this->__outputUpdateModelLog($fh_log, $im, $ia, $lines);
+                        if ($fh_log) {
+                            $this->__outputUpdateModelLog($fh_log, $im, $ia, $lines);
+                        }
                         print_r($diff);
                         printf("Error on Diff:INSERTED, target csv: '%s'\n", $f);
                         throw new RuntimeException('Number of lines mismatch, see "update_training.log"');
@@ -1631,15 +1663,23 @@ class PdfAnalyzer
                         $lines['analyzed']['feature'][$ia],
                         $lines['analyzed']['bdr'][$ia]
                     );
-                    fprintf($fh_log, "--\n%03d:%s\n", $ia, $lines['analyzed']['text'][$ia]);
+                    if ($fh_log) {
+                        fprintf($fh_log, "--\n%03d:%s\n", $ia, $lines['analyzed']['text'][$ia]);
+                    } else {
+                        printf("--\n%03d:%s\n", $ia, $lines['analyzed']['text'][$ia]);
+                    }
                     $ia++;
                     break;
                 }
             }
             fclose($fh);
             chmod($trainfname, 0666); // can be overwritten via webbrowser
+            chmod($errfname, 0666); // can be overwritten via webbrowser
             fclose($fh_err);
-            fclose($fh_log);
+            if ($fh_log) {
+                fclose($fh_log);
+                @chmod(0666, $logfname);
+            }
             echo "done.\n";
         }
     }
@@ -1731,7 +1771,7 @@ class PdfAnalyzer
             // Get crf features
             echo "GetCRFfeatures, ";
             $features = $this->getCRFfeatures();
-            $infile = $basename.'_in.txt';
+            $infile = $this->getTempDir() . $basename.'_in.txt';
             file_put_contents($infile, implode("\n", $features));
 
             // Tagging

@@ -12,7 +12,15 @@ if (isset($_POST['labels'])) {
     update_xhtml($_POST['paper'], $_POST['labels'], $config);
     exit(0);
 }
+
+// If the training csv is not exists but the corresponding pdf is exists,
+// generate training csv from the pdf automatically
+$pdf_code = get_pdf_code($config);
 $code = get_training_code($config);
+if ($pdf_code != $code) {
+    generate_training($pdf_code, $config);
+    $code = $pdf_code;
+}
 $loc = $_GET['loc'];
 $loc = $loc ? array_map('floatval', explode(',', $loc)) : null;
 ?>

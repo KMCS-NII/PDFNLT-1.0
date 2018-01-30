@@ -134,8 +134,41 @@ function update_xhtml($paper, $labels, $config) {
 }
 
 /**
+ * Generate Training from the PDF
+ */
+function generate_training($code, $config) {
+    $pdf    = get_pdf_dir($config) . $code . '.pdf';
+    $target = get_training_dir($config) . $code . '.csv';
+    debug_log(sprintf("generate_training, target: %s\n", $target));
+
+    if (!is_readable($pdf)) {
+        debug_log(sprintf("pdf file is not readable: %s", $pdf));
+        exit(1);
+    }
+
+    if (file_exists($target) && !is_writable($target)) {
+        debug_log(sprintf("target file is not writable: %s", $target));
+        exit(1); // error exit
+    }
+  
+    $pdfanalyzer = get_pdfanalyzer($config);
+    $basedir = get_base_dir($config);
+    $options = get_options($config);
+
+    $cmd = "php ${pdfanalyzer} -c update_training --base-dir ${basedir} ${options} ${pdf}";
+    debug_log(sprintf("Executing command: '%s'", $cmd));
+    exec($cmd, $output, $retval);
+    debug_log(sprintf("Retval : '%s'", $retval));
+    exit($retval);
+}
+
+/**
  * Get code
  */
+function get_pdf_code($config) {
+    return get_code(get_pdf_dir($config), ".pdf");
+}
+
 function get_xhtml_code($config) {
     return get_code(get_xhtml_dir($config), ".xhtml");
 }
@@ -157,7 +190,7 @@ function get_code($dir, $ext) {
         if (count($files) > 0) {
             $code = basename($files[0], $ext);
         } else {
-            $code = "";
+            $code = false;
         }
     }
     return $code;
@@ -189,10 +222,10 @@ function get_file_options($dir, $ext) {
  * Debug log
  */
 function debug_log($msg) {
-    if (false) { // set true for logging debug information
+    if (true) { // set true for logging debug information
         $fp = fopen("/tmp/line_checker.log", "a");
         chmod("/tmp/line_checker.log", 0666);
-        fprintf($fp, "%s\t basedir: %s\n", strftime('%y-%m-%d %H:%M:%S'), $msg);
+        fprintf($fp, "%s\t%s\n", strftime('%y-%m-%d %H:%M:%S'), $msg);
         fclose($fp);
     }
 }
