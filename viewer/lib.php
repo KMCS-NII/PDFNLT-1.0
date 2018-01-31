@@ -24,7 +24,7 @@ _HTML_;
         exit(1);
     } else {
         while ($line = fgets($fp)) {
-            if (preg_match('/^([^#][^\s]+)\s+([^\s]+)/', $line, $m)) {
+            if (preg_match('/^([^#][^\s]+)\s+(.+)/', $line, $m)) {
                 $key = $m[1];
                 $value = $m[2];
                 $config[$key] = $value;
