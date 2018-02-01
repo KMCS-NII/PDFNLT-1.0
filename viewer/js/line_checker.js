@@ -681,7 +681,7 @@ function selectLine(line) {
     if (selectedLine) {
 	selectedLine.removeClass('selected');
     }
-    if (typeof line !== 'number') {
+    if (line == null) {
 	return false;
     }
 
