@@ -12,6 +12,12 @@ var papers;
 
 // 起動時の初期設定
 $(document).ready(function() {
+
+    function make_options(data) {
+        return data.map(function make_option(datum) {
+	    return '<option>' + datum + '</option>';
+	}).join('');
+    }
     var papersPromise = (function getPapers() {
 	var papersJSON = sessionStorage.getItem('papers');
 	if (papersJSON) {
@@ -23,11 +29,14 @@ $(document).ready(function() {
     papersPromise.then(function(data) {
 	papers = data;
 	sessionStorage.setItem('papers', JSON.stringify(papers));
-	$('#paper_list').html(papers.map(function(paper) {
-	    return '<option>' + paper + '</option>';
-	}).join(''));
+	$('#paper_list').html(make_options(papers));
     });
 
+    $.get('train/labels.json').then(function(labels) {
+	$('#label_list').html(make_options(labels));
+    });
+
+    assignActions();
     readNewPaper(default_paper);
     /*
     // 画面レイアウトをブラウザの大きさに合わせて変更
@@ -47,8 +56,11 @@ $(document).ready(function() {
     $("#paper_select").change(function() {
 	var new_paper = $(this).val();
 	readNewPaper(new_paper);
+    }).focus(function(e) {
+	$(e.target).select();
     });
 
+/*
     $("#paper_select_input").change(function() {
 	var input = $(this).val();
 	$("#paper_select option").each(function() {
@@ -64,6 +76,7 @@ $(document).ready(function() {
 	var new_paper = $("#paper_select_input").val();
 	readNewPaper(new_paper);
     });
+*/
 
     $("#layout_select_button").click(function() {
 	current_layout = (current_layout + 1) % 4;
@@ -261,6 +274,13 @@ function updatePaperLineFromText(text, docheck = false) {
     updatePaperLine(new_data);
 }
 
+function escapeAttribute(str) {
+    return str.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+}
+function escapeText(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+}
+
 // Line データを更新する
 function updatePaperLine(data) {
     var reErr = /^#/;
@@ -270,19 +290,22 @@ function updatePaperLine(data) {
 	var params = args[3].split(" ");
 	var tr_class = "line";
 	var td_class = "";
-	if (reErr.test(args[0])) {
+	var val = args[0];
+	if (reErr.test(val)) {
 	    tr_class += " err";
+	    val = val.substr(2);
 	}
 	if (args[4] == 1) {
 	    td_class += ' class="edited"';
+	    newEdited = true;
 	}
-	html += '<tr class="' + tr_class + '" data-page="' + params[0] + '" data-line="' + i + '" data-bdr="' + args[3] + '"><td>' + i.toString() + '</td><td' + td_class + '>' + args[0] + '</td><td>' + args[1] + "</td></tr>\n";
+	html += '<tr class="' + tr_class + '" data-page="' + params[0] + '" data-line="' + i + '" data-bdr="' + args[3] + '"><td>' + i.toString() + '</td><td' + td_class + '><input list="label_list" value="' + escapeAttribute(val) + '" data-orig="' + escapeAttribute(args[0]) + '"></td><td>' + escapeText(args[1]) + "</td></tr>\n";
 	npages = parseInt(params[0], 10) + 1; // ページ数
     }
+    setEdited(false);
     $("table#table_line tbody").html(html);
     
     csv_data = data;
-    assignActions();
     updateErrorCount();
 }
 
@@ -314,10 +337,22 @@ function getPageInfo(n) {
     return info;
 }
 
+var edited = false;
+function setEdited(newEdited) {
+    edited = newEdited;
+    $("#line_save_button").prop('disabled', !edited);
+    $("#line_update_button").prop('disabled', !edited);
+}
+
+
 // イベントアクションをセット
 function assignActions() {
     // バインド済みの処理を多重定義しないように削除
-    $("tr.line").unbind('hover');
+    $(window).off('beforeunload');
+    $("#table_line")
+	.off('mouseenter', 'tr.line')
+	.off('mouseleave', 'tr.line')
+	.off('click', 'tr.line');
     $("tr.line").unbind('click');
     $("tr.line").unbind('dblclick');
     $("#paper_image").unbind('click');
@@ -330,39 +365,45 @@ function assignActions() {
     $("#line_load_button").attr('disabled', 'disabled');
     $("#paper_line").unbind('dragover').unbind('drop');
     
-    // マウスオーバー時にボックスを表示
-    $("tr.line").hover(
-	function() {
-	    $(this).addClass('hovered');
-	    var str_bdr = $(this).attr("data-bdr");
-	    var bdr = str_bdr.split(' ');
-	    if (bdr.length != 5) return false;
-	    var page = parseInt(bdr[0]);
-	    showPaperImage(current_paper, page + 1);
 
-	    var l = parseFloat(bdr[1]);
-	    var t = parseFloat(bdr[2]);
-	    var w = parseFloat(bdr[3]) - l;
-	    var h = parseFloat(bdr[4]) - t;
-	    var box = '<div class="box" data-page="' + (page + 1).toString() + '" style="left:' + l.toString() + 'px;top:' + t.toString() + 'px;width:' + w.toString() + 'px;height:' + h.toString() + 'px;"/>';
-	    $("#paper").remove("#div.box");
-	    $("#paper").append(box);
-	    $("#paper div.box").click(function() {
-		var line = $(this).attr("data-line");
-		selectLine(line);
-	    });
-	    $("#paper div.box").show();
-	},
-	function() {
-	    $(this).removeClass('hovered');
-	    if (current_layout != 3) {
-		$("#paper div.box").remove();
-	    }
+    $(window).on('beforeunload', function(e) {
+	if (edited) {
+	    var message = "The modified data will be lost. Is it OK?";
+	    e.returnValue = message;
+	    return message;
 	}
-    );
+    });
 
+    // マウスオーバー時にボックスを表示
+    $("#table_line").on('mouseenter', "tr.line", function() {
+	$(this).addClass('hovered');
+	var str_bdr = $(this).attr("data-bdr");
+	var bdr = str_bdr.split(' ');
+	if (bdr.length != 5) return false;
+	var page = parseInt(bdr[0]);
+	showPaperImage(current_paper, page + 1);
+
+	var l = parseFloat(bdr[1]);
+	var t = parseFloat(bdr[2]);
+	var w = parseFloat(bdr[3]) - l;
+	var h = parseFloat(bdr[4]) - t;
+	var box = '<div class="box" data-page="' + (page + 1).toString() + '" style="left:' + l.toString() + 'px;top:' + t.toString() + 'px;width:' + w.toString() + 'px;height:' + h.toString() + 'px;"/>';
+	$("#paper").remove("#div.box");
+	$("#paper").append(box);
+	$("#paper div.box").click(function() {
+	    var line = $(this).attr("data-line");
+	    selectLine(line);
+	});
+	$("#paper div.box").show();
+    }).on('mouseleave', "tr.line", function() {
+	$(this).removeClass('hovered');
+	if (current_layout != 3) {
+	    $("#paper div.box").remove();
+	}
+    })
+    
     // マウスクリック時にクリックした位置までスクロール
-    $("tr.line").click(function() {
+    .on('click', 'tr.line', function() {
 	if (current_layout == 2) {
 	    // XHTML のみの場合にクリックすると
 	    // PDF に切り替えて対応部分に移動する
@@ -388,7 +429,58 @@ function assignActions() {
 		scrollTop: box_y - 10
 	    }, 500);
 	}
+    })
+
+    .on('keydown', 'input', function(e) {
+	if (e.which == 13) { // enter
+	    var $input = $(e.target);
+	    var $tr = $input.closest('tr');
+	    var $td = $input.closest('td');
+	    var lineno = $tr.data("line");
+	    var val;
+	    if (e.shiftKey) {
+		var $prevInput = $('#table_line [data-line="' + (lineno - 1) + '"] input');
+		if ($prevInput) {
+		    val = $prevInput.val();
+		    $input.val(val);
+		}
+	    } else {
+		val = $input.val();
+	    }
+	    if (csv_data[lineno][0] !== val) {
+		csv_data[lineno][4] = 1;
+		csv_data[lineno][0] = val;
+		$td.addClass('edited');
+		$tr.removeClass('err');
+		setEdited(true);
+		updateErrorCount();
+	    }
+	    var $nextInput = $('#table_line [data-line="' + (lineno + 1) + '"] input');
+	    $nextInput.focus().select();
+	    return false;
+	} else if (e.which == 27) {
+	    var $input = $(e.target);
+	    var $tr = $input.closest('tr');
+	    var $td = $input.closest('td');
+	    var lineno = $tr.data("line");
+	    var val = $input.val();
+	    var orig = $input.data('orig');
+	    if (orig.startsWith('# ')) {
+		orig = orig.substr(2);
+		$tr.addClass('err');
+		updateErrorCount();
+	    }
+	    $input.val(orig);
+	    $td.removeClass('edited');
+	    var $prevInput = $('#table_line [data-line="' + (lineno - 1) + '"] input');
+	    $prevInput.focus().select();
+	}
+    })
+
+    .on('focus', 'input', function(e) {
+	$(e.target).select();
     });
+
 
     // PDF 表示エリアのイベント
     $("#paper_image").click(function(e) {
@@ -415,6 +507,7 @@ function assignActions() {
 	selectLine(line);
     });
 
+/*
     // マウスダブルクリック時にクリックした位置までスクロール
     $("tr.line").dblclick(function() {
 	var lineno = $(this).attr("data-line");
@@ -460,6 +553,7 @@ function assignActions() {
 	});
 	$(".labelinput").show();
     });
+*/
 
     //  Download ボタン
     $("#line_download_button").click(function() {
@@ -587,7 +681,7 @@ function selectLine(line) {
     if (selectedLine) {
 	selectedLine.removeClass('selected');
     }
-    if (!line) {
+    if (line == null) {
 	return false;
     }
 

@@ -46,6 +46,8 @@ $(document).ready(function() {
     $("#paper_select").change(function() {
 	var new_paper = $(this).val();
 	readNewPaper(new_paper);
+    }).focus(function(e) {
+	$(e.target).select();
     });
 
     $("#layout_select_button").click(function() {

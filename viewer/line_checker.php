@@ -71,6 +71,8 @@ $loc = $loc ? array_map('floatval', explode(',', $loc)) : null;
 	</table>
       </div>
     </div>
+    <datalist id="label_list">
+    </datalist>
     <div class="vtop pdf">
       <div id="paper">
         <img id="paper_image">
