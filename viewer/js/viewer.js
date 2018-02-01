@@ -239,8 +239,9 @@ function assignActions() {
 	// assumption: inches ("##.## in")
 	var height = parseFloat($page.attr('height'));
 	var width = parseFloat($page.attr('width'));
-	location.href = base + "line_checker.php?code=" + current_paper + "&loc=" + page + "," +
+	var url = base + "line_checker.php?code=" + current_paper + "&loc=" + page + "," +
 	  ((x1 + x2) * width * 100 / 2).toFixed(2) + "," + ((y1 + y2) * height * 100 / 2).toFixed(2);
+	window.open(url, '_self');
     });
 
     // マウスオーバー時にボックスを表示

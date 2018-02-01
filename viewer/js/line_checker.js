@@ -9,6 +9,7 @@ var current_page = 0; // 最初のページが 1 なので注意
 var npages = 0; // 表示中の論文のページ数
 var current_layout = 0; // レイアウト
 var papers;
+var base = location.href.replace(/\/[^/]*$/, '/');
 
 // 起動時の初期設定
 $(document).ready(function() {
@@ -608,16 +609,24 @@ function assignActions() {
 	return false;
     });
 
+    function switchToViewer() {
+	window.open(base + '?code=' + current_paper, '_self');
+    }
+
     $("#line_update_button").click(function() {
         var labels = [];
 	for (var i = 0; i < csv_data.length; i++) {
 	    labels.push(csv_data[i][0]);
 	}
-	$.post(location.href, {
+	$.post(location.href, { // TODO move to ajax.php
 	    paper: current_paper,
 	    labels: JSON.stringify(labels),
+	}).then(function() {
+	    edited = false;
+	    switchToViewer();
 	});
     });
+    $("#line_abandon_button").click(switchToViewer);
 
     if (window.localStorage) {
 	var itemkey = keyprefix + "." + current_paper;

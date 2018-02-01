@@ -54,6 +54,7 @@ $loc = $loc ? array_map('floatval', explode(',', $loc)) : null;
 	  <input type="button" id="line_save_button" value="Save" style="display:none;" />
 	  <input type="button" id="line_load_button" value="Load" style="display:none;" />
 	  <input type="button" id="line_update_button" value="Update" />
+	  <input type="button" id="line_abandon_button" value="Abandon" />
       </span>
       |<span id="disp_error">Error:0</span>
     </div>
