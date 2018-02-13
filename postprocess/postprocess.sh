@@ -1,27 +1,54 @@
 #/bin/bash
 
-if [[ "$1" == "-f" ]]
-then
-  force=1
-  shift
-fi
+script=$(cd $(dirname $0) && pwd)
+
+usage() {
+  echo -e "Usage: $0 [-f] [-i] [-v] [-o outdir] <xhtml_dir>"
+  echo -e "   or  $0 [-f] [-i] [-v] [-o outdir] <xhtml_file...>"
+}
+
+unset inplace
+unset force
+unset outdir
+
+while getopts "fo:vi" o; do
+  case "${o}" in
+    f)
+      force=1
+      ;;
+    o)
+      outdir="$(cd "${OPTARG}" && pwd)"
+      ;;
+    i)
+      inplace=-i
+      ;;
+    v)
+      verbose=-v
+      ;;
+    *)
+      usage
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND-1))
 
 if [[ -z "$1" ]]
 then
-  echo -e "Usage: $0 [-f] <xhtml_dir>"
-  echo -e "   or  $0 [-f] <xhtml_file...>"
-  exit -1
+  usage
+  exit 1
 fi
 
-script=$(cd $(dirname $0) && pwd)
 
 xhtmls=()
+htmls2=()
 shopt -s nullglob
 
 if [ -d "$1" -a -n "$force" ]
 then
   # Whole directory, forced
   dir="$(cd $(dirname "$1") && pwd)"
+  outdir="${outdir:-$dir/text}"
   pdfs=(--all)
   tsvs=(--all)
 else
@@ -35,6 +62,7 @@ else
     dir="$(cd $(dirname "$1") && pwd)"
     files=("$dir"/pdf/*.pdf)
   fi
+  outdir="${outdir:-$dir/text}"
 
   pdfs=()
   tsvs=()
@@ -48,6 +76,10 @@ else
       pdfs+=("$dir/pdf/$file.pdf")
       tsvs+=("$file.csv")
       xhtmls+=("$dir/xhtml/$file.xhtml")
+      if [ -z "$inplace" ]
+      then
+        xhtmls2+=("$outdir/$file.xhtml")
+      fi
     fi
   done
 fi
@@ -59,13 +91,17 @@ then
 fi
 
 cd "$dir"
-mkdir -p "$dir/text"
+mkdir -p "$outdir"
 
 if [ -f paper.model ]
 then
-  # Model exists; update the xhtml files
-  php "$script/../pdfanalyzer/pdfanalyze.php" -c update_xhtml --with-image --with-wordtag "${tsvs[@]}"
-else
+  if [ -d train ]
+  then
+    # Model exists; update the xhtml files
+    php "$script/../pdfanalyzer/pdfanalyze.php" -c update_xhtml --with-image --with-wordtag "${tsvs[@]}"
+  fi
+elif [ -d pdf ]
+then
   # Model does not exist; update the model
   php "$script/../pdfanalyzer/pdfanalyze.php" -c update_model "${pdfs[@]}"
 
@@ -79,10 +115,20 @@ then
 fi
 
 # Extract text, references; identify words
-jruby -J-Xmx256g "$script/textualize.rb" -i -o text -l en "${xhtmls[@]}"
+#TODO jruby -J-Xmx256g "$script/textualize.rb" ${inplace} ${verbose} -o "$outdir" -l en "${xhtmls[@]}"
+
+if [ ${#xhtml2[@]} -eq 0 ]
+then
+  xhtmls2=()
+  for xhtml in "${xhtmls[@]}"
+  do
+    xhtmls2+=("$outdir"/$(basename "$xhtml"))
+  done
+fi
+
 
 # Extract sentences, math, citations
-jruby -J-Xmx256g "$script/sentence_splitter.rb" -i -o text "${xhtmls[@]}"
+jruby -J-Xmx256g "$script/sentence_splitter.rb" -i ${verbose} -o "${outdir}" "${xhtmls2[@]}"
 
 # Extract area information
-jruby -J-Xmx256g "$script/iconifier.rb" -o text "${xhtmls[@]}"
+jruby -J-Xmx256g "$script/iconifier.rb" ${verbose} -o "${outdir}" "${xhtmls2[@]}"

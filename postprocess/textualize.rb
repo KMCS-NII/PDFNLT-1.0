@@ -287,6 +287,8 @@ if __FILE__ == $0
   end.parse!
 
   ARGV.each do |source_filename|
+    puts "textualize: #{source_filename}" if options[:verbose]
+
     options[:xhtml_filename] = source_filename if options[:inplace]
 
     te = TextExtractor.new(source_filename, options[:lang])

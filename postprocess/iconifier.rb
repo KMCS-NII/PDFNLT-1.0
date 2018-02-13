@@ -181,6 +181,8 @@ class Iconifier
       #{groups.join.chomp}
       </svg>
     EOF
+  rescue org.apache.xml.dtm.DTMException
+    STDERR.puts "iconifier: DTMException in #{filename}"
   end
 
   def to_s
@@ -229,7 +231,7 @@ if __FILE__ == $0
   first = ARGV.first
   files = (first && File.directory?(first)) ? Dir[File.join(first, "*.xhtml")] : ARGV
   files.each do |filename|
-    puts filename if options[:verbose]
+    puts "iconifier: #{filename}" if options[:verbose]
     base = File.basename(filename, '.xhtml')
     iconifier = Iconifier.new(filename)
     if svg_dest

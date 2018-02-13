@@ -87,7 +87,7 @@ class SentenceSplitter
   end
 
   def parse_file(filename)
-    puts filename if @options[:verbose]
+    puts "sentence_splitter: #{filename}" if @options[:verbose]
 
     # doc section para sent TAB sect label TAB sent str TAB word id range
     paragraphs = {}
@@ -209,9 +209,11 @@ class SentenceSplitter
     sentences = paragraph_sentence_hash.values.flatten
 
     sentences.each do |sentence|
+      puts sentence.inspect
       sent_id = sentence.id
       sentence.words.each do |word_id|
         word_nodes[word_id]['data-sent-id'] = sent_id
+        puts word_nodes[word_id].text
       end
     end
 
