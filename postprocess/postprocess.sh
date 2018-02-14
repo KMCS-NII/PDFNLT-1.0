@@ -41,7 +41,6 @@ fi
 
 
 xhtmls=()
-htmls2=()
 shopt -s nullglob
 
 if [ -d "$1" -a -n "$force" ]
@@ -76,10 +75,6 @@ else
       pdfs+=("$dir/pdf/$file.pdf")
       tsvs+=("$file.csv")
       xhtmls+=("$dir/xhtml/$file.xhtml")
-      if [ -z "$inplace" ]
-      then
-        xhtmls2+=("$outdir/$file.xhtml")
-      fi
     fi
   done
 fi
@@ -115,20 +110,7 @@ then
 fi
 
 # Extract text, references; identify words
-#TODO jruby -J-Xmx256g "$script/textualize.rb" ${inplace} ${verbose} -o "$outdir" -l en "${xhtmls[@]}"
-
-if [ ${#xhtml2[@]} -eq 0 ]
-then
-  xhtmls2=()
-  for xhtml in "${xhtmls[@]}"
-  do
-    xhtmls2+=("$outdir"/$(basename "$xhtml"))
-  done
-fi
-
-
-# Extract sentences, math, citations
-jruby -J-Xmx256g "$script/sentence_splitter.rb" -i ${verbose} -o "${outdir}" "${xhtmls2[@]}"
+jruby -J-Xmx256g "$script/textualize.rb" ${inplace} ${verbose} -o "$outdir" "${xhtmls[@]}"
 
 # Extract area information
-jruby -J-Xmx256g "$script/iconifier.rb" ${verbose} -o "${outdir}" "${xhtmls2[@]}"
+jruby -J-Xmx256g "$script/iconifier.rb" ${verbose} -o "${outdir}" "${xhtmls[@]}"

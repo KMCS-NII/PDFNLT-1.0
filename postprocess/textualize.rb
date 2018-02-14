@@ -1,23 +1,87 @@
-#!/usr/bin/env ruby
-
+#!/usr/bin/env jruby
 # encoding: utf-8
+
+require 'pry'
+
+def require_stanford_parser(stanford_parser_jar=nil)
+  unless defined?(JRUBY_VERSION)
+    STDERR.puts "Error: needs JRuby"
+    exit 1
+  end
+
+  unless stanford_parser_jar
+    script_dir = File.dirname(__FILE__)
+    stanford_parser_jar = Dir["#{script_dir}/stanford-corenlp-*.jar"].grep(/stanford-corenlp-\d+.\d+.\d+\.jar$/).first
+    unless stanford_parser_jar
+      STDERR.puts "Error: cannot find `#{script_dir}/stanford-corenlp-X.X.X.jar`"
+      exit 1
+    end
+  end
+  require_relative stanford_parser_jar
+
+  java_import "edu.stanford.nlp.process.PTBTokenizer"
+  java_import "edu.stanford.nlp.process.CoreLabelTokenFactory"
+  java_import "edu.stanford.nlp.process.WordToSentenceProcessor"
+  java_import "java.io.StringReader"
+end
 
 require 'nokogiri'
 require 'optparse'
 require 'csv'
-require 'ffi/aspell'
 
-require 'pp'
-require 'pry'
+
+Paragraph = Struct.new(:section_id, :id, :sect_name, :box_name, :words)
+Word = Struct.new(:id, :text, :start, :node) do
+  def to_s
+    text
+  end
+end
+Sentence = Struct.new(:id, :sect_name, :box_name, :text, :words)
+CSV_COLS = %i(id sect_name box_name text words)
+CSV_COLS_POS = CSV_COLS.map { |field| Sentence.members.index(field) }
+
+def find_sentences(paragraph)
+  text = paragraph.words.join
+  para_offset = paragraph.words.first.start
+  tokenizer = PTBTokenizer.new(StringReader.new(text), CoreLabelTokenFactory.new, "")
+  tokens = tokenizer.to_a
+  sentence_parses = WordToSentenceProcessor.new.process(tokens)
+
+  word_iter = paragraph.words.each
+  word = word_iter.next
+  sentences = []
+  begin
+    sentence_parses.map.with_index do |sentence_parse, index|
+      id = paragraph.id.sub(/^p-/, 's-') + "-#{index}"
+      b = sentence_parse[0].beginPosition
+      e = sentence_parse[-1].endPosition
+      sentence = Sentence.new(id, paragraph.sect_name, paragraph.box_name, text[b...e], [])
+      b += para_offset
+      e += para_offset
+
+      sentences << sentence
+
+      while word && word.start < b
+        word = word_iter.next
+      end
+
+      while word && word.start < e
+        sentence.words << word.id if word.id
+        word = word_iter.next
+      end
+    end
+  rescue StopIteration
+    # No worries
+  end
+  sentences
+end
+
+
 
 # Requirements:
 #
-# Ruby 2.x
-# gem install nokogiri ffi-aspell
-#
-# aspell package with appropriate languages
-# e.g. OS X:   brew install aspell --with-lang-en --with-lang-de
-#      Debian: apt-get install aspell aspell-en aspell-de
+# JRuby
+# gem install nokogiri
 #
 #
 # XXX: Had problems with locale.
@@ -25,10 +89,6 @@ require 'pry'
 #     export LC_ALL=en_US.UTF-8
 
 class TextExtractor
-  CANCEL_BREAK_BOXES = %w(Abstract Body)
-  ALWAYS_BREAK_BOXES = %w(Equation)
-
-  NO_SPACE_LANG = /^ja|km|ko|lo|th|zh/
   LIGATURES = {
     "\ufb00" => "ff",
     "\ufb01" => "fi",
@@ -40,157 +100,194 @@ class TextExtractor
   }
   LIGATURE_RE = /[#{LIGATURES.keys.join}]/
 
-  def initialize(xhtml_filename, lang)
+  def initialize(xhtml_filename, options)
     @xhtml_filename = xhtml_filename
-    @no_space_lang = lang =~ NO_SPACE_LANG
     @document = File.open(xhtml_filename, encoding: 'UTF-8') { |f|
       Nokogiri::XML(f, nil, 'UTF-8') { |config| config.strict.nonet }
     }
-    @speller = FFI::Aspell::Speller.new(lang)
-    @output = ""
-    @compound = nil
-    @figures = Hash.new { |h, k| h[k] = [] }
-    @footnotes = Hash.new { |h, k| h[k] = [] }
-    @references = []
-    @needs_space = false
-    @needs_para = false
-    @needs_section = false
+
+    paragraphs = {}
+    paragraph_sequence = []
+    last_para = nil
+    reference_paragraphs = []
+    cite = nil
+    math = nil
+    maths = []
+    word_nodes = {}
+    cites = Hash.new { |h, k| h[k] = [] }
+    pos = 0
 
     @document.css('body > div.section').each do |section|
-      if @needs_section
-        end_para
-        @output += "\n\n\n\n"
-      end
-      @needs_para = false
-      @needs_space = false
-
-      sect_id = section['id']
+      section_id = section['id']
+      section_name = section['data-name']
 
       section.css('> div.box').each do |box|
+        box_name = box['data-name']
+
         box.css('> p').each do |para|
-          if para['data-fig']
-            @figures[sect_id] << para
-          elsif box['data-name'] == 'Footnote'
-            @footnotes[sect_id] << para
+          math_para = false
+          broken = false
+          para_id = para['id']
+          page_id = para['data-page'].to_i
+
+          # Test if standalone equation should continue from last para
+          if box_name == 'Equation' && last_para
+            p = paragraphs[last_para]
+            if !/[?!.]$/.match(p.words[-1].to_s)
+              continued_from_id = last_para
+              math_para = true
+            end
           else
-            process_para(para, box['data-name'])
+            continued_from_id = para['data-continued-from']
           end
+
+          unless continued_from_id || paragraph_sequence.empty?
+            text = "\n\n"
+            paragraph_sequence[-1].words << Word.new(nil, text, pos)
+            pos += text.length
+            broken = true
+          end
+
+          if !continued_from_id && box_name == 'Reference'
+            reference_paragraphs << para_id
+          end
+
+          nodes = para.children
+          if nodes[0]['data-refid']&.!=(nodes[0]['id'])
+            nodes.shift
+          end
+
+          words = nodes.select { |node|
+            !node['data-refid'] || node['id'] == node['data-refid']
+          }.flat_map { |node|
+            # ignore non-word content
+            next if node.text?
+
+            space_val = node['data-space']
+            if space_val == 'nospace' || (space_val == "bol" && pos == 0) || broken
+              space = nil
+              broken = false
+            else
+              space = Word.new(nil, ' ', pos)
+            end
+            text = node['data-fullform'] || node.text.gsub(/\s+/, ' ')
+            id = node['id']
+            word_nodes[id] = node
+
+            case
+            when cite
+              # inside a citation: skip everything
+              math = nil
+              space = nil
+              word = Word.new(id, '', pos)
+              cite = nil if cite == node['id']
+            when (cite = node['data-cite-end'])
+              # starting a citation: make a dummy word
+              cids = node['data-cite-id'].split(',')
+              text = cids.map { |cid| "CITE-#{cid}" }.join(', ')
+              cids.each do |cid|
+                cites[cid] << id
+              end
+              word = Word.new(id, text, pos)
+            when node['data-math'] == 'B-Math' ||
+                (node['data-math'] == 'I-Math' && !math) ||
+                (math_para && !math)
+              # starting an equation
+              mid = "MATH-#{math_para ? para_id : id}"
+              word = Word.new(id, mid, pos)
+              math = [mid, id, id, page_id, *node['data-bdr'].split(',').map(&:to_f)]
+              maths << math
+            when node['data-math'] == 'I-Math' ||
+                math_para
+              # inside an equation: skip while calculating bbox
+              space = nil
+              word = Word.new(id, '', pos)
+              math[2] = id
+              new = node['data-bdr'].split(',').map(&:to_f)
+              math[4] = [math[4], new[0]].min
+              math[5] = [math[5], new[1]].min
+              math[6] = [math[6], new[2]].max
+              math[7] = [math[7], new[3]].max
+            else
+              math = nil
+              text.gsub!(LIGATURE_RE, LIGATURES)
+              word = Word.new(id, text, pos, node)
+            end
+
+            pos += word.to_s.length
+            to_add = if space
+              word.start += 1
+              pos += 1
+              [space, word]
+            else
+              word
+            end
+
+            node['data-from'] = word.start
+            node['data-to'] = pos
+
+            to_add
+          }.compact
+
+          if continued_from_id
+            paragraphs[para_id] = paragraphs[continued_from_id]
+            paragraphs[para_id].words += words
+            last_para = continued_from_id
+          else
+            paragraph_sequence << paragraphs[para_id] = Paragraph.new(section_id, para_id, section_name, box_name, words)
+            last_para = para_id
+          end
+
+          # chain independent math only on these box types:
+          last_para = nil unless ['Body'].include?(box_name)
         end
       end
-      
-      @needs_section = true
     end
 
-    add_compound
+    paragraph_sentence_hash = Hash[paragraph_sequence.map { |paragraph|
+      [paragraph.id, find_sentences(paragraph)]
+    }]
+    sentences = paragraph_sentence_hash.values.flatten
 
-    process_extra(@footnotes)
-    process_extra(@figures)
-
-    end_para
-  end
-
-  def mark_length(xml_word, text)
-    xml_word['data-from'] = @output.length
-    @output += text
-    xml_word['data-to'] = @output.length
-  end
-
-  def add_compound
-    if @compound
-      mark_length(@last_word, @compound)
-      @compound = nil
-    end
-  end
-
-  def process_extra(type)
-    type.each do |section, paras|
-      end_para
-      @output += "\n\n\n\n"
-      @needs_para = false
-      @needs_space = false
-
-      paras.each do |para|
-        process_para(para)
-      end
-
-      add_compound
-    end
-    @output
-  end
-
-  def process_para(para, box_name=nil)
-    if @needs_section && !@needs_para && ALWAYS_BREAK_BOXES.include?(box_name)
-      @needs_para = true
-    end
-
-    if @needs_para
-      end_para
-      @output += "\n\n"
-      @needs_para = false
-      @needs_space = false
-    end
-    start_para(para, box_name)
-
-    para.css('> span.word').each do |word|
-      next if word.text.empty?
-
-      wstr = word.text.strip.gsub(LIGATURE_RE, LIGATURES)
-
-      if @needs_space
-        @output += ' '
-        @needs_space = false
-      end
-      
-      if wstr[-1] == '-' && !@no_space_lang
-        @compound = wstr
-        @last_word = word
-      else
-        if @compound
-          nohyp = @compound[0...-1]
-          nohyp_spell = (nohyp + wstr).gsub(/[[:punct:]]+$|^[[:punct:]]/, '')
-          if @speller.correct?(nohyp_spell)
-            mark_length(@last_word, nohyp)
-          else
-            mark_length(@last_word, @compound)
-          end
-          @compound = nil
-        end
-        mark_length(word, wstr)
-
-        @needs_space = !@no_space_lang
-        @compound = nil
+    sentences.each do |sentence|
+      sent_id = sentence.id
+      sentence.words.each do |word_id|
+        word_nodes[word_id]['data-sent-id'] = sent_id
       end
     end
 
-    @needs_para =
-      !box_name || !CANCEL_BREAK_BOXES.include?(box_name) || ".!?".include?(@output[-1])
+    @sent_tsv = CSV.generate(headers: CSV_COLS, col_sep: "\t") do |csv|
+      csv << CSV_COLS
+      sentences.each do |sentence|
+        sentence.words = sentence.words.join(',')
+        csv << sentence.values_at(*CSV_COLS_POS)
+      end
+    end
+
+    @math_tsv = CSV.generate(col_sep: "\t") do |csv|
+      csv << ['MathID', 'StartID', 'EndId', 'Page', 'X1', 'Y1', 'X2', 'Y2']
+      maths.each do |row|
+        csv << row
+      end
+    end
+
+    @cite_tsv = CSV.generate(col_sep: "\t") do |csv|
+      csv << ['CiteID', 'Text', 'From']
+      reference_paragraphs.each do |para_id|
+        cid = "CITE-#{para_id}"
+        para = paragraphs[para_id]
+        text = para.words.join.strip
+        csv << [cid, text, cites[para_id].join(',')]
+      end
+    end
+
+    @text = paragraph_sequence.flat_map { |para| para.words }.join
   end
 
-  def start_para(para=nil, box_name=nil)
-    unless @para_data
-      @para_data = {
-        start: @output.length,
-        box_name: box_name,
-        id: para['id']
-      }
-    end
-  end
-
-  def end_para
-    return unless @para_data
-    if @para_data[:box_name] == 'Reference'
-      @ref_id = (@ref_id || 0) + 1
-      @references << [
-        @ref_id,
-        @para_data[:id],
-        @output[@para_data[:start]..-1]
-      ]
-    end
-    @para_data = nil
-  end
+  attr_reader :sent_tsv, :math_tsv, :cite_tsv
 
   def to_s
-    @output
+    @text
   end
 
   def to_xml
@@ -212,54 +309,57 @@ class TextExtractor
     end
   end
 
-  def to_ref
-    CSV.generate(col_sep: "\t") do |csv|
-      csv << ["#", "ID", "Text", @xhtml_filename]
-      @references.each do |no, id, text|
-        id = @xhtml_filename[/([^\/]*)\.xhtml$/, 1] + "-" + id[/p(?:aragraph)?-(.*)/, 1]
-        csv << [no, id, text]
-      end
-    end
-  end
-
   def scrub_map
     @document.css('span.word').remove_attr('data-from').remove_attr('data-to')
   end
 end
 
-def output(fname, base, ext)
-  case fname
-  when "-"
+def output(fname_opt, ext, xhtml_dir, base, options)
+  if (fname = options[fname_opt]) == "-"
     puts yield
-  when nil
-    # skip
-  else
-    fname = File.join(fname, "#{base}.#{ext}") if File.directory?(fname)
+
+  elsif !fname.nil?
+    fname = File.join(fname, "#{base}") + "." + ext if File.directory?(fname)
+    File.write(fname, yield, encoding: 'UTF-8')
+
+  elsif (dir = options[:base_dir])
+    name = options[:base_name]
+    dir = xhtml_dir if dir == "-"
+
+    if name
+      fname = File.join(dir, name) + "." + ext
+    else
+      fname = File.join(dir, base) + "." + ext
+    end
     File.write(fname, yield, encoding: 'UTF-8')
   end
 end
 
 if __FILE__ == $0
-  options = {
-    lang: "en"
-  }
+  options = {}
   OptionParser.new do |opts|
     opts.banner = "Usage: #{__FILE__} [options] <file.xhtml...>"
 
-    opts.on("-l", "--language LANG", "Text language - requires aspell dict [en]") do |lang|
-      options[:lang] = lang
-    end
     opts.on("-x", "--xhtml FILE", "XHTML output file") do |filename|
       options[:xhtml_filename] = filename
     end
     opts.on("-t", "--text FILE", "Plain text output file") do |filename|
       options[:text_filename] = filename
     end
-    opts.on("-m", "--map FILE", "Word ID mapping TSV file") do |filename|
-      options[:map_filename] = filename
+    opts.on("-w", "--word FILE", "Word ID mapping TSV file") do |filename|
+      options[:word_filename] = filename
     end
     opts.on("-r", "--references FILE", "Reference TSV file") do |filename|
       options[:ref_filename] = filename
+    end
+    opts.on("-s", "--sent FILE", "Sentence TSV file") do |filename|
+      options[:sent_filename] = filename
+    end
+    opts.on("-m", "--math FILE", "Math equation TSV file") do |filename|
+      options[:math_filename] = filename
+    end
+    opts.on("-c", "--cite FILE", "Citation TSV file") do |filename|
+      options[:cite_filename] = filename
     end
     opts.on("-M", "--[no-]xhtml-map", "Insert positions into XHTML") do |insert|
       options[:xhtml_map] = insert
@@ -267,14 +367,19 @@ if __FILE__ == $0
     opts.on("-i", "--[no-]in-place", "Replace the XHTML file") do |inplace|
       options[:inplace] = inplace
     end
-      opts.on("-v", "--[no-]verbose", "Report file names") do |value|
-        options[:verbose] = value
+    opts.on("-v", "--[no-]verbose", "Report file names") do |value|
+      options[:verbose] = value
+    end
+    opts.on("-S", "--stanford-parser FILE", "Path to stanford-corenlp-X.X.X.jar") do |filename|
+      options[:stanford_parser_jar] = filename
+    end
+    opts.on("-o", "--output FILE", "Sets all output options") do |filename|
+      if File.directory?(filename)
+        options[:base_dir] = filename
+      else
+        options[:base_dir] = File.dirname(filename)
+        options[:base_name] = File.basename(filename, ".xhtml")
       end
-    opts.on("-o", "--output FILE", "Sets -x, -t, -m, -r") do |filename|
-      options[:xhtml_filename] = filename
-      options[:text_filename] = filename
-      options[:map_filename] = filename
-      options[:ref_filename] = filename
     end
     opts.on_tail("-h", "--help", "Show this message") do
       puts opts
@@ -286,18 +391,23 @@ if __FILE__ == $0
     end
   end.parse!
 
+  require_stanford_parser(options[:stanford_parser_jar])
+
   ARGV.each do |source_filename|
     puts "textualize: #{source_filename}" if options[:verbose]
 
     options[:xhtml_filename] = source_filename if options[:inplace]
 
-    te = TextExtractor.new(source_filename, options[:lang])
+    te = TextExtractor.new(source_filename, options)
     base = File.basename(source_filename, '.xhtml')
+    xhtml_dir = File.dirname(source_filename)
 
-    output(options[:map_filename], base, "map") { te.to_map }
+    output(:word_filename, "word.tsv", xhtml_dir, base, options) { te.to_map }
     te.scrub_map unless options[:xhtml_map]
-    output(options[:xhtml_filename], base, "xhtml") { te.to_xml }
-    output(options[:ref_filename], base, "ref") { te.to_ref }
-    output(options[:text_filename], base, "txt") { te.to_s }
+    output(:xhtml_filename, "xhtml", xhtml_dir, base, options) { te.to_xml }
+    output(:text_filename, "txt", xhtml_dir, base, options) { te.to_s }
+    output(:sent_filename, "sent.tsv", xhtml_dir, base, options) { te.sent_tsv }
+    output(:math_filename, "math.tsv", xhtml_dir, base, options) { te.math_tsv }
+    output(:cite_filename, "cite.tsv", xhtml_dir, base, options) { te.cite_tsv }
   end
 end
