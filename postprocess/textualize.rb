@@ -77,7 +77,6 @@ def find_sentences(paragraph)
 end
 
 
-
 # Requirements:
 #
 # JRuby

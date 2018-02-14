@@ -12,8 +12,17 @@ if (isset($_POST['labels'])) {
     update_xhtml($_POST['paper'], $_POST['labels'], $config);
     exit(0);
 }
+
+// If the training csv is not exists but the corresponding pdf is exists,
+// generate training csv from the pdf automatically
+$pdf_code = get_pdf_code($config);
 $code = get_training_code($config);
-$options = get_training_options($code, $config);
+if ($pdf_code != $code) {
+    generate_training($pdf_code, $config);
+    $code = $pdf_code;
+}
+$loc = $_GET['loc'];
+$loc = $loc ? array_map('floatval', explode(',', $loc)) : null;
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
@@ -29,24 +38,23 @@ $options = get_training_options($code, $config);
   <script type="text/javascript">
     var basedir = "<?php echo $basedir; ?>";
     var default_paper = "<?php echo $code; ?>";
+    var loc = <?php echo json_encode($loc); ?>;
   </script>
 </head>
 
 <body>
   <div class="fullheight">
     <div id="menu">
-      <select id="paper_select" size="1">
-        <?php echo $options; ?>
-      </select>
-      <input type="text" id="paper_select_input" size="10" placeholder="Paper Code" />
-      <!--input type="button" id="paper_select_input_button" value="Go" /-->
-      &nbsp;
+      <input type="text" id="paper_select" list="paper_list" autocomplete="off" placeholder="Paper Code" />
+      <datalist id="paper_list">
+      </datalist>
       <input type="button" id="layout_select_button" value="Layout" />
       |<span>
 	  <input type="button" id="line_download_button" value="Download" />
 	  <input type="button" id="line_save_button" value="Save" style="display:none;" />
 	  <input type="button" id="line_load_button" value="Load" style="display:none;" />
 	  <input type="button" id="line_update_button" value="Update" />
+	  <input type="button" id="line_abandon_button" value="Abandon" />
       </span>
       |<span id="disp_error">Error:0</span>
     </div>
@@ -64,6 +72,8 @@ $options = get_training_options($code, $config);
 	</table>
       </div>
     </div>
+    <datalist id="label_list">
+    </datalist>
     <div class="vtop pdf">
       <div id="paper">
         <img id="paper_image">

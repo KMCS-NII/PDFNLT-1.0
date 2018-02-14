@@ -6,9 +6,26 @@ var current_paper = null;
 var current_page = 0; // 最初のページが 1 なので注意
 var npages = 0;     // 表示中の論文のページ数
 var current_layout = 0; // レイアウト
+var papers;
+
 
 // 起動時の初期設定
 $(document).ready(function() {
+    var papersPromise = (function getPapers() {
+	var papersJSON = sessionStorage.getItem('papers');
+	if (papersJSON) {
+	    return Promise.resolve(JSON.parse(papersJSON))
+	} else {
+	    return $.get('ajax.php?directory');
+	}
+    })();
+    papersPromise.then(function(data) {
+	papers = data;
+	sessionStorage.setItem('papers', JSON.stringify(papers));
+	$('#paper_list').html(papers.map(function(paper) {
+	    return '<option>' + paper + '</option>';
+	}).join(''));
+    });
 
     readNewPaper(default_paper);
     /*
@@ -29,22 +46,8 @@ $(document).ready(function() {
     $("#paper_select").change(function() {
 	var new_paper = $(this).val();
 	readNewPaper(new_paper);
-    });
-
-    $("#paper_select_input").change(function() {
-	var input = $(this).val();
-	$("#paper_select option").each(function() {
-	    if ($(this).value == input
-		|| $(this).html() == input) {
-		console.debug("match:" + $(this).value);
-		readNewPaper(input);
-	    }
-	});
-    });
-
-    $("#paper_select_input_button").click(function() {
-	var new_paper = $("#paper_select_input").val();
-	readNewPaper(new_paper);
+    }).focus(function(e) {
+	$(e.target).select();
     });
 
     $("#layout_select_button").click(function() {
@@ -226,7 +229,21 @@ function getPageInfo(n) {
 function assignActions() {
 
     // XHTML 表示エリアのイベント
-    
+
+    $("#iframe_xhtml").contents().on('dblclick', 'span.word', function(evt) {
+	var $word = $(evt.target);
+	var page = parseInt($word.closest('p').data('page'));
+	var [x1, y1, x2, y2] = $word.data('bdr').split(',').map(parseFloat);
+	var base = location.href.replace(/\/[^/]*$/, '/');
+	var $page = $("#iframe_xhtml").contents().find('pages page:nth-child(' + (page + 1) + ')');
+	// assumption: inches ("##.## in")
+	var height = parseFloat($page.attr('height'));
+	var width = parseFloat($page.attr('width'));
+	var url = base + "line_checker.php?code=" + current_paper + "&loc=" + page + "," +
+	  ((x1 + x2) * width * 100 / 2).toFixed(2) + "," + ((y1 + y2) * height * 100 / 2).toFixed(2);
+	window.open(url, '_self');
+    });
+
     // マウスオーバー時にボックスを表示
     $("#iframe_xhtml").contents().find("p").hover(
 	function() {

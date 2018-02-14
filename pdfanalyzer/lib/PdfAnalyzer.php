@@ -59,6 +59,7 @@ class PdfAnalyzer
         $this->setAnnotationDir($this->basedir . 'anno/');
         $this->setTrainingDir($this->basedir . 'train/');
         $this->setXhtmlDir($this->basedir . 'xhtml/');
+        $this->setTempDir($this->basedir . 'tmp/');
         $this->setModelFile($this->basedir . 'paper.model');
 
         $this->la = new LayoutAnalyzer();
@@ -138,6 +139,18 @@ class PdfAnalyzer
     }
 
     /**
+     * Training に利用可能なラベルの setter, getter
+     * @params $labels  ラベル文字列のリスト
+     *         null の場合はチェックしない
+     */
+    public function setAvailableLabels($labels) {
+        $this->available_labels = $labels;
+    }
+    public function getAvailableLabels() {
+        return $this->available_labels;
+    }
+
+    /**
      * 各種ディレクトリの setter, getter
      */
     public function setBaseDir($basedir) {
@@ -192,6 +205,17 @@ class PdfAnalyzer
             $d .= '/';
         }
         $this->training_dir = $d;
+        if (file_exists($d . 'labels.json')) {
+            $json = file_get_contents($d . 'labels.json');
+            $labels = json_decode($json, true);
+            $available_labels = array();
+            foreach ($labels as $label) {
+                $available_lables []= $label;
+            }
+            $this->setAvailableLabels($available_labels);
+        } else {
+            $this->setAvailableLabels(null);
+        }
     }
     public function getTrainingDir() {
         return $this->training_dir;
@@ -205,6 +229,20 @@ class PdfAnalyzer
     }
     public function getXhtmlDir() {
         return $this->xhtml_dir;
+    }
+
+    public function setTempDir($d) {
+        if (substr($d, -1) != '/') {
+            $d .= '/';
+        }
+        $this->temp_dir = $d;
+        if (!file_exists($this->temp_dir)) {
+            @mkdir($this->temp_dir);
+            @chmod($this->temp_dir, 0777);
+        }
+    }
+    public function getTempDir() {
+        return $this->temp_dir;
     }
 
     /**
@@ -1412,7 +1450,7 @@ class PdfAnalyzer
             $pdfs = glob($this->pdf_dir . '*.pdf');
         }
         @mkdir($this->training_dir, 0777, true);
-        chmod($this->training_dir, 0777);
+        @chmod($this->training_dir, 0777);
         
         // アノテーションデータからトレーニングデータを作成する
         foreach ($pdfs as $pdf) {
@@ -1428,18 +1466,26 @@ class PdfAnalyzer
                     continue;
                 }
             }
+            /* 2018-01-24 annotation ファイルが無い場合は
+             * PDF から一時的に annotation ファイルを生成する
+             */
+            $original_annotation_dir = null;
             if (!is_readable($annofname)) {
-                printf("Annotation file '%s' is not readable. (skipped)\n", $annofname);
-                continue;
+                // printf("Annotation file '%s' is not readable. (skipped)\n", $annofname);
+                // continue;
+                $original_annotation_dir = $this->annotation_dir;
+                $this->annotation_dir = $this->training_dir;
+                $this->pdf2anno(array($pdf));
+                $annofname  = $this->annotation_dir . $basename . ".csv";
             }
-
+            
             $fig_json = null;
             if ($this->figure_dir) {
                 // pdffigures の出力を取得する
                 $fig_json = AbekawaPdffigures::get($pdf, $this->figure_dir);
             }
         
-            printf("Updating training data '%s'...", $trainfname, $pdf);
+            printf("Analyzing pdf '%s'...", $pdf);
 
             $this->la->analyze($pdf, $fig_json);
             $la_lines = $this->la->getLines();
@@ -1449,16 +1495,28 @@ class PdfAnalyzer
             // アノテーションデータと解析結果の diff を作成する
 
             // アノテーションデータを読み込み
+            $lines['anno'] = null;
+            printf(" Reading annotation '%s'...", $annofname);
             $lines['anno'] = array('label' => array(), 'text' => array(), 'feature' => array());
             $fanno = fopen($annofname, "r");
             while ($line = fgets($fanno)) {
                 $args = explode("\t", trim($line));
                 if (count($args) > 1) { //== 2 || count($args) == 3) {
-                    $lines['anno']['label'] []= $args[0];
+                    if ($this->available_labels && !in_array($args[0], $this->available_labels)) {
+                        // 利用できないラベル
+                        $lines['anno']['label'] []= self::UNLABELLED_LINE . ' ' . $args[0];
+                    } else {
+                        $lines['anno']['label'] []= $args[0];
+                    }
                     $lines['anno']['text'] []= $args[1];
                 }
             }
             fclose($fanno);
+            if ($original_annotation_dir) {
+                // 一時的に作成した annotation ファイルを削除する
+                unlink($annofname);
+                $this->annotation_dir = $original_annotation_dir;
+            }
 
             // 解析結果を展開
             $lines['analyzed'] = array('label' => array(), 'text' => array(), 'feature' => array(), 'bdr' => array());
@@ -1490,15 +1548,19 @@ class PdfAnalyzer
             );
 
             // 結果を出力
+            printf(" Updating training '%s'...", $trainfname);
             $stack = array();
             $fh = fopen($trainfname, "w");
             if (!$fh) {
                 throw new RuntimeException("Train file '{$trainfname}' cannot open.");
             }
             $fh_err = fopen($errfname, "w");
-            $fh_log = fopen($logfname, "w");
             if (!$fh_err) {
-                throw new RuntimeException("Error file '{$errffname}' cannot open.");
+                throw new RuntimeException("Error file '{$errfname}' cannot open.");
+            }
+            $fh_log = fopen($logfname, "w");
+            if (!$fh_log) {
+                printf(" Cannot open logfile '%s', use stdout instead.\n", $logfname);
             }
             $im = 0;
             $ia = 0;
@@ -1525,7 +1587,9 @@ class PdfAnalyzer
                     }
                     if ($im >= count($lines['anno']['label'])
                     || $ia >= count($lines['analyzed']['label'])) {
-                        $this->__outputUpdateModelLog($fh_log, $im, $ia, $lines);
+                        if ($fh_log) {
+                            $this->__outputUpdateModelLog($fh_log, $im, $ia, $lines);
+                        }
                         print_r($diff);
                         printf("Error on Diff:UNMODIFIED, target csv: '%s'\n", $f);
                         throw new RuntimeException('Number of lines mismatch, see "update_training.log"');
@@ -1539,7 +1603,11 @@ class PdfAnalyzer
                         $lines['analyzed']['feature'][$ia],
                         $lines['analyzed']['bdr'][$ia]
                     );
-                    fprintf($fh_log, "--\n%03d:%s\n%03d:%s\n", $im, $lines['anno']['text'][$im], $ia, $lines['analyzed']['text'][$ia]);
+                    if ($fh_log) {
+                        fprintf($fh_log, "--\n%03d:%s\n%03d:%s\n", $im, $lines['anno']['text'][$im], $ia, $lines['analyzed']['text'][$ia]);
+                    } else {
+                        printf("--\n%03d:%s\n%03d:%s\n", $im, $lines['anno']['text'][$im], $ia, $lines['analyzed']['text'][$ia]);
+                    }
                     $im++;
                     $ia++;
                     unset($stack);
@@ -1547,19 +1615,27 @@ class PdfAnalyzer
                     break;
                 case Diff::DELETED:  // 該当行は解析結果にはない
                     if ($im >= count($lines['anno']['label'])) {
-                        $this->__outputUpdateModelLog($fh_log, $im, $ia, $lines);
+                        if ($fh_log) {
+                            $this->__outputUpdateModelLog($fh_log, $im, $ia, $lines);
+                        }
                         print_r($diff);
                         printf("Error on Diff:DELETED, target csv: '%s'\n", $f);
                         throw new RuntimeException('Number of lines mismatch, see "update_training.log"');
                         die();
                     }
                     array_push($stack, array($lines['anno']['label'][$im], $lines['anno']['text'][$im]));
-                    fprintf($fh_log, "--\n%03d:%s\n", $im, $lines['anno']['text'][$im]);
+                    if ($fh_log) {
+                        fprintf($fh_log, "--\n%03d:%s\n", $im, $lines['anno']['text'][$im]);
+                    } else {
+                        printf("--\n%03d:%s\n", $im, $lines['anno']['text'][$im]);
+                    }
                     $im++;
                     break;
                 case Diff::INSERTED: // 該当行はマスターにはない
                     if ($ia >= count($lines['analyzed']['label'])) {
-                        $this->__outputUpdateModelLog($fh_log, $im, $ia, $lines);
+                        if ($fh_log) {
+                            $this->__outputUpdateModelLog($fh_log, $im, $ia, $lines);
+                        }
                         print_r($diff);
                         printf("Error on Diff:INSERTED, target csv: '%s'\n", $f);
                         throw new RuntimeException('Number of lines mismatch, see "update_training.log"');
@@ -1587,15 +1663,23 @@ class PdfAnalyzer
                         $lines['analyzed']['feature'][$ia],
                         $lines['analyzed']['bdr'][$ia]
                     );
-                    fprintf($fh_log, "--\n%03d:%s\n", $ia, $lines['analyzed']['text'][$ia]);
+                    if ($fh_log) {
+                        fprintf($fh_log, "--\n%03d:%s\n", $ia, $lines['analyzed']['text'][$ia]);
+                    } else {
+                        printf("--\n%03d:%s\n", $ia, $lines['analyzed']['text'][$ia]);
+                    }
                     $ia++;
                     break;
                 }
             }
             fclose($fh);
             chmod($trainfname, 0666); // can be overwritten via webbrowser
+            chmod($errfname, 0666); // can be overwritten via webbrowser
             fclose($fh_err);
-            fclose($fh_log);
+            if ($fh_log) {
+                fclose($fh_log);
+                @chmod(0666, $logfname);
+            }
             echo "done.\n";
         }
     }
@@ -1687,7 +1771,7 @@ class PdfAnalyzer
             // Get crf features
             echo "GetCRFfeatures, ";
             $features = $this->getCRFfeatures();
-            $infile = $basename.'_in.txt';
+            $infile = $this->getTempDir() . $basename.'_in.txt';
             file_put_contents($infile, implode("\n", $features));
 
             // Tagging
@@ -1876,6 +1960,34 @@ class PdfAnalyzer
             unlink($jsonfile);
         }
 
+    }
+
+    /**
+     * トレーニングデータから {$training_dir}/labels.json を作成する
+     */
+    public function generateLabels() {
+        $available_labels = array();
+        foreach (glob($this->training_dir . '*.csv') as $trainfname) {
+            printf("Reading training '%s'...\n", $trainfname);
+            $fh = fopen($trainfname, "r");
+            if (!$fh) {
+                throw new RuntimeException("Train file '{$trainfname}' cannot open.");
+            }
+            while ($line = fgets($fh)) {
+                $args = explode("\t", trim($line));
+                if (count($args) > 2) {
+                    if (!preg_match('/^#/', $args[0])) {
+                        $available_labels[$args[0]] = true;
+                    }
+                }
+            }
+            fclose($fh);
+        }
+        $available_labels = array_keys($available_labels);
+        sort($available_labels);
+        $json = json_encode($available_labels, JSON_PRETTY_PRINT);
+        file_put_contents($this->training_dir . 'labels.json', $json);
+        echo "done.\n";
     }
 
 }

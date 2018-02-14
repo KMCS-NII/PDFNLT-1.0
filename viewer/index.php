@@ -8,7 +8,6 @@ $basedir = get_base_dir($config);
 debug_log("index.php: ${basedir}");
 
 $code = get_xhtml_code($config);
-$options = get_xhtml_options($code, $config);
 ?>
  
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -29,29 +28,26 @@ $options = get_xhtml_options($code, $config);
 <body>
   <div class="fullheight">
     <div id="menu">
-      <select id="paper_select" size="1">
-        <?php echo $options; ?>
-      </select>
-      <input type="text" id="paper_select_input" size="10" placeholder="Paper Code" />
-      <!--input type="button" id="paper_select_input_button" value="Go" /-->
-      &nbsp;
+      <input type="text" id="paper_select" list="paper_list" autocomplete="off" placeholder="Paper Code" />
+      <datalist id="paper_list">
+      </datalist>
       <input type="button" id="layout_select_button" value="Layout" />
     </div>
 
     <div id="container">
-    <div class="vtop xhtml">
-      <iframe id="iframe_xhtml"></iframe>
-    </div>
-    <div class="vtop pdf">
-      <div id="paper">
-	<img id="paper_image"></img>
+      <div class="vtop xhtml">
+        <iframe id="iframe_xhtml"></iframe>
       </div>
-    </div>
-    <div id="page_number">
-      <input type="button" id="prev_page_button" value="&lt;" />
-      <span id="page">p.1</span>
-      <input type="button" id="next_page_button" value="&gt;" />
-    </div>
+      <div class="vtop pdf">
+        <div id="paper">
+          <img id="paper_image"></img>
+        </div>
+      </div>
+      <div id="page_number">
+        <input type="button" id="prev_page_button" value="&lt;" />
+        <span id="page">p.1</span>
+        <input type="button" id="next_page_button" value="&gt;" />
+      </div>
     </div>
   </div>
 

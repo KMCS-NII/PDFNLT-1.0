@@ -24,7 +24,7 @@ _HTML_;
         exit(1);
     } else {
         while ($line = fgets($fp)) {
-            if (preg_match('/^([^#][^\s]+)\s+([^\s]+)/', $line, $m)) {
+            if (preg_match('/^([^#][^\s]+)\s+(.+)/', $line, $m)) {
                 $key = $m[1];
                 $value = $m[2];
                 $config[$key] = $value;
@@ -134,8 +134,41 @@ function update_xhtml($paper, $labels, $config) {
 }
 
 /**
+ * Generate Training from the PDF
+ */
+function generate_training($code, $config) {
+    $pdf    = get_pdf_dir($config) . $code . '.pdf';
+    $target = get_training_dir($config) . $code . '.csv';
+    debug_log(sprintf("generate_training, target: %s\n", $target));
+
+    if (!is_readable($pdf)) {
+        debug_log(sprintf("pdf file is not readable: %s", $pdf));
+        exit(1);
+    }
+
+    if (file_exists($target) && !is_writable($target)) {
+        debug_log(sprintf("target file is not writable: %s", $target));
+        exit(1); // error exit
+    }
+  
+    $pdfanalyzer = get_pdfanalyzer($config);
+    $basedir = get_base_dir($config);
+    $options = get_options($config);
+
+    $cmd = "php ${pdfanalyzer} -c update_training --base-dir ${basedir} ${options} ${pdf}";
+    debug_log(sprintf("Executing command: '%s'", $cmd));
+    exec($cmd, $output, $retval);
+    debug_log(sprintf("Retval : '%s'", $retval));
+    exit($retval);
+}
+
+/**
  * Get code
  */
+function get_pdf_code($config) {
+    return get_code(get_pdf_dir($config), ".pdf");
+}
+
 function get_xhtml_code($config) {
     return get_code(get_xhtml_dir($config), ".xhtml");
 }
@@ -157,7 +190,7 @@ function get_code($dir, $ext) {
         if (count($files) > 0) {
             $code = basename($files[0], $ext);
         } else {
-            $code = "";
+            $code = false;
         }
     }
     return $code;
@@ -166,27 +199,22 @@ function get_code($dir, $ext) {
 /**
  * Get filelist options (HTML style)
  */
-function get_xhtml_options($code, $config) {
-    return get_file_options($code, get_xhtml_dir($config), ".xhtml");
+function get_xhtml_options($config) {
+    return get_file_options(get_xhtml_dir($config), ".xhtml");
 }
 
-function get_training_options($code, $config) {
-    return get_file_options($code, get_training_dir($config), ".csv");
+function get_training_options($config) {
+    return get_file_options(get_training_dir($config), ".csv");
 }
 
-function get_file_options($code, $dir, $ext) {
+function get_file_options($dir, $ext) {
     $options = array();
     $files = glob($dir . "*" . $ext);
     foreach ($files as $file) {
         $basename = basename($file, $ext);
-        if ($basename == $code) {
-            $options[$basename] = '<option value="' . $basename . '" selected="selected">' . $basename . '</option>';
-        } else {
-            $options[$basename] = '<option value="' . $basename . '">' . $basename . '</option>';
-        }
+        $options[] = $basename;
     }
-    ksort($options, SORT_REGULAR);
-    $options = implode('', array_values($options));
+    sort($options);
     return $options;
 }
 
@@ -194,10 +222,10 @@ function get_file_options($code, $dir, $ext) {
  * Debug log
  */
 function debug_log($msg) {
-    if (false) { // set true for logging debug information
+    if (true) { // set true for logging debug information
         $fp = fopen("/tmp/line_checker.log", "a");
         chmod("/tmp/line_checker.log", 0666);
-        fprintf($fp, "%s\t basedir: %s\n", strftime('%y-%m-%d %H:%M:%S'), $msg);
+        fprintf($fp, "%s\t%s\n", strftime('%y-%m-%d %H:%M:%S'), $msg);
         fclose($fp);
     }
 }
