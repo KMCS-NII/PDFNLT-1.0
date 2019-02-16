@@ -7,5 +7,8 @@ Tools for Natural Language Text aware PDF structure analysis
 
 * Kenichi Iwatsuki, Takeshi Sagara, Tadayoshi Hara, Akiko Aizawa: “Detecting In-line Mathematical Expressions in Scientific Documents.” The 17th ACM Symposium on Document Engineering (DocEng 2017). Valletta, Malta, September, 2017. [link](https://dl.acm.org/citation.cfm?id=3121041)
 
+### Contact
+pdfnlt-admin@nii.ac.jp
+
 ### LICENSE
 MIT
