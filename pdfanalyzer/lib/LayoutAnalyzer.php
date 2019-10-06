@@ -462,8 +462,13 @@ class LayoutAnalyzer
      * @return  pdffigures 情報（JSON形式）をパースした配列を返す
      **/
     public function pdfFigures($pdfpath) {
+        $command = PdfAnalyzer::pdffiguresPath();
+        if ($command == '') {
+            echo "'pdffigures' command is not found.\n";
+            return array();
+        }
         $tmpfname = tempnam('/tmp', 'pdffigures');
-        $cmd = sprintf("pdffigures -j %s %s", $tmpfname, $pdfpath);
+        $cmd = sprintf("%s -j %s %s", $command, $tmpfname, $pdfpath);
         if (isset($this->debug) && $this->debug) {
             echo "Executing '${cmd}'\n";
         }
@@ -494,7 +499,8 @@ class LayoutAnalyzer
      * @return  bbox 情報（文字列）を返す
      **/
     public function pdfToText($pdfpath) {
-        $cmd = sprintf("pdftotext -r %d -bbox %s -", $this->dpi, $pdfpath);
+        $pdftotext = PdfAnalyzer::pdftotextPath();
+        $cmd = sprintf("%s -r %d -bbox %s -", $pdftotext, $this->dpi, $pdfpath);
         if (isset($this->debug) && $this->debug) {
             echo "Executing '${cmd}'\n";
         }
@@ -1688,8 +1694,11 @@ class LayoutAnalyzer
         // preg_match_all('/<page width="([\d\.]+)" height="([\d\.]+)">(.*?)<\/page>/us', $this->bbox, $p, PREG_SET_ORDER);
         // でいいはずが古い PHP では正しい結果が得られないので関数化
         $p = $this->__getPageContents($this->bbox);
+        if (count($p) > 30) {
+            throw new RuntimeException("Too many pages (" . count($p) . " pages), given up.");
+        }
         $this->indents = $this->__getStructure($p);
-    
+
         for ($npage = 0; $npage < count($p); $npage++) {
             if (($this->target_page_from > 0 && $this->target_page_from > $npage + 1)
             || ($this->target_page_to > 0 && $this->target_page_to < $npage + 1)) {

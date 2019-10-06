@@ -55,6 +55,10 @@ $(document).ready(function() {
 	resetLayout();
     });
 
+    $("#show_box").on('click', function() {
+	showBoxesOnPage(current_page);
+    });
+
     $("#prev_page_button").click(function() {
 	if (current_page > 1) {
 	    showPaperImage(current_paper, current_page - 1);
@@ -196,6 +200,8 @@ function showPaperXhtml(code) {
 	    assignActions();
 	    // ページ数を取得
 	    npages = $("#iframe_xhtml").contents().find("pages>page").length;
+
+	    showBoxesOnPage(1);
 	});
 	jo.contentDocument.location.replace(url);
     }
@@ -211,7 +217,46 @@ function showPaperImage(code, page) {
 	$("#paper_image").attr("src", image_url);
 	current_page = page;
 	$("div#page_number span#page").html("p." + current_page.toString());
+
+	showBoxesOnPage(page);
     }
+}
+
+// 現在ページ画像上にボックスを表示する
+// 先頭ページは 1
+function showBoxesOnPage(page) {
+    // このページのボックスを表示
+    $("#paper div.boundarylabel").remove();
+    $("#paper div.boundary").remove();
+    if (! $("#show_box").prop('checked')) {
+	return false;
+    }
+    $("#iframe_xhtml").contents().find("p").each(function() {
+	var p = parseInt($(this).attr("data-page"));
+	if (p != page - 1) {
+	    return true;
+	}
+	var section_label = $(this).parents("div.section").attr("data-name");
+	var box_label = $(this).parents("div.box").attr("data-name");
+	var str_bdr = $(this).attr("data-bdr");
+	var bdr = str_bdr.split(',');
+	if (bdr.length != 4) {
+	    return true;
+	}
+	var pageInfo = getPageInfo(page - 1);
+	var l = parseFloat(bdr[0]) * pageInfo.width - 4;
+	var t = parseFloat(bdr[1]) * pageInfo.height - 4;
+	var w = parseFloat(bdr[2]) * pageInfo.width - l;
+	var h = parseFloat(bdr[3]) * pageInfo.height - t;
+	var pid = $(this).attr("id");
+	var box = '<div class="boundarylabel" style="left:' + l.toString() + 'px;top:' + (t - 8).toString() + 'px;">' + section_label + ':' + box_label + '</div><div class="boundary" style="left:' + l.toString() + 'px;top:' + t.toString() + 'px;width:' + w.toString() + 'px;height:' + h.toString() + 'px;" data-pid="' + pid + '"/>';
+	$("#paper").append(box);
+    });
+    $('#paper div.boundary').on('click', function(e) {
+	var id = $(this).attr('data-pid');
+	selectParagraphInXhtml(id);
+    });
+
 }
 
 // xhtml から n ページ目の幅と高さの情報を取得

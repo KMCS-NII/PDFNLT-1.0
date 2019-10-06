@@ -1,5 +1,8 @@
 <?php
 
+// Pdfanalyzer version
+define("PDFANALYZER_VERSION", "1.0.20181217");
+
 if (!isset($argv)) {
     echo "This program must be executed from command line.\n";
     die();

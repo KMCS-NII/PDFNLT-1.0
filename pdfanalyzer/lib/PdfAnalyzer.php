@@ -2,6 +2,7 @@
 require_once(dirname(__FILE__).'/LayoutAnalyzer.php');
 require_once(dirname(__FILE__).'/CRFSuiteLib.php');
 require_once(dirname(__FILE__).'/AbekawaPdffigures.php');
+require_once(dirname(__FILE__).'/OCRLib.php');
 
 /*
  * PDF の解析を行う
@@ -70,6 +71,7 @@ class PdfAnalyzer
         // スイッチ
         $this->cutimage = false;
         $this->altimage = array();
+        $this->useOCR = OCRLib::check();
         $this->use_mecab = $this->have_mecab;
         $this->use_wordtag = true;
         $this->__reset();
@@ -84,6 +86,51 @@ class PdfAnalyzer
     }
 
     function __destruct() {
+    }
+
+    /**
+     * Get Fullpath of 'pdftotext'
+     */
+    public static function pdftotextPath() {
+        $pdftotext = "";
+        foreach (
+            array(
+                trim(`which pdftotext`),
+                "/usr/bin/pdftotext",
+                "/usr/local/bin/pdftotext",
+                getenv('HOME') . "/bin/pdftotext",
+                dirname(__FILE__) . "/bin/pdftotext",
+            ) as $path) {
+            if (is_executable($path)) {
+                $pdftotext = $path;
+                break;
+            }
+        }
+        if ($pdftotext == "") {
+            throw new RuntimeException("'pdftotext' is not installed or not found.");
+        }
+        return $pdftotext;
+    }
+
+    /**
+     * Get Fullpath of 'pdffigures'
+     */
+    public static function pdffiguresPath() {
+        $pdffigures = "";
+        foreach (
+            array(
+                trim(`which pdffigures`),
+                "/usr/bin/pdffigures",
+                "/usr/local/bin/pdffigures",
+                getenv('HOME') . "/bin/pdffigures",
+                dirname(__FILE__) . "/bin/pdffigures",
+            ) as $path) {
+            if (is_executable($path)) {
+                $pdffigures = $path;
+                break;
+            }
+        }
+        return $pdffigures;
     }
 
     /**
@@ -520,7 +567,8 @@ class PdfAnalyzer
         }
     
         // pdftotext bbox
-        $cmd = sprintf("pdftotext -r 100 -bbox %s -", $pdf_filename);
+        $pdftotext = self::pdftotextPath();
+        $cmd = sprintf("%s -r 100 -bbox %s -", $pdftotext, $pdf_filename);
         if (isset($GLOBALS['debug']) && $GLOBALS['debug']) echo "Executing '${cmd}'\n";
         $ouput = array();
         exec($cmd, $output);
@@ -580,6 +628,77 @@ class PdfAnalyzer
         // echo "executing: '", $cmd, "'...\n";
         // 実行
         exec($cmd);
+    }
+
+    // OCR 用画像の解像度
+    private function __getOCRDPI() {
+        return $this->la->getDpi() * 4;
+    }
+    
+    // ページ内の指定領域を OCR 処理
+    private function __ocrRegion($pdf_filename, $doc_id, $page, $bdr, $word_id) {
+        $ocr_dpi = $this->__getOCRDPI();
+        // Generate page images from pdf
+        $imgdir = $this->getImageDir($doc_id);
+        $ppmroot = $imgdir . $doc_id . '_page_ocr';
+        if (!file_exists($ppmroot.'-1.png') && !file_exists($ppmroot.'-01.png')) {
+            $cmd = sprintf('pdftoppm -r %d %s %s', $ocr_dpi, $pdf_filename, $ppmroot);
+            echo "executing: '", $cmd, "'...\n";
+            exec($cmd);
+
+            // Convert ppms to png
+            foreach (glob($ppmroot.'-*.ppm') as $ppm) {
+                if (preg_match('/(.*)\-(\d+)\.ppm/', $ppm, $m)) {
+                    $png = sprintf("%s-%02d.png", $m[1], $m[2]);
+                }
+                $cmd = sprintf('pnmtopng %s > %s', $ppm, $png);
+                echo "executing: '", $cmd, "'...\n";
+                exec($cmd);
+                unlink($ppm);
+            }
+        }
+
+        // Crop target region
+        $png = $imgdir . $doc_id . '_page_ocr';
+        $png = sprintf("%s-%02d.png", $png, $page + 1);
+        $abs_bdr = $this->la->getAbsoluteBdr($bdr[0] * 4, $bdr[1] * 4, $bdr[2] * 4, $bdr[3] * 4, $page);
+        $cutmargin = 0.01 * $this->la->getDpi();
+        $abs_bdr = array(
+            $abs_bdr[0] - $cutmargin,
+            $abs_bdr[1] - $cutmargin,
+            $abs_bdr[2] + $cutmargin,
+            $abs_bdr[3] + $cutmargin,
+        );
+        $content_img = sprintf("%s%s_crop_ocr.png", $imgdir, $doc_id);
+        $cmd = sprintf("convert -crop %sx%s+%s+%s %s %s", $abs_bdr[2] - $abs_bdr[0], $abs_bdr[3] - $abs_bdr[1], $abs_bdr[0], $abs_bdr[1], $png, $content_img);
+        echo "executing: '", $cmd, "'...\n";
+        exec($cmd);
+
+        // Do OCR
+        $ocr_results = OCRLib::read($content_img, 400);
+
+        // Write to files under the image directory
+        $basename = $imgdir . $doc_id . '-' . $word_id;
+        file_put_contents($basename . '.hocr', $ocr_results['hocr']);
+        file_put_contents($basename . '.json', json_encode($ocr_results['words'], JSON_PRETTY_PRINT));
+
+        // Unlink cropped image
+        unlink($content_img);
+        
+        return $basename;
+    }
+
+    // Clean up large images for OCR
+    private function __unlinkOcrImages($doc_id) {
+        $imgdir = $this->getImageDir($doc_id);
+        $ppmroot = $imgdir . $doc_id . '_page_ocr';
+        foreach (glob($ppmroot.'-*.ppm') as $ppm) {
+            unlink($ppm);
+        }
+        foreach (glob($ppmroot.'-*.png') as $png) {
+            unlink($png);
+        }
+        return;
     }
 
     /*
@@ -835,6 +954,26 @@ class PdfAnalyzer
         $docid->appendChild($attr);
         $head->appendChild($docid);
 
+        // バージョン情報
+        $version = $dom->createElement('meta');
+        $attr = $dom->createAttribute('name');
+        $attr->value = htmlspecialchars('generator');
+        $version->appendChild($attr);
+        $attr = $dom->createAttribute('content');
+        $attr->value = htmlspecialchars('pdfanalyzer ver.' . PDFANALYZER_VERSION);
+        $version->appendChild($attr);
+        $head->appendChild($version);
+
+        // 作成日
+        $revised = $dom->createElement('meta');
+        $attr = $dom->createAttribute('name');
+        $attr->value = htmlspecialchars('revised');
+        $revised->appendChild($attr);
+        $attr = $dom->createAttribute('content');
+        $attr->value = htmlspecialchars(date('Y-m-d'));
+        $revised->appendChild($attr);
+        $head->appendChild($revised);
+
         // ページ情報
         $pages = $dom->createElement('pages');
         $dpi   = $this->la->getDpi();
@@ -936,7 +1075,7 @@ class PdfAnalyzer
                 $div_box->setIdAttribute('id', true);
 
 
-                $this->__toXhtmlParagraphs($dom, $div_box, $box['paragraphs'], $doc_id, $i, $box['boxType'], $j);
+                $this->__toXhtmlParagraphs($pdfpath, $dom, $div_box, $box['paragraphs'], $doc_id, $i, $box['boxType'], $j);
                 $div_section->appendChild($div_box);
 				$j++;
 			}
@@ -962,6 +1101,11 @@ class PdfAnalyzer
             return mb_convert_encoding(pack('H*', $matches[1]), 'UTF-8', 'UTF-16');
         }, $xhtml);
 
+        // 不要になった高解像度 OCR 用画像を削除する
+        if ($this->useOCR) {
+            $this->__unlinkOcrImages($doc_id);
+        }
+
         return $xhtml;
     }
 
@@ -976,7 +1120,7 @@ class PdfAnalyzer
      * @param $box_no      ボックスナンバー
      * @return 無し, $div_box に追加する（参照渡し）
      */
-	private function __toXhtmlParagraphs($dom, &$div_box, $paragraphs, $doc_id, $section_no, $box_type, $box_no) {
+	private function __toXhtmlParagraphs($pdfpath, $dom, &$div_box, $paragraphs, $doc_id, $section_no, $box_type, $box_no) {
 
 		$i = 0;
 		foreach ($paragraphs as $paragraph) {
@@ -1012,6 +1156,17 @@ class PdfAnalyzer
                             $this->cutImage($doc_id, $paragraph['page'], $bdr, $id);
                         }
                         $img->appendChild($attr);
+
+                        if ($this->useOCR) {
+                            $attr = $dom->createAttribute('data-hocr');
+                            $this->__ocrRegion($pdfpath, $doc_id, $paragraph['page'], $bdr, $word_id);
+                            $attr->value = $this->getImageDir($doc_id, true).$doc_id.'-'.$word_id;
+                            $img->appendChild($attr);
+                            $attr = $dom->createAttribute('data-ocr-dpi');
+                            $attr->value = $this->__getOCRDPI();
+                            $img->appendChild($attr);
+                        }
+
                         $w->appendChild($img);
                         $p->appendChild($w);
                         $j++;
