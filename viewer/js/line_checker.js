@@ -84,6 +84,10 @@ $(document).ready(function() {
 	resetLayout();
     });
 
+    $("#show_box").on('click', function() {
+	showBoxesOnPage(current_page);
+    });
+
     $("#prev_page_button").click(function() {
 	if (current_page > 1) {
 	    showPaperImage(current_paper, current_page - 1);
@@ -308,6 +312,7 @@ function updatePaperLine(data) {
     
     csv_data = data;
     updateErrorCount();
+    showBoxesOnPage(1);
 }
 
 // エラー行数を更新する
@@ -324,7 +329,41 @@ function showPaperImage(code, page) {
 	$("#paper_image").attr("src", image_url);
 	current_page = page;
 	$("div#page_number span#page").html("p." + current_page.toString());
+
+	showBoxesOnPage(page);
     }
+}
+
+// 現在ページ画像上にボックスを表示する
+// 先頭ページは 1
+function showBoxesOnPage(page) {
+    // このページのボックスを表示
+    $("#paper div.boundary").remove();
+    if (! $("#show_box").prop('checked')) {
+	return false;
+    }
+    $('tr.line').each(function() {
+	var bdr = $(this).attr("data-bdr").split(' ');
+	var line = $(this).attr("data-line");
+	if (bdr.length != 5) {
+	    return true;
+	}
+	var p = parseInt(bdr[0]);
+	if (p != page - 1) {
+	    return true;
+	}
+	var l = parseFloat(bdr[1]);
+	var t = parseFloat(bdr[2]);
+	var w = parseFloat(bdr[3]) - l;
+	var h = parseFloat(bdr[4]) - t;
+	var boundary = '<div class="boundary" style="left:' + l.toString() + 'px;top:' + t.toString() + 'px;width:' + w.toString() + 'px;height:' + h.toString() + 'px;" data-line="' + line + '"/>';
+	$("#paper").append(boundary);
+    });
+    $('#paper div.boundary').on('click', function(e) {
+	var line = $(this).attr('data-line');
+	selectLine(line);
+    });
+
 }
 
 // xhtml から n ページ目の幅と高さの情報を取得

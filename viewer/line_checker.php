@@ -49,6 +49,7 @@ $loc = $loc ? array_map('floatval', explode(',', $loc)) : null;
       <datalist id="paper_list">
       </datalist>
       <input type="button" id="layout_select_button" value="Layout" />
+      <input type="checkbox" id="show_box" />ShowBoxes
       |<span>
 	  <input type="button" id="line_download_button" value="Download" />
 	  <input type="button" id="line_save_button" value="Save" style="display:none;" />

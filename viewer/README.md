@@ -1,15 +1,17 @@
 Viewer
 ==========
-Viewer is a web application template which can show the converted XHTML by 'pdfanalyzer' with its original PDF.
+Viewer is a web application template which can show
+the converted XHTML by 'pdfanalyzer' with its original PDF.
 
 ### Usage
 1. Copy 'viewer/' directory recursively on the web server.
 
 ```$ cp -r viewer /var/www/html/foo```
 
-2. Copy (or make a symbolic link to) the 'xhtml_dir' under the directory.
+2. Copy (or make a symbolic link to) the 'xhtml_dir' and 'train_dir'
+   under the directory.
 
-```$ cp -r ../pdfanalyzer/xhtml /var/www/html/foo/```
+```$ cp -r ../pdfanalyzer/xhtml ../pdfanalyzer/train /var/www/html/foo/```
 
 3. Open the directory by web browsers.
 
