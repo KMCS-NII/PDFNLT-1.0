@@ -68,6 +68,9 @@ Options:
   --with-wordtag (default:0)
      Add '<span class="word"...>' tag for each word.
 
+     Important note: This option is required to run 'postprocess'.
+
+
 Command:
 
   generate_annotation

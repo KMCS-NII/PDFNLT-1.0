@@ -725,8 +725,13 @@ class LayoutAnalyzer
             }
             */
 
-            $gap = min(max($line[4] - $last_line[2], 0), max($line[2] - $last_line[4], 0));
-            $con = $this->__is_continuable_lines($page_indents, $last_line, $line);
+            if ($last_line == null) {
+                $gap = 0;
+                $con = 0;
+            } else {
+                $gap = min(max($line[4] - $last_line[2], 0), max($line[2] - $last_line[4], 0));
+                $con = $this->__is_continuable_lines($page_indents, $last_line, $line);
+            }
             // インデントレイアウト変更のチェック
             // Todo: C04-1112:588 にどう対応するか？
             if ($line[4] > $no_break_until_y
